@@ -12,7 +12,7 @@ return [
     'title' => config('app.name') . ' API Documentation',
 
     // A short description of your API. Will be included in the docs webpage, Postman collection and OpenAPI spec.
-    'description' => 'Welcome to the RubyNU API documentation!',
+    'description' => 'Welcome to the RubyNU API documentation. This API provides a comprehensive set of endpoints for managing users, authentication, and application resources. All endpoints requiring authentication are secured with Bearer Tokens, which you can obtain via the registration or login endpoints. Explore the available routes for detailed information on request parameters, response formats, and error handling. For further assistance or questions, please contact the development team.',
 
     // The base URL displayed in the docs.
     // If you're using `laravel` type, you can set this to a dynamic string, like '{{ config("app.tenant_url") }}' to get a dynamic base URL.
@@ -122,7 +122,6 @@ return [
     // Text to place in the "Introduction" section, right after the `description`. Markdown and HTML are supported.
     'intro_text' => <<<INTRO
         This documentation aims to provide all the information you need to work with our API.
-
         <aside>As you scroll, you'll see code examples for working with the API in different programming languages in the dark area to the right (or as part of the content on mobile).
         You can switch the language used with the tabs at the top right (or from the nav menu at the top left on mobile).</aside>
     INTRO,

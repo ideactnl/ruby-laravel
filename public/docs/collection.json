@@ -10,8 +10,8 @@
     ],
     "info": {
         "name": "RubyNU API Documentation",
-        "_postman_id": "a8a3c7cb-541e-46f1-bb20-a47669c84aa6",
-        "description": "Welcome to the RubyNU API documentation!",
+        "_postman_id": "97680a9c-2497-4764-b2f4-727cfc8db671",
+        "description": "Welcome to the RubyNU API documentation. This API provides a comprehensive set of endpoints for managing users, authentication, and application resources. All endpoints requiring authentication are secured with Bearer Tokens, which you can obtain via the registration or login endpoints. Explore the available routes for detailed information on request parameters, response formats, and error handling. For further assistance or questions, please contact the development team.",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
     "item": [

@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: 'RubyNU API Documentation'
-  description: 'Welcome to the RubyNU API documentation!'
+  description: 'Welcome to the RubyNU API documentation. This API provides a comprehensive set of endpoints for managing users, authentication, and application resources. All endpoints requiring authentication are secured with Bearer Tokens, which you can obtain via the registration or login endpoints. Explore the available routes for detailed information on request parameters, response formats, and error handling. For further assistance or questions, please contact the development team.'
   version: 1.0.0
 servers:
   -

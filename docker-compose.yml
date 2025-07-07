@@ -24,6 +24,20 @@ services:
         depends_on:
             - mysql
             - redis
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        restart: unless-stopped
+        ports:
+            - '8081:80'
+        environment:
+            PMA_HOST: mysql
+            PMA_PORT: 3306
+            PMA_USER: ${DB_USERNAME}
+            PMA_PASSWORD: ${DB_PASSWORD}
+        networks:
+            - sail
+        depends_on:
+            - mysql
     mysql:
         image: 'mysql/mysql-server:8.0'
         ports:
