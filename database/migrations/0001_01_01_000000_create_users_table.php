@@ -13,8 +13,8 @@ return new class extends Migration {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('registration_number', 255)->nullable();
-            $table->string('pin_hash', 255)->nullable();
-            $table->string('password_hash', 255)->nullable();
+            $table->string('pin', 255)->nullable();
+            $table->string('password', 255)->nullable();
             $table->tinyInteger('enable_data_sharing')->default(0);
             $table->tinyInteger('opt_in_for_research')->default(0);
             $table->timestamp('created_at')->nullable();

@@ -23,7 +23,7 @@ class WebLoginController extends Controller
         ]);
 
         $user = User::where('registration_number', $request->registration_number)->first();
-        if ($user && Hash::check($request->password, $user->password_hash)) {
+        if ($user && Hash::check($request->password, $user->password)) {
             Auth::login($user, $request->boolean('remember'));
             return redirect()->intended('/dashboard');
         }

@@ -18,15 +18,14 @@ class RegisterRequest extends FormRequest
         return [
             'registration_number' => 'required|string|unique:users,registration_number',
             'pin' => 'required|string|min:6',
-            'opt_in_for_research' => 'required|boolean',
+            'opt_in_for_research' => 'required|accepted',
         ];
     }
 
     public function registerUser(): User
     {
         $data = $this->validated();
-        $data['pin_hash'] = Hash::make($data['pin']);
-        unset($data['pin']);
+        $data['pin'] = Hash::make($data['pin']);
         return User::create($data);
     }
 

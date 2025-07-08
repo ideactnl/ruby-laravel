@@ -24,7 +24,7 @@ class LoginRequest extends FormRequest
     public function attemptLogin(): ?User
     {
         $user = User::where('registration_number', $this->input('registration_number'))->first();
-        if ($user && Hash::check($this->input('pin'), $user->pin_hash)) {
+        if ($user && Hash::check($this->input('pin'), $user->pin)) {
             return $user;
         }
         return null;

@@ -209,14 +209,14 @@ class AuthController extends Controller
             $updated = true;
         }
         if (!empty($data['password'])) {
-            if (!Hash::check($data['pin'], $user->pin_hash)) {
+            if (!Hash::check($data['pin'], $user->pin)) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Invalid pin',
                     'data' => null
                 ], 403);
             }
-            $user->password_hash = Hash::make($data['password']);
+            $user->password = Hash::make($data['password']);
             $updated = true;
         }
         if ($updated) {

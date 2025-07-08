@@ -19,8 +19,8 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'registration_number',
-        'password_hash',
-        'pin_hash',
+        'password',
+        'pin',
         'enable_data_sharing',
         'opt_in_for_research',
         'created_at',
@@ -33,7 +33,7 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $hidden = [
-        'password_hash',
-        'pin_hash',
+        'password',
+        'pin',
     ];
 }

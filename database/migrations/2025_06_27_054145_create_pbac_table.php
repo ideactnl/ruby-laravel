@@ -12,7 +12,7 @@ return new class extends Migration {
     {
         Schema::create('pbac', function (Blueprint $table) {
             $table->id();
-            $table->integer('user_id')->nullable()->index(); //this is the id of the user that is stored in the users table
+            $table->integer('user_id')->nullable()->index();
             $table->date('reported_date')->index();
             $table->timestamp('created_date')->useCurrent();
 
