@@ -3,17 +3,17 @@
 namespace App\Http\Controllers\Api\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\Auth\UpdateProfileRequest;
-use App\Http\Requests\Api\Auth\RegisterRequest;
-use App\Http\Requests\Api\Auth\LoginRequest;
 use App\Http\Requests\Api\Auth\LoginLogsRequest;
+use App\Http\Requests\Api\Auth\LoginRequest;
+use App\Http\Requests\Api\Auth\RegisterRequest;
+use App\Http\Requests\Api\Auth\UpdateProfileRequest;
 use App\Http\Resources\UserResource;
-use App\Services\LoginLogService;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use App\Models\LoginLog;
 use App\Models\User;
+use App\Services\LoginLogService;
 use Hash;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 /**
  * @group Auth
@@ -30,6 +30,7 @@ class AuthController extends Controller
      * @bodyParam registration_number string required The unique registration number for the user. Example: user123
      * @bodyParam pin string required The PIN code for mobile login (min 6 chars). Example: 123456
      * @bodyParam opt_in_for_research boolean required Must be true to register. Example: true
+     *
      * @response 201 {
      *   "success": true,
      *   "message": "Registration successful",
@@ -43,6 +44,7 @@ class AuthController extends Controller
      *   "message": "Registration failed: <error message>",
      *   "data": null
      * }
+     *
      * @responseField success boolean Whether the request was successful
      * @responseField message string A human-readable message
      * @responseField data object|null The user and access token or null
@@ -51,13 +53,14 @@ class AuthController extends Controller
     {
         $user = $request->registerUser();
         $token = $user->createToken('api')->plainTextToken;
+
         return response()->json([
             'success' => true,
             'message' => 'Registration successful',
             'data' => [
                 'user' => new UserResource($user),
-                'access_token' => $token
-            ]
+                'access_token' => $token,
+            ],
         ], 201);
     }
 
@@ -68,6 +71,7 @@ class AuthController extends Controller
      *
      * @bodyParam registration_number string required The user's registration number. Example: user123
      * @bodyParam pin string required The user's PIN. Example: 123456
+     *
      * @response 200 {
      *   "success": true,
      *   "message": "Login successful",
@@ -81,6 +85,7 @@ class AuthController extends Controller
      *   "message": "Invalid credentials",
      *   "data": null
      * }
+     *
      * @responseField success boolean Whether the request was successful
      * @responseField message string A human-readable message
      * @responseField data object|null The user and access token or null
@@ -88,26 +93,27 @@ class AuthController extends Controller
     public function login(LoginRequest $request): JsonResponse
     {
         $user = $request->attemptLogin();
-        if (!$user) {
+        if (! $user) {
             return response()->json([
                 'success' => false,
                 'message' => 'Invalid credentials',
-                'data' => null
+                'data' => null,
             ], 401);
         }
 
-        (new LoginLogService())->log($user->registration_number);
+        (new LoginLogService)->log($user->registration_number);
 
         $token = $user->createToken('api')->plainTextToken;
+
         return response()->json([
             'success' => true,
             'message' => 'Login successful',
             'data' => [
                 'user' => new UserResource($user),
-                'access_token' => $token
-            ]
+                'access_token' => $token,
+            ],
         ]);
-    
+
     }
 
     /**
@@ -116,6 +122,7 @@ class AuthController extends Controller
      * Returns login logs for the given registration number.
      *
      * @bodyParam registration_number string required The registration number. Example: user123
+     *
      * @response 200 {
      *   "success": true,
      *   "message": "Logs retrieved successfully.",
@@ -128,6 +135,7 @@ class AuthController extends Controller
      *   "message": "No logs found for this registration number.",
      *   "data": null
      * }
+     *
      * @responseField success boolean Whether the request was successful
      * @responseField message string A human-readable message
      * @responseField data array|null The login logs or null
@@ -138,11 +146,11 @@ class AuthController extends Controller
         $registrationNumber = $data['registration_number'];
 
         $user = User::where('registration_number', $registrationNumber)->first();
-        if (!$user) {
+        if (! $user) {
             return response()->json([
                 'success' => false,
                 'message' => 'User with this registration number does not exist.',
-                'data' => null
+                'data' => null,
             ], 404);
         }
 
@@ -151,16 +159,16 @@ class AuthController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'No logs found for this registration number.',
-                'data' => null
+                'data' => null,
             ], 404);
         }
 
         return response()->json([
             'success' => true,
             'message' => 'Logs retrieved successfully.',
-            'data' => $logs
+            'data' => $logs,
         ]);
-    
+
     }
 
     /**
@@ -174,6 +182,7 @@ class AuthController extends Controller
      * @bodyParam opt_in_for_research boolean optional Opt in or out of research participation. Example: false
      * @bodyParam password string optional New password (min 6 chars). Example: mysecurepassword
      * @bodyParam pin string optional The user's PIN (required if changing password). Example: 123456
+     *
      * @response 200 {
      *   "success": true,
      *   "message": "Profile updated successfully",
@@ -189,9 +198,11 @@ class AuthController extends Controller
      *   "message": "Unauthenticated.",
      *   "data": null
      * }
+     *
      * @responseField success boolean Whether the request was successful
      * @responseField message string A human-readable message
      * @responseField data object|null The updated user or null
+     *
      * @authenticated
      */
     public function updateProfile(UpdateProfileRequest $request): JsonResponse
@@ -208,12 +219,12 @@ class AuthController extends Controller
             $user->opt_in_for_research = $data['opt_in_for_research'];
             $updated = true;
         }
-        if (!empty($data['password'])) {
-            if (!Hash::check($data['pin'], $user->pin)) {
+        if (! empty($data['password'])) {
+            if (! Hash::check($data['pin'], $user->pin)) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Invalid pin',
-                    'data' => null
+                    'data' => null,
                 ], 403);
             }
             $user->password = Hash::make($data['password']);
@@ -222,10 +233,11 @@ class AuthController extends Controller
         if ($updated) {
             $user->save();
         }
+
         return response()->json([
             'success' => true,
             'message' => 'Profile updated successfully',
-            'data' => ['user' => new UserResource($user)]
+            'data' => ['user' => new UserResource($user)],
         ]);
     }
 
@@ -246,18 +258,21 @@ class AuthController extends Controller
      *   "message": "Unauthenticated.",
      *   "data": null
      * }
+     *
      * @responseField success boolean Whether the request was successful
      * @responseField message string A human-readable message
      * @responseField data null Always null for this endpoint
+     *
      * @authenticated
      */
     public function logout(Request $request): JsonResponse
     {
         $request->user()->currentAccessToken()->delete();
+
         return response()->json([
             'success' => true,
             'message' => 'Logged out successfully',
-            'data' => null
+            'data' => null,
         ]);
     }
 }

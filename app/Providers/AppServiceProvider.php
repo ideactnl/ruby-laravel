@@ -2,8 +2,6 @@
 
 namespace App\Providers;
 
-use App\Events\UserLoggedIn;
-
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider

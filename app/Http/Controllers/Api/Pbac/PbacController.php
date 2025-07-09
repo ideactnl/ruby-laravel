@@ -2,15 +2,13 @@
 
 namespace App\Http\Controllers\Api\Pbac;
 
-use App\Http\Requests\Api\Pbac\StoreOrUpdatePbacRequest;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\Pbac\StoreOrUpdatePbacRequest;
 use App\Http\Resources\PbacResource;
 use App\Services\PbacService;
 use Illuminate\Http\Request;
-use Log;
 
 /**
-
  *@group PBAC
  * Endpoints related to PBAC records and participant management.
  */
@@ -38,26 +36,29 @@ class PbacController extends Controller
      *   "message": "Authentication required. Please provide a valid Bearer token.",
      *   "data": null
      * }
+     *
      * @responseField success boolean Whether the request was successful
      * @responseField message string A human-readable message
      * @responseField data array|null The list of PBAC records or null
+     *
      * @authenticated
      */
     public function index(Request $request)
     {
         $user = $request->user();
-        if (!$user) {
+        if (! $user) {
             return response()->json([
                 'success' => false,
                 'message' => 'Authentication required. Please provide a valid Bearer token.',
-                'data' => null
+                'data' => null,
             ], 401);
         }
         $pbacs = $this->pbacService->getUserPbacs($user->registration_number);
+
         return response()->json([
             'success' => true,
             'message' => 'PBAC records retrieved successfully.',
-            'data' => PbacResource::collection($pbacs)
+            'data' => PbacResource::collection($pbacs),
         ]);
 
     }
@@ -87,35 +88,38 @@ class PbacController extends Controller
      *   "message": "Authentication required. Please provide a valid Bearer token.",
      *   "data": null
      * }
+     *
      * @responseField success boolean Whether the request was successful
      * @responseField message string A human-readable message
      * @responseField data object|null The created or updated PBAC record or null
+     *
      * @authenticated
      */
     public function store(StoreOrUpdatePbacRequest $request)
     {
         $user = $request->user();
-        if (!$user) {
+        if (! $user) {
             return response()->json([
                 'success' => false,
                 'message' => 'Authentication required. Please provide a valid Bearer token.',
-                'data' => null
+                'data' => null,
             ], 401);
         }
         $data = $request->validated();
         $data['registration_number'] = $user->registration_number;
         try {
             [$pbac, $created] = $this->pbacService->upsertByRegistrationAndDate($data);
+
             return response()->json([
                 'success' => true,
                 'message' => $created ? 'PBAC record created successfully.' : 'PBAC record updated successfully.',
-                'data' => new PbacResource($pbac)
+                'data' => new PbacResource($pbac),
             ], $created ? 201 : 200);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to save PBAC record: ' . $e->getMessage(),
-                'data' => null
+                'message' => 'Failed to save PBAC record: '.$e->getMessage(),
+                'data' => null,
             ], 400);
         }
     }
@@ -126,6 +130,7 @@ class PbacController extends Controller
      * **Requires authentication via Bearer token in the Authorization header.**
      *
      * @urlParam id integer required The PBAC record ID. Example: 1
+     *
      * @response 200 {
      *   "success": true,
      *   "message": "PBAC record retrieved successfully.",
@@ -141,33 +146,36 @@ class PbacController extends Controller
      *   "message": "PBAC record not found or access denied.",
      *   "data": null
      * }
+     *
      * @responseField success boolean Whether the request was successful
      * @responseField message string A human-readable message
      * @responseField data object|null The PBAC record or null
+     *
      * @authenticated
      */
     public function show($id, Request $request)
     {
         $user = $request->user();
-        if (!$user) {
+        if (! $user) {
             return response()->json([
                 'success' => false,
                 'message' => 'Authentication required. Please provide a valid Bearer token.',
-                'data' => null
+                'data' => null,
             ], 401);
         }
         $pbac = $this->pbacService->getUserPbacs($user->registration_number, $id);
-        if (!$pbac) {
+        if (! $pbac) {
             return response()->json([
                 'success' => false,
                 'message' => 'PBAC record not found or access denied.',
-                'data' => null
+                'data' => null,
             ], 404);
         }
+
         return response()->json([
             'success' => true,
             'message' => 'PBAC record retrieved successfully.',
-            'data' => new PbacResource($pbac)
+            'data' => new PbacResource($pbac),
         ]);
 
     }
@@ -180,6 +188,7 @@ class PbacController extends Controller
      * @queryParam day integer optional The day to filter. Example: 3
      * @queryParam month integer optional The month to filter. Example: 7
      * @queryParam year integer optional The year to filter. Example: 2025
+     *
      * @response 200 {
      *   "success": true,
      *   "message": "PBAC records retrieved successfully.",
@@ -190,9 +199,11 @@ class PbacController extends Controller
      *   "message": "Authentication required. Please provide a valid Bearer token.",
      *   "data": null
      * }
+     *
      * @responseField success boolean Whether the request was successful
      * @responseField message string A human-readable message
      * @responseField data array|null The list of PBAC records or null
+     *
      * @authenticated
      */
     public function filter(Request $request)
@@ -200,11 +211,11 @@ class PbacController extends Controller
         $user = $request->user();
 
         $user = $request->user();
-        if (!$user) {
+        if (! $user) {
             return response()->json([
                 'success' => false,
                 'message' => 'Authentication required. Please provide a valid Bearer token.',
-                'data' => null
+                'data' => null,
             ], 401);
         }
         $validated = $request->validate([
@@ -223,11 +234,10 @@ class PbacController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'PBAC records retrieved successfully.',
-            'data' => PbacResource::collection($pbacs)
+            'data' => PbacResource::collection($pbacs),
         ]);
 
     }
-
 
     /**
      * Check if the authenticated participant exists.
@@ -254,15 +264,17 @@ class PbacController extends Controller
      *   "message": "<error message>",
      *   "data": null
      * }
+     *
      * @responseField success boolean Whether the request was successful
      * @responseField message string A human-readable message
      * @responseField data object|null The participant user object or null
+     *
      * @authenticated
      */
     public function check(Request $request)
     {
         $user = $request->user();
-        if (!$user) {
+        if (! $user) {
             return response()->json([
                 'message' => 'Authentication required. Please provide a valid Bearer token.',
                 'user' => null,

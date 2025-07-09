@@ -2,12 +2,12 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-
 uses(RefreshDatabase::class);
 
 describe('User Registration', function () {
     /**
      * @test
+     *
      * @covers AuthController::register
      * It should register a user with valid data.
      */
@@ -40,6 +40,7 @@ describe('User Registration', function () {
 
     /**
      * @test
+     *
      * @covers AuthController::register
      * It should fail if pin is too short.
      */
@@ -56,6 +57,7 @@ describe('User Registration', function () {
 
     /**
      * @test
+     *
      * @covers AuthController::register
      * It should fail if opt_in_for_research is false.
      */

@@ -1,13 +1,14 @@
 <?php
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
 describe('Logout API', function () {
     /**
      * @test
+     *
      * @covers AuthController::logout
      * It should log out an authenticated user.
      */
@@ -15,7 +16,7 @@ describe('Logout API', function () {
         $user = User::factory()->create(['registration_number' => 'logoutuser']);
         $token = $user->createToken('api')->plainTextToken;
 
-        $response = $this->withHeader('Authorization', 'Bearer ' . $token)
+        $response = $this->withHeader('Authorization', 'Bearer '.$token)
             ->postJson('/api/v1/logout');
 
         $response->assertOk()
@@ -27,6 +28,7 @@ describe('Logout API', function () {
 
     /**
      * @test
+     *
      * @covers AuthController::logout
      * It should reject logout when unauthenticated.
      */

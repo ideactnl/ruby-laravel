@@ -114,8 +114,6 @@ class StoreOrUpdatePbacRequest extends FormRequest
 
     /**
      * Body parameters for PBAC store/update endpoints.
-     *
-     * @return array
      */
     public function bodyParameters(): array
     {

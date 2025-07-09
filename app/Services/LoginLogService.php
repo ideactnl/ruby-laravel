@@ -8,9 +8,6 @@ class LoginLogService
 {
     /**
      * Create a login log entry.
-     *
-     * @param string $registrationNumber
-     * @return void
      */
     public function log(string $registrationNumber): void
     {

@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Models\Pbac;
 use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
@@ -15,6 +15,7 @@ describe('PBAC API', function () {
 
     /**
      * @test
+     *
      * @covers PBACController::index
      * It should return all PBAC records for an authenticated user.
      */
@@ -29,7 +30,7 @@ describe('PBAC API', function () {
         ]);
         $token = $user->createToken('api')->plainTextToken;
 
-        $response = $this->withHeader('Authorization', 'Bearer ' . $token)
+        $response = $this->withHeader('Authorization', 'Bearer '.$token)
             ->getJson('/api/v1/pbac');
 
         $response->assertOk()
@@ -60,6 +61,7 @@ describe('PBAC API', function () {
 
     /**
      * @test
+     *
      * @covers PBACController::show
      * It should return a single PBAC record for an authenticated user.
      */
@@ -74,8 +76,8 @@ describe('PBAC API', function () {
         ]);
         $token = $user->createToken('api')->plainTextToken;
 
-        $response = $this->withHeader('Authorization', 'Bearer ' . $token)
-            ->getJson('/api/v1/pbac/' . $pbac->id);
+        $response = $this->withHeader('Authorization', 'Bearer '.$token)
+            ->getJson('/api/v1/pbac/'.$pbac->id);
 
         $response->assertOk()
             ->assertJson([
@@ -92,17 +94,19 @@ describe('PBAC API', function () {
 
     /**
      * @test
+     *
      * @covers PBACController::show
      * It should reject show if not authenticated.
      */
     it('returns 401 if not authenticated for show', function () {
         $pbac = Pbac::factory()->create();
-        $response = $this->getJson('/api/v1/pbac/' . $pbac->id);
+        $response = $this->getJson('/api/v1/pbac/'.$pbac->id);
         $response->assertUnauthorized();
     });
 
     /**
      * @test
+     *
      * @covers PBACController::filter
      * It should filter PBAC records by year for an authenticated user.
      */
@@ -118,7 +122,7 @@ describe('PBAC API', function () {
         ]);
         $token = $user->createToken('api')->plainTextToken;
 
-        $response = $this->withHeader('Authorization', 'Bearer ' . $token)
+        $response = $this->withHeader('Authorization', 'Bearer '.$token)
             ->getJson('/api/v1/pbac/filter?year=2025');
 
         $response->assertOk()
@@ -132,6 +136,7 @@ describe('PBAC API', function () {
 
     /**
      * @test
+     *
      * @covers PBACController::store
      * It should create a PBAC record for an authenticated user with multiple question codes.
      */
@@ -153,7 +158,7 @@ describe('PBAC API', function () {
             'school' => 0,
             'QoL' => 8,
         ];
-        $response = $this->withHeader('Authorization', 'Bearer ' . $token)
+        $response = $this->withHeader('Authorization', 'Bearer '.$token)
             ->postJson('/api/v1/pbac', $payload);
         $response->assertCreated()
             ->assertJson([
@@ -179,6 +184,7 @@ describe('PBAC API', function () {
 
     /**
      * @test
+     *
      * @covers PBACController::store
      * It should reject PBAC creation if the user is not authenticated.
      */
@@ -193,19 +199,21 @@ describe('PBAC API', function () {
 
     /**
      * @test
+     *
      * @covers PBACController::check
      * It should confirm the existence of a participant for an authenticated user.
      */
     it('checks participant existence', function () {
         $user = User::factory()->create();
         $token = $user->createToken('api')->plainTextToken;
-        $response = $this->withHeader('Authorization', 'Bearer ' . $token)
+        $response = $this->withHeader('Authorization', 'Bearer '.$token)
             ->getJson('/api/v1/pbac/check');
         $response->assertOk();
     });
 
     /**
      * @test
+     *
      * @covers PBACController::check
      * It should reject participant check if not authenticated.
      */

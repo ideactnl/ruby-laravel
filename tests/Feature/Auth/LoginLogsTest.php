@@ -1,15 +1,16 @@
 <?php
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Models\LoginLog;
 use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
 describe('Login Logs API', function () {
-    
+
     /**
      * @test
+     *
      * @covers AuthController::loginLogs
      * It should retrieve login logs for authenticated user.
      */
@@ -24,7 +25,7 @@ describe('Login Logs API', function () {
         $payload = [
             'registration_number' => $user->registration_number,
         ];
-        $response = $this->withHeader('Authorization', 'Bearer ' . $token)
+        $response = $this->withHeader('Authorization', 'Bearer '.$token)
             ->postJson('/api/v1/login-logs', $payload);
 
         $response->assertOk()
@@ -32,15 +33,15 @@ describe('Login Logs API', function () {
                 'success' => true,
             ])
             ->assertJsonStructure([
-                'data' => []
+                'data' => [],
             ]);
     });
 
     it('rejects login logs when unauthenticated', function () {
         $payload = [
-    'registration_number' => 'nonexistent',
-];
-$response = $this->postJson('/api/v1/login-logs', $payload);
+            'registration_number' => 'nonexistent',
+        ];
+        $response = $this->postJson('/api/v1/login-logs', $payload);
         $response->assertStatus(404);
     });
 });

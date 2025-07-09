@@ -18,5 +18,9 @@ jobs:
           php-version: 8.2
       - name: Install dependencies
         run: composer install --no-interaction --prefer-dist --optimize-autoloader
-      - name: Run tests
+      - name: Run PHPStan (Static Analysis on app/)
+        run: composer stan
+      - name: Run Laravel Pint (Code Style on app/ config/)
+        run: composer lint
+      - name: Run Laravel Tests (Feature & Unit)
         run: php artisan test

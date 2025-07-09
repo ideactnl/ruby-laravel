@@ -27,6 +27,7 @@ class LoginRequest extends FormRequest
         if ($user && Hash::check($this->input('pin'), $user->pin)) {
             return $user;
         }
+
         return null;
     }
 

@@ -107,7 +107,6 @@ class Pbac extends Model
     /**
      * Map legacy input fields to model attributes.
      *
-     * @param array $input
      * @return array
      */
     public static function mapLegacyInputFields(array $input)

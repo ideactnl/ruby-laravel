@@ -1,13 +1,14 @@
 <?php
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
 describe('Profile Update API', function () {
     /**
      * @test
+     *
      * @covers AuthController::updateProfile
      * It should update profile for authenticated user.
      */
@@ -20,7 +21,7 @@ describe('Profile Update API', function () {
             'pin' => '654321',
         ];
 
-        $response = $this->withHeader('Authorization', 'Bearer ' . $token)
+        $response = $this->withHeader('Authorization', 'Bearer '.$token)
             ->patchJson('/api/v1/profile', $payload);
 
         $response->assertOk()
@@ -32,6 +33,7 @@ describe('Profile Update API', function () {
 
     /**
      * @test
+     *
      * @covers AuthController::updateProfile
      * It should reject update when unauthenticated.
      */

@@ -3,8 +3,8 @@
 namespace App\Http\Requests\Api\Auth;
 
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Hash;
 
 class RegisterRequest extends FormRequest
 {
@@ -26,6 +26,7 @@ class RegisterRequest extends FormRequest
     {
         $data = $this->validated();
         $data['pin'] = Hash::make($data['pin']);
+
         return User::create($data);
     }
 

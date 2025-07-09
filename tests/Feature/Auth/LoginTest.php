@@ -1,13 +1,14 @@
 <?php
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
 describe('Login API', function () {
     /**
      * @test
+     *
      * @covers AuthController::login
      * It should log in a user with valid credentials.
      */
@@ -26,12 +27,13 @@ describe('Login API', function () {
                 'message' => 'Login successful',
             ])
             ->assertJsonStructure([
-                'data' => ['user', 'access_token']
+                'data' => ['user', 'access_token'],
             ]);
     });
 
     /**
      * @test
+     *
      * @covers AuthController::login
      * It should fail login with invalid pin.
      */
