@@ -1,11 +1,11 @@
 # name: CD
 
-# on:
-#   workflow_dispatch:
-#   workflow_run:
-#     workflows: ["CI"]
-#     types:
-#       - completed
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows: ["CI"]
+    types:
+      - completed
 
 # jobs:
 #   deploy_prod:
@@ -25,3 +25,11 @@
 #     steps:
 #       - name: Trigger Render Staging Deploy
 #         run: curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL_STAGING }}"
+
+jobs:
+  placeholder:
+    if: github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print placeholder message
+        run: echo "CD pipeline placeholder: no deploy action configured yet."
