@@ -40,7 +40,7 @@
     "scripts": {
         "lint": "./vendor/bin/pint --test --parallel -v app config",
         "lint:fix": "./vendor/bin/pint --parallel -v app config",
-        "stan": "./vendor/bin/phpstan analyse --configuration=phpstan.neon app",
+        "stan": "./vendor/bin/phpstan analyse --configuration=phpstan.neon --memory-limit=2G app",
         "ci": [
             "@stan",
             "@lint:fix",
