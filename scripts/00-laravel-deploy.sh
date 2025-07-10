@@ -16,3 +16,9 @@ php artisan view:cache
 
 # Run migrations
 php artisan migrate --force
+
+# Generate Scribe API docs
+php artisan scribe:generate --no-interaction
+
+# Log completion
+echo "Deployment script completed successfully."
