@@ -4,10 +4,11 @@ set -e
 # Install Composer dependencies
 composer install --no-dev --working-dir=/var/www/html
 
-# Generate key if not exists
-if ! grep -q "^APP_KEY=" /var/www/html/.env; then
-    php artisan key:generate --show
-fi
+# Clear config cache to ensure fresh env
+php artisan config:clear
+
+# Generate Scribe API docs with correct config
+php artisan scribe:generate --no-interaction
 
 # Cache config and routes
 php artisan config:cache
@@ -16,9 +17,6 @@ php artisan view:cache
 
 # Run migrations
 php artisan migrate --force
-
-# Generate Scribe API docs
-php artisan scribe:generate --no-interaction
 
 # Log completion
 echo "Deployment script completed successfully."
