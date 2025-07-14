@@ -12,8 +12,8 @@ class PbacFactory extends Factory
     public function definition()
     {
         return [
-            'user_id' => function () {
-                return \App\Models\User::factory()->create()->id;
+            'participant_id' => function () {
+                return \App\Models\Participant::factory()->create()->id;
             },
             'reported_date' => $this->faker->date(),
             'created_date' => $this->faker->dateTime(),

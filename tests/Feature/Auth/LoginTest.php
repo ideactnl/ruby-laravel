@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\User;
+use App\Models\Participant;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -10,10 +10,13 @@ describe('Login API', function () {
      * @test
      *
      * @covers AuthController::login
-     * It should log in a user with valid credentials.
+     * It should log in a participant with valid credentials.
      */
-    it('logs in a user with valid credentials', function () {
-        $user = User::factory()->create(['registration_number' => 'testlogin']);
+    it('logs in a participant with valid credentials', function () {
+        $participant = Participant::factory()->create([
+            'registration_number' => 'testlogin',
+            'pin' => Hash::make('123456'), 
+        ]);
 
         $payload = [
             'registration_number' => 'testlogin',
@@ -27,7 +30,7 @@ describe('Login API', function () {
                 'message' => 'Login successful',
             ])
             ->assertJsonStructure([
-                'data' => ['user', 'access_token'],
+                'data' => ['participant', 'access_token'],
             ]);
     });
 
@@ -38,7 +41,7 @@ describe('Login API', function () {
      * It should fail login with invalid pin.
      */
     it('fails login with invalid pin', function () {
-        $user = User::factory()->create(['registration_number' => 'testlogin2']);
+        $participant = Participant::factory()->create(['registration_number' => 'testlogin2']);
 
         $payload = [
             'registration_number' => 'testlogin2',

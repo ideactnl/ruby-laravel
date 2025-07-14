@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use App\Models\Participant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -22,9 +22,9 @@ class WebLoginController extends Controller
             'password' => 'required|string',
         ]);
 
-        $user = User::where('registration_number', $request->registration_number)->first();
-        if ($user && Hash::check($request->password, $user->password)) {
-            Auth::login($user, $request->boolean('remember'));
+        $participant = Participant::where('registration_number', $request->registration_number)->first();
+        if ($participant && Hash::check($request->password, $participant->password)) {
+            Auth::login($participant, $request->boolean('remember'));
 
             return redirect()->intended('/dashboard');
         }
@@ -45,6 +45,6 @@ class WebLoginController extends Controller
     // Show dashboard (protected)
     public function dashboard()
     {
-        return view('dashboard', ['user' => Auth::user()]);
+        return view('dashboard', ['participant' => Auth::user()]);
     }
 }

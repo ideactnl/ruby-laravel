@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\Api\Auth;
 
-use App\Models\User;
+use App\Models\Participant;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Hash;
 
@@ -16,18 +16,18 @@ class RegisterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'registration_number' => 'required|string|unique:users,registration_number',
+            'registration_number' => 'required|string|unique:participants,registration_number',
             'pin' => 'required|string|min:6',
             'opt_in_for_research' => 'required|accepted',
         ];
     }
 
-    public function registerUser(): User
+    public function registerParticipant(): Participant
     {
         $data = $this->validated();
         $data['pin'] = Hash::make($data['pin']);
 
-        return User::create($data);
+        return Participant::create($data);
     }
 
     /**
@@ -39,8 +39,8 @@ class RegisterRequest extends FormRequest
     {
         return [
             'registration_number' => [
-                'description' => 'The unique registration number for the user.',
-                'example' => 'user123',
+                'description' => 'The participant\'s registration number.',
+                'example' => 'participant123',
                 'required' => true,
             ],
             'pin' => [

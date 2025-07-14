@@ -28,7 +28,7 @@ class LoginLogsRequest extends FormRequest
         return [
             'registration_number' => [
                 'description' => 'The registration number.',
-                'example' => 'user123',
+                'example' => 'participant123',
                 'required' => true,
             ],
         ];

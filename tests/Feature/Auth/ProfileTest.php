@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\User;
+use App\Models\Participant;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -10,11 +10,11 @@ describe('Profile Update API', function () {
      * @test
      *
      * @covers AuthController::updateProfile
-     * It should update profile for authenticated user.
+     * It should update profile for authenticated participant.
      */
-    it('updates profile for authenticated user', function () {
-        $user = User::factory()->create(['registration_number' => 'profileuser']);
-        $token = $user->createToken('api')->plainTextToken;
+    it('updates profile for authenticated participant', function () {
+        $participant = Participant::factory()->create(['registration_number' => 'profileparticipant']);
+        $token = $participant->createToken('api')->plainTextToken;
 
         $payload = [
             'opt_in_for_research' => false,

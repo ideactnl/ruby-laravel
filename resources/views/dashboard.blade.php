@@ -24,7 +24,7 @@
                             </form>
                         </div>
                     @else
-                        <div class="alert alert-warning mt-4">You are not logged in. <a href="{{ route('web-login.form') }}">Go to Login</a></div>
+                        <div class="alert alert-warning mt-4">You are not logged in. <a href="{{ route('login') }}">Go to Login</a></div>
                     @endif
                 </div>
             </div>

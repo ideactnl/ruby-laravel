@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\Api\Auth;
 
-use App\Models\User;
+use App\Models\Participant;
 use Hash;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -21,11 +21,11 @@ class LoginRequest extends FormRequest
         ];
     }
 
-    public function attemptLogin(): ?User
+    public function attemptLogin(): ?Participant
     {
-        $user = User::where('registration_number', $this->input('registration_number'))->first();
-        if ($user && Hash::check($this->input('pin'), $user->pin)) {
-            return $user;
+        $participant = Participant::where('registration_number', $this->input('registration_number'))->first();
+        if ($participant && Hash::check($this->input('pin'), $participant->pin)) {
+            return $participant;
         }
 
         return null;
@@ -40,12 +40,12 @@ class LoginRequest extends FormRequest
     {
         return [
             'registration_number' => [
-                'description' => 'The user\'s registration number.',
-                'example' => 'user123',
+                'description' => 'The participant\'s registration number.',
+                'example' => 'participant123',
                 'required' => true,
             ],
             'pin' => [
-                'description' => 'The user\'s PIN.',
+                'description' => 'The participant\'s PIN.',
                 'example' => '123456',
                 'required' => true,
             ],

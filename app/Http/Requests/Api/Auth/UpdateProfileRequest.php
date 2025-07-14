@@ -30,17 +30,17 @@ class UpdateProfileRequest extends FormRequest
     {
         return [
             'enable_data_sharing' => [
-                'description' => 'Whether to enable data sharing for the user.',
+                'description' => 'Whether to enable data sharing for the participant.',
                 'example' => false,
                 'required' => false,
             ],
             'opt_in_for_research' => [
-                'description' => 'Whether the user opts in for research.',
+                'description' => 'Whether the participant opts in for research.',
                 'example' => true,
                 'required' => false,
             ],
             'password' => [
-                'description' => 'New password for the user (min 6 chars).',
+                'description' => 'New password for the participant (min 6 chars).',
                 'example' => 'newpass123',
                 'required' => false,
             ],

@@ -15,7 +15,7 @@ class Pbac extends Model
 
     protected $fillable = [
         'reported_date',
-        'user_id',
+        'participant_id',
         'created_date',
         'q3a',
         'q3b',
@@ -221,13 +221,13 @@ class Pbac extends Model
     }
 
     /**
-     * Get the user that owns the PBAC record.
+     * Get the participant that owns the PBAC record.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function user()
+    public function participant()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(Participant::class, 'participant_id');
     }
 
     /**

@@ -1,7 +1,7 @@
 <?php
 
 use App\Models\Pbac;
-use App\Models\User;
+use App\Models\Participant;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -17,18 +17,18 @@ describe('PBAC API', function () {
      * @test
      *
      * @covers PBACController::index
-     * It should return all PBAC records for an authenticated user.
+     * It should return all PBAC records for an authenticated participant.
      */
-    it('retrieves all PBAC records for authenticated user', function () {
-        $user = User::factory()->create();
+    it('retrieves all PBAC records for authenticated participant', function () {
+        $participant = Participant::factory()->create();
         $pbac = Pbac::factory()->create([
-            'user_id' => $user->id,
+            'participant_id' => $participant->id,
             'q3a' => 7,
             'q4a' => 2,
             'q3c' => 5,
             'reported_date' => '2025-07-01',
         ]);
-        $token = $user->createToken('api')->plainTextToken;
+        $token = $participant->createToken('api')->plainTextToken;
 
         $response = $this->withHeader('Authorization', 'Bearer '.$token)
             ->getJson('/api/v1/pbac');
@@ -63,18 +63,18 @@ describe('PBAC API', function () {
      * @test
      *
      * @covers PBACController::show
-     * It should return a single PBAC record for an authenticated user.
+     * It should return a single PBAC record for an authenticated participant.
      */
-    it('shows a single PBAC record for authenticated user', function () {
-        $user = User::factory()->create();
+    it('shows a single PBAC record for authenticated participant', function () {
+        $participant = Participant::factory()->create();
         $pbac = Pbac::factory()->create([
-            'user_id' => $user->id,
-            'q3a' => 8,
+            'participant_id' => $participant->id,
+            'q3a' => 8,     
             'q4a' => 3,
             'q3c' => 6,
             'reported_date' => '2025-07-02',
         ]);
-        $token = $user->createToken('api')->plainTextToken;
+        $token = $participant->createToken('api')->plainTextToken;
 
         $response = $this->withHeader('Authorization', 'Bearer '.$token)
             ->getJson('/api/v1/pbac/'.$pbac->id);
@@ -108,19 +108,19 @@ describe('PBAC API', function () {
      * @test
      *
      * @covers PBACController::filter
-     * It should filter PBAC records by year for an authenticated user.
+     * It should filter PBAC records by year for an authenticated participant.
      */
     it('filters PBAC records by year', function () {
-        $user = User::factory()->create();
+        $participant = Participant::factory()->create();
         $pbac2024 = Pbac::factory()->create([
-            'user_id' => $user->id,
+            'participant_id' => $participant->id,
             'reported_date' => '2024-07-01',
         ]);
         $pbac2025 = Pbac::factory()->create([
-            'user_id' => $user->id,
+            'participant_id' => $participant->id,
             'reported_date' => '2025-07-01',
         ]);
-        $token = $user->createToken('api')->plainTextToken;
+        $token = $participant->createToken('api')->plainTextToken;
 
         $response = $this->withHeader('Authorization', 'Bearer '.$token)
             ->getJson('/api/v1/pbac/filter?year=2025');
@@ -138,11 +138,11 @@ describe('PBAC API', function () {
      * @test
      *
      * @covers PBACController::store
-     * It should create a PBAC record for an authenticated user with multiple question codes.
+     * It should create a PBAC record for an authenticated participant with multiple question codes.
      */
-    it('creates a PBAC record for authenticated user', function () {
-        $user = User::factory()->create();
-        $token = $user->createToken('api')->plainTextToken;
+    it('creates a PBAC record for authenticated participant', function () {
+        $participant = Participant::factory()->create();
+        $token = $participant->createToken('api')->plainTextToken;
         $payload = [
             'ReportedDate' => '2025-07-01',
             'BL' => 2,
@@ -186,7 +186,7 @@ describe('PBAC API', function () {
      * @test
      *
      * @covers PBACController::store
-     * It should reject PBAC creation if the user is not authenticated.
+     * It should reject PBAC creation if the participant is not authenticated.
      */
     it('returns 401 if not authenticated for store', function () {
         $payload = [
@@ -201,11 +201,11 @@ describe('PBAC API', function () {
      * @test
      *
      * @covers PBACController::check
-     * It should confirm the existence of a participant for an authenticated user.
+     * It should confirm the existence of a participant for an authenticated participant.
      */
     it('checks participant existence', function () {
-        $user = User::factory()->create();
-        $token = $user->createToken('api')->plainTextToken;
+        $participant = Participant::factory()->create();
+        $token = $participant->createToken('api')->plainTextToken;
         $response = $this->withHeader('Authorization', 'Bearer '.$token)
             ->getJson('/api/v1/pbac/check');
         $response->assertOk();

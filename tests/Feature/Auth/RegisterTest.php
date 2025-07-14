@@ -4,14 +4,14 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-describe('User Registration', function () {
+describe('Participant Registration', function () {
     /**
      * @test
      *
      * @covers AuthController::register
-     * It should register a user with valid data.
+     * It should register a participant with valid data.
      */
-    it('registers a user with valid data', function () {
+    it('registers a participant with valid data', function () {
         $payload = [
             'registration_number' => 'testuser1',
             'pin' => '123456',
@@ -29,7 +29,7 @@ describe('User Registration', function () {
                 'success',
                 'message',
                 'data' => [
-                    'user' => [
+                    'participant' => [
                         'id',
                         'registration_number',
                     ],

@@ -1,7 +1,7 @@
 <?php
 
 use App\Models\LoginLog;
-use App\Models\User;
+use App\Models\Participant;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -12,18 +12,18 @@ describe('Login Logs API', function () {
      * @test
      *
      * @covers AuthController::loginLogs
-     * It should retrieve login logs for authenticated user.
+     * It should retrieve login logs for authenticated participant.
      */
-    it('retrieves login logs for authenticated user', function () {
-        $user = User::factory()->create(['registration_number' => 'logsuser']);
-        $token = $user->createToken('api')->plainTextToken;
+    it('retrieves login logs for authenticated participant', function () {
+        $participant = Participant::factory()->create(['registration_number' => 'logsparticipant']);
+        $token = $participant->createToken('api')->plainTextToken;
 
         LoginLog::factory()->create([
-            'registration_number' => $user->registration_number,
+            'registration_number' => $participant->registration_number,
         ]);
 
         $payload = [
-            'registration_number' => $user->registration_number,
+            'registration_number' => $participant->registration_number,
         ];
         $response = $this->withHeader('Authorization', 'Bearer '.$token)
             ->postJson('/api/v1/login-logs', $payload);

@@ -22,7 +22,7 @@ class PbacController extends Controller
     }
 
     /**
-     * Retrieve all PBAC records for the authenticated user.
+     * Retrieve all PBAC records for the authenticated participant.
      *
      * **Requires authentication via Bearer token in the Authorization header.**
      *
@@ -45,15 +45,15 @@ class PbacController extends Controller
      */
     public function index(Request $request)
     {
-        $user = $request->user();
-        if (! $user) {
+        $participant = $request->user();
+        if (! $participant) {
             return response()->json([
                 'success' => false,
                 'message' => 'Authentication required. Please provide a valid Bearer token.',
                 'data' => null,
             ], 401);
         }
-        $pbacs = $this->pbacService->getUserPbacs($user->registration_number);
+        $pbacs = $this->pbacService->getParticipantPbacs($participant->registration_number);
 
         return response()->json([
             'success' => true,
@@ -64,7 +64,7 @@ class PbacController extends Controller
     }
 
     /**
-     * Create or update a PBAC record for the authenticated user.
+     * Create or update a PBAC record for the authenticated participant.
      *
      * **Requires authentication via Bearer token in the Authorization header.**
      *
@@ -97,8 +97,8 @@ class PbacController extends Controller
      */
     public function store(StoreOrUpdatePbacRequest $request)
     {
-        $user = $request->user();
-        if (! $user) {
+        $participant = $request->user();
+        if (! $participant) {
             return response()->json([
                 'success' => false,
                 'message' => 'Authentication required. Please provide a valid Bearer token.',
@@ -106,7 +106,7 @@ class PbacController extends Controller
             ], 401);
         }
         $data = $request->validated();
-        $data['registration_number'] = $user->registration_number;
+        $data['registration_number'] = $participant->registration_number;
         try {
             [$pbac, $created] = $this->pbacService->upsertByRegistrationAndDate($data);
 
@@ -125,7 +125,7 @@ class PbacController extends Controller
     }
 
     /**
-     * Retrieve a single PBAC record by its ID for the authenticated user.
+     * Retrieve a single PBAC record by its ID for the authenticated participant.
      *
      * **Requires authentication via Bearer token in the Authorization header.**
      *
@@ -155,15 +155,15 @@ class PbacController extends Controller
      */
     public function show($id, Request $request)
     {
-        $user = $request->user();
-        if (! $user) {
+        $participant = $request->user();
+        if (! $participant) {
             return response()->json([
                 'success' => false,
                 'message' => 'Authentication required. Please provide a valid Bearer token.',
                 'data' => null,
             ], 401);
         }
-        $pbac = $this->pbacService->getUserPbacs($user->registration_number, $id);
+        $pbac = $this->pbacService->getParticipantPbacs($participant->registration_number, $id);
         if (! $pbac) {
             return response()->json([
                 'success' => false,
@@ -181,7 +181,7 @@ class PbacController extends Controller
     }
 
     /**
-     * Filter PBAC records for the authenticated user by day, month, and/or year.
+     * Filter PBAC records for the authenticated participant by day, month, and/or year.
      *
      * **Requires authentication via Bearer token in the Authorization header.**
      *
@@ -208,10 +208,9 @@ class PbacController extends Controller
      */
     public function filter(Request $request)
     {
-        $user = $request->user();
+        $participant = $request->user();
 
-        $user = $request->user();
-        if (! $user) {
+        if (! $participant) {
             return response()->json([
                 'success' => false,
                 'message' => 'Authentication required. Please provide a valid Bearer token.',
@@ -223,8 +222,8 @@ class PbacController extends Controller
             'month' => 'nullable|integer',
             'year' => 'nullable|integer',
         ]);
-        $pbacs = $this->pbacService->getUserPbacs(
-            $user->registration_number,
+        $pbacs = $this->pbacService->getParticipantPbacs(
+            $participant->registration_number,
             null,
             $validated['day'] ?? null,
             $validated['month'] ?? null,
@@ -267,36 +266,36 @@ class PbacController extends Controller
      *
      * @responseField success boolean Whether the request was successful
      * @responseField message string A human-readable message
-     * @responseField data object|null The participant user object or null
+     * @responseField data object|null The participant object or null
      *
      * @authenticated
      */
     public function check(Request $request)
     {
-        $user = $request->user();
-        if (! $user) {
+        $participant = $request->user();
+        if (! $participant) {
             return response()->json([
                 'message' => 'Authentication required. Please provide a valid Bearer token.',
-                'user' => null,
+                'participant' => null,
             ], 401);
         }
         try {
-            $foundUser = $this->pbacService->checkUser($user->registration_number);
-            if ($foundUser) {
+            $foundParticipant = $this->pbacService->checkParticipant($participant->registration_number);
+            if ($foundParticipant) {
                 return response()->json([
                     'message' => 'Participant found.',
-                    'user' => $foundUser,
+                    'participant' => $foundParticipant,
                 ]);
             } else {
                 return response()->json([
                     'message' => 'Participant not found.',
-                    'user' => null,
+                    'participant' => null,
                 ], 404);
             }
         } catch (\Exception $e) {
             return response()->json([
                 'message' => $e->getMessage(),
-                'user' => null,
+                'participant' => null,
             ], 500);
         }
     }

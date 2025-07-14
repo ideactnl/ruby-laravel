@@ -7,7 +7,7 @@ use Illuminate\Foundation\Http\FormRequest;
 class StoreOrUpdatePbacRequest extends FormRequest
 {
     /**
-     * Determine if the user is authorized to make this request.
+     * Determine if the participant is authorized to make this request.
      */
     public function authorize(): bool
     {
