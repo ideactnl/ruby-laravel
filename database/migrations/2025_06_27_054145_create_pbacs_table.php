@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('pbac', function (Blueprint $table) {
+        Schema::create('pbacs', function (Blueprint $table) {
             $table->id();
             $table->integer('participant_id')->nullable()->index();
             $table->date('reported_date')->index();
@@ -138,6 +138,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('pbac');
+        Schema::dropIfExists('pbacs');
     }
 };

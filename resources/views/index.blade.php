@@ -15,7 +15,7 @@
     <div class="container">
         <h1>Welcome to Your Ruby App</h1>
         <p>This is a dummy index page.</p>
-        <a href="/web-login" class="btn">Login</a>
+        <a href="/participant/web-login" class="btn">Login</a>
     </div>
 </body>
 </html>

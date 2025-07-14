@@ -1,35 +1,51 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-</head>
-<body class="bg-light">
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">Dashboard</div>
-                <div class="card-body">
-                    @if(Auth::check())
-                        <div class="text-center mt-4">
-                            <h5>Welcome, {{ Auth::user()->registration_number }}!</h5>
-                            <p>Enable Data Sharing: {{ Auth::user()->enable_data_sharing ? 'Yes' : 'No' }}</p>
-                            <p>Opt In for Research: {{ Auth::user()->opt_in_for_research ? 'Yes' : 'No' }}</p>
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <button type="submit" class="btn btn-secondary">Logout</button>
-                            </form>
-                        </div>
-                    @else
-                        <div class="alert alert-warning mt-4">You are not logged in. <a href="{{ route('login') }}">Go to Login</a></div>
-                    @endif
-                </div>
-            </div>
+<x-app>
+<div class="w-full max-w-lg mx-auto mt-10" x-data="dashboard()">
+    <div class="bg-white shadow-lg rounded-lg p-8">
+        <h2 class="text-2xl font-bold mb-6 text-center">Participant Dashboard</h2>
+        <template x-if="error">
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded mb-4" x-text="error"></div>
+        </template>
+        <div class="mb-6 text-center">
+            <h3 class="text-xl font-semibold mb-2">Welcome, {{ $participant->registration_number }}!</h3>
+            <p class="mb-1">Enable Data Sharing: <span class="font-medium">{{ $participant->enable_data_sharing ? 'Yes' : 'No' }}</span></p>
+            <p class="mb-4">Opt In for Research: <span class="font-medium">{{ $participant->opt_in_for_research ? 'Yes' : 'No' }}</span></p>
         </div>
+        <button @click="logout" class="w-full bg-gray-700 hover:bg-gray-800 text-white font-semibold py-2 px-4 rounded" x-bind:disabled="loading">
+            <span x-show="!loading">Logout</span>
+            <span x-show="loading">Logging out...</span>
+        </button>
     </div>
 </div>
-</body>
+<script>
+function dashboard() {
+    return {
+        loading: false,
+        error: '',
+        async logout() {
+            this.error = '';
+            this.loading = true;
+            try {
+                const res = await fetch('/api/v1/participant/web-logout', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]')?.content || ''
+                    },
+                    credentials: 'include',
+                });
+                if (!res.ok) {
+                    this.error = 'Logout failed.';
+                } else {
+                    window.location.href = '/web-login';
+                }
+            } catch (e) {
+                this.error = 'An unexpected error occurred.';
+            }
+            this.loading = false;
+        }
+    }
+}
+</script>
+</x-app>
+
 </html>

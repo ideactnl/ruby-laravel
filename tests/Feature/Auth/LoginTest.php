@@ -9,6 +9,38 @@ describe('Login API', function () {
     /**
      * @test
      *
+     * It should log in a participant using SPA (session/cookie) auth and access dashboard.
+     */
+    it('logs in a participant via web-login and can access dashboard (SPA session)', function () {
+        $participant = Participant::factory()->create([
+            'registration_number' => 'spauser',
+            'password' => bcrypt('webpassword'),
+        ]);
+
+        $this->get('/sanctum/csrf-cookie');
+
+        $response = $this->postJson('/api/v1/participant/web-login', [
+            'registration_number' => 'spauser',
+            'password' => 'webpassword',
+        ]);
+        $response->assertOk()
+            ->assertJson([
+                'success' => true,
+                'participant' => [
+                    'id' => $participant->id,
+                    'registration_number' => 'spauser',
+                ],
+            ]);
+
+        $dashboard = $this->withSession(['_token' => csrf_token()])
+            ->withCookie(session_name(), session()->getId())
+            ->get('/api/v1/participant/dashboard');
+        $dashboard->assertOk();
+    });
+    
+    /**
+     * @test
+     *
      * @covers AuthController::login
      * It should log in a participant with valid credentials.
      */

@@ -1,12 +1,20 @@
 <?php
 
-use App\Http\Controllers\Web\WebLoginController;
 use Illuminate\Support\Facades\Route;
 
 Route::get("/", function () {
     return view('index');
 });
-Route::get('/web-login', [WebLoginController::class, 'showLoginForm'])->name('login');
-Route::post('/web-login', [WebLoginController::class, 'login'])->name('web-login.submit');
-Route::post('/logout', [WebLoginController::class, 'logout'])->name('logout');
-Route::get('/dashboard', [WebLoginController::class, 'dashboard'])->middleware('auth')->name('dashboard');
+
+use App\Http\Controllers\Api\Participant\ParticipantWebController;
+
+Route::get('/participant/web-login', [ParticipantWebController::class, 'showLoginForm'])->name('participant.web-login');
+
+Route::get('/login', function () {
+    return redirect()->route('participant.web-login');
+})->name('login');
+
+
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::get('/participant/dashboard', [ParticipantWebController::class, 'dashboard'])->name('participant.dashboard');
+});

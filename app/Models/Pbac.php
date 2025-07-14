@@ -9,8 +9,6 @@ class Pbac extends Model
 {
     use HasFactory;
 
-    protected $table = 'pbac';
-
     public $timestamps = false;
 
     protected $fillable = [
