@@ -5,7 +5,7 @@
         <template x-if="error">
             <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded mb-4" x-text="error"></div>
         </template>
-        <form @submit.prevent="submit" action="/participant/web-login" method="POST">
+        <form @submit.prevent="submit" action="/api/v1/participant/login" method="POST">
             <div class="mb-4">
                 <label class="block text-gray-700">Registration Number</label>
                 <input type="text" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-200" x-model="registration_number" required autofocus>
@@ -34,7 +34,7 @@ function loginForm() {
             try {
                 await fetch('/sanctum/csrf-cookie', { credentials: 'include' });
                 const xsrfToken = decodeURIComponent(document.cookie.split('; ').find(row => row.startsWith('XSRF-TOKEN=')).split('=')[1]);
-                const res = await fetch('/participant/web-login', {
+                const res = await fetch('/api/v1/participant/login', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

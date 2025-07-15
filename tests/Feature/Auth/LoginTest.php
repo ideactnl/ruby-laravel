@@ -19,10 +19,18 @@ describe('Login API', function () {
 
         $this->get('/sanctum/csrf-cookie');
 
-        $response = $this->post('/participant/web-login', [
-            'registration_number' => 'spauser',
-            'password' => 'webpassword',
-        ]);
+        $headers = [
+            'X-Requested-With' => 'XMLHttpRequest',
+            'Origin' => config('app.url'),
+        ];
+
+        $session = ['_token' => csrf_token()];
+
+        $response = $this->withSession($session)
+            ->postJson('/api/v1/participant/login', [
+                'registration_number' => 'spauser',
+                'password' => 'webpassword',
+            ], $headers);
 
         $response->assertOk()
             ->assertJson([
@@ -33,9 +41,9 @@ describe('Login API', function () {
                 ],
             ]);
 
-        $dashboard = $this->withSession(['_token' => csrf_token()])
+        $dashboard = $this->withSession($session)
             ->withCookie(session_name(), session()->getId())
-            ->get('/participant/dashboard');
+            ->get('/api/v1/participant/dashboard');
         $dashboard->assertOk();
     });
 
