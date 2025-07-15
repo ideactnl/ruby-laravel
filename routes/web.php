@@ -8,13 +8,16 @@ Route::get("/", function () {
 
 use App\Http\Controllers\Api\Participant\ParticipantWebController;
 
-Route::get('/participant/web-login', [ParticipantWebController::class, 'showLoginForm'])->name('participant.web-login');
+Route::middleware(['web'])->group(function () {
+    Route::get('/login', fn() => redirect()->route('participant.web.login'))->name('login');
 
-Route::get('/login', function () {
-    return redirect()->route('participant.web-login');
-})->name('login');
+    Route::prefix('participant')->name('participant.')->group(function () {
+        Route::get('/web-login', [ParticipantWebController::class, 'showLoginForm'])->name('web.login');
+        Route::post('/web-login', [ParticipantWebController::class, 'login'])->name('web.login.post');
+        Route::post('/web-logout', [ParticipantWebController::class, 'logout'])->name('web.logout');
 
-
-Route::middleware(['auth:sanctum'])->group(function () {
-    Route::get('/participant/dashboard', [ParticipantWebController::class, 'dashboard'])->name('participant.dashboard');
+        Route::middleware(['auth:participant-web'])->group(function () {
+            Route::get('/dashboard', [ParticipantWebController::class, 'dashboard'])->name('dashboard');
+        });
+    });
 });

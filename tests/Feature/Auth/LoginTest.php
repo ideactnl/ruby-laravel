@@ -19,10 +19,11 @@ describe('Login API', function () {
 
         $this->get('/sanctum/csrf-cookie');
 
-        $response = $this->postJson('/api/v1/participant/web-login', [
+        $response = $this->post('/participant/web-login', [
             'registration_number' => 'spauser',
             'password' => 'webpassword',
         ]);
+
         $response->assertOk()
             ->assertJson([
                 'success' => true,
@@ -34,10 +35,10 @@ describe('Login API', function () {
 
         $dashboard = $this->withSession(['_token' => csrf_token()])
             ->withCookie(session_name(), session()->getId())
-            ->get('/api/v1/participant/dashboard');
+            ->get('/participant/dashboard');
         $dashboard->assertOk();
     });
-    
+
     /**
      * @test
      *
@@ -47,7 +48,7 @@ describe('Login API', function () {
     it('logs in a participant with valid credentials', function () {
         $participant = Participant::factory()->create([
             'registration_number' => 'testlogin',
-            'pin' => Hash::make('123456'), 
+            'pin' => Hash::make('123456'),
         ]);
 
         $payload = [

@@ -25,18 +25,19 @@ function dashboard() {
             this.error = '';
             this.loading = true;
             try {
-                const res = await fetch('/api/v1/participant/web-logout', {
+                const xsrfToken = decodeURIComponent(document.cookie.split('; ').find(row => row.startsWith('XSRF-TOKEN=')).split('=')[1]);
+                const res = await fetch('/participant/web-logout', {
                     method: 'POST',
                     headers: {
                         'Accept': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]')?.content || ''
+                        'X-XSRF-TOKEN': xsrfToken
                     },
                     credentials: 'include',
                 });
                 if (!res.ok) {
                     this.error = 'Logout failed.';
                 } else {
-                    window.location.href = '/web-login';
+                    window.location.href = '/participant/web-login';
                 }
             } catch (e) {
                 this.error = 'An unexpected error occurred.';

@@ -30,7 +30,7 @@ class ParticipantWebController extends Controller
             ]);
         }
 
-        auth()->login($participant);
+        auth('participant-web')->login($participant);
 
         return response()->json([
             'success' => true,
@@ -43,7 +43,7 @@ class ParticipantWebController extends Controller
 
     public function logout(Request $request)
     {
-        auth()->logout();
+        auth('participant-web')->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
@@ -52,7 +52,10 @@ class ParticipantWebController extends Controller
 
     public function dashboard(Request $request)
     {
-        $participant = $request->user();
+        $participant = auth('participant-web')->user();
+        if (! $participant) {
+            return redirect()->route('participant.web.login');
+        }
 
         return view('dashboard', compact('participant'));
     }
