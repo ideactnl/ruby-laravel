@@ -47,10 +47,10 @@ return [
     // - "static" will generate a static HTMl page in the /public/docs folder,
     // - "laravel" will generate the documentation as a Blade view, so you can add routing and authentication.
     // - "external_static" and "external_laravel" do the same as above, but pass the OpenAPI spec as a URL to an external UI template
-    'type' => 'external_static',
+    'type' => 'default',
 
     // See https://scribe.knuckles.wtf/laravel/reference/config#theme for supported options
-    'theme' => 'scalar',
+    'theme' => 'elements',
 
     'static' => [
         // HTML documentation, assets and Postman collection will be generated to this folder.
@@ -88,7 +88,7 @@ return [
         'base_url' => null,
 
         // [Laravel Sanctum] Fetch a CSRF token before each request, and add it as an X-XSRF-TOKEN header.
-        'use_csrf' => false,
+        'use_csrf' => true,
 
         // The URL to fetch the CSRF token from (if `use_csrf` is true).
         'csrf_url' => '/sanctum/csrf-cookie',

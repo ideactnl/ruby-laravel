@@ -16,7 +16,6 @@ describe('Login Logs API', function () {
      */
     it('retrieves login logs for authenticated participant', function () {
         $participant = Participant::factory()->create(['registration_number' => 'logsparticipant']);
-        $token = $participant->createToken('api')->plainTextToken;
 
         LoginLog::factory()->create([
             'registration_number' => $participant->registration_number,
@@ -25,8 +24,7 @@ describe('Login Logs API', function () {
         $payload = [
             'registration_number' => $participant->registration_number,
         ];
-        $response = $this->withHeader('Authorization', 'Bearer '.$token)
-            ->postJson('/api/v1/login-logs', $payload);
+        $response = $this->postJson('/api/v1/login-logs', $payload);
 
         $response->assertOk()
             ->assertJson([

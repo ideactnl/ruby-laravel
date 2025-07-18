@@ -12,6 +12,9 @@ Route::middleware(['web'])->group(function () {
 
     Route::get('/participant/web-login', [ParticipantWebApiController::class, 'showLoginForm'])->name('participant.web.login');
     Route::get('/participant/dashboard', function () {
-        return view('dashboard'); 
+        return view('participant.dashboard'); 
     })->name('participant.dashboard');
 });
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

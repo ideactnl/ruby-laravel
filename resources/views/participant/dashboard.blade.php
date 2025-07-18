@@ -1,4 +1,5 @@
-<x-app>
+@extends('layouts.participant.app')
+@section('content')
 <div class="w-full max-w-lg mx-auto mt-10" x-data="dashboard()" x-init="init()">
     <div class="bg-white shadow-lg rounded-lg p-8">
         <h2 class="text-2xl font-bold mb-6 text-center">Participant Dashboard</h2>
@@ -16,6 +17,9 @@
         </button>
     </div>
 </div>
+@endsection
+
+@push('scripts')
 <script>
 function dashboard() {
     return {
@@ -74,6 +78,5 @@ function dashboard() {
     }
 }
 </script>
-</x-app>
+@endpush
 
-</html>

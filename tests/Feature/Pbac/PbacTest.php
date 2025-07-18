@@ -3,6 +3,7 @@
 use App\Models\Pbac;
 use App\Models\Participant;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
 
 uses(RefreshDatabase::class);
 
@@ -28,10 +29,9 @@ describe('PBAC API', function () {
             'q3c' => 5,
             'reported_date' => '2025-07-01',
         ]);
-        $token = $participant->createToken('api')->plainTextToken;
+        Sanctum::actingAs($participant, ['*']);
 
-        $response = $this->withHeader('Authorization', 'Bearer '.$token)
-            ->getJson('/api/v1/pbac');
+        $response = $this->getJson('/api/v1/pbac');
 
         $response->assertOk()
             ->assertJson([
@@ -74,10 +74,9 @@ describe('PBAC API', function () {
             'q3c' => 6,
             'reported_date' => '2025-07-02',
         ]);
-        $token = $participant->createToken('api')->plainTextToken;
+        Sanctum::actingAs($participant, ['*']);
 
-        $response = $this->withHeader('Authorization', 'Bearer '.$token)
-            ->getJson('/api/v1/pbac/'.$pbac->id);
+        $response = $this->getJson('/api/v1/pbac/'.$pbac->id);
 
         $response->assertOk()
             ->assertJson([
@@ -120,10 +119,9 @@ describe('PBAC API', function () {
             'participant_id' => $participant->id,
             'reported_date' => '2025-07-01',
         ]);
-        $token = $participant->createToken('api')->plainTextToken;
+        Sanctum::actingAs($participant, ['*']);
 
-        $response = $this->withHeader('Authorization', 'Bearer '.$token)
-            ->getJson('/api/v1/pbac/filter?year=2025');
+        $response = $this->getJson('/api/v1/pbac/filter?year=2025');
 
         $response->assertOk()
             ->assertJson([
@@ -142,7 +140,7 @@ describe('PBAC API', function () {
      */
     it('creates a PBAC record for authenticated participant', function () {
         $participant = Participant::factory()->create();
-        $token = $participant->createToken('api')->plainTextToken;
+        Sanctum::actingAs($participant, ['*']);
         $payload = [
             'ReportedDate' => '2025-07-01',
             'BL' => 2,
@@ -158,8 +156,7 @@ describe('PBAC API', function () {
             'school' => 0,
             'QoL' => 8,
         ];
-        $response = $this->withHeader('Authorization', 'Bearer '.$token)
-            ->postJson('/api/v1/pbac', $payload);
+        $response = $this->postJson('/api/v1/pbac', $payload);
         $response->assertCreated()
             ->assertJson([
                 'success' => true,
@@ -205,9 +202,8 @@ describe('PBAC API', function () {
      */
     it('checks participant existence', function () {
         $participant = Participant::factory()->create();
-        $token = $participant->createToken('api')->plainTextToken;
-        $response = $this->withHeader('Authorization', 'Bearer '.$token)
-            ->getJson('/api/v1/pbac/check');
+        Sanctum::actingAs($participant, ['*']);
+        $response = $this->getJson('/api/v1/pbac/check');
         $response->assertOk();
     });
 

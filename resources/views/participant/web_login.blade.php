@@ -1,4 +1,5 @@
-<x-app>
+@extends('layouts.participant.app')
+@section('content')
 <div class="w-full max-w-md mx-auto mt-10" x-data="loginForm()">
     <div class="bg-white shadow-lg rounded-lg p-8">
         <h2 class="text-2xl font-bold mb-6 text-center">Participant Login</h2>
@@ -21,6 +22,9 @@
         </form>
     </div>
 </div>
+@endsection
+
+@push('scripts')
 <script>
 function loginForm() {
     return {
@@ -69,4 +73,4 @@ function loginForm() {
     }
 }
 </script>
-</x-app>
+@endpush

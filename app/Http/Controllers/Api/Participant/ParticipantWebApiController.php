@@ -140,6 +140,6 @@ class ParticipantWebApiController extends Controller
             return redirect('/participant/dashboard');
         }
 
-        return view('web_login');
+        return view('participant.web_login');
     }
 }

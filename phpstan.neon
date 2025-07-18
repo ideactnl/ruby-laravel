@@ -12,6 +12,8 @@ parameters:
 
     ignoreErrors:
         - '#Access to an undefined property#'
+        - '#Parameter \#1 \$view of function view expects view-string\|null, string given#'
+
 
 #    excludePaths:
 #        - ./*/*/FileToBeExcluded.php

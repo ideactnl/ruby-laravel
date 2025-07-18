@@ -2,6 +2,7 @@
 
 use App\Models\Participant;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
 
 uses(RefreshDatabase::class);
 
@@ -14,10 +15,9 @@ describe('Logout API', function () {
      */
     it('logs out an authenticated participant', function () {
         $participant = Participant::factory()->create(['registration_number' => 'logoutparticipant']);
-        $token = $participant->createToken('api')->plainTextToken;
+        Sanctum::actingAs($participant, ['*']);
 
-        $response = $this->withHeader('Authorization', 'Bearer '.$token)
-            ->postJson('/api/v1/logout');
+        $response = $this->postJson('/api/v1/logout');
 
         $response->assertOk()
             ->assertJson([

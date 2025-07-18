@@ -2,6 +2,7 @@
 
 use App\Models\Participant;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
 
 uses(RefreshDatabase::class);
 
@@ -14,15 +15,14 @@ describe('Profile Update API', function () {
      */
     it('updates profile for authenticated participant', function () {
         $participant = Participant::factory()->create(['registration_number' => 'profileparticipant']);
-        $token = $participant->createToken('api')->plainTextToken;
+        Sanctum::actingAs($participant, ['*']);
 
         $payload = [
             'opt_in_for_research' => false,
             'pin' => '654321',
         ];
 
-        $response = $this->withHeader('Authorization', 'Bearer '.$token)
-            ->patchJson('/api/v1/profile', $payload);
+        $response = $this->patchJson('/api/v1/profile', $payload);
 
         $response->assertOk()
             ->assertJson([
