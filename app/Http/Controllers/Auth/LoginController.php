@@ -21,11 +21,25 @@ class LoginController extends Controller
     use AuthenticatesUsers;
 
     /**
+     * Show the application's login form.
+     *
+     * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
+     */
+    public function showLoginForm()
+    {
+        if (auth()->check()) {
+            return redirect()->route('dashboard');
+        }
+
+        return view('auth.login');
+    }
+
+    /**
      * Where to redirect users after login.
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/dashboard';
 
     /**
      * The controller's middleware.

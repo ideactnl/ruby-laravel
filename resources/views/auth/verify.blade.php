@@ -4,20 +4,36 @@
 <div class="flex justify-center items-center min-h-screen bg-gray-100">
     <div class="w-full max-w-md p-8 bg-white rounded shadow-md">
         <h2 class="text-2xl font-bold mb-6 text-center">{{ __('Verify Your Email Address') }}</h2>
-                    @if (session('resent'))
-            <div class="mb-4 text-green-600 text-center">
-                            {{ __('A fresh verification link has been sent to your email address.') }}
-                        </div>
-                    @endif
+
+        {{-- Alert Messages --}}
+        @if (session('resent'))
+            <div class="mb-6">
+                <div x-data="{ show: true }" x-show="show" class="bg-green-100 text-green-800 px-4 py-3 rounded relative" @click.away="show = false">
+                    {{ __('A fresh verification link has been sent to your email address.') }}
+                    <button class="absolute top-1 right-2 text-lg" @click="show = false">&times;</button>
+                </div>
+            </div>
+        @endif
+
         <div class="mb-4 text-gray-700 text-center">
-                    {{ __('Before proceeding, please check your email for a verification link.') }}
-                    {{ __('If you did not receive the email') }},
+            {{ __('Before proceeding, please check your email for a verification link.') }}<br>
+            {{ __('If you did not receive the email') }},
         </div>
-        <form class="text-center" method="POST" action="{{ route('verification.resend') }}">
+
+        <form 
+            method="POST" 
+            action="{{ route('verification.resend') }}" 
+            class="text-center"
+            x-data="{ loading: false }"
+            @submit.prevent="
+                loading = true;
+                $el.submit();
+            "
+        >
             @csrf
-            <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+            <x-form.button>
                 {{ __('Click here to request another') }}
-            </button>
+            </x-form.button>
         </form>
     </div>
 </div>

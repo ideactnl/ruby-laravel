@@ -11,7 +11,7 @@
                         <a href="{{ route('register') }}" class="text-gray-700 hover:text-indigo-600">Register</a>
                     @endif
                 @else
-                    <a href="{{ url('/home') }}" class="text-gray-700 hover:text-indigo-600">Dashboard</a>
+                    <a href="{{ url('/dashboard') }}" class="text-gray-700 hover:text-indigo-600">Dashboard</a>
                     <form method="POST" action="{{ route('logout') }}" class="inline">
                         @csrf
                         <button type="submit" class="text-gray-700 hover:text-red-600 ml-2">Logout</button>

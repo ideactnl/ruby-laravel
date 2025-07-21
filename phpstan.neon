@@ -15,5 +15,7 @@ parameters:
         - '#Parameter \#1 \$view of function view expects view-string\|null, string given#'
 
 
+    reportUnmatchedIgnoredErrors: false
+
 #    excludePaths:
 #        - ./*/*/FileToBeExcluded.php

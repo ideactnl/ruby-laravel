@@ -4,41 +4,69 @@
 <div class="flex justify-center items-center min-h-screen bg-gray-100">
     <div class="w-full max-w-md p-8 bg-white rounded shadow-md">
         <h2 class="text-2xl font-bold mb-6 text-center">{{ __('Register') }}</h2>
-                    <form method="POST" action="{{ route('register') }}">
-                        @csrf
-            <div class="mb-4">
-                <label for="name" class="block text-gray-700">{{ __('Name') }}</label>
-                <input id="name" type="text" name="name" value="{{ old('name') }}" required autofocus autocomplete="name"
-                    class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 @error('name') border-red-500 @enderror">
-                                @error('name')
-                    <span class="text-red-500 text-sm">{{ $message }}</span>
-                                @enderror
-                            </div>
-            <div class="mb-4">
-                <label for="email" class="block text-gray-700">{{ __('Email Address') }}</label>
-                <input id="email" type="email" name="email" value="{{ old('email') }}" required autocomplete="email"
-                    class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 @error('email') border-red-500 @enderror">
-                                @error('email')
-                    <span class="text-red-500 text-sm">{{ $message }}</span>
-                                @enderror
-                            </div>
-            <div class="mb-4">
-                <label for="password" class="block text-gray-700">{{ __('Password') }}</label>
-                <input id="password" type="password" name="password" required autocomplete="new-password"
-                    class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 @error('password') border-red-500 @enderror">
-                                @error('password')
-                    <span class="text-red-500 text-sm">{{ $message }}</span>
-                                @enderror
-                            </div>
-            <div class="mb-4">
-                <label for="password-confirm" class="block text-gray-700">{{ __('Confirm Password') }}</label>
-                <input id="password-confirm" type="password" name="password_confirmation" required autocomplete="new-password"
-                    class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-                        </div>
-            <div class="flex items-center justify-between">
-                <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400">
-                                    {{ __('Register') }}
-                                </button>
+
+        <form
+            method="POST"
+            action="{{ route('register') }}"
+            x-data="{ loading: false }"
+            @submit.prevent="
+                if ($el.checkValidity()) {
+                    loading = true;
+                    $el.submit();
+                } else {
+                    $el.reportValidity();
+                }
+            "
+        >
+            @csrf
+
+            <x-form.group name="name">
+                <x-form.label name="name" required>{{ __('Name') }}</x-form.label>
+                <x-form.input 
+                    name="name" 
+                    type="text" 
+                    value="{{ old('name') }}" 
+                    required 
+                    autofocus 
+                    autocomplete="name"
+                />
+            </x-form.group>
+
+            <x-form.group name="email">
+                <x-form.label name="email" required>{{ __('Email Address') }}</x-form.label>
+                <x-form.input 
+                    name="email" 
+                    type="email" 
+                    value="{{ old('email') }}" 
+                    required 
+                    autocomplete="email"
+                />
+            </x-form.group>
+
+            <x-form.group name="password">
+                <x-form.label name="password" required>{{ __('Password') }}</x-form.label>
+                <x-form.input 
+                    name="password" 
+                    type="password" 
+                    required 
+                    autocomplete="new-password"
+                />
+            </x-form.group>
+
+            <x-form.group name="password_confirmation">
+                <x-form.label name="password_confirmation" required>{{ __('Confirm Password') }}</x-form.label>
+                <x-form.input 
+                    name="password_confirmation" 
+                    type="password" 
+                    required 
+                    autocomplete="new-password"
+                />
+            </x-form.group>
+
+            <div class="flex items-center justify-between mt-6">
+                <x-form.button>
+                    {{ __('Register') }}
+                </x-form.button>
                 <a class="text-sm text-indigo-600 hover:underline ml-4" href="{{ route('login') }}">
                     {{ __('Already have an account?') }}
                 </a>
