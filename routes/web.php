@@ -31,14 +31,15 @@ Route::middleware(['web'])->group(function () {
 */
 Route::get('/admin', fn() => redirect()->to('/login'));
 Auth::routes(['register' => false]);
-Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
-
+Route::middleware(['auth'])->group(function () {
+    Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
+});
 
 /*
 |--------------------------------------------------------------------------
 | Superadmin Routes (Spatie Role Middleware)
 |--------------------------------------------------------------------------
 */
-Route::middleware(['auth', 'role:Superadmin'])->group(function () {
+Route::middleware(['auth', 'role:superadmin'])->group(function () {
     Route::resource('users', UserController::class);
 });

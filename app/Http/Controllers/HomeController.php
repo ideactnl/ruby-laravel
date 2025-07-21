@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
+
 class HomeController extends Controller
 {
     /**
@@ -20,6 +22,12 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('dashboard');
+        $user = Auth::user();
+        $role = $user->getRoleNames()->first();
+
+        return view('dashboard', [
+            'user' => $user,
+            'role' => $role,
+        ]);
     }
 }

@@ -7,9 +7,9 @@
             <div class="flex items-center space-x-4">
                 @guest
                     <a href="{{ route('login') }}" class="text-gray-700 hover:text-indigo-600">Login</a>
-                    @if (Route::has('register'))
+                    {{-- @if (Route::has('register'))
                         <a href="{{ route('register') }}" class="text-gray-700 hover:text-indigo-600">Register</a>
-                    @endif
+                    @endif --}}
                 @else
                     <a href="{{ url('/dashboard') }}" class="text-gray-700 hover:text-indigo-600">Dashboard</a>
                     <form method="POST" action="{{ route('logout') }}" class="inline">

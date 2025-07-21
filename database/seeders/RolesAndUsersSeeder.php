@@ -13,9 +13,9 @@ class RolesAndUsersSeeder extends Seeder
      */
     public function run(): void
     {
-        $superadmin = Role::firstOrCreate(['name' => 'Superadmin']);
-        $admin = Role::firstOrCreate(['name' => 'Admin']);
-        $researcher = Role::firstOrCreate(['name' => 'Researcher']);
+        $superadmin = Role::firstOrCreate(['name' => 'superadmin']);
+        $admin = Role::firstOrCreate(['name' => 'admin']);
+        $researcher = Role::firstOrCreate(['name' => 'researcher']);
 
         $user1 = User::create([
             'name' => 'Super Admin',
