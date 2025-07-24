@@ -12,6 +12,16 @@
                     @endif --}}
                 @else
                     <a href="{{ url('/dashboard') }}" class="text-gray-700 hover:text-indigo-600">Dashboard</a>
+                    
+                    @role('researcher')
+                    <a href="{{ url('pbac/export') }}" class="text-gray-700 hover:text-indigo-600">Export</a>
+                    @endrole
+                    
+                    @role('superadmin')
+                    <a href="{{ url('/logs') }}" class="text-gray-700 hover:text-indigo-600">Logs</a>
+                    <a href="{{ url('/users') }}" class="text-gray-700 hover:text-indigo-600">Users</a>
+                    @endrole
+                    
                     <form method="POST" action="{{ route('logout') }}" class="inline">
                         @csrf
                         <button type="submit" class="text-gray-700 hover:text-red-600 ml-2">Logout</button>

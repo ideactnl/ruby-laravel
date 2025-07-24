@@ -102,6 +102,20 @@ class Pbac extends Model
         'q19i',
     ];
 
+    protected $appends = [
+        'pbac_score_per_day',
+        'spotting_yes_no',
+        'pain_score_per_day',
+        'influence_factor',
+        'pain_medication',
+        'quality_of_life',
+        'energy_level',
+        'complaints_with_defecation',
+        'complaints_with_urinating',
+        'quality_of_sleep',
+        'exercise',
+    ];
+
     /**
      * Map legacy input fields to model attributes.
      *

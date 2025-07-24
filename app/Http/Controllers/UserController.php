@@ -10,14 +10,16 @@ class UserController extends Controller
 {
     public function index()
     {
-        $users = User::with('roles')->get();
+        $users = User::with('roles')->whereDoesntHave('roles', function ($query) {
+            $query->where('name', 'Superadmin');
+        })->get();
 
         return view('users.index', compact('users'));
     }
 
     public function create()
     {
-        $roles = Role::pluck('name', 'name');
+        $roles = Role::whereNotIn('name', ['Superadmin'])->pluck('name', 'name');
 
         return view('users.create', compact('roles'));
     }
@@ -44,7 +46,7 @@ class UserController extends Controller
 
     public function edit(User $user)
     {
-        $roles = Role::pluck('name', 'name');
+        $roles = Role::whereNotIn('name', ['Superadmin'])->pluck('name', 'name');
 
         return view('users.edit', compact('user', 'roles'));
     }

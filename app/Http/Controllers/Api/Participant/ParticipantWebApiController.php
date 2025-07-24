@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Api\Participant;
 
+use App\Helpers\CommonHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Participant;
+use App\Models\Pbac;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -99,6 +101,8 @@ class ParticipantWebApiController extends Controller
      *
      * **Requires authentication via session cookie.**
      *
+     * @authenticated
+     *
      * @response 200 {
      *   "participant": {
      *     "id": 1,
@@ -129,17 +133,100 @@ class ParticipantWebApiController extends Controller
     }
 
     /**
-     * Show the participant login form (Blade view).
+     * Get PBAC table data (paginated and filterable)
      *
-     * If already authenticated, redirects to dashboard.
-     * Route: GET /participant/web-login (web.php)
+     * Returns a paginated list of PBAC records for the authenticated participant, with optional date filtering.
+     *
+     * **Requires authentication via session cookie.**
+     *
+     * @authenticated
+     *
+     * @queryParam from_date date optional Filter records from this date (format: Y-m-d). Example: 2025-07-01
+     * @queryParam to_date date optional Filter records up to this date (format: Y-m-d). Example: 2025-07-31
+     *
+     * @response 200 {
+     *   "data": [
+     *     {
+     *       "id": 1,
+     *       "reported_date": "2025-07-01",
+     *       "pbac_score_per_day": 14,
+     *       "pain_score_per_day": 7,
+     *       "quality_of_life": 1,
+     *       "energy_level": 3,
+     *       "spotting_yes_no": yes,
+     *       "influence_factor": 5,
+     *       "pain_medication": 0,
+     *       "complaints_with_defecation": 1 ,
+     *       "complaints_with_urinating": 1,
+     *       "quality_of_sleep": 4,
+     *       "exercise": 0
+     *     }
+     *   ],
+     *   "links": { ... },
+     *   "meta": { ... }
+     * }
      */
-    public function showLoginForm()
+    public function showPbacTableData(Request $request)
     {
-        if (Auth::guard('participant-web')->check()) {
-            return redirect('/participant/dashboard');
+        $participant = auth('participant-web')->user();
+        if (! $participant) {
+            return response()->json(['error' => 'Unauthenticated'], 401);
         }
 
-        return view('participant.web_login');
+        $query = Pbac::where('participant_id', $participant->id)
+            ->orderByDesc('reported_date');
+
+        $query = CommonHelper::applyDateFilters($query, $request);
+
+        return response()->json($query->paginate(10));
+    }
+
+    /**
+     * Get PBAC chart data (date-filtered)
+     *
+     * Returns PBAC data for use in charts for the authenticated participant, with optional date filtering.
+     *
+     * **Requires authentication via session cookie.**
+     *
+     * @authenticated
+     *
+     * @queryParam from_date date optional Filter records from this date (format: Y-m-d). Example: 2025-07-01
+     * @queryParam to_date date optional Filter records up to this date (format: Y-m-d). Example: 2025-07-31
+     *
+     * @response 200 {
+     *   "data": [
+     *     {
+     *       "id": 1,
+     *       "reported_date": "2025-07-01",
+     *       "pbac_score_per_day": 14,
+     *       "pain_score_per_day": 7,
+     *       "quality_of_life": 1,
+     *       "energy_level": 3,
+     *       "spotting_yes_no": yes,
+     *       "influence_factor": 5,
+     *       "pain_medication": 0,
+     *       "complaints_with_defecation": 1 ,
+     *       "complaints_with_urinating": 1,
+     *       "quality_of_sleep": 4,
+     *       "exercise": 0
+     *     }
+     *   ]
+     * }
+     */
+    public function showPbacChartData(Request $request)
+    {
+        $participant = auth('participant-web')->user();
+        if (! $participant) {
+            return response()->json(['error' => 'Unauthenticated'], 401);
+        }
+
+        $query = Pbac::where('participant_id', $participant->id)
+            ->orderBy('reported_date');
+
+        $query = CommonHelper::applyDateFilters($query, $request);
+
+        return response()->json([
+            'data' => $query->get(),
+        ]);
     }
 }
