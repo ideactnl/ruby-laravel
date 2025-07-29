@@ -18,8 +18,9 @@ return new class extends Migration
             $table->string('password', 255)->nullable();
             $table->tinyInteger('enable_data_sharing')->default(0);
             $table->tinyInteger('opt_in_for_research')->default(0);
-            $table->timestamp('created_at')->nullable();
-            $table->timestamp('updated_at')->nullable();
+            $table->tinyInteger('allow_medical_specialist_login')->default(0);
+            $table->string('medical_specialist_temporary_pin')->nullable();
+            $table->timestamps();
         });
     }
 
@@ -28,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('participants');
     }
 };

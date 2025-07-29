@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->integer('participant_id')->nullable()->index();
             $table->date('reported_date')->index();
-            $table->timestamp('created_date')->useCurrent();
 
             // Q3 questions
             $table->integer('q3a')->nullable();
@@ -130,6 +129,8 @@ return new class extends Migration
             $table->integer('q19g')->nullable();
             $table->integer('q19h')->nullable();
             $table->integer('q19i')->nullable();
+
+            $table->timestamps();
         });
     }
 

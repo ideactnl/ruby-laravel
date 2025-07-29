@@ -16,7 +16,6 @@ class PbacResource extends JsonResource
     {
         return [
             'ReportedDate' => $this->reported_date,
-            'CreatedDate' => $this->created_date,
             'BL' => $this->q3a,
             'Spot' => $this->q3b,
             'Mens' => $this->q3c,
@@ -113,6 +112,8 @@ class PbacResource extends JsonResource
             'complaintsWithUrinating' => $this->complaints_with_urinating,
             'qualityOfSleep' => $this->quality_of_sleep,
             'exercise' => $this->exercise,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
         ];
     }
 }

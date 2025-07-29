@@ -23,7 +23,6 @@ class StoreOrUpdatePbacRequest extends FormRequest
     {
         return [
             'ReportedDate' => 'required|date',
-            'CreatedDate' => 'nullable|date',
             'BL' => 'nullable|integer',
             'Spot' => 'nullable|integer',
             'Mens' => 'nullable|integer',
@@ -122,12 +121,6 @@ class StoreOrUpdatePbacRequest extends FormRequest
                 'description' => 'The date the PBAC is reported for.',
                 'example' => '2024-07-02',
                 'required' => true,
-                'type' => 'date',
-            ],
-            'CreatedDate' => [
-                'description' => 'The date the PBAC record was created (optional, defaults to today if omitted).',
-                'example' => '2025-07-04',
-                'required' => false,
                 'type' => 'date',
             ],
             'BL' => ['description' => 'Blood loss', 'example' => 0, 'required' => false, 'type' => 'integer'],

@@ -9,12 +9,9 @@ class Pbac extends Model
 {
     use HasFactory;
 
-    public $timestamps = false;
-
     protected $fillable = [
         'reported_date',
         'participant_id',
-        'created_date',
         'q3a',
         'q3b',
         'q3c',
@@ -125,7 +122,6 @@ class Pbac extends Model
     {
         $fields = [
             'reported_date' => 'ReportedDate',
-            'created_date' => 'CreatedDate',
             'q3b' => 'Spot',
             'q3c' => 'Mens',
             'q3d' => 'FirstDay',
@@ -215,10 +211,6 @@ class Pbac extends Model
         $result = [];
         foreach ($fields as $code => $legacy) {
             $result[$code] = isset($input[$legacy]) && $input[$legacy] !== '' ? $input[$legacy] : null;
-        }
-
-        if (empty($result['created_date'])) {
-            $result['created_date'] = date('Y-m-d');
         }
 
         $result['q3a'] = (
