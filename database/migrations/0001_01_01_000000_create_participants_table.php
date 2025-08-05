@@ -20,6 +20,7 @@ return new class extends Migration
             $table->tinyInteger('opt_in_for_research')->default(0);
             $table->tinyInteger('allow_medical_specialist_login')->default(0);
             $table->string('medical_specialist_temporary_pin')->nullable();
+            $table->timestamp('medical_specialist_temporary_pin_expires_at')->nullable();
             $table->timestamps();
         });
     }

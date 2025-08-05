@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\MedicalSpecialist\MedicalSpecialistController;
 use App\Http\Controllers\Api\Participant\ParticipantWebApiController;
 use App\Http\Controllers\PbacExportController;
 use App\Http\Controllers\UserController;
@@ -24,20 +25,29 @@ Route::middleware(['web'])->prefix('participant')->group(function () {
         return view('participant.web_login');
     })->name('participant.web.login');
 
-    // Route::get('/dashboard', function () {
-    //     return view('participant.dashboard');
-    // })->name('participant.dashboard');
-
-    // Route::get('/pbac', function () {
-    //     return view('participant.my-data');
-    // })->name('participant.pbac');
     Route::middleware('auth.participant')->group(function () {
         Route::get('/dashboard', fn() => view('participant.dashboard'))->name('participant.dashboard');
         Route::get('/pbac', fn() => view('participant.my-data'))->name('participant.pbac');
+        Route::get('/pbac/export', [ParticipantWebApiController::class, 'export'])->name('participant.pbac.export');
     });
 
 });
 
+/*
+|--------------------------------------------------------------------------
+| Medical Specialist Routes
+|--------------------------------------------------------------------------
+*/
+Route::prefix('medical-specialist')->name('medical-specialist.')->group(function () {
+    Route::get('/login', [MedicalSpecialistController::class, 'showLoginForm'])
+        ->name('login');
+    Route::post('/login', [MedicalSpecialistController::class, 'login'])
+        ->name('login.submit');
+    Route::get('/dashboard', [MedicalSpecialistController::class, 'dashboard'])
+        ->name('dashboard');
+    Route::post('/logout', [MedicalSpecialistController::class, 'logout'])
+        ->name('logout');
+});
 
 /*
 |--------------------------------------------------------------------------

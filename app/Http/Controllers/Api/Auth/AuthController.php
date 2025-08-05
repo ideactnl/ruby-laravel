@@ -5,15 +5,16 @@ namespace App\Http\Controllers\Api\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Auth\LoginLogsRequest;
 use App\Http\Requests\Api\Auth\LoginRequest;
+use App\Http\Requests\Api\Auth\MedicalSpecialistAccessRequest;
 use App\Http\Requests\Api\Auth\RegisterRequest;
 use App\Http\Requests\Api\Auth\UpdateProfileRequest;
 use App\Http\Resources\ParticipantResource;
 use App\Models\LoginLog;
 use App\Models\Participant;
 use App\Services\LoginLogService;
-use Hash;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 /**
  * @group Auth
@@ -272,6 +273,79 @@ class AuthController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Logged out successfully',
+            'data' => null,
+        ]);
+    }
+
+    /**
+     * Enable or disable medical specialist access and set PIN.
+     *
+     * Allows a participant to enable specialist access by setting a numeric PIN (4-6 digits, valid for 7 days),
+     * or disable access and remove the PIN.
+     *
+     * **Requires authentication via Bearer token in the Authorization header.**
+     *
+     *
+     * @bodyParam action string required Either 'enable' or 'disable'. Example: "enable"
+     * @bodyParam pin string required when action is 'enable'. Numeric PIN (4-6 digits). Example: "1234"
+     *
+     * @response 200 {
+     *   "success": true,
+     *   "message": "Medical specialist access enabled. PIN set successfully (Valid until: Aug 8, 2025 05:36)",
+     *   "data": {
+     *     "expires_at": "2025-08-08 05:36:00",
+     *     "expires_at_formatted": "Aug 8, 2025 05:36"
+     *   }
+     * }
+     * @response 200 {
+     *   "success": true,
+     *   "message": "Medical specialist access disabled",
+     *   "data": null
+     * }
+     * @response 422 {
+     *   "message": "The given data was invalid.",
+     *   "errors": {
+     *     "pin": [
+     *       "The pin must contain only numbers.",
+     *       "The pin must be between 4 and 6 digits."
+     *     ]
+     *   }
+     * }
+     *
+     * @authenticated
+     */
+    public function enableMedicalSpecialistAccess(MedicalSpecialistAccessRequest $request): JsonResponse
+    {
+        $participant = $request->user();
+
+        if ($request->action === 'enable') {
+            $expiryTime = $request->getExpiryTime();
+
+            $participant->update([
+                'allow_medical_specialist_login' => true,
+                'medical_specialist_temporary_pin' => bcrypt($request->pin),
+                'medical_specialist_temporary_pin_expires_at' => $expiryTime,
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => $request->getMessage(),
+                'data' => [
+                    'expires_at' => $expiryTime->toDateTimeString(),
+                    'expires_at_formatted' => $expiryTime->format('M j, Y H:i'),
+                ],
+            ]);
+        }
+
+        $participant->update([
+            'allow_medical_specialist_login' => false,
+            'medical_specialist_temporary_pin' => null,
+            'medical_specialist_temporary_pin_expires_at' => null,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => $request->getMessage(),
             'data' => null,
         ]);
     }

@@ -15,6 +15,8 @@ Route::prefix('v1')->group(function () {
     Route::middleware('auth:sanctum')->group(function () {
         Route::patch('/profile', [AuthController::class, 'updateProfile']);
         Route::post('/logout', [AuthController::class, 'logout']);
+        
+        Route::post('/medical-specialist/access', [AuthController::class, 'enableMedicalSpecialistAccess']);            
         Route::get('/pbac/filter', [PbacController::class, 'filter']);
         Route::get('/pbac/check', [PbacController::class, 'check']);
         Route::apiResource('pbac', PbacController::class)->except(['destroy', 'update']);

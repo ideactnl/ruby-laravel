@@ -22,6 +22,9 @@ class Participant extends Authenticatable
         'pin',
         'enable_data_sharing',
         'opt_in_for_research',
+        'allow_medical_specialist_login',
+        'medical_specialist_temporary_pin',
+        'medical_specialist_temporary_pin_expires_at',
         'created_at',
         'updated_at',
     ];
@@ -34,5 +37,12 @@ class Participant extends Authenticatable
     protected $hidden = [
         'password',
         'pin',
+        'medical_specialist_temporary_pin',
+    ];
+
+    protected $casts = [
+        'medical_specialist_temporary_pin_expires_at' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 }
