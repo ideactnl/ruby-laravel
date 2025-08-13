@@ -8,8 +8,6 @@
                 @auth('participant-web')
                 <a href="{{ route('participant.dashboard') }}" class="text-gray-700 hover:text-indigo-600">Dashboard</a>
                 <a href="{{ route('participant.pbac') }}" class="text-gray-700 hover:text-indigo-600">My Data</a>
-                @else
-                <a href="{{ route('participant.web.login') }}" class="text-gray-700 hover:text-indigo-600">Login</a>
                 @endauth
             </div>
         </div>

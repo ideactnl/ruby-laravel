@@ -1,10 +1,8 @@
 <?php
 
 use App\Http\Controllers\Api\MedicalSpecialist\MedicalSpecialistController;
-use App\Http\Controllers\Api\Participant\ParticipantWebApiController;
 use App\Http\Controllers\PbacExportController;
 use App\Http\Controllers\UserController;
-use App\Http\Middleware\RedirectIfParticipantUnauthenticated;
 use Illuminate\Support\Facades\Route;
 
 Route::get("/", function () {
@@ -28,7 +26,6 @@ Route::middleware(['web'])->prefix('participant')->group(function () {
     Route::middleware('auth.participant')->group(function () {
         Route::get('/dashboard', fn() => view('participant.dashboard'))->name('participant.dashboard');
         Route::get('/pbac', fn() => view('participant.my-data'))->name('participant.pbac');
-        Route::get('/pbac/export', [ParticipantWebApiController::class, 'export'])->name('participant.pbac.export');
     });
 
 });
@@ -39,14 +36,12 @@ Route::middleware(['web'])->prefix('participant')->group(function () {
 |--------------------------------------------------------------------------
 */
 Route::prefix('medical-specialist')->name('medical-specialist.')->group(function () {
-    Route::get('/login', [MedicalSpecialistController::class, 'showLoginForm'])
-        ->name('login');
-    Route::post('/login', [MedicalSpecialistController::class, 'login'])
-        ->name('login.submit');
-    Route::get('/dashboard', [MedicalSpecialistController::class, 'dashboard'])
-        ->name('dashboard');
-    Route::post('/logout', [MedicalSpecialistController::class, 'logout'])
-        ->name('logout');
+    Route::get('/login', [MedicalSpecialistController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [MedicalSpecialistController::class, 'login'])->name('login.submit');
+    Route::get('/dashboard', [MedicalSpecialistController::class, 'dashboard'])->name('dashboard');
+    Route::get('/export', [MedicalSpecialistController::class, 'exportPbacData'])->name('export');
+    Route::post('/export-pdf', [MedicalSpecialistController::class, 'exportPbacPdf'])->name('export.pdf');
+    Route::post('/logout', [MedicalSpecialistController::class, 'logout'])->name('logout');
 });
 
 /*

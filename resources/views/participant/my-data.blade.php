@@ -1,83 +1,53 @@
 @extends('layouts.participant.app')
 
 @section('content')
-<div class="max-w-6xl mx-auto py-8" x-data="pbacTable()" x-init="fetchAll()">
+<div class="max-w-6xl mx-auto py-8" x-data="pbacChartData()" x-init="fetchChart()">
     <h1 class="text-2xl font-bold mb-6">PBAC Records</h1>
 
-    <!-- Filters -->
-    <div class="mb-8 bg-gray-50 p-4 rounded-lg shadow-sm flex flex-wrap gap-4 items-end">
-        <div class="flex flex-col w-full sm:w-auto">
-            <label class="text-sm font-medium text-gray-700 mb-1">From</label>
-            <input
-                type="date"
-                x-model="filters.from"
-                class="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            />
+    <!-- Filter + Export Section -->
+    <div class="my-8 bg-white p-6 rounded-lg shadow-sm" x-data>
+        <h2 class="text-xl font-bold mb-4">Filter & Export</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+            <div>
+                <label for="preset" class="block text-sm font-medium text-gray-700">Date Range</label>
+                <select id="preset" x-model="preset" @change="fetchChart" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-2">
+                    <option value="week">This Week</option>
+                    <option value="month">This Month</option>
+                    <option value="year">This Year</option>
+                    <option value="custom">Custom Range</option>
+                </select>
+            </div>
+
+            <div x-show="preset === 'custom'" x-transition>
+                <label for="start_date" class="block text-sm font-medium text-gray-700">Start Date</label>
+                <input type="date" id="start_date" x-model="customStart" @change="fetchChart" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-2">
+            </div>
+
+            <div x-show="preset === 'custom'" x-transition>
+                <label for="end_date" class="block text-sm font-medium text-gray-700">End Date</label>
+                <input type="date" id="end_date" x-model="customEnd" @change="fetchChart" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-2">
+            </div>
         </div>
 
-        <div class="flex flex-col w-full sm:w-auto">
-            <label class="text-sm font-medium text-gray-700 mb-1">To</label>
-            <input
-                type="date"
-                x-model="filters.to"
-                class="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            />
-        </div>
+        <!-- Export buttons -->
+        <div class="mt-6 flex flex-wrap gap-4">
+            <form method="GET" action="{{ route('participant.pbac.export') }}" @submit="setExportRange">
+                <input type="hidden" name="preset" x-model="preset">
+                <input type="hidden" name="start_date" :value="customStart">
+                <input type="hidden" name="end_date" :value="customEnd">
+                <input type="hidden" name="format" value="xlsx">
+                <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-5 rounded-lg shadow">
+                    Export to Excel
+                </button>
+            </form>
 
-        <div class="w-full sm:w-auto">
-            <button
-                @click="fetchAll()"
-                class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-2.5 rounded-lg shadow transition duration-200 w-full sm:w-auto"
-            >
-                Apply Filters
+            <!-- Chart PDF Export -->
+            <button @click="exportChartAsPdf" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-5 rounded-lg shadow">
+                Export Chart to PDF
             </button>
         </div>
     </div>
-
-    <!-- Table -->
-    <template x-if="loadingTable">
-        <p class="text-gray-500">Loading table...</p>
-    </template>
-    <template x-if="!loadingTable && tableData.length">
-        <div class="overflow-x-auto bg-white rounded shadow">
-            <table class="min-w-full divide-y divide-gray-200 text-sm">
-                <thead class="bg-gray-50">
-                    <tr class="text-left">
-                        <th class="px-4 py-2">Date</th>
-                        <th class="px-4 py-2">PBAC</th>
-                        <th class="px-4 py-2">Pain</th>
-                        <th class="px-4 py-2">QoL</th>
-                        <th class="px-4 py-2">Energy</th>
-                        <th class="px-4 py-2">Spotting</th>
-                        <th class="px-4 py-2">Influence</th>
-                        <th class="px-4 py-2">Medication</th>
-                        <th class="px-4 py-2">Defecation</th>
-                        <th class="px-4 py-2">Urinating</th>
-                        <th class="px-4 py-2">Sleep</th>
-                        <th class="px-4 py-2">Exercise</th>
-                    </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-100">
-                    <template x-for="record in tableData" :key="record.id">
-                        <tr>
-                            <td class="px-4 py-2" x-text="record.reported_date"></td>
-                            <td class="px-4 py-2" x-text="record.pbac_score_per_day"></td>
-                            <td class="px-4 py-2" x-text="record.pain_score_per_day"></td>
-                            <td class="px-4 py-2" x-text="record.quality_of_life"></td>
-                            <td class="px-4 py-2" x-text="record.energy_level"></td>
-                            <td class="px-4 py-2" x-text="record.spotting_yes_no ? 'Yes' : 'No'"></td>
-                            <td class="px-4 py-2" x-text="record.influence_factor"></td>
-                            <td class="px-4 py-2" x-text="record.pain_medication"></td>
-                            <td class="px-4 py-2" x-text="record.complaints_with_defecation"></td>
-                            <td class="px-4 py-2" x-text="record.complaints_with_urinating"></td>
-                            <td class="px-4 py-2" x-text="record.quality_of_sleep"></td>
-                            <td class="px-4 py-2" x-text="record.exercise"></td>
-                        </tr>
-                    </template>
-                </tbody>
-            </table>
-        </div>
-    </template>
 
     <!-- Chart -->
     <div class="mt-10 bg-white p-6 rounded shadow">
@@ -87,38 +57,28 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 <script>
-function pbacTable() {
+function pbacChartData() {
     return {
-        filters: { from: '', to: '' },
-        tableData: [],
         chartData: [],
-        loadingTable: true,
-        loadingChart: true,
         chart: null,
-
-        fetchAll() {
-            this.fetchTable();
-            this.fetchChart();
-        },
-
-        fetchTable() {
-            this.loadingTable = true;
-            const params = new URLSearchParams(this.filters).toString();
-            fetch(`{{ route('participant.pbac.table') }}?${params}`)
-                .then(res => res.json())
-                .then(data => {
-                    this.tableData = data.data ?? [];
-                    this.loadingTable = false;
-                })
-                .catch(() => this.loadingTable = false);
-        },
+        loadingChart: true,
+        preset: 'month',
+        customStart: '',
+        customEnd: '',
 
         fetchChart() {
             this.loadingChart = true;
-            const params = new URLSearchParams(this.filters).toString();
-            fetch(`{{ route('participant.pbac.chart') }}?${params}`)
+
+            let url = new URL(`{{ route('participant.pbac.chart') }}`);
+            url.searchParams.append('preset', this.preset);
+
+            if (this.preset === 'custom') {
+                if (this.customStart) url.searchParams.append('start_date', this.customStart);
+                if (this.customEnd) url.searchParams.append('end_date', this.customEnd);
+            }
+
+            fetch(url)
                 .then(res => res.json())
                 .then(data => {
                     this.chartData = data.data ?? [];
@@ -130,28 +90,10 @@ function pbacTable() {
 
         updateChart() {
             const labels = this.chartData.map(r => r.reported_date);
-            const dotted = [4, 4]; // dashed line style
-
-            const datasetStyle = (label, data, borderColor, backgroundColor) => ({
-                label,
-                data,
-                borderColor,
-                backgroundColor,
-                tension: 0.4,
-                borderDash: dotted,
-                pointRadius: 4
+            const dotted = [4, 4];
+            const style = (label, data, borderColor, backgroundColor) => ({
+                label, data, borderColor, backgroundColor, tension: 0.4, borderDash: dotted, pointRadius: 4
             });
-
-            const pbac = this.chartData.map(r => r.pbac_score_per_day);
-            const pain = this.chartData.map(r => r.pain_score_per_day);
-            const qol = this.chartData.map(r => r.quality_of_life);
-            const energy = this.chartData.map(r => r.energy_level);
-            const influence = this.chartData.map(r => r.influence_factor);
-            const medication = this.chartData.map(r => r.pain_medication);
-            const defecation = this.chartData.map(r => r.complaints_with_defecation);
-            const urinating = this.chartData.map(r => r.complaints_with_urinating);
-            const sleep = this.chartData.map(r => r.quality_of_sleep);
-            const exercise = this.chartData.map(r => r.exercise);
 
             if (this.chart) this.chart.destroy();
 
@@ -161,16 +103,16 @@ function pbacTable() {
                 data: {
                     labels,
                     datasets: [
-                        datasetStyle('PBAC Score', pbac, '#EF4444', 'rgba(239, 68, 68, 0.1)'),
-                        datasetStyle('Pain Score', pain, '#F59E0B', 'rgba(245, 158, 11, 0.1)'),
-                        datasetStyle('Quality of Life', qol, '#3B82F6', 'rgba(59, 130, 246, 0.1)'),
-                        datasetStyle('Energy Level', energy, '#10B981', 'rgba(16, 185, 129, 0.1)'),
-                        datasetStyle('Influence Factor', influence, '#8B5CF6', 'rgba(139, 92, 246, 0.1)'),
-                        datasetStyle('Pain Medication', medication, '#EC4899', 'rgba(236, 72, 153, 0.1)'),
-                        datasetStyle('Defecation Complaints', defecation, '#6366F1', 'rgba(99, 102, 241, 0.1)'),
-                        datasetStyle('Urinating Complaints', urinating, '#14B8A6', 'rgba(20, 184, 166, 0.1)'),
-                        datasetStyle('Sleep Quality', sleep, '#7C3AED', 'rgba(124, 58, 237, 0.1)'),
-                        datasetStyle('Exercise', exercise, '#4B5563', 'rgba(75, 85, 99, 0.1)'),
+                        style('PBAC Score', this.chartData.map(r => r.pbac_score_per_day), '#EF4444', 'rgba(239, 68, 68, 0.1)'),
+                        style('Pain Score', this.chartData.map(r => r.pain_score_per_day), '#F59E0B', 'rgba(245, 158, 11, 0.1)'),
+                        style('Quality of Life', this.chartData.map(r => r.quality_of_life), '#3B82F6', 'rgba(59, 130, 246, 0.1)'),
+                        style('Energy Level', this.chartData.map(r => r.energy_level), '#10B981', 'rgba(16, 185, 129, 0.1)'),
+                        style('Influence Factor', this.chartData.map(r => r.influence_factor), '#8B5CF6', 'rgba(139, 92, 246, 0.1)'),
+                        style('Pain Medication', this.chartData.map(r => r.pain_medication), '#EC4899', 'rgba(236, 72, 153, 0.1)'),
+                        style('Defecation Complaints', this.chartData.map(r => r.complaints_with_defecation), '#6366F1', 'rgba(99, 102, 241, 0.1)'),
+                        style('Urinating Complaints', this.chartData.map(r => r.complaints_with_urinating), '#14B8A6', 'rgba(20, 184, 166, 0.1)'),
+                        style('Sleep Quality', this.chartData.map(r => r.quality_of_sleep), '#7C3AED', 'rgba(124, 58, 237, 0.1)'),
+                        style('Exercise', this.chartData.map(r => r.exercise), '#4B5563', 'rgba(75, 85, 99, 0.1)')
                     ]
                 },
                 options: {
@@ -181,20 +123,56 @@ function pbacTable() {
                             align: 'start',
                             labels: { usePointStyle: true }
                         },
-                        tooltip: {
-                            mode: 'index',
-                            intersect: false
-                        }
+                        tooltip: { mode: 'index', intersect: false }
                     },
                     scales: {
                         y: {
                             beginAtZero: true,
-                            ticks: {
-                                stepSize: 1
-                            }
+                            ticks: { stepSize: 1 }
                         }
                     }
                 }
+            });
+        },
+
+        setExportRange(event) {
+            // Ensures proper start/end values are included in export form
+            if (this.preset === 'custom') {
+                if (!this.customStart || !this.customEnd) {
+                    event.preventDefault();
+                    alert('Please select a valid custom range');
+                }
+            }
+        },
+
+        exportChartAsPdf() {
+            const chartCanvas = document.getElementById('pbacChart');
+            const base64Image = chartCanvas.toDataURL('image/png');
+
+            fetch(`{{ route('participant.pbac.chart.export.pdf') }}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                },
+                body: JSON.stringify({
+                    chart_image: base64Image,
+                    preset: this.preset,
+                    start_date: this.customStart,
+                    end_date: this.customEnd,
+                })
+            })
+            .then(response => response.blob())
+            .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = 'pbac_chart_export.pdf';
+                link.click();
+            })
+            .catch(error => {
+                alert('Failed to export PDF');
+                console.error(error);
             });
         }
     }

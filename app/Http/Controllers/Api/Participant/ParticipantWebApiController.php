@@ -6,6 +6,8 @@ use App\Helpers\CommonHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Participant;
 use App\Models\Pbac;
+use App\Services\PbacExportService;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -133,55 +135,6 @@ class ParticipantWebApiController extends Controller
     }
 
     /**
-     * Get PBAC table data (paginated and filterable)
-     *
-     * Returns a paginated list of PBAC records for the authenticated participant, with optional date filtering.
-     *
-     * **Requires authentication via session cookie.**
-     *
-     * @authenticated
-     *
-     * @queryParam from_date date optional Filter records from this date (format: Y-m-d). Example: 2025-07-01
-     * @queryParam to_date date optional Filter records up to this date (format: Y-m-d). Example: 2025-07-31
-     *
-     * @response 200 {
-     *   "data": [
-     *     {
-     *       "id": 1,
-     *       "reported_date": "2025-07-01",
-     *       "pbac_score_per_day": 14,
-     *       "pain_score_per_day": 7,
-     *       "quality_of_life": 1,
-     *       "energy_level": 3,
-     *       "spotting_yes_no": yes,
-     *       "influence_factor": 5,
-     *       "pain_medication": 0,
-     *       "complaints_with_defecation": 1 ,
-     *       "complaints_with_urinating": 1,
-     *       "quality_of_sleep": 4,
-     *       "exercise": 0
-     *     }
-     *   ],
-     *   "links": { ... },
-     *   "meta": { ... }
-     * }
-     */
-    public function showPbacTableData(Request $request)
-    {
-        $participant = auth('participant-web')->user();
-        if (! $participant) {
-            return response()->json(['error' => 'Unauthenticated'], 401);
-        }
-
-        $query = Pbac::where('participant_id', $participant->id)
-            ->orderByDesc('reported_date');
-
-        $query = CommonHelper::applyDateFilters($query, $request);
-
-        return response()->json($query->paginate(10));
-    }
-
-    /**
      * Get PBAC chart data (date-filtered)
      *
      * Returns PBAC data for use in charts for the authenticated participant, with optional date filtering.
@@ -228,5 +181,69 @@ class ParticipantWebApiController extends Controller
         return response()->json([
             'data' => $query->get(),
         ]);
+    }
+
+    /**
+     * Export PBAC data to Excel.
+     *
+     * @authenticated
+     *
+     * @queryParam filter string required The date range filter. Options: 'weekly', 'monthly', 'yearly', 'custom'. Example: 'monthly'
+     * @queryParam from date optional The start date for the custom range (Y-m-d). Required if filter is 'custom'. Example: 2025-07-01
+     * @queryParam to date optional The end date for the custom range (Y-m-d). Required if filter is 'custom'. Example: 2025-07-31
+     */
+    public function exportPbacData(Request $request, PbacExportService $exportService)
+    {
+        $participant = auth('participant-web')->user();
+        if (! $participant) {
+            return response()->json(['error' => 'Unauthenticated'], 401);
+        }
+
+        return $exportService->exportForParticipant($request, $participant->id);
+    }
+
+    /**
+     * Export the PBAC chart as a PDF.
+     *
+     * @authenticated
+     *
+     * @bodyParam chart_data_url string required The base64 chart image data (data:image/png;base64,...)
+     * @bodyParam preset string optional Filter preset used for labeling. Example: month
+     * @bodyParam start_date date optional Custom start date if preset is 'custom'.
+     * @bodyParam end_date date optional Custom end date if preset is 'custom'.
+     */
+    public function exportChartPdf(Request $request)
+    {
+        $request->validate([
+            'chart_image' => 'required|string',
+        ]);
+
+        $imageData = $request->input('chart_image');
+        if (! str_starts_with($imageData, 'data:image/png;base64,')) {
+            return response()->json(['error' => 'Invalid image format'], 400);
+        }
+
+        $preset = $request->input('preset', 'month');
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+
+        try {
+            $pdf = Pdf::loadView('pdf.participant-pbac-chart', [
+                'imageBase64' => $imageData,
+                'preset' => $preset,
+                'startDate' => $startDate,
+                'endDate' => $endDate,
+            ]);
+
+            return response($pdf->output(), 200, [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'attachment; filename="pbac_chart.pdf"',
+            ]);
+        } catch (\Exception $e) {
+            // log actual error
+            \Log::error('PDF generation failed: '.$e->getMessage());
+
+            return response()->json(['error' => 'PDF generation failed'], 500);
+        }
     }
 }
