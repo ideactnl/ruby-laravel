@@ -3,7 +3,25 @@
 @section('navbar_subtitle', 'Export Your PBAC Data Based on the Selected Dates')
 
 @section('content')
-<div class="px-0 pr-4 sm:pr-6 lg:px-8 py-6" x-data="{ preset:'month', start:'', end:'', loading:false, error:'', async refresh(){ try{ this.loading=true; this.error=''; await window.RubyExport && window.RubyExport.loadChart(this.preset, this.start, this.end); }catch(e){ this.error='Failed to load chart'; } finally{ this.loading=false; } }, exportCSV(){ window.RubyExport && window.RubyExport.exportCSV(this.preset, this.start, this.end); }, exportPDF(){ window.RubyExport && window.RubyExport.exportPDF(this.preset, this.start, this.end); } }" x-init="() => { const d=new Date(); const s=new Date(d.getFullYear(), d.getMonth(), 1).toISOString().slice(0,10); const e=d.toISOString().slice(0,10); start=s; end=e; $nextTick(()=>refresh()); }">
+<div class="px-0 pr-4 sm:pr-6 lg:px-8 py-6"
+    x-data="{
+        preset:'month', start:'', end:'', loading:false, error:'', busy:false,
+        async refresh(){
+            try { this.loading = true; this.error='';
+                await window.RubyExport && window.RubyExport.loadChart(this.preset, this.start, this.end);
+            } catch(e) { this.error='Failed to load chart'; } finally { this.loading=false; }
+        },
+        exportCSV(){
+            window.dispatchEvent(new CustomEvent('export:start', { detail: { type: 'csv', preset: this.preset, start: this.start, end: this.end } }));
+        },
+        exportPDF(){
+            window.dispatchEvent(new CustomEvent('export:start', { detail: { type: 'pdf', preset: this.preset, start: this.start, end: this.end } }));
+        }
+    }"
+    x-init="() => { const d=new Date(); const s=new Date(d.getFullYear(), d.getMonth(), 1).toISOString().slice(0,10); const e=d.toISOString().slice(0,10); start=s; end=e; $nextTick(()=>refresh()); }"
+    @export:busy.window="busy = true"
+    @export:idle.window="busy = false"
+>
     <div class="mb-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div class="flex items-center gap-3">
             <span class="inline-flex items-center rounded-md border border-[#5E0F0F] px-3 py-2 text-sm font-semibold text-[#5E0F0F] bg-[#5E0F0F]/5">Range</span>
@@ -42,15 +60,19 @@
             <canvas id="exportChart"></canvas>
         </div>
         <div class="mt-4 flex items-center justify-end gap-3">
-            <button @click="exportPDF()" class="inline-flex items-center gap-2 rounded-md bg-[#5E0F0F] px-4 py-2 text-sm font-semibold text-white shadow hover:opacity-90">
+            <button @click="exportPDF()" :disabled="busy" :class="busy ? 'opacity-60 cursor-not-allowed' : ''" class="inline-flex items-center gap-2 rounded-md bg-[#5E0F0F] px-4 py-2 text-sm font-semibold text-white shadow hover:opacity-90">
                 Export as PDF
                 <i class="fa-solid fa-file-pdf"></i>
             </button>
-            <button @click="exportCSV()" class="inline-flex items-center gap-2 rounded-md bg-[#5E0F0F] px-4 py-2 text-sm font-semibold text-white shadow hover:opacity-90">
+            <button @click="exportCSV()" :disabled="busy" :class="busy ? 'opacity-60 cursor-not-allowed' : ''" class="inline-flex items-center gap-2 rounded-md bg-[#5E0F0F] px-4 py-2 text-sm font-semibold text-white shadow hover:opacity-90">
                 Export as CSV
                 <i class="fa-solid fa-file-csv"></i>
             </button>
         </div>
+    </div>
+    <div class="mt-2">
+        <x-common.export-progress type="pdf" chartCanvasId="exportChart" />
+        <x-common.export-progress type="csv" />
     </div>
 </div>
 @endsection

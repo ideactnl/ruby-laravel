@@ -2,15 +2,12 @@
 
 namespace App\Models;
 
-use App\Helpers\CommonHelper;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
  * @method static \Illuminate\Database\Eloquent\Builder|Pbac forParticipant(int $participantId)
- * @method static \Illuminate\Database\Eloquent\Builder|Pbac orderedByDate()
- * @method static \Illuminate\Database\Eloquent\Builder|Pbac calendarPayload()
  *
  * @mixin \Illuminate\Database\Eloquent\Builder
  */
@@ -128,50 +125,6 @@ class Pbac extends Model
     public function scopeForParticipant(Builder $query, int $participantId): Builder
     {
         return $query->where('participant_id', $participantId);
-    }
-
-    /**
-     * Scope: order by reported_date ASC.
-     */
-    public function scopeOrderedByDate(Builder $query): Builder
-    {
-        return $query->orderBy('reported_date');
-    }
-
-    /**
-     * Scope: select computed columns needed for the calendar payload.
-     * This avoids returning all questionnaire fields while keeping data DRY and efficient.
-     */
-    public function scopeCalendarPayload(Builder $query): Builder
-    {
-        return $query->selectRaw('reported_date')
-            ->selectRaw('COALESCE(q4a,0)+COALESCE(q4b,0)+COALESCE(q4c,0)+COALESCE(q4d,0)+COALESCE(q4e,0)+COALESCE(q4f,0) AS pbac_score_per_day')
-            ->selectRaw('CASE WHEN COALESCE(q3b,0)=1 THEN 1 ELSE 0 END AS spotting_yes_no')
-            ->selectRaw('COALESCE(q5a,0) AS pain_score_per_day')
-            ->selectRaw('CASE WHEN COALESCE(q9a,0)=1 OR COALESCE(q9b,0)=1 OR COALESCE(q9c,0)=1 OR COALESCE(q9d,0)=1 OR COALESCE(q9e,0)=1 OR COALESCE(q9f,0)=1 OR COALESCE(q9g,0)=1 THEN 1 ELSE 0 END AS influence_factor')
-            ->selectRaw('CASE WHEN COALESCE(q8a,0)=1 OR COALESCE(q8b,0)=1 OR COALESCE(q8c,0)=1 OR COALESCE(q8d,0)=1 OR COALESCE(q8e,0)=1 OR COALESCE(q8f,0)=1 THEN 1 ELSE 0 END AS pain_medication')
-            ->selectRaw('COALESCE(q10,0) AS quality_of_life')
-            ->selectRaw('COALESCE(q12,0) AS energy_level')
-            ->selectRaw('CASE WHEN COALESCE(q14b,0)=1 OR COALESCE(q14c,0)=1 THEN 1 ELSE 0 END AS complaints_with_defecation')
-            ->selectRaw('CASE WHEN COALESCE(q13c,0)=1 THEN 1 ELSE 0 END AS complaints_with_urinating')
-            ->selectRaw('COALESCE(q17g,0) AS quality_of_sleep')
-            ->selectRaw('CASE WHEN COALESCE(q18a,0)=1 OR COALESCE(q18b,0)=1 OR COALESCE(q18c,0)=1 OR COALESCE(q18d,0)=1 THEN 1 ELSE 0 END AS exercise');
-    }
-
-    /**
-     * @phpstan-param Builder<Pbac> $base
-     *
-     * @phpstan-return Builder<Pbac>
-     */
-    public static function queryForCalendar(Builder $base, int $participantId, $request): Builder
-    {
-        /** @var Builder<Pbac> $q */
-        $q = $base->forParticipant($participantId)->calendarPayload();
-        /** @var Builder<Pbac> $q */
-        $q = CommonHelper::applyDateFilters($q, $request);
-
-        /** @var Builder<Pbac> $q */
-        return $q->orderBy('reported_date');
     }
 
     /**

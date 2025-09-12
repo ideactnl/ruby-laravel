@@ -4,11 +4,14 @@ namespace App\Services;
 
 use App\Exports\ParticipantPbacExport;
 use App\Helpers\CommonHelper;
+use App\Jobs\ExportParticipantPbacCsv;
+use App\Jobs\GenerateParticipantPbacChartPdf;
 use App\Models\Participant;
 use App\Models\Pbac;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -106,5 +109,62 @@ class PbacExportService
                 'exercise' => $record->exercise,
             ];
         });
+    }
+
+    /**
+     * Queue participant CSV export and return tracking payload.
+     */
+    public function queueParticipantCsv(Request $request, int $participantId): array
+    {
+        [$startDate, $endDate] = CommonHelper::getDateRangeFromPreset(
+            $request->input('preset', 'month'),
+            $request
+        );
+
+        $filename = 'pbac_export_'.$startDate.'_to_'.$endDate.'_'.Str::random(6).'.csv';
+
+        $tracker = app(ExportTrackingService::class);
+        $job = $tracker->createJob($participantId, 'csv', [
+            'preset' => $request->input('preset'),
+            'start_date' => $request->input('start_date'),
+            'end_date' => $request->input('end_date'),
+            'filename' => $filename,
+        ]);
+
+        ExportParticipantPbacCsv::dispatch($participantId, $startDate, $endDate, $filename, $job->id);
+
+        return $tracker->toPayload($job);
+    }
+
+    /**
+     * Queue PDF generation from a base64 chart image and return tracking payload.
+     */
+    public function queueChartPdfFromImage(Request $request, int $participantId): array
+    {
+        $imageData = $request->input('chart_image');
+        $preset = $request->input('preset');
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+        $filename = 'pbac_chart_'.($startDate ?: 'start').'_to_'.($endDate ?: 'end').'_'.Str::random(6).'.pdf';
+
+        $tracker = app(ExportTrackingService::class);
+        $job = $tracker->createJob($participantId, 'pdf', [
+            'preset' => $preset,
+            'start_date' => $startDate,
+            'end_date' => $endDate,
+            'filename' => $filename,
+        ]);
+
+        GenerateParticipantPbacChartPdf::dispatch(
+            $participantId,
+            $imageData,
+            $preset,
+            $startDate,
+            $endDate,
+            $filename,
+            $job->id
+        );
+
+        return $tracker->toPayload($job);
     }
 }

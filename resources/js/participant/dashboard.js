@@ -1,23 +1,24 @@
-/* Dashboard (Monthly Overview) page logic: Alpine filter menu + FullCalendar setup */
+// Dashboard (Monthly Overview): Alpine filter menu + FullCalendar
 
 window.filterMenu = function filterMenu(){
   return {
     open:false,
     options: [
-      { value: 'pbac', label: 'Blood Loss', color: '#DC2626' },
-      { value: 'pain', label: 'Pain', color: '#F59E0B' },
-      { value: 'general', label: 'General Health', color: '#22C55E' },
-      { value: 'mood', label: 'Mood', color: '#10B981' },
-      { value: 'stool', label: 'Stool/Urine', color: '#0EA5E9' },
-      { value: 'diet', label: 'Diet', color: '#EAB308' },
-      { value: 'exercise', label: 'Exercise', color: '#FB923C' },
-      { value: 'sex', label: 'Sex', color: '#F472B6' },
-      { value: 'sleep', label: 'Sleep (hrs)', color: '#64748B' },
+      { value: 'pbac', label: 'Blood Loss', color: '#DC2626', iconCls: 'fa-droplet text-red-600' },
+      { value: 'pain', label: 'Pain', color: '#F59E0B', iconCls: 'fa-burst text-amber-500' },
+      { value: 'general', label: 'General Health', color: '#22C55E', iconCls: 'fa-heart-pulse text-green-500' },
+      { value: 'mood', label: 'Mood', color: '#10B981', iconCls: 'fa-face-smile text-emerald-500' },
+      { value: 'stool', label: 'Stool/Urine', color: '#0EA5E9', iconCls: 'fa-toilet text-sky-500' },
+      { value: 'diet', label: 'Diet', color: '#EAB308', iconCls: 'fa-utensils text-yellow-500' },
+      { value: 'exercise', label: 'Exercise', color: '#FB923C', iconCls: 'fa-person-running text-orange-400' },
+      { value: 'sex', label: 'Sex', color: '#F472B6', iconCls: 'fa-venus-mars text-pink-400' },
+      { value: 'sleep', label: 'Sleep (hrs)', color: '#64748B', iconCls: 'fa-moon text-slate-500' },
     ],
     selected: [],
     init(){
       const saved = localStorage.getItem('calendar_selected_types');
       this.selected = saved ? JSON.parse(saved) : ['pbac','pain','sleep'];
+      if (this.selected.length > 3) this.selected = this.selected.slice(0,3);
       window.selectedCalendarTypes = new Set(this.selected);
     },
     apply(){
@@ -25,8 +26,18 @@ window.filterMenu = function filterMenu(){
       localStorage.setItem('calendar_selected_types', JSON.stringify(this.selected));
       if (window.participantCalendar) window.participantCalendar.refetchEvents();
     },
+    toggle(val){
+      const idx = this.selected.indexOf(val);
+      if (idx >= 0) {
+        this.selected.splice(idx,1);
+      } else {
+        if (this.selected.length >= 3) return;
+        this.selected.push(val);
+      }
+      this.apply();
+    },
     selectAll(){
-      this.selected = this.options.map(o=>o.value);
+      this.selected = this.options.map(o=>o.value).slice(0,3);
       this.apply();
     },
     clearAll(){
@@ -36,11 +47,46 @@ window.filterMenu = function filterMenu(){
   }
 };
 
-// FullCalendar initialization
+const ICONS = {
+  pbac: { cls: 'fa-droplet text-red-600', label: 'Blood Loss' },
+  pain: { cls: 'fa-burst text-amber-500', label: 'Pain' },
+  sleep: { cls: 'fa-moon text-slate-500', label: 'Sleep (hrs)' },
+  general: { cls: 'fa-heart-pulse text-green-500', label: 'General Health' },
+  mood: { cls: 'fa-face-smile text-emerald-500', label: 'Mood/Influence' },
+  stool: { cls: 'fa-toilet text-sky-500', label: 'Stool/Urine' },
+  exercise: { cls: 'fa-person-running text-orange-400', label: 'Exercise' },
+  diet: { cls: 'fa-utensils text-yellow-500', label: 'Diet' },
+  sex: { cls: 'fa-venus-mars text-pink-400', label: 'Sex' },
+};
+
 window.addEventListener('DOMContentLoaded', () => {
   const el = document.getElementById('participantCalendar');
   if (!el || !window.FullCalendar) return;
   const { Calendar } = window.FullCalendar;
+
+  function renderLegendFromAgg(agg){
+    const legendEl = document.getElementById('calendarLegend');
+    if (!legendEl) return;
+    legendEl.innerHTML = '';
+    const items = Object.entries(agg)
+      .map(([type, {sum, count}]) => ({ type, avg: count ? (sum / count) : 0 }))
+      .sort((a,b) => b.avg - a.avg)
+      .slice(0,3);
+    items.forEach(item => {
+      const spec = ICONS[item.type] || { cls: 'fa-circle text-gray-400', label: item.type };
+      const pill = document.createElement('span');
+      pill.className = 'inline-flex items-center gap-2 rounded-full border border-[#5E0F0F]/30 bg-[#5E0F0F]/5 px-3 py-1 text-xs text-[#5E0F0F]';
+      const i = document.createElement('i');
+      i.className = `fa-solid ${spec.cls}`;
+      const name = document.createElement('span');
+      name.textContent = spec.label;
+      const val = document.createElement('span');
+      val.className = 'text-[11px] text-gray-500';
+      val.textContent = `avg ${item.avg.toFixed(item.type==='sleep' ? 1 : 0)}`;
+      pill.append(i, name, val);
+      legendEl.appendChild(pill);
+    });
+  }
 
   const calendar = new Calendar(el, {
     initialView: 'dayGridMonth',
@@ -69,11 +115,15 @@ window.addEventListener('DOMContentLoaded', () => {
         const rows = json?.calendar ?? [];
         const evts = [];
         const selected = window.selectedCalendarTypes || new Set();
+        const agg = {};
         for (const r of rows) {
           const date = r.reported_date;
           const pushIf = (cond, type, value) => {
             if (cond && selected.has(type)) {
               evts.push({ start: date, allDay: true, display: 'list-item', extendedProps: { type, value } });
+              if (!agg[type]) agg[type] = { sum: 0, count: 0 };
+              agg[type].sum += (value ?? 0);
+              agg[type].count += 1;
             }
           };
           pushIf(r.pbac_score_per_day > 0, 'pbac', r.pbac_score_per_day);
@@ -87,6 +137,7 @@ window.addEventListener('DOMContentLoaded', () => {
           pushIf((r.sex ?? 0) > 0, 'sex', r.sex);
         }
         success(evts);
+        renderLegendFromAgg(agg);
       } catch (e) {
         failure(e);
       }
@@ -94,20 +145,7 @@ window.addEventListener('DOMContentLoaded', () => {
     eventContent: function(arg) {
       const type = arg.event.extendedProps.type;
       const value = arg.event.extendedProps.value;
-      const icons = {
-        pbac: { cls: 'fa-droplet text-red-600', label: 'Blood Loss' },
-        pain: { cls: 'fa-burst text-amber-500', label: 'Pain' },
-        sleep: { cls: 'fa-moon text-slate-500', label: 'Sleep (hrs)' },
-        general: { cls: 'fa-heart-pulse text-green-500', label: 'General Health' },
-        mood: { cls: 'fa-face-smile text-emerald-500', label: 'Mood/Influence' },
-        stool: { cls: 'fa-toilet text-sky-500', label: 'Stool/Urine' },
-        exercise: { cls: 'fa-person-running text-orange-400', label: 'Exercise' },
-        diet: { cls: 'fa-utensils text-yellow-500', label: 'Diet' },
-        sex: { cls: 'fa-venus-mars text-pink-400', label: 'Sex' },
-        spotting: { cls: 'fa-droplet text-red-500', label: 'Spotting' },
-        pain_medication: { cls: 'fa-capsules text-amber-500', label: 'Pain medication' },
-      };
-      const spec = icons[type] || { cls: 'fa-circle text-gray-400', label: type };
+      const spec = ICONS[type] || { cls: 'fa-circle text-gray-400', label: type };
       const wrap = document.createElement('span');
       wrap.className = 'inline-flex items-center gap-1 px-0.5';
       const i = document.createElement('i');
@@ -134,11 +172,32 @@ window.addEventListener('DOMContentLoaded', () => {
   calendar.render();
 
   const monthEl = document.getElementById('cal-month-label');
+  const yearSelect = document.getElementById('cal-year-select');
   if (monthEl){
     const fmt = new Intl.DateTimeFormat(undefined, { month: 'long', year: 'numeric' });
     const setMonth = () => { monthEl.textContent = fmt.format(calendar.getDate()); };
     setMonth();
     calendar.on('datesSet', setMonth);
+  }
+
+  if (yearSelect){
+    const nowYear = new Date().getFullYear();
+    const years = [];
+    for (let y = nowYear - 20; y <= nowYear + 10; y++) years.push(y);
+    yearSelect.innerHTML = years.map(y => `<option value="${y}">${y}</option>`).join('');
+    const syncYear = () => {
+      const y = calendar.getDate().getFullYear();
+      if (String(yearSelect.value) !== String(y)) yearSelect.value = String(y);
+    };
+    syncYear();
+    calendar.on('datesSet', syncYear);
+    yearSelect.addEventListener('change', () => {
+      const targetYear = parseInt(yearSelect.value, 10);
+      const current = calendar.getDate();
+      const newDate = new Date(current);
+      newDate.setFullYear(targetYear);
+      calendar.gotoDate(newDate);
+    });
   }
 
   const btnToday = document.getElementById('btn-today');
@@ -149,8 +208,7 @@ window.addEventListener('DOMContentLoaded', () => {
   btnNext && btnNext.addEventListener('click', () => calendar.next());
 
   const applyDayTopCenter = () => {
-    const tops = el.querySelectorAll('.fc-daygrid-day-top');
-    tops.forEach(t => t.classList.add('justify-center'));
+    el.querySelectorAll('.fc-daygrid-day-top').forEach(t => t.classList.add('justify-center'));
   };
   applyDayTopCenter();
   calendar.on('datesSet', applyDayTopCenter);

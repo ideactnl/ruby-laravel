@@ -7,7 +7,7 @@
     <div class="min-h-screen flex flex-col">
         @include('components.admin.navbar')
         <main class="flex-1">
-            <x-alerts />
+            <x-common.alerts />
             @yield('content')
         </main>
     </div>

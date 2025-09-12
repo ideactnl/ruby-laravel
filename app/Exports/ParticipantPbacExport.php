@@ -3,13 +3,14 @@
 namespace App\Exports;
 
 use App\Models\Pbac;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 
-class ParticipantPbacExport implements FromQuery, WithHeadings, WithMapping
+class ParticipantPbacExport implements FromQuery, ShouldQueue, WithHeadings, WithMapping
 {
     use Exportable;
 

@@ -16,14 +16,14 @@
 
                 <main class="flex-1 md:ml-64">
                     <div class="px-4 py-6 sm:px-6 lg:px-8">
-                        <x-alerts />
+                        <x-common.alerts />
                         @yield('content')
                     </div>
                 </main>
             @else
                 <main class="flex-1">
                     <div class="px-4 py-6 sm:px-6 lg:px-8">
-                        <x-alerts />
+                        <x-common.alerts />
                         @yield('content')
                     </div>
                 </main>
