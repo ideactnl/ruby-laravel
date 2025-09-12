@@ -1,4 +1,4 @@
-@extends('layouts.participant.app')
+@extends('layouts.participant.guest')
 
 @section('content')
 <div class="w-full max-w-md mx-auto mt-10" x-data="loginForm()">

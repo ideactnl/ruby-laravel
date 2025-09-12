@@ -13,8 +13,8 @@ class CommonHelper
      */
     public static function applyDateFilters(Builder $query, Request $request): Builder
     {
-        $from = $request->input('from') ?? $request->input('from_date');
-        $to = $request->input('to') ?? $request->input('to_date');
+        $from = $request->input('from') ?? $request->input('from_date') ?? $request->input('start_date');
+        $to = $request->input('to') ?? $request->input('to_date') ?? $request->input('end_date');
         $preset = $request->input('preset');
 
         if ($preset) {
@@ -42,6 +42,10 @@ class CommonHelper
         return match ($preset) {
             'week' => [$today->copy()->startOfWeek()->toDateString(), $today->copy()->endOfWeek()->toDateString()],
             'month' => [$today->copy()->startOfMonth()->toDateString(), $today->copy()->endOfMonth()->toDateString()],
+            'quarter' => [
+                $today->copy()->firstOfQuarter()->toDateString(),
+                $today->copy()->lastOfQuarter()->toDateString(),
+            ],
             'year' => [$today->copy()->startOfYear()->toDateString(), $today->copy()->endOfYear()->toDateString()],
             'custom' => [
                 $request?->input('start_date') ?? $request?->input('from'),

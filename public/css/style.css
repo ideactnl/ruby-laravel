@@ -1,0 +1,14 @@
+/* Very light borders for FullCalendar */
+.fc,
+.fc-theme-standard {
+  --fc-border-color: #eeeeee;
+}
+.fc .fc-scrollgrid,
+.fc .fc-col-header-cell,
+.fc .fc-daygrid-day,
+.fc .fc-daygrid-day-frame {
+  border-color: #eeeeee !important;
+}
+.fc .fc-daygrid-day-number { color: #6b7280; }
+
+

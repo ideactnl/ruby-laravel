@@ -28,9 +28,9 @@ Route::prefix('v1')->group(function () {
 
         Route::middleware('auth:sanctum')->group(function () {
             Route::get('/dashboard', [ParticipantWebApiController::class, 'dashboard']);
-            Route::get('/pbac/chart', [ParticipantWebApiController::class, 'showPbacChartData'])->name('participant.pbac.chart');
             Route::get('/pbac/export', [ParticipantWebApiController::class, 'exportPbacData'])->name('participant.pbac.export');
             Route::post('/pbac/chart/export/pdf', [ParticipantWebApiController::class, 'exportChartPdf'])->name('participant.pbac.chart.export.pdf');
+            Route::get('/daily', [ParticipantWebApiController::class, 'dailyData'])->name('participant.daily');
         });
     });
 });

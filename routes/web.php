@@ -25,7 +25,8 @@ Route::middleware(['web'])->prefix('participant')->group(function () {
 
     Route::middleware('auth.participant')->group(function () {
         Route::get('/dashboard', fn() => view('participant.dashboard'))->name('participant.dashboard');
-        Route::get('/pbac', fn() => view('participant.my-data'))->name('participant.pbac');
+        Route::get('/pbac', fn() => view('participant.export-my-data'))->name('participant.pbac');
+        Route::get('/daily-view', fn() => view('participant.daily-view'))->name('participant.daily-view');
     });
 
 });

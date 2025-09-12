@@ -8,6 +8,7 @@ use App\Models\Participant;
 use App\Models\Pbac;
 use App\Services\PbacExportService;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -18,32 +19,24 @@ use Illuminate\Validation\ValidationException;
  *
  * Endpoints for participant web dashboard authentication and data access using SPA-style (cookie-based) authentication.
  *
- * These endpoints are intended for use by the participant dashboard (Blade + Alpine.js) and rely on Laravel Sanctum's cookie-based session authentication. Participants log in with their registration number and password, and all subsequent requests are authenticated via session cookie. Admin and participant sessions are kept separate.
- *
- * **How SPA Auth Works:**
- * - The frontend first calls `/sanctum/csrf-cookie` to initialize CSRF protection.
- * - Login is performed via POST `/api/v1/participant/login`.
- * - On success, a session cookie is issued. All further requests (e.g., dashboard data, logout) use this cookie for authentication.
- * - The dashboard and logout endpoints require the session cookie and CSRF token.
+ * Flow overview:
+ * - Initialize CSRF with `GET /sanctum/csrf-cookie`.
+ * - Authenticate with `POST /api/v1/participant/login` using registration number + password.
+ * - Subsequent requests send the session cookie automatically.
+ * - Use `POST /api/v1/participant/logout` to end the session.
  */
 class ParticipantWebApiController extends Controller
 {
     /**
-     * Login (SPA session/cookie)
+     * Login (session cookie)
      *
-     * Authenticates a participant using registration number and password. Issues a session cookie for subsequent dashboard requests.
+     * Authenticates a participant and starts a session for the web dashboard.
      *
-     * @bodyParam registration_number string required The participant's registration number. Example: participant123
-     * @bodyParam password string required The participant's password. Example: mypassword
+     * @bodyParam registration_number string required Participant registration number. Example: participant123
+     * @bodyParam password string required Password. Example: secret123
      *
-     * @response 200 {
-     *   "success": true,
-     *   "participant": { "id": 1, "registration_number": "participant123" }
-     * }
-     * @response 422 {
-     *   "message": "The given data was invalid.",
-     *   "errors": { "registration_number": ["The provided credentials are incorrect."] }
-     * }
+     * @response 200 {"success": true, "participant": {"id": 1, "registration_number": "participant123"}}
+     * @response 422 {"message":"The given data was invalid.","errors":{"registration_number":["The provided credentials are incorrect."]}}
      */
     public function login(Request $request)
     {
@@ -73,19 +66,12 @@ class ParticipantWebApiController extends Controller
     }
 
     /**
-     * Logout (SPA session/cookie)
+     * Logout
      *
-     * Logs out the authenticated participant by invalidating the session cookie.
+     * Ends the current participant session.
      *
-     * **Requires authentication via session cookie.**
-     *
-     * @response 200 {
-     *   "success": true,
-     *   "message": "Logged out successfully"
-     * }
-     * @response 401 {
-     *   "error": "Unauthenticated"
-     * }
+     * @response 200 {"success": true, "message": "Logged out successfully"}
+     * @response 401 {"error": "Unauthenticated"}
      */
     public function logout(Request $request)
     {
@@ -97,25 +83,19 @@ class ParticipantWebApiController extends Controller
     }
 
     /**
-     * Get dashboard data (SPA session/cookie)
+     * Dashboard data
      *
-     * Returns the authenticated participant's dashboard data. Requires a valid session cookie.
-     *
-     * **Requires authentication via session cookie.**
+     * Returns participant flags and a date-filtered calendar collection with computed per-day metrics.
+     * Used by the calendar, daily view, and export chart.
      *
      * @authenticated
      *
-     * @response 200 {
-     *   "participant": {
-     *     "id": 1,
-     *     "registration_number": "participant123",
-     *     "enable_data_sharing": true,
-     *     "opt_in_for_research": false
-     *   }
-     * }
-     * @response 401 {
-     *   "error": "Unauthenticated"
-     * }
+     * @queryParam preset string optional One of: month, quarter, year, custom. Default: month. Example: month
+     * @queryParam start_date date optional Y-m-d; required when preset=custom. Example: 2025-09-01
+     * @queryParam end_date date optional Y-m-d; required when preset=custom. Example: 2025-09-30
+     *
+     * @response 200 {"participant":{"id":1,"registration_number":"participant123"},"calendar":[{"reported_date":"2025-09-10","pbac_score_per_day":12,"spotting_yes_no":0,"pain_score_per_day":3,"influence_factor":2,"pain_medication":1,"quality_of_life":2,"energy_level":3,"complaints_with_defecation":0,"complaints_with_urinating":0,"quality_of_sleep":4,"exercise":1,"sleep_hours":6.5}]}
+     * @response 401 {"error":"Unauthenticated"}
      */
     public function dashboard(Request $request)
     {
@@ -124,6 +104,45 @@ class ParticipantWebApiController extends Controller
             return response()->json(['error' => 'Unauthenticated'], 401);
         }
 
+        $calendarBase = Pbac::query()
+            ->forParticipant($participant->id);
+        $calendarBase = CommonHelper::applyDateFilters($calendarBase, $request)
+            ->orderBy('reported_date');
+
+        /** @var \Illuminate\Database\Eloquent\Collection<int, \App\Models\Pbac> $records */
+        $records = $calendarBase->get();
+        $calendar = $records->map(function (Pbac $r): array {
+            $sleepHours = null;
+            if (! empty($r->q17b) && ! empty($r->q17c)) {
+                try {
+                    $start = Carbon::createFromFormat('H:i', (string) $r->q17b);
+                    $end = Carbon::createFromFormat('H:i', (string) $r->q17c);
+                    if ($end->lessThanOrEqualTo($start)) {
+                        $end->addDay();
+                    }
+                    $sleepHours = round($start->diffInMinutes($end) / 60, 1);
+                } catch (\Exception $e) {
+                    $sleepHours = null;
+                }
+            }
+
+            return [
+                'reported_date' => $r->reported_date,
+                'pbac_score_per_day' => $r->pbac_score_per_day,
+                'spotting_yes_no' => $r->spotting_yes_no,
+                'pain_score_per_day' => $r->pain_score_per_day,
+                'influence_factor' => $r->influence_factor,
+                'pain_medication' => $r->pain_medication,
+                'quality_of_life' => $r->quality_of_life,
+                'energy_level' => $r->energy_level,
+                'complaints_with_defecation' => $r->complaints_with_defecation,
+                'complaints_with_urinating' => $r->complaints_with_urinating,
+                'quality_of_sleep' => $r->quality_of_sleep,
+                'exercise' => $r->exercise,
+                'sleep_hours' => $sleepHours,
+            ];
+        });
+
         return response()->json([
             'participant' => [
                 'id' => $participant->id,
@@ -131,66 +150,88 @@ class ParticipantWebApiController extends Controller
                 'enable_data_sharing' => $participant->enable_data_sharing,
                 'opt_in_for_research' => $participant->opt_in_for_research,
             ],
+            'calendar' => $calendar,
         ]);
     }
 
     /**
-     * Get PBAC chart data (date-filtered)
+     * Daily data (single date)
      *
-     * Returns PBAC data for use in charts for the authenticated participant, with optional date filtering.
-     *
-     * **Requires authentication via session cookie.**
+     * Returns the computed metrics for the specified date.
      *
      * @authenticated
      *
-     * @queryParam from_date date optional Filter records from this date (format: Y-m-d). Example: 2025-07-01
-     * @queryParam to_date date optional Filter records up to this date (format: Y-m-d). Example: 2025-07-31
+     * @queryParam date date required Target date (Y-m-d). Example: 2025-09-10
      *
-     * @response 200 {
-     *   "data": [
-     *     {
-     *       "id": 1,
-     *       "reported_date": "2025-07-01",
-     *       "pbac_score_per_day": 14,
-     *       "pain_score_per_day": 7,
-     *       "quality_of_life": 1,
-     *       "energy_level": 3,
-     *       "spotting_yes_no": yes,
-     *       "influence_factor": 5,
-     *       "pain_medication": 0,
-     *       "complaints_with_defecation": 1 ,
-     *       "complaints_with_urinating": 1,
-     *       "quality_of_sleep": 4,
-     *       "exercise": 0
-     *     }
-     *   ]
-     * }
+     * @response 200 {"date":"2025-09-10","data":{"reported_date":"2025-09-10","pbac_score_per_day":7,"pain_score_per_day":3,"sleep_hours":6.5,"quality_of_life":2,"influence_factor":0,"pain_medication":1,"spotting_yes_no":0,"energy_level":3,"complaints_with_defecation":0,"complaints_with_urinating":0,"quality_of_sleep":4,"exercise":1}}
      */
-    public function showPbacChartData(Request $request)
+    public function dailyData(Request $request)
     {
         $participant = auth('participant-web')->user();
         if (! $participant) {
             return response()->json(['error' => 'Unauthenticated'], 401);
         }
+        $validated = $request->validate([
+            'date' => ['required', 'date'],
+        ]);
+        $date = $validated['date'];
 
-        $query = Pbac::where('participant_id', $participant->id)
-            ->orderBy('reported_date');
+        $record = Pbac::query()
+            ->forParticipant($participant->id)
+            ->whereDate('reported_date', $date)
+            ->orderBy('reported_date')
+            ->first();
 
-        $query = CommonHelper::applyDateFilters($query, $request);
+        if (! $record) {
+            return response()->json(['date' => $date, 'data' => null]);
+        }
+
+        $sleepHours = null;
+        if (! empty($record->q17b) && ! empty($record->q17c)) {
+            try {
+                $start = Carbon::createFromFormat('H:i', (string) $record->q17b);
+                $end = Carbon::createFromFormat('H:i', (string) $record->q17c);
+                if ($end->lessThanOrEqualTo($start)) {
+                    $end->addDay();
+                }
+                $sleepHours = round($start->diffInMinutes($end) / 60, 1);
+            } catch (\Exception $e) {
+                $sleepHours = null;
+            }
+        }
+
+        $data = [
+            'reported_date' => $record->reported_date,
+            'pbac_score_per_day' => $record->pbac_score_per_day,
+            'spotting_yes_no' => $record->spotting_yes_no,
+            'pain_score_per_day' => $record->pain_score_per_day,
+            'influence_factor' => $record->influence_factor,
+            'pain_medication' => $record->pain_medication,
+            'quality_of_life' => $record->quality_of_life,
+            'energy_level' => $record->energy_level,
+            'complaints_with_defecation' => $record->complaints_with_defecation,
+            'complaints_with_urinating' => $record->complaints_with_urinating,
+            'quality_of_sleep' => $record->quality_of_sleep,
+            'exercise' => $record->exercise,
+            'sleep_hours' => $sleepHours,
+        ];
 
         return response()->json([
-            'data' => $query->get(),
+            'date' => $date,
+            'data' => $data,
         ]);
     }
 
     /**
-     * Export PBAC data to Excel.
+     * Export CSV (PBAC calendar metrics)
      *
      * @authenticated
      *
-     * @queryParam filter string required The date range filter. Options: 'weekly', 'monthly', 'yearly', 'custom'. Example: 'monthly'
-     * @queryParam from date optional The start date for the custom range (Y-m-d). Required if filter is 'custom'. Example: 2025-07-01
-     * @queryParam to date optional The end date for the custom range (Y-m-d). Required if filter is 'custom'. Example: 2025-07-31
+     * @queryParam preset string optional One of: month, quarter, year, custom. Default: month.
+     * @queryParam start_date date optional Y-m-d; required when preset=custom.
+     * @queryParam end_date date optional Y-m-d; required when preset=custom.
+     *
+     * @response 200 text/csv CSV file streamed to the client
      */
     public function exportPbacData(Request $request, PbacExportService $exportService)
     {
@@ -199,23 +240,79 @@ class ParticipantWebApiController extends Controller
             return response()->json(['error' => 'Unauthenticated'], 401);
         }
 
-        return $exportService->exportForParticipant($request, $participant->id);
+        $validated = $request->validate([
+            'preset' => ['nullable', 'in:month,quarter,year,custom'],
+            'start_date' => ['nullable', 'date'],
+            'end_date' => ['nullable', 'date', 'after_or_equal:start_date'],
+        ]);
+
+        $q = Pbac::query()->forParticipant($participant->id);
+        $q = CommonHelper::applyDateFilters($q, $request)->orderBy('reported_date');
+
+        $rows = $q->get();
+
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="pbac_export.csv"',
+            'Cache-Control' => 'no-store, no-cache, must-revalidate',
+            'Pragma' => 'no-cache',
+            'Expires' => '0',
+        ];
+
+        $callback = function () use ($rows) {
+            $out = fopen('php://output', 'w');
+            fputcsv($out, [
+                'reported_date', 'pbac_score_per_day', 'spotting_yes_no', 'pain_score_per_day', 'influence_factor', 'pain_medication', 'quality_of_life', 'energy_level', 'complaints_with_defecation', 'complaints_with_urinating', 'quality_of_sleep', 'exercise',
+            ]);
+            $i = 0;
+            foreach ($rows as $r) {
+                fputcsv($out, [
+                    $r->reported_date,
+                    (int) $r->pbac_score_per_day,
+                    (int) $r->spotting_yes_no,
+                    (int) $r->pain_score_per_day,
+                    (int) $r->influence_factor,
+                    (int) $r->pain_medication,
+                    (int) $r->quality_of_life,
+                    (int) $r->energy_level,
+                    (int) $r->complaints_with_defecation,
+                    (int) $r->complaints_with_urinating,
+                    (int) $r->quality_of_sleep,
+                    (int) $r->exercise,
+                ]);
+                if ((++$i % 200) === 0) {
+                    fflush($out);
+                    if (function_exists('ob_flush')) {
+                        @ob_flush();
+                    }
+                    flush();
+                }
+            }
+            fclose($out);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 
     /**
-     * Export the PBAC chart as a PDF.
+     * Export chart as PDF
      *
      * @authenticated
      *
-     * @bodyParam chart_data_url string required The base64 chart image data (data:image/png;base64,...)
-     * @bodyParam preset string optional Filter preset used for labeling. Example: month
-     * @bodyParam start_date date optional Custom start date if preset is 'custom'.
-     * @bodyParam end_date date optional Custom end date if preset is 'custom'.
+     * @bodyParam chart_image string required Base64 image data URL (data:image/png;base64,...)
+     * @bodyParam preset string optional One of: month, quarter, year, custom
+     * @bodyParam start_date date optional Y-m-d; used when preset=custom
+     * @bodyParam end_date date optional Y-m-d; used when preset=custom
+     *
+     * @response 200 application/pdf Binary PDF streamed to the client
      */
     public function exportChartPdf(Request $request)
     {
         $request->validate([
             'chart_image' => 'required|string',
+            'preset' => ['nullable', 'in:month,quarter,year,custom'],
+            'start_date' => ['nullable', 'date'],
+            'end_date' => ['nullable', 'date', 'after_or_equal:start_date'],
         ]);
 
         $imageData = $request->input('chart_image');
@@ -223,9 +320,9 @@ class ParticipantWebApiController extends Controller
             return response()->json(['error' => 'Invalid image format'], 400);
         }
 
-        $preset = $request->input('preset', 'month');
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
+        $preset = $request->input('preset');
 
         try {
             $pdf = Pdf::loadView('pdf.participant-pbac-chart', [
@@ -240,7 +337,6 @@ class ParticipantWebApiController extends Controller
                 'Content-Disposition' => 'attachment; filename="pbac_chart.pdf"',
             ]);
         } catch (\Exception $e) {
-            // log actual error
             \Log::error('PDF generation failed: '.$e->getMessage());
 
             return response()->json(['error' => 'PDF generation failed'], 500);

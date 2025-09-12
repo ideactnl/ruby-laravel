@@ -1,4 +1,4 @@
-@extends('layouts.participant.app')
+@extends('layouts.participant.guest')
 
 @section('content')
 <div class="flex items-center justify-center min-h-screen bg-gray-50">
