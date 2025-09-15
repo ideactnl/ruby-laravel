@@ -36,7 +36,6 @@ class GenerateParticipantPbacChartPdf implements ShouldQueue
         $path = "exports/participant/{$this->participantId}/{$filename}";
 
         try {
-            // Start rendering
             $tracker->markProgress($this->trackingJobId, 35);
             $pdf = Pdf::loadView('pdf.participant-pbac-chart', [
                 'imageBase64' => $this->imageBase64,
@@ -45,12 +44,9 @@ class GenerateParticipantPbacChartPdf implements ShouldQueue
                 'endDate' => $this->endDate,
             ]);
 
-            // Writing to storage
             $tracker->markProgress($this->trackingJobId, 70);
             Storage::disk('local')->makeDirectory("exports/participant/{$this->participantId}");
             Storage::disk('local')->put($path, $pdf->output());
-
-            // Completed
             $tracker->markCompleted($this->trackingJobId, $path, null);
 
             Log::info('Participant PBAC chart PDF stored', [

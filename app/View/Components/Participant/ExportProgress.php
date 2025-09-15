@@ -1,6 +1,6 @@
 <?php
 
-namespace App\View\Components\Common;
+namespace App\View\Components\Participant;
 
 use Closure;
 use Illuminate\Contracts\View\View;
@@ -21,6 +21,6 @@ class ExportProgress extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.common.export-progress');
+        return view('components.participant.export-progress');
     }
 }

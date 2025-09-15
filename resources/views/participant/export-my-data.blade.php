@@ -71,8 +71,8 @@
         </div>
     </div>
     <div class="mt-2">
-        <x-common.export-progress type="pdf" chartCanvasId="exportChart" />
-        <x-common.export-progress type="csv" />
+        <x-participant.export-progress type="pdf" chartCanvasId="exportChart" />
+        <x-participant.export-progress type="csv" />
     </div>
 </div>
 @endsection

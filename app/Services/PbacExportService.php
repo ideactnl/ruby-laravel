@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Exports\ParticipantPbacExport;
 use App\Helpers\CommonHelper;
+use App\Jobs\AdminPbacExportJob;
 use App\Jobs\ExportParticipantPbacCsv;
 use App\Jobs\GenerateParticipantPbacChartPdf;
 use App\Models\Participant;
@@ -34,6 +35,35 @@ class PbacExportService
                 ];
             })
             ->values();
+    }
+
+    /**
+     * Queue researcher export (all participants) and return tracking payload.
+     */
+    public function queueAdminExport(Request $request, int $userId): array
+    {
+        [$startDate, $endDate] = CommonHelper::getDateRangeFromPreset(
+            $request->input('preset', 'month'),
+            $request
+        );
+
+        $format = $request->input('format', 'csv');
+        $ext = $format === 'xlsx' ? 'xlsx' : ($format === 'json' ? 'json' : 'csv');
+        $filename = 'pbac_all_'.$startDate.'_to_'.$endDate.'_'.Str::random(6).'.'.$ext;
+
+        $tracker = app(ExportTrackingService::class);
+        $job = $tracker->createJob(0, 'csv', [
+            'user_id' => $userId,
+            'preset' => $request->input('preset'),
+            'start_date' => $startDate,
+            'end_date' => $endDate,
+            'format' => $ext,
+            'filename' => $filename,
+        ]);
+
+        AdminPbacExportJob::dispatch($startDate, $endDate, $ext, $filename, $job->id);
+
+        return $tracker->toPayload($job);
     }
 
     /**

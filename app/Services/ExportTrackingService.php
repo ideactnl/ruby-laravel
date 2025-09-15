@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\URL;
 
 class ExportTrackingService
 {
-    public function createJob(int $participantId, string $type, array $meta = []): ExportJob
+    public function createJob(?int $participantId, string $type, array $meta = []): ExportJob
     {
         $job = new ExportJob([
             'participant_id' => $participantId,
