@@ -1,5 +1,3 @@
-// Dashboard (Monthly Overview): Alpine filter menu + FullCalendar
-
 window.filterMenu = function filterMenu(){
   return {
     open:false,
@@ -64,28 +62,29 @@ window.addEventListener('DOMContentLoaded', () => {
   if (!el || !window.FullCalendar) return;
   const { Calendar } = window.FullCalendar;
 
-  function renderLegendFromAgg(agg){
-    const legendEl = document.getElementById('calendarLegend');
-    if (!legendEl) return;
-    legendEl.innerHTML = '';
-    const items = Object.entries(agg)
-      .map(([type, {sum, count}]) => ({ type, avg: count ? (sum / count) : 0 }))
-      .sort((a,b) => b.avg - a.avg)
-      .slice(0,3);
-    items.forEach(item => {
-      const spec = ICONS[item.type] || { cls: 'fa-circle text-gray-400', label: item.type };
-      const pill = document.createElement('span');
-      pill.className = 'inline-flex items-center gap-2 rounded-full border border-[#5E0F0F]/30 bg-[#5E0F0F]/5 px-3 py-1 text-xs text-[#5E0F0F]';
-      const i = document.createElement('i');
-      i.className = `fa-solid ${spec.cls}`;
-      const name = document.createElement('span');
-      name.textContent = spec.label;
-      const val = document.createElement('span');
-      val.className = 'text-[11px] text-gray-500';
-      val.textContent = `avg ${item.avg.toFixed(item.type==='sleep' ? 1 : 0)}`;
-      pill.append(i, name, val);
-      legendEl.appendChild(pill);
-    });
+  const rangeCache = new Map();
+  let currentFetchController = null;
+
+  function buildEventsFromRows(rows, selected){
+    const evts = [];
+    const pushIf = (date, cond, type, value) => {
+      if (cond && selected.has(type)) {
+        evts.push({ start: date, allDay: true, display: 'list-item', extendedProps: { type, value } });
+      }
+    };
+    for (const r of rows) {
+      const date = r.reported_date;
+      pushIf(date, r.pbac_score_per_day > 0, 'pbac', r.pbac_score_per_day);
+      pushIf(date, r.pain_score_per_day > 0, 'pain', r.pain_score_per_day);
+      pushIf(date, (r.sleep_hours ?? 0) > 0, 'sleep', r.sleep_hours);
+      pushIf(date, (r.quality_of_life ?? 0) > 0, 'general', r.quality_of_life);
+      pushIf(date, (r.influence_factor ?? 0) > 0, 'mood', r.influence_factor);
+      pushIf(date, (r.complaints_with_defecation ?? 0) > 0 || (r.complaints_with_urinating ?? 0) > 0, 'stool', 1);
+      pushIf(date, (r.exercise ?? 0) > 0, 'exercise', r.exercise);
+      pushIf(date, (r.diet ?? 0) > 0, 'diet', r.diet);
+      pushIf(date, (r.sex ?? 0) > 0, 'sex', r.sex);
+    }
+    return evts;
   }
 
   const calendar = new Calendar(el, {
@@ -106,39 +105,33 @@ window.addEventListener('DOMContentLoaded', () => {
 
     events: async (info, success, failure) => {
       try {
+        const cacheKey = `${info.startStr}|${info.endStr}`;
+        const selected = window.selectedCalendarTypes || new Set();
+
+        if (rangeCache.has(cacheKey)) {
+          const cachedRows = rangeCache.get(cacheKey);
+          success(buildEventsFromRows(cachedRows, selected));
+          return;
+        }
+
+        if (currentFetchController) currentFetchController.abort();
+        const controller = new AbortController();
+        currentFetchController = controller;
+
         const url = new URL('/api/v1/participant/dashboard', window.location.origin);
         url.searchParams.set('preset', 'custom');
         url.searchParams.set('start_date', info.startStr);
         url.searchParams.set('end_date', info.endStr);
-        const res = await fetch(url);
+        const res = await fetch(url, { signal: controller.signal });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const json = await res.json();
         const rows = json?.calendar ?? [];
-        const evts = [];
-        const selected = window.selectedCalendarTypes || new Set();
-        const agg = {};
-        for (const r of rows) {
-          const date = r.reported_date;
-          const pushIf = (cond, type, value) => {
-            if (cond && selected.has(type)) {
-              evts.push({ start: date, allDay: true, display: 'list-item', extendedProps: { type, value } });
-              if (!agg[type]) agg[type] = { sum: 0, count: 0 };
-              agg[type].sum += (value ?? 0);
-              agg[type].count += 1;
-            }
-          };
-          pushIf(r.pbac_score_per_day > 0, 'pbac', r.pbac_score_per_day);
-          pushIf(r.pain_score_per_day > 0, 'pain', r.pain_score_per_day);
-          pushIf((r.sleep_hours ?? 0) > 0, 'sleep', r.sleep_hours);
-          pushIf((r.quality_of_life ?? 0) > 0, 'general', r.quality_of_life);
-          pushIf((r.influence_factor ?? 0) > 0, 'mood', r.influence_factor);
-          pushIf((r.complaints_with_defecation ?? 0) > 0 || (r.complaints_with_urinating ?? 0) > 0, 'stool', 1);
-          pushIf((r.exercise ?? 0) > 0, 'exercise', r.exercise);
-          pushIf((r.diet ?? 0) > 0, 'diet', r.diet);
-          pushIf((r.sex ?? 0) > 0, 'sex', r.sex);
-        }
-        success(evts);
-        renderLegendFromAgg(agg);
+        rangeCache.set(cacheKey, rows);
+        success(buildEventsFromRows(rows, selected));
       } catch (e) {
+        if (e?.name === 'AbortError') {
+          return;
+        }
         failure(e);
       }
     },
@@ -172,7 +165,6 @@ window.addEventListener('DOMContentLoaded', () => {
   calendar.render();
 
   const monthEl = document.getElementById('cal-month-label');
-  const yearSelect = document.getElementById('cal-year-select');
   if (monthEl){
     const fmt = new Intl.DateTimeFormat(undefined, { month: 'long', year: 'numeric' });
     const setMonth = () => { monthEl.textContent = fmt.format(calendar.getDate()); };
@@ -180,36 +172,136 @@ window.addEventListener('DOMContentLoaded', () => {
     calendar.on('datesSet', setMonth);
   }
 
-  if (yearSelect){
-    const nowYear = new Date().getFullYear();
-    const years = [];
-    for (let y = nowYear - 20; y <= nowYear + 10; y++) years.push(y);
-    yearSelect.innerHTML = years.map(y => `<option value="${y}">${y}</option>`).join('');
-    const syncYear = () => {
-      const y = calendar.getDate().getFullYear();
-      if (String(yearSelect.value) !== String(y)) yearSelect.value = String(y);
-    };
-    syncYear();
-    calendar.on('datesSet', syncYear);
-    yearSelect.addEventListener('change', () => {
-      const targetYear = parseInt(yearSelect.value, 10);
-      const current = calendar.getDate();
-      const newDate = new Date(current);
-      newDate.setFullYear(targetYear);
-      calendar.gotoDate(newDate);
-    });
+  const btnBackCurrent = document.getElementById('btn-back-current');
+  const updateBackButton = () => {
+    const now = new Date();
+    const cur = calendar.getDate();
+    const isCurrentMonth = cur && (cur.getFullYear() === now.getFullYear()) && (cur.getMonth() === now.getMonth());
+    if (isCurrentMonth) {
+      if (btnBackCurrent){
+        btnBackCurrent.classList.add('hidden');
+        btnBackCurrent.style.display = 'none';
+        btnBackCurrent.setAttribute('aria-hidden', 'true');
+      }
+    } else {
+      if (btnBackCurrent){
+        btnBackCurrent.classList.remove('hidden');
+        btnBackCurrent.style.display = 'inline-flex';
+        btnBackCurrent.removeAttribute('aria-hidden');
+      }
+    }
+  };
+  calendar.on('datesSet', updateBackButton);
+  updateBackButton();
+  btnBackCurrent && btnBackCurrent.addEventListener('click', () => calendar.today());
+
+  function throttle(fn, wait){
+    let inFlight = false;
+    return function(...args){
+      if (inFlight) return;
+      inFlight = true;
+      try { fn.apply(this, args); } finally {
+        setTimeout(() => { inFlight = false; }, wait);
+      }
+    }
   }
 
-  const btnToday = document.getElementById('btn-today');
-  const btnPrev = document.getElementById('btn-prev');
-  const btnNext = document.getElementById('btn-next');
-  btnToday && btnToday.addEventListener('click', () => calendar.today());
-  btnPrev && btnPrev.addEventListener('click', () => calendar.prev());
-  btnNext && btnNext.addEventListener('click', () => calendar.next());
+  const goPrevThrottled = throttle(() => calendar.prev(), 500);
+  const goNextThrottled = throttle(() => calendar.next(), 500);
+
+  window.addEventListener('keydown', (e) => {
+    const tag = (e.target && e.target.tagName) ? e.target.tagName.toLowerCase() : '';
+    if (tag === 'input' || tag === 'textarea' || e.metaKey || e.ctrlKey || e.altKey) return;
+    if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      goPrevThrottled();
+    } else if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      goNextThrottled();
+    }
+  });
+
+  let wheelAccum = 0;
+  const wheelThreshold = 30;
+  el.addEventListener('wheel', (e) => {
+    if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
+    e.preventDefault();
+    e.stopPropagation();
+    wheelAccum += e.deltaY;
+    if (Math.abs(wheelAccum) >= wheelThreshold) {
+      if (wheelAccum > 0) {
+        goNextThrottled();
+      } else {
+        goPrevThrottled();
+      }
+      wheelAccum = 0;
+    }
+  }, { passive: false });
+
+  let dragStartY = null;
+  let dragging = false;
+  const dragThreshold = 40;
+  el.addEventListener('mousedown', (e) => {
+    if (e.button !== 0) return;
+    dragging = true;
+    dragStartY = e.clientY;
+  });
+  window.addEventListener('mousemove', (e) => {
+    if (!dragging) return;
+    const diff = e.clientY - dragStartY;
+    if (Math.abs(diff) > dragThreshold) {
+      dragging = false;
+      if (diff < 0) {
+        goNextThrottled();
+      } else {
+        goPrevThrottled();
+      }
+    }
+  });
+  window.addEventListener('mouseup', () => { dragging = false; });
+
+  let touchStartY = null;
+  let touchActive = false;
+  el.addEventListener('touchstart', (e) => {
+    if (!e.touches || e.touches.length !== 1) return;
+    touchActive = true;
+    touchStartY = e.touches[0].clientY;
+  }, { passive: true });
+  el.addEventListener('touchmove', (e) => {
+    if (!touchActive || !e.touches || e.touches.length !== 1) return;
+    const diff = e.touches[0].clientY - touchStartY;
+    if (Math.abs(diff) > dragThreshold) {
+      touchActive = false;
+      e.preventDefault();
+      if (diff < 0) {
+        goNextThrottled();
+      } else {
+        goPrevThrottled();
+      }
+    }
+  }, { passive: false });
+  el.addEventListener('touchend', () => { touchActive = false; }, { passive: true });
 
   const applyDayTopCenter = () => {
     el.querySelectorAll('.fc-daygrid-day-top').forEach(t => t.classList.add('justify-center'));
   };
   applyDayTopCenter();
   calendar.on('datesSet', applyDayTopCenter);
+
+  (async () => {
+    try {
+      const base = new Date();
+      for (let i = 1; i <= 2; i++) {
+        const d = new Date(base.getFullYear(), base.getMonth() - i, 1);
+        const start = new Date(d.getFullYear(), d.getMonth(), 1);
+        const end = new Date(d.getFullYear(), d.getMonth() + 1, 0);
+        const fmt = (x) => x.toISOString().slice(0,10);
+        const url = new URL('/api/v1/participant/dashboard', window.location.origin);
+        url.searchParams.set('preset', 'custom');
+        url.searchParams.set('start_date', fmt(start));
+        url.searchParams.set('end_date', fmt(end));
+        fetch(url).catch(()=>{});
+      }
+    } catch (_) {}
+  })();
 });
