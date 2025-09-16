@@ -1,4 +1,4 @@
-<nav class="sticky top-0 z-50 bg-white/95 backdrop-blur border-t-2 border-[#B31217] md:ml-64">
+<nav class="sticky top-0 z-50 bg-white/95 backdrop-blur border-t-0 border-[#fff] md:ml-64">
     <div class="mx-auto w-full px-5 sm:px-8 lg:px-10 border-b border-[#ebebeb]">
         <div class="flex h-20 items-center justify-between border-b border-gray-100/70">
             <div class="flex min-w-0 items-center gap-4">
@@ -8,7 +8,7 @@
                     </svg>
                 </button>
                 <div class="truncate">
-                    <h1 class="truncate text-lg font-extrabold tracking-wide text-[#3C0606] sm:text-2xl">@yield('navbar_title', 'RUBY WOMEN ')</h1>
+                    <h1 class="truncate text-lg font-bold tracking-wide text-[#000] sm:text-2xl">@yield('navbar_title', 'RUBY WOMEN ')</h1>
                     <p class="text-xs text-gray-600 mt-2 sm:text-sm">@yield('navbar_subtitle', 'Your Monthly Overview of data from the Ruby Mobile App')</p>
                 </div>
             </div>

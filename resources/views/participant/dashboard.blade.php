@@ -3,10 +3,10 @@
 @section('navbar_subtitle', 'Monthly Overview Showing The Relationship Between Selected Domains')
 
 @section('content')
-<div class="px-0 pr-4 sm:pr-6 lg:pr-8 py-6" x-data="filterMenu()" x-init="init()">
-    <div class="mb-3 grid grid-cols-1 sm:grid-cols-3 items-center gap-3">
+<div class="px-0 pr-4 sm:pr-6 lg:pr-8 " x-data="filterMenu()" x-init="init()">
+    <div class="mb-10 grid grid-cols-1 sm:grid-cols-3 items-center gap-3">
         <div class="justify-self-start">
-            <h2 id="cal-month-label" class="text-xl sm:text-2xl font-extrabold tracking-tight text-gray-900">&nbsp;</h2>
+            <h2 id="cal-month-label" class="text-[22px] font-medium uppercase text-black tracking-tight">&nbsp;</h2>
         </div>
         <div class="justify-self-center">
             <div class="inline-flex items-center gap-0">
@@ -32,7 +32,7 @@
                     </div>
                     <template x-for="opt in options" :key="opt.value">
                         <label class="flex cursor-pointer items-center gap-2 rounded px-2 py-2 text-sm hover:bg-gray-50">
-                            <input type="checkbox" class="rounded border-gray-300" :value="opt.value" x-model="selected" @change="apply()"/>
+                            <input type="checkbox" class="rounded border-gray-300 w-[22px] h-[22px]" :value="opt.value" x-model="selected" @change="apply()"/>
                             <span class="inline-flex h-2.5 w-2.5 rounded" :style="`background:${opt.color}`"></span>
                             <span x-text="opt.label"></span>
                         </label>

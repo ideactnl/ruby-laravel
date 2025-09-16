@@ -4,9 +4,9 @@
 
 
 @section('content')
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6" x-data="dailyView()" x-init="init()">
-    <div class="flex items-center justify-between mb-4">
-        <h2 class="text-2xl font-extrabold tracking-tight text-gray-900" x-text="heading"></h2>
+<div class="max-w-7xl mx-auto pl-0 pr-0 py-6" x-data="dailyView()" x-init="init()">
+    <div class="flex items-center justify-between mb-4 pr-8">
+        <h2 class="text-[22px] font-medium uppercase text-black tracking-tight" x-text="heading"></h2>
         <div class="flex items-center gap-3">
             <button @click="openDate()"
                     class="inline-flex items-center gap-2 rounded-md bg-[#5E0F0F] px-4 py-2 text-sm font-semibold text-white shadow hover:opacity-90">
@@ -31,8 +31,8 @@
                     <template x-for="item in items" :key="item.key">
                         <div class="swiper-slide !w-auto">
                             <div class="w-[280px] h-[240px] rounded-lg bg-rose-50 shadow-sm border border-gray-200 p-6 flex flex-col items-center justify-center mx-auto">
-                                <div class="text-center text-sm font-extrabold tracking-wide text-gray-900 uppercase mb-6" x-text="item.label"></div>
-                                <div :class="`inline-flex items-center justify-center rounded px-3 py-1 text-sm font-semibold text-white ${item.badge}`" x-text="item.display"></div>
+                                <div class="text-center text-[26px] font-medium tracking-wide text-gray-900 uppercase mb-6" x-text="item.label"></div>
+                                <div :class="`inline-flex items-center justify-center rounded px-3 py-1 text-sm font-semibold w-[54.58px] h-[49.58px] text-[20px] text-white ${item.badge}`" x-text="item.display"></div>
                             </div>
                         </div>
                     </template>
@@ -43,12 +43,14 @@
 
     <template x-if="!loading && videos.length">
         <div>
+             <h2 class="text-[22px] font-medium uppercase text-black tracking-tight mb-5">menstrual health</h2>
+
             <div class="swiper" x-ref="vidSwiper">
                 <div class="swiper-wrapper">
                     <template x-for="(vid,vi) in videos" :key="'vid-'+vi">
                         <div class="swiper-slide !w-auto">
                             <a :href="vid.type==='youtube' ? `https://www.youtube.com/watch?v=${vid.id}` : (vid.src || '#')" target="_blank" class="block">
-                                <div class="w-[500px] h-[240px] rounded-lg bg-rose-50 shadow-sm border border-gray-200 p-3 flex items-center justify-center mx-auto relative overflow-hidden">
+                                <div class="w-[500px] h-[240px] rounded-lg bg-rose-50 shadow-sm border border-gray-200  flex items-center justify-center mx-auto relative overflow-hidden">
                                     <template x-if="vid.type==='youtube'">
                                         <img :src="`https://img.youtube.com/vi/${vid.id}/hqdefault.jpg`" alt="Video thumbnail" class="w-full h-full object-cover rounded"/>
                                     </template>

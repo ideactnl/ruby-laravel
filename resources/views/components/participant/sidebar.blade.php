@@ -37,22 +37,23 @@
                                     : 'text-white hover:bg-white/10 rounded-xl' }}">
 
                         <!-- Icon (Font Awesome) -->
-                        <span class="inline-flex h-9 w-9 shrink-0 items-center justify-center shadow
-                                     {{ $isActive ? 'rounded-lg bg-white text-black' : 'rounded-full bg-transparent text-white ring-2 ring-white' }}">
-                            @php
-                                $iconMap = [
-                                    'Calendar' => 'fa-calendar-days',
-                                    'Daily view' => 'fa-eye',
-                                    'Education' => 'fa-graduation-cap',
-                                    'Selfmanagement' => 'fa-hand-holding-dollar',
-                                    'Myths & facts' => 'fa-clipboard-check',
-                                    'Export' => 'fa-file-export',
-                                    'General information' => 'fa-circle-info',
-                                ];
-                                $iconCls = $iconMap[$item['label']] ?? 'fa-circle';
-                            @endphp
-                            <i class="fa-solid {{ $iconCls }} text-[18px]"></i>
-                        </span>
+                      <span class="inline-flex h-9 w-9 shrink-0 items-center justify-center shadow
+    {{ $isActive ? 'rounded-lg bg-white text-black' : 'rounded-full bg-transparent text-white' }}">
+    @php
+        $iconMap = [
+            'Calendar' => 'fa-calendar-days',
+            'Daily view' => 'fa-eye',
+            'Education' => 'fa-graduation-cap',
+            'Selfmanagement' => 'fa-hand-holding-dollar',
+            'Myths & facts' => 'fa-clipboard-check',
+            'Export' => 'fa-file-export',
+            'General information' => 'fa-circle-info',
+        ];
+        $iconCls = $iconMap[$item['label']] ?? 'fa-circle';
+    @endphp
+    <i class="fa-solid {{ $iconCls }} text-[18px]"></i>
+</span>
+
                         <span class="whitespace-nowrap font-semibold tracking-wide">{{ $item['label'] }}</span>
                     </a>
                 </li>

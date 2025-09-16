@@ -14,8 +14,8 @@
 
                 <div class="fixed inset-0 z-30 bg-black/40 md:hidden" x-show="sidebarOpen" x-transition.opacity @click="sidebarOpen=false" style="display:none"></div>
 
-                <main class="flex-1 md:ml-64">
-                    <div class="px-4 py-6 sm:px-6 lg:px-8">
+                <main class="flex-1 md:ml-64 overflow-hidden">
+                    <div class="pl-4 sm:pl-6 lg:pl-8 pr-0 py-6">
                         <x-alerts />
                         @yield('content')
                     </div>
