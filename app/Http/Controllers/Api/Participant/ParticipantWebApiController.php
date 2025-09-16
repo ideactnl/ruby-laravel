@@ -111,7 +111,7 @@ class ParticipantWebApiController extends Controller
 
         /** @var \Illuminate\Database\Eloquent\Collection<int, \App\Models\Pbac> $records */
         $records = $calendarBase->get();
-        $calendar = $records->map(function ($r) {
+        $calendar = $records->map(function (Pbac $r): array {
             $sleepHours = null;
             if (! empty($r->q17b) && ! empty($r->q17c)) {
                 try {
