@@ -111,7 +111,8 @@ class ParticipantWebApiController extends Controller
 
         /** @var \Illuminate\Database\Eloquent\Collection<int, \App\Models\Pbac> $records */
         $records = $calendarBase->get();
-        $calendar = $records->map(function (Pbac $r): array {
+        $calendar = [];
+        foreach ($records as $r) {
             $sleepHours = null;
             if (! empty($r->q17b) && ! empty($r->q17c)) {
                 try {
@@ -126,7 +127,7 @@ class ParticipantWebApiController extends Controller
                 }
             }
 
-            return [
+            $calendar[] = [
                 'reported_date' => $r->reported_date,
                 'pbac_score_per_day' => $r->pbac_score_per_day,
                 'spotting_yes_no' => $r->spotting_yes_no,
@@ -141,7 +142,7 @@ class ParticipantWebApiController extends Controller
                 'exercise' => $r->exercise,
                 'sleep_hours' => $sleepHours,
             ];
-        });
+        }
 
         return response()->json([
             'participant' => [
