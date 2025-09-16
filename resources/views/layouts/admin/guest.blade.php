@@ -12,7 +12,7 @@
                     <img src="{{ asset('images/logo.png') }}" alt="RubyNU logo" class="h-13 w-auto object-contain" />
                     <span class="sr-only">RubyNU</span>
                 </a>
-                <div class="text-sm text-white">Participant Portal</div>
+                <div class="text-sm text-white">Admin Portal</div>
             </div>
         </header>
 
@@ -24,7 +24,7 @@
             <div class="flex flex-col sm:flex-row justify-center items-center space-y-2 sm:space-y-0 sm:space-x-4">
                 <span>&copy; {{ date('Y') }} RubyNU. All rights reserved.</span>
                 <span class="hidden sm:inline">|</span>
-                <a href="{{ route('login') }}" class="text-white hover:text-gray-200 transition-colors">Admin Login</a>
+                <a href="{{ route('participant.web.login') }}" class="text-white hover:text-gray-200 transition-colors">Participant Login</a>
             </div>
         </footer>
     </div>

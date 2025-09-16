@@ -9,6 +9,7 @@ use App\Services\PbacExportService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\URL;
 
 class PbacExportController extends Controller
 {
@@ -17,6 +18,40 @@ class PbacExportController extends Controller
     public function __construct(PbacExportService $exportService)
     {
         $this->exportService = $exportService;
+    }
+
+    /**
+     * Recent completed jobs for current user (limit 3).
+     */
+    public function recent(ExportTrackingService $tracker)
+    {
+        $userId = Auth::id();
+        $jobs = ExportJob::where('meta->user_id', $userId)
+            ->where('status', 'completed')
+            ->orderByDesc('finished_at')
+            ->limit(3)
+            ->get();
+
+        $data = $jobs->map(function (ExportJob $job) use ($tracker) {
+            $payload = $tracker->toPayload($job);
+            $expiresAt = now()->addMinutes(30);
+            $downloadUrl = null;
+            if ($job->file_path) {
+                $downloadUrl = URL::temporarySignedRoute('admin.pbac.exports.download', $expiresAt, ['jobId' => (string) $job->id]);
+            }
+
+            return [
+                'id' => (string) $job->id,
+                'format' => $job->meta['format'] ?? null,
+                'filename' => basename($job->file_path ?? ($job->meta['filename'] ?? '')),
+                'completed_at' => optional($job->finished_at)->toAtomString(),
+                'download_url' => $downloadUrl,
+                'expired' => $downloadUrl ? now()->greaterThan($expiresAt) : true,
+                'file_exists' => $job->file_path ? Storage::disk('local')->exists($job->file_path) : false,
+            ];
+        });
+
+        return response()->json(['items' => $data]);
     }
 
     /**
@@ -120,6 +155,30 @@ class PbacExportController extends Controller
     public function logs(Request $request)
     {
         $logs = app(ExportLogService::class)->listLogs($request);
+
+        if ($request->wantsJson() || $request->ajax() || $request->boolean('ajax')) {
+            $data = collect($logs->items())->map(function ($a) {
+                return [
+                    'id' => $a->id,
+                    'user' => $a->causer?->name,
+                    'format' => $a->properties['format'] ?? null,
+                    'status' => $a->properties['event'] ?? null,
+                    'description' => $a->description,
+                    'file' => $a->properties['file_path'] ?? null,
+                    'created_at' => optional($a->created_at)->toAtomString(),
+                ];
+            });
+
+            return response()->json([
+                'data' => $data,
+                'meta' => [
+                    'current_page' => $logs->currentPage(),
+                    'per_page' => $logs->perPage(),
+                    'total' => $logs->total(),
+                    'last_page' => $logs->lastPage(),
+                ],
+            ]);
+        }
 
         return view('pbac.logs', compact('logs'));
     }
