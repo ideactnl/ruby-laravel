@@ -1,5 +1,3 @@
-/* Daily View page logic (Alpine component + Swiper setup) */
-
 window.dailyView = function dailyView() {
   return {
     date: new Date().toISOString().slice(0,10),
@@ -16,6 +14,10 @@ window.dailyView = function dailyView() {
       }catch(e){ return this.date; }
     },
     openDate(){
+      // Prefer Flatpickr if available, fallback to native picker
+      if (this._fp && typeof this._fp.open === 'function'){
+        try { this._fp.setDate(this.date, false); this._fp.open(); return; } catch(_){}
+      }
       const el = this.$refs?.datePick;
       try{
         if (el && typeof el.showPicker === 'function'){
@@ -24,6 +26,22 @@ window.dailyView = function dailyView() {
           el.click();
         }
       }catch(e){ if (el) el.click(); }
+    },
+    prevDay(){
+      try{
+        const d = new Date(this.date);
+        d.setDate(d.getDate() - 1);
+        this.date = d.toISOString().slice(0,10);
+        this.fetchData();
+      }catch(e){}
+    },
+    nextDay(){
+      try{
+        const d = new Date(this.date);
+        d.setDate(d.getDate() + 1);
+        this.date = d.toISOString().slice(0,10);
+        this.fetchData();
+      }catch(e){}
     },
     get shortDate(){
       try{
@@ -38,6 +56,23 @@ window.dailyView = function dailyView() {
       const urlParams = new URLSearchParams(window.location.search);
       const d = urlParams.get('date');
       if (d) this.date = d;
+      try {
+        if (window.flatpickr && this.$refs?.datePick){
+          this._fp = window.flatpickr(this.$refs.datePick, {
+            dateFormat: 'Y-m-d',
+            defaultDate: this.date,
+            allowInput: false,
+            clickOpens: false,
+            wrap: false,
+            onChange: (sel) => {
+              if (sel && sel[0]){
+                const iso = sel[0].toISOString().slice(0,10);
+                if (iso !== this.date){ this.date = iso; this.fetchData(); }
+              }
+            },
+          });
+        }
+      } catch(_) {}
       this.fetchData();
     },
     async fetchData(){
@@ -65,13 +100,12 @@ window.dailyView = function dailyView() {
           this.items = items;
         }
 
-        // Always show videos
         this.videos = [
-          { type:'youtube', id:'dQw4w9WgXcQ' },
-          { type:'youtube', id:'l482T0yNkeo' },
-          { type:'youtube', id:'ysz5S6PUM-U' },
-          { type:'youtube', id:'CevxZvSJLk8' },
-          { type:'youtube', id:'hTWKbfoikeg' },
+          { type:'youtube', id:'dQw4w9WgXcQ', title: 'Understanding PBAC Scoring' },
+          { type:'youtube', id:'l482T0yNkeo', title: 'Managing Pain: Tips and Techniques' },
+          { type:'youtube', id:'ysz5S6PUM-U', title: 'Sleep Hygiene Basics' },
+          { type:'youtube', id:'CevxZvSJLk8', title: 'Diet and Energy Levels' },
+          { type:'youtube', id:'hTWKbfoikeg', title: 'General Wellbeing Guidance' },
         ];
 
         this.$nextTick(()=>{

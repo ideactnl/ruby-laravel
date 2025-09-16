@@ -1,12 +1,12 @@
 <?php
 
-namespace App\View\Components;
+namespace App\View\Components\Participant;
 
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
-class Alerts extends Component
+class ExportProgress extends Component
 {
     /**
      * Create a new component instance.
@@ -21,6 +21,6 @@ class Alerts extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.alerts');
+        return view('components.participant.export-progress');
     }
 }

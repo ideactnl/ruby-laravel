@@ -4,12 +4,28 @@
 
 
 @section('content')
-<div class="max-w-7xl mx-auto pl-0 pr-0 py-6" x-data="dailyView()" x-init="init()">
-    <div class="flex items-center justify-between mb-4 pr-8">
-        <h2 class="text-[22px] font-medium uppercase text-black tracking-tight" x-text="heading"></h2>
-        <div class="flex items-center gap-3">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6" x-data="dailyView()" x-init="init()">
+    <div class="grid grid-cols-3 items-center mb-4">
+        <div class="justify-self-start">
+            <h2 class="text-2xl font-extrabold tracking-tight text-gray-900" x-cloak x-text="heading"></h2>
+        </div>
+        <div class="justify-self-center">
+            <div class="inline-flex items-center justify-center gap-3">
+                <button @click="prevDay()"
+                        class="inline-flex items-center gap-2 rounded-md border border-[#5E0F0F]/30 text-[#5E0F0F] px-3 py-2 text-sm font-semibold bg-white hover:bg-[#5E0F0F]/5 cursor-pointer">
+                    <i class="fa-solid fa-chevron-left"></i>
+                    Previous
+                </button>
+                <button @click="nextDay()"
+                        class="inline-flex items-center gap-2 rounded-md border border-[#5E0F0F]/30 text-[#5E0F0F] px-3 py-2 text-sm font-semibold bg-white hover:bg-[#5E0F0F]/5 cursor-pointer">
+                    Next
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+        <div class="justify-self-end flex items-center">
             <button @click="openDate()"
-                    class="inline-flex items-center gap-2 rounded-md bg-[#5E0F0F] px-4 py-2 text-sm font-semibold text-white shadow hover:opacity-90">
+                    class="inline-flex items-center gap-2 rounded-md bg-[#5E0F0F] px-4 py-2 text-sm font-semibold text-white shadow hover:opacity-90 cursor-pointer">
                 Select Date
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-4 w-4"><path d="M6 9l6 6 6-6"/></svg>
             </button>
@@ -43,8 +59,6 @@
 
     <template x-if="!loading && videos.length">
         <div>
-             <h2 class="text-[22px] font-medium uppercase text-black tracking-tight mb-5">menstrual health</h2>
-
             <div class="swiper" x-ref="vidSwiper">
                 <div class="swiper-wrapper">
                     <template x-for="(vid,vi) in videos" :key="'vid-'+vi">
@@ -64,6 +78,7 @@
                                     </div>
                                 </div>
                             </a>
+                            <div class="mt-2 text-sm font-medium text-gray-800 w-[500px] mx-auto" x-cloak x-text="vid.title || 'Video'"></div>
                         </div>
                     </template>
                 </div>

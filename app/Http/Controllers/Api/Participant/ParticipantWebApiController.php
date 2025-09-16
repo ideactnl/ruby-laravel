@@ -6,8 +6,8 @@ use App\Helpers\CommonHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Participant;
 use App\Models\Pbac;
+use App\Services\ExportTrackingService;
 use App\Services\PbacExportService;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -111,7 +111,7 @@ class ParticipantWebApiController extends Controller
 
         /** @var \Illuminate\Database\Eloquent\Collection<int, \App\Models\Pbac> $records */
         $records = $calendarBase->get();
-        $calendar = $records->map(function (Pbac $r): array {
+        $calendar = $records->map(function ($r) {
             $sleepHours = null;
             if (! empty($r->q17b) && ! empty($r->q17c)) {
                 try {
@@ -223,7 +223,9 @@ class ParticipantWebApiController extends Controller
     }
 
     /**
-     * Export CSV (PBAC calendar metrics)
+     * Queue CSV export (PBAC calendar metrics)
+     *
+     * Queues a CSV export for the authenticated participant and returns a tracking job payload.
      *
      * @authenticated
      *
@@ -231,7 +233,8 @@ class ParticipantWebApiController extends Controller
      * @queryParam start_date date optional Y-m-d; required when preset=custom.
      * @queryParam end_date date optional Y-m-d; required when preset=custom.
      *
-     * @response 200 text/csv CSV file streamed to the client
+     * @response 202 {"job":{"id":"uuid","type":"csv","status":"queued","progress":0,"file_path":null,"download_url":null}}
+     * @response 401 {"error":"Unauthenticated"}
      */
     public function exportPbacData(Request $request, PbacExportService $exportService)
     {
@@ -240,73 +243,35 @@ class ParticipantWebApiController extends Controller
             return response()->json(['error' => 'Unauthenticated'], 401);
         }
 
-        $validated = $request->validate([
+        $request->validate([
             'preset' => ['nullable', 'in:month,quarter,year,custom'],
             'start_date' => ['nullable', 'date'],
             'end_date' => ['nullable', 'date', 'after_or_equal:start_date'],
         ]);
 
-        $q = Pbac::query()->forParticipant($participant->id);
-        $q = CommonHelper::applyDateFilters($q, $request)->orderBy('reported_date');
+        $job = $exportService->queueParticipantCsv($request, $participant->id);
 
-        $rows = $q->get();
-
-        $headers = [
-            'Content-Type' => 'text/csv',
-            'Content-Disposition' => 'attachment; filename="pbac_export.csv"',
-            'Cache-Control' => 'no-store, no-cache, must-revalidate',
-            'Pragma' => 'no-cache',
-            'Expires' => '0',
-        ];
-
-        $callback = function () use ($rows) {
-            $out = fopen('php://output', 'w');
-            fputcsv($out, [
-                'reported_date', 'pbac_score_per_day', 'spotting_yes_no', 'pain_score_per_day', 'influence_factor', 'pain_medication', 'quality_of_life', 'energy_level', 'complaints_with_defecation', 'complaints_with_urinating', 'quality_of_sleep', 'exercise',
-            ]);
-            $i = 0;
-            foreach ($rows as $r) {
-                fputcsv($out, [
-                    $r->reported_date,
-                    (int) $r->pbac_score_per_day,
-                    (int) $r->spotting_yes_no,
-                    (int) $r->pain_score_per_day,
-                    (int) $r->influence_factor,
-                    (int) $r->pain_medication,
-                    (int) $r->quality_of_life,
-                    (int) $r->energy_level,
-                    (int) $r->complaints_with_defecation,
-                    (int) $r->complaints_with_urinating,
-                    (int) $r->quality_of_sleep,
-                    (int) $r->exercise,
-                ]);
-                if ((++$i % 200) === 0) {
-                    fflush($out);
-                    if (function_exists('ob_flush')) {
-                        @ob_flush();
-                    }
-                    flush();
-                }
-            }
-            fclose($out);
-        };
-
-        return response()->stream($callback, 200, $headers);
+        return response()->json(['job' => $job], 202);
     }
 
     /**
-     * Export chart as PDF
+     * Queue chart export as PDF
+     *
+     * Queues a PDF export (chart image provided by the client) for the authenticated participant
+     * and returns a tracking job payload.
      *
      * @authenticated
      *
-     * @bodyParam chart_image string required Base64 image data URL (data:image/png;base64,...)
+     * @bodyParam chart_image string required Base64 image data URL (data:image/png;base64,...) Example: data:image/png;base64,iVBORw...
      * @bodyParam preset string optional One of: month, quarter, year, custom
      * @bodyParam start_date date optional Y-m-d; used when preset=custom
      * @bodyParam end_date date optional Y-m-d; used when preset=custom
      *
-     * @response 200 application/pdf Binary PDF streamed to the client
+     * @response 202 {"job":{"id":"uuid","type":"pdf","status":"queued","progress":0,"file_path":null,"download_url":null}}
+     * @response 400 {"error":"Invalid image format"}
+     * @response 401 {"error":"Unauthenticated"}
      */
-    public function exportChartPdf(Request $request)
+    public function exportChartPdf(Request $request, PbacExportService $exportService)
     {
         $request->validate([
             'chart_image' => 'required|string',
@@ -314,32 +279,109 @@ class ParticipantWebApiController extends Controller
             'start_date' => ['nullable', 'date'],
             'end_date' => ['nullable', 'date', 'after_or_equal:start_date'],
         ]);
-
         $imageData = $request->input('chart_image');
         if (! str_starts_with($imageData, 'data:image/png;base64,')) {
             return response()->json(['error' => 'Invalid image format'], 400);
         }
-
-        $startDate = $request->input('start_date');
-        $endDate = $request->input('end_date');
-        $preset = $request->input('preset');
-
-        try {
-            $pdf = Pdf::loadView('pdf.participant-pbac-chart', [
-                'imageBase64' => $imageData,
-                'preset' => $preset,
-                'startDate' => $startDate,
-                'endDate' => $endDate,
-            ]);
-
-            return response($pdf->output(), 200, [
-                'Content-Type' => 'application/pdf',
-                'Content-Disposition' => 'attachment; filename="pbac_chart.pdf"',
-            ]);
-        } catch (\Exception $e) {
-            \Log::error('PDF generation failed: '.$e->getMessage());
-
-            return response()->json(['error' => 'PDF generation failed'], 500);
+        $participant = auth('participant-web')->user();
+        if (! $participant) {
+            return response()->json(['error' => 'Unauthenticated'], 401);
         }
+
+        $job = $exportService->queueChartPdfFromImage($request, $participant->id);
+
+        return response()->json(['job' => $job], 202);
+    }
+
+    /**
+     * Get active export job
+     *
+     * Returns the most recent queued/processing job for the authenticated participant.
+     *
+     * @authenticated
+     *
+     * @response 200 {"job": {"id":"uuid","type":"csv","status":"processing","progress":25}}
+     * @response 200 {"job": null}
+     * @response 401 {"error":"Unauthenticated"}
+     */
+    public function activeExport(Request $request, ExportTrackingService $tracker)
+    {
+        $participant = auth('participant-web')->user();
+        if (! $participant) {
+            return response()->json(['error' => 'Unauthenticated'], 401);
+        }
+        $active = $tracker->getActiveForParticipant($participant->id);
+
+        return response()->json([
+            'job' => $active ? $tracker->toPayload($active) : null,
+        ]);
+    }
+
+    /**
+     * Get export job by ID
+     *
+     * Returns the export job payload by its ID. The job must belong to the authenticated participant.
+     *
+     * @authenticated
+     *
+     * @urlParam jobId string required The export job UUID. Example: 3b0a3a80-5f8a-4a28-bb79-fd2c4b15c9ef
+     *
+     * @response 200 {"job": {"id":"uuid","type":"csv","status":"completed","progress":100,"file_path":"exports/participant/1/pbac_export_....csv"}}
+     * @response 401 {"error":"Unauthenticated"}
+     * @response 404 {"error":"Not found"}
+     */
+    public function exportStatus(string $jobId, ExportTrackingService $tracker)
+    {
+        $participant = auth('participant-web')->user();
+        if (! $participant) {
+            return response()->json(['error' => 'Unauthenticated'], 401);
+        }
+        $job = $tracker->getById($jobId);
+        if (! $job || $job->participant_id !== $participant->id) {
+            return response()->json(['error' => 'Not found'], 404);
+        }
+
+        return response()->json([
+            'job' => $tracker->toPayload($job),
+        ]);
+    }
+
+    /**
+     * Download export by job ID
+     *
+     * Streams a completed export file for the authenticated participant (signed URL).
+     *
+     * @authenticated
+     *
+     * @urlParam jobId string required The export job UUID. Example: 3b0a3a80-5f8a-4a28-bb79-fd2c4b15c9ef
+     *
+     * @response 200 application/octet-stream File content
+     * @response 401 {"error":"Unauthenticated"}
+     * @response 404 {"error":"Not found"}
+     * @response 409 {"error":"File not ready"}
+     */
+    public function downloadExport(string $jobId, ExportTrackingService $tracker)
+    {
+        $participant = auth('participant-web')->user();
+        if (! $participant) {
+            return response()->json(['error' => 'Unauthenticated'], 401);
+        }
+        $job = $tracker->getById($jobId);
+        if (! $job || $job->participant_id !== $participant->id) {
+            return response()->json(['error' => 'Not found'], 404);
+        }
+        if ($job->status !== 'completed' || empty($job->file_path)) {
+            return response()->json(['error' => 'File not ready'], 409);
+        }
+
+        $disk = \Illuminate\Support\Facades\Storage::disk('local');
+        if (! $disk->exists($job->file_path)) {
+            return response()->json(['error' => 'File missing'], 410);
+        }
+
+        $absolutePath = $disk->path($job->file_path);
+        $filename = basename($absolutePath);
+
+        return response()->download($absolutePath, $filename);
     }
 }

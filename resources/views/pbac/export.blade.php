@@ -6,7 +6,15 @@
     <div class="bg-white rounded-2xl shadow p-6">
         <h2 class="text-2xl font-bold mb-6">Export PBAC Data</h2>
 
-        <form method="GET" action="{{ route('pbac.export') }}">
+        <form method="POST" action="#" @submit.prevent="
+                $dispatch('export:start', {
+                    type: 'csv',
+                    preset: preset || document.getElementById('preset')?.value,
+                    start: document.getElementById('start_date')?.value || null,
+                    end: document.getElementById('end_date')?.value || null,
+                })
+            ">
+            @csrf
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">                
                 <div>
                     <label for="preset" class="block text-sm font-medium text-gray-700">Preset Date Range</label>
@@ -59,11 +67,14 @@
                 </div>
             </div>
 
-            <div class="mt-8">
+            <div class="mt-8 flex items-center gap-4">
                 <button type="submit"
-                        class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-xl shadow">
-                    Export Data
+                        class="bg-[#5E0F0F] hover:opacity-90 text-white font-semibold py-2 px-6 rounded-xl shadow">
+                    Queue Export
                 </button>
+                <div class="flex-1">
+                    @include('components.admin.export-progress', [ 'type' => 'csv' ])
+                </div>
             </div>
         </form>
     </div>

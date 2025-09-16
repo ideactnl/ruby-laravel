@@ -31,6 +31,9 @@ Route::prefix('v1')->group(function () {
             Route::get('/pbac/export', [ParticipantWebApiController::class, 'exportPbacData'])->name('participant.pbac.export');
             Route::post('/pbac/chart/export/pdf', [ParticipantWebApiController::class, 'exportChartPdf'])->name('participant.pbac.chart.export.pdf');
             Route::get('/daily', [ParticipantWebApiController::class, 'dailyData'])->name('participant.daily');
+            Route::get('/exports/active', [ParticipantWebApiController::class, 'activeExport'])->name('participant.exports.active');
+            Route::get('/exports/{jobId}', [ParticipantWebApiController::class, 'exportStatus'])->name('participant.exports.status');
+            Route::get('/exports/{jobId}/download', [ParticipantWebApiController::class, 'downloadExport'])->middleware('signed')->name('participant.exports.download');
         });
     });
 });
