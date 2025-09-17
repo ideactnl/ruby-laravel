@@ -113,6 +113,13 @@ class ExportLogService
             $query->where('causer_id', $userId);
         }
 
-        return $query->latest()->paginate(15)->appends($request->query());
+        $perPage = (int) $request->input('per_page', 10);
+        $allowed = [10, 25, 50, 100];
+        if (! in_array($perPage, $allowed, true)) {
+            $perPage = 10;
+        }
+        $page = max(1, (int) $request->input('page', 1));
+
+        return $query->latest()->paginate($perPage, ['*'], 'page', $page)->appends($request->query());
     }
 }

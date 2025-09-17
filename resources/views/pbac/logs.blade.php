@@ -121,7 +121,7 @@
 <script>
 function logsTable(){
     return {
-        rows: [], page: 1, perPage: Number(new URLSearchParams(window.location.search).get('per_page'))||10, total: 0, lastPage: 1, loading:false,
+        rows: [], page: 1, perPage: Number(new URLSearchParams(window.location.search).get('per_page'))||10, total: 0, lastPage: 1, loading:false, error:'',
         search: new URLSearchParams(window.location.search).get('search')||'',
         format: new URLSearchParams(window.location.search).get('format')||'',
         status: new URLSearchParams(window.location.search).get('status')||'',
@@ -134,11 +134,39 @@ function logsTable(){
             await this.fetchData(1);
         },
         async fetchData(p){
-            this.loading = true; this.page = p;
+            this.loading = true; this.error=''; this.page = p;
             const params = new URLSearchParams({ ajax: '1', page: this.page, per_page: this.perPage, search: this.search, format: this.format, status: this.status });
-            const res = await fetch(`/logs?${params.toString()}`, { headers: { 'Accept':'application/json' } });
-            const json = await res.json();
-            this.rows = json.data || []; this.total = json.meta.total; this.lastPage = json.meta.last_page; this.loading = false;
+            try{
+                const url = `/logs?${params.toString()}`;
+                console.log('[logs] GET', url);
+                const res = await fetch(url, {
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    credentials: 'same-origin'
+                });
+                console.log('[logs] status', res.status, res.headers.get('content-type'));
+                if(!res.ok) throw new Error(`HTTP ${res.status}`);
+                const json = await res.json();
+                console.log('[logs] payload', json);
+                // Support both array response and {data,meta}
+                const data = Array.isArray(json) ? json : (json.data || []);
+                const meta = json.meta || {};
+                this.rows = data;
+                this.total = Number(meta.total ?? data.length ?? 0);
+                this.lastPage = Number(meta.last_page ?? meta.lastPage ?? 1);
+                if(!this.lastPage || isNaN(this.lastPage)) this.lastPage = 1;
+                console.log('[logs] parsed', { total: this.total, lastPage: this.lastPage, rows: this.rows.length, page: this.page });
+            }catch(e){
+                console.error('[logs] failed', e);
+                this.error = 'Failed to load logs. Please try again.';
+                this.rows = [];
+                this.total = 0;
+                this.lastPage = 1;
+            }finally{
+                this.loading = false;
+            }
         },
         next(){ if(this.page < this.lastPage) this.fetchData(this.page+1); },
         prev(){ if(this.page > 1) this.fetchData(this.page-1); },
