@@ -1,7 +1,7 @@
 @extends('layouts.admin.app')
 
-@section('navbar_title', 'PBAC Export Logs')
-@section('navbar_subtitle', 'Audit trail of researcher exports')
+@section('navbar_title', 'ADMIN CONSOLE - EXPORT LOGS')
+@section('navbar_subtitle', 'Audit trail of all exports')
 
 @section('content')
 <div x-data="logsTable()" x-init="init()" class="log_menu">
@@ -138,7 +138,6 @@ function logsTable(){
             const params = new URLSearchParams({ ajax: '1', page: this.page, per_page: this.perPage, search: this.search, format: this.format, status: this.status });
             try{
                 const url = `/logs?${params.toString()}`;
-                console.log('[logs] GET', url);
                 const res = await fetch(url, {
                     headers: {
                         'Accept': 'application/json',
@@ -146,20 +145,15 @@ function logsTable(){
                     },
                     credentials: 'same-origin'
                 });
-                console.log('[logs] status', res.status, res.headers.get('content-type'));
                 if(!res.ok) throw new Error(`HTTP ${res.status}`);
                 const json = await res.json();
-                console.log('[logs] payload', json);
-                // Support both array response and {data,meta}
                 const data = Array.isArray(json) ? json : (json.data || []);
                 const meta = json.meta || {};
                 this.rows = data;
                 this.total = Number(meta.total ?? data.length ?? 0);
                 this.lastPage = Number(meta.last_page ?? meta.lastPage ?? 1);
                 if(!this.lastPage || isNaN(this.lastPage)) this.lastPage = 1;
-                console.log('[logs] parsed', { total: this.total, lastPage: this.lastPage, rows: this.rows.length, page: this.page });
             }catch(e){
-                console.error('[logs] failed', e);
                 this.error = 'Failed to load logs. Please try again.';
                 this.rows = [];
                 this.total = 0;

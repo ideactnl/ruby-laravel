@@ -1,6 +1,6 @@
 @extends('layouts.admin.app')
 
-@section('navbar_title', 'Admin Console')
+@section('navbar_title', 'ADMIN CONSOLE - MANAGE APPLICATION')
 @section('navbar_subtitle', 'Administrative area')
 
 @section('content')

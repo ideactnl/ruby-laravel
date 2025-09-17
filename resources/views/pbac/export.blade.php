@@ -1,6 +1,6 @@
 @extends('layouts.admin.app')
 
-@section('navbar_title', 'Export')
+@section('navbar_title', 'ADMIN CONSOLE - EXPORT PBAC DATA')
 @section('navbar_subtitle', 'Queue PBAC dataset exports')
 
 @section('content')
