@@ -3,7 +3,7 @@
 @section('navbar_subtitle', 'Export Your PBAC Data Based on the Selected Dates')
 
 @section('content')
-<div class="px-0 pr-4 sm:pr-6 lg:px-8 py-6"
+<div class=""
     x-data="{
         preset:'month', start:'', end:'', loading:false, error:'', busy:false,
         async refresh(){
@@ -53,11 +53,11 @@
             <canvas id="exportChart"></canvas>
         </div>
         <div class="mt-4 flex items-center justify-end gap-3">
-            <button @click="exportPDF()" :disabled="busy" :class="busy ? 'opacity-60 cursor-not-allowed' : ''" class="inline-flex items-center gap-2 rounded-md bg-[#5E0F0F] px-4 py-2 text-sm font-semibold text-white shadow hover:opacity-90">
+            <button @click="exportPDF()" :disabled="busy" :class="busy ? 'opacity-60 cursor-not-allowed' : ''" class="rounded-md bg-[#5E0F0F] border border-[#5E0F0F] px-4 py-2 text-md font-semibold text-white shadow hover:opacity-90 inline-flex items-center gap-2">
                 Export as PDF
                 <i class="fa-solid fa-file-pdf"></i>
             </button>
-            <button @click="exportCSV()" :disabled="busy" :class="busy ? 'opacity-60 cursor-not-allowed' : ''" class="inline-flex items-center gap-2 rounded-md bg-[#5E0F0F] px-4 py-2 text-sm font-semibold text-white shadow hover:opacity-90">
+            <button @click="exportCSV()" :disabled="busy" :class="busy ? 'opacity-60 cursor-not-allowed' : ''" class="rounded-md bg-[#5E0F0F] border border-[#5E0F0F] px-4 py-2 text-md font-semibold text-white shadow hover:opacity-90 inline-flex items-center gap-2">
                 Export as CSV
                 <i class="fa-solid fa-file-csv"></i>
             </button>
