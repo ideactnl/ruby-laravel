@@ -1,7 +1,7 @@
 @props(['name', 'enhanced' => false])
 
 @php
-$chipClasses = 'inline-flex w-full items-center shadow rounded-md border border-gray-300 px-3 py-2 text-sm font-semibold text-[#555] bg-[#fff]
+$chipClasses = 'inline-flex w-full items-center shadow rounded-md border border-gray-300 px-3.5 py-2.5 text-sm font-semibold text-[#555] bg-[#fff]
  focus:ring-1 focus:outline-0 focus:ring-[#fff] focus:text-[#5E0F0F] focus:bg-[#5E0F0F]/5 focus:border-[#5E0F0F]';
 $classes = $chipClasses;
 @endphp

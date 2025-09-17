@@ -1,7 +1,7 @@
 @props(['name', 'type' => 'text', 'variant' => 'admin'])
 
 @php
-$baseClasses = 'w-full px-3.5 py-2.5 border rounded-lg bg-white/90 text-[#555] shadow-sm placeholder:text-gray-400 ';
+$baseClasses = 'w-full px-3.5 py-2.5 border text-sm rounded-lg bg-white/90 text-[#555] shadow-sm placeholder:text-gray-400 ';
 $adminClasses = $errors->has($name)
     ? 'border-red-500 focus:ring-2 focus:ring-red-200 focus:border-red-500'
     : 'border-gray-300 focus:border-[#5E0F0F] focus:ring-1 focus:outline-0 focus:ring-[#fff]';

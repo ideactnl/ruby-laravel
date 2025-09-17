@@ -73,8 +73,8 @@
             </div>
 
             <div class="flex items-center justify-end gap-3 pt-2">
-              <button type="button" class="px-4 py-2.5 rounded-xl border text-sm" @click="open=false" :disabled="isBusy">Cancel</button>
-              <button type="submit" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#5E0F0F] text-white" :class="isBusy ? 'opacity-60 pointer-events-none' : ''">
+              <button type="button" class="rounded-md bg-white hover:bg-[#5E0F0F]/5 border border-[#5E0F0F]/30 text-[#5E0F0F] px-4 py-2 text-md font-semibold shadow hover:opacity-90 inline-flex items-center gap-2" @click="open=false" :disabled="isBusy">Cancel</button>
+              <button type="submit" class="rounded-md bg-[#5E0F0F] border border-[#5E0F0F] px-4 py-2 text-md font-semibold text-white shadow hover:opacity-90 inline-flex items-center gap-2" :class="isBusy ? 'opacity-60 pointer-events-none' : ''">
                 <i class="fa-solid fa-floppy-disk"></i>
                 <span x-text="isBusy ? 'Saving…' : 'Save'"></span>
               </button>

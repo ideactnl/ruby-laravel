@@ -19,7 +19,7 @@
                     <span>Total: </span>&nbsp;<span x-text="total"></span>
                 </span>
             </div>
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-3 flex-wrap">
                 <div class="relative">
                     <x-form.input name="q" x-model="q" @keydown.enter.prevent="fetchData(1)" @blur="fetchData(1)" type="text" placeholder="Search name or email" class="w-80 pl-9" />
                     <span class="absolute left-3 top-2.5 text-gray-400">
@@ -27,7 +27,7 @@
                     </span>
                 </div>
 
-                <a href="{{ route('users.create') }}" class="inline-flex items-center gap-2 bg-[#5E0F0F] text-white px-4 py-2 rounded-xl shadow hover:opacity-90">
+                <a href="{{ route('users.create') }}" class="rounded-md bg-[#5E0F0F] border border-[#5E0F0F] px-4 py-2 text-md font-semibold text-white shadow hover:opacity-90 inline-flex items-center gap-2">
                     <i class="fa-solid fa-user-plus"></i>
                     New User
                 </a>

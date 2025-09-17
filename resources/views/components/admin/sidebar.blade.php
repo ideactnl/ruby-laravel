@@ -1,5 +1,5 @@
 <aside
-    class="fixed inset-y-0 left-0 z-40 w-72 transform bg-[#3C0606] text-white shadow-none transition-transform duration-300
+    class="fixed inset-y-0 left-0 z-[99] w-72 transform bg-[#3C0606] text-white shadow-none transition-transform duration-300
            md:inset-y-0 md:left-0 md:w-64 md:translate-x-0 flex flex-col overflow-x-hidden"
     :class="{ '-translate-x-full': !sidebarOpen, 'translate-x-0': sidebarOpen }"
     aria-label="Admin sidebar"

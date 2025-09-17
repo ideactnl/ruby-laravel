@@ -19,18 +19,18 @@
                     <span>Total: </span>&nbsp;<span x-text="total"></span>
                 </span>
             </div>
-            <div class="flex items-center gap-2">
-                <div class="relative">
-                    <x-form.input name="search" x-model="search" @keydown.enter.prevent="fetchData(1)" @blur="fetchData(1)" type="text" placeholder="Search by user, format, or description" class="w-80 pl-9" />
+            <div class="flex items-center md:flex-nowrap flex-wrap gap-3">
+                <div class="relative md:w-auto w-full">
+                    <x-form.input name="search" x-model="search" @keydown.enter.prevent="fetchData(1)" @blur="fetchData(1)" type="text" placeholder="Search by user, format, or description" class="md:!w-80 pl-9" />
                     <span class="absolute left-3 top-2.5 text-gray-400"><i class="fa-solid fa-magnifying-glass"></i></span>
                 </div>
-                <x-form.select name="format" x-model="format" @change="fetchData(1)" :enhanced="false" variant="participant" class="w-44">
+                <x-form.select name="format" x-model="format" @change="fetchData(1)" :enhanced="false" variant="participant" class="md:!w-44">
                     <option value="">All Formats</option>
                     <option value="csv">CSV</option>
                     <option value="xlsx">Excel</option>
                     <option value="json">JSON</option>
                 </x-form.select>
-                <x-form.select name="status" x-model="status" @change="fetchData(1)" :enhanced="false" variant="participant" class="w-44">
+                <x-form.select name="status" x-model="status" @change="fetchData(1)" :enhanced="false" variant="participant" class="md:!w-44">
                     <option value="">All Status</option>
                     <option value="completed">Completed</option>
                     <option value="failed">Failed</option>

@@ -3,7 +3,7 @@
     x-bind:disabled="loading"
     :class="loading ? 'opacity-50 cursor-not-allowed' : ''"
     {{ $attributes->merge([
-        'class' => 'inline-flex items-center justify-center px-4 py-2.5 bg-[#5E0F0F] text-white rounded-xl shadow-sm hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#5E0F0F]/30 transition duration-150 ease-in-out'
+        'class' => 'inline-flex items-center justify-center rounded-md bg-[#5E0F0F] border border-[#5E0F0F] px-4 py-2 text-md font-semibold text-white shadow hover:opacity-90 inline-flex items-center gap-2 transition duration-150 ease-in-out'
     ]) }}
 >
     <template x-if="loading">
