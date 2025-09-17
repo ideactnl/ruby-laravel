@@ -4,7 +4,7 @@
 
 
 @section('content')
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6" x-data="dailyView()" x-init="init()">
+<div class="max-w-7xl mx-auto py-6" x-data="dailyView()" x-init="init()">
     <div class="grid grid-cols-3 items-center mb-4">
         <div class="justify-self-start">
             <h2 class="text-2xl font-extrabold tracking-tight text-gray-900" x-cloak x-text="heading"></h2>
