@@ -4,7 +4,7 @@
 
 
 @section('content')
-<div class="max-w-7xl mx-auto py-6" x-data="dailyView()" x-init="init()">
+<div class="py-6" x-data="dailyView()" x-init="init()">
     <div class="grid grid-cols-3 items-center mb-4">
         <div class="justify-self-start">
             <h2 class="text-2xl font-extrabold tracking-tight text-gray-900" x-cloak x-text="heading"></h2>
@@ -38,7 +38,7 @@
     <template x-if="!loading && data">
         <div class="mb-8">
               <div class="swiper" x-ref="symSwiper">
-                <div class="swiper-wrapper">
+                <div class="swiper-wrapper overflow-x-auto !gap-6">
                     <template x-for="item in items" :key="item.key">
                         <div class="swiper-slide !w-auto">
                             <div class="w-[280px] h-[240px] rounded-lg bg-rose-50 shadow-sm border border-gray-200 p-6 flex flex-col items-center justify-center mx-auto">
@@ -55,7 +55,7 @@
     <template x-if="!loading && videos.length">
         <div>
             <div class="swiper" x-ref="vidSwiper">
-                <div class="swiper-wrapper">
+                <div class="swiper-wrapper overflow-x-auto !gap-6">
                     <template x-for="(vid,vi) in videos" :key="'vid-'+vi">
                         <div class="swiper-slide !w-auto">
                             <a :href="vid.type==='youtube' ? `https://www.youtube.com/watch?v=${vid.id}` : (vid.src || '#')" target="_blank" class="block">
