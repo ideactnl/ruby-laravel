@@ -14,7 +14,7 @@
     <div class="pl-3 pr-0">
         <nav class="flex-1 flex flex-col justify-between overflow-y-auto overflow-x-hidden">
             <div class="h-3"></div>
-            <ul class="space-y-2 pl-1 pr-0">
+            <ul class="space-y-2 pl-1 pr-0 sidebar-list-nav">
             @php
                 $items = [
                     ['label' => 'Calendar', 'href' => route('participant.dashboard'), 'active' => request()->routeIs('participant.dashboard')],
@@ -33,7 +33,7 @@
                     <a href="{{ $item['href'] }}"
                        class="group relative flex h-14 items-center gap-3 pl-5 pr-6 text-sm font-medium transition
                               {{ $isActive
-                                    ? 'bg-white text-[#111] rounded-l-[26px] rounded-r-[0px] shadow'
+                                    ? ' active-nav bg-white text-[#111] rounded-l-[26px] rounded-r-[0px] shadow'
                                     : 'text-white hover:bg-white/10 rounded-xl' }}">
 
                         <!-- Icon (Font Awesome) -->
