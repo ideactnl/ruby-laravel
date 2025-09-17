@@ -73,13 +73,12 @@
             </form>
         </div>
 
-        <!-- Progress/Status Card -->
         <div class="bg-white shadow rounded-2xl p-6">
             <h3 class="text-base font-semibold mb-3">Export Status</h3>
             @include('components.admin.export-progress', [ 'type' => 'csv' ])
         </div>
     </div>
-    <!-- Recent downloads (full-width) -->
+
     <div class="mt-6 bg-white shadow rounded-2xl p-6" x-data="recentDownloads()" x-init="init()">
         <div class="flex items-center justify-between mb-4">
             <h3 class="text-base font-semibold">Recent downloads</h3>
@@ -120,7 +119,6 @@ function recentDownloads(){
         items: [], loading: true,
         async init(){
             await this.reload();
-            // Refresh when an export completes
             window.addEventListener('exports:completed', async ()=>{ await this.reload(); });
         },
         async reload(){

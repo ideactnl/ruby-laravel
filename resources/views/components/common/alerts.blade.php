@@ -29,7 +29,6 @@ function toastCenter(){
         nextId: 1,
         duration: 3000,
         init(){
-            // Session flashes
             @if (session('success'))
                 this.push('success', 'Success', @json(session('success')));
             @endif
@@ -40,7 +39,6 @@ function toastCenter(){
                 this.push('warning', 'Validation Errors', @json(implode("\n", $errors->all())));
             @endif
 
-            // Global events (support optional detail.key and detail.title)
             window.addEventListener('alert:success', e=> this.push('success', e.detail?.title || 'Success', e.detail?.message || 'Success', e.detail?.key));
             window.addEventListener('alert:error', e=> this.push('error', e.detail?.title || 'Error', e.detail?.message || 'Something went wrong', e.detail?.key));
             window.addEventListener('alert:info', e=> this.push('info', e.detail?.title || 'Info', e.detail?.message || 'Heads up', e.detail?.key));
@@ -71,7 +69,6 @@ function toastCenter(){
             }, 100);
         },
         remove(id){ this.toasts = this.toasts.filter(t=>t.id!==id); },
-        // Styling helpers
         wrapperClass(type){ return 'border-l-4 ' + ({success:'border-green-500', error:'border-red-500', info:'border-blue-500', warning:'border-yellow-500'}[type] || 'border-gray-300'); },
         iconWrapClass(type){ return ({success:'bg-green-500', error:'bg-red-500', info:'bg-blue-500', warning:'bg-yellow-500'}[type] || 'bg-gray-400'); },
         barClass(type){ return ({success:'bg-green-500', error:'bg-red-500', info:'bg-blue-500', warning:'bg-yellow-500'}[type] || 'bg-gray-400'); },

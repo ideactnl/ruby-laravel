@@ -81,7 +81,6 @@ class PbacExportController extends Controller
         $user = Auth::user();
         $job = $this->exportService->queueAdminExport($request, $user->id);
 
-        // Log queued admin export
         app(ExportLogService::class)->logQueued($user, [
             'preset' => $request->input('preset'),
             'start_date' => $request->input('start_date'),

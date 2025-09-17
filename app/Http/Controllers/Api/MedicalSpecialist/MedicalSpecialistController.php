@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\MedicalSpecialist;
 
 use App\Http\Controllers\Controller;
 use App\Models\Participant;
+use App\Models\Pbac;
 use App\Services\PbacExportService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -99,7 +100,7 @@ class MedicalSpecialistController extends Controller
                 break;
         }
 
-        $pbacRecords = \App\Models\Pbac::where('participant_id', $participant->id)
+        $pbacRecords = Pbac::where('participant_id', $participant->id)
             ->whereBetween('reported_date', [$startDate, $endDate])
             ->orderBy('reported_date')
             ->get();

@@ -6,7 +6,6 @@
 @section('content')
 <div x-data="usersTable()" x-init="init()" class="px-4 sm:px-6 lg:px-8">
     <div class="w-full flex flex-col gap-5">
-        <!-- Top bar: stats (left) | controls (right) -->
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
             <div class="flex items-center gap-3 text-sm text-gray-600">
                 <span class="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700">

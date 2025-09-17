@@ -43,7 +43,7 @@
                     <a href="{{ $item['href'] }}"
                        class="group relative flex h-14 items-center gap-3 pl-5 pr-6 text-sm font-medium transition
                               {{ $isActive
-                                    ? 'bg-white text-[#111] rounded-l-[26px] rounded-r-[0px] shadow'
+                                    ? 'active-nav bg-white text-[#111] rounded-l-[26px] rounded-r-[0px] shadow'
                                     : 'text-white hover:bg-white/10 rounded-xl' }}">
 
                         <!-- Icon (Font Awesome) -->

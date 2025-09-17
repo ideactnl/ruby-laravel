@@ -6,12 +6,10 @@
         <h1 class="text-3xl font-bold text-gray-800 mb-4">Welcome to the Ruby app</h1>
         <p class="text-gray-600 mb-6">Empowering Women to improve their menstrual health.</p>
 
-        <!-- Image -->
         <div class="mb-6">
             <img src="{{ url('images/ruby-illustration.png') }}" alt="Illustration" class="mx-auto h-64">
         </div>
 
-        <!-- Buttons -->
         <div class="flex justify-center gap-4">
             <a href="{{ route('participant.web.login') }}"
                class="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded hover:bg-gray-100 shadow">

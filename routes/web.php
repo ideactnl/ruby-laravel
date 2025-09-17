@@ -74,8 +74,6 @@ Route::middleware(['auth', 'role:superadmin'])->group(function () {
 */
 Route::middleware(['auth', 'role:researcher|superadmin'])->group(function () {
     Route::get('pbac/export', [PbacExportController::class, 'showExportForm'])->name('pbac.export.form');
-
-    // Queue-based researcher exports
     Route::post('pbac/export/queue', [PbacExportController::class, 'queue'])->name('admin.pbac.exports.queue');
     Route::get('pbac/exports/active', [PbacExportController::class, 'active'])->name('admin.pbac.exports.active');
     Route::get('pbac/exports/recent', [PbacExportController::class, 'recent'])->name('admin.pbac.exports.recent');

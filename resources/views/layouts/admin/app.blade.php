@@ -3,9 +3,6 @@
 <head>
     @include('components.admin.head')
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
 </head>
 <body class="bg-white min-h-screen">
     <div class="min-h-screen" x-data="{ sidebarOpen: window.innerWidth >= 768 }" x-on:resize.window="sidebarOpen = window.innerWidth >= 768">

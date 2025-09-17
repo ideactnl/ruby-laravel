@@ -5,7 +5,6 @@
 </head>
 <body class="min-h-screen bg-white">
     <div class="min-h-screen flex flex-col">
-        <!-- Simple top bar with logo -->
         <header class="w-full border-b border-[#ebebeb] bg-[#520606] backdrop-blur">
             <div class="mx-auto max-w-7xl w-full px-5 sm:px-8 lg:px-10 h-16 flex items-center justify-between">
                 <a href="/" class="inline-flex items-center gap-3">
