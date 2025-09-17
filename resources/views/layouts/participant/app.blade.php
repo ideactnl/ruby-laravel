@@ -8,7 +8,7 @@
     <div class="min-h-screen" x-data="{ sidebarOpen: window.innerWidth >= 768 }" x-on:resize.window="sidebarOpen = window.innerWidth >= 768">
         @include('components.participant.navbar')
 
-        <div class="relative flex items-stretch">
+        <div class="relative">
             @auth('participant-web')
                 @include('components.participant.sidebar')
 

@@ -4,7 +4,7 @@
 @section('navbar_subtitle', 'Manage application users')
 
 @section('content')
-<div x-data="usersTable()" x-init="init()" class="px-4 sm:px-6 lg:px-8">
+<div x-data="usersTable()" x-init="init()" class="user_s">
     <div class="w-full flex flex-col gap-5">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
             <div class="flex items-center gap-3 text-sm text-gray-600">
@@ -19,13 +19,13 @@
                     <option value="100">100</option>
                 </select>
             </div>
-            <div class="flex items-center gap-2">
-                <div class="relative">
-                    <input x-model="q" @keydown.enter.prevent="fetchData(1)" @blur="fetchData(1)" type="text" placeholder="Search name or email" class="w-80 border border-gray-300 rounded-xl p-2 pl-9 shadow-sm focus:ring-2 focus:ring-[#5E0F0F]/30 focus:border-[#5E0F0F]">
-                    <span class="absolute left-3 top-2.5 text-gray-400">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                    </span>
+            <div class="flex items-center gap-3">
+                 <div class="relative">
+                    <x-form.input name="Search" type="text" x-model="q" @keydown.enter.prevent="fetchData(1)" @blur="fetchData(1)" type="text" placeholder="Search name or email"
+                           class="!w-60 pl-10" />
+                    <span class="absolute left-3 top-2.5 text-gray-400"><i class="fa-solid fa-magnifying-glass"></i></span>
                 </div>
+
                 <a href="{{ route('users.create') }}" class="inline-flex items-center gap-2 bg-[#5E0F0F] text-white px-4 py-2 rounded-xl shadow hover:opacity-90">
                     <i class="fa-solid fa-user-plus"></i>
                     New User
@@ -33,7 +33,7 @@
             </div>
         </div>
 
-        <div class="bg-white shadow rounded-2xl overflow-hidden">
+        <div class="bg-white shadow rounded-xl overflow-hidden">
             <div class="overflow-x-auto">
                 <table class="min-w-full table-fixed text-sm">
                     <colgroup>
@@ -42,7 +42,7 @@
                         <col style="width:20%">
                         <col style="width:15%">
                     </colgroup>
-                    <thead class="bg-gray-50 text-gray-600 border-b border-gray-200">
+                    <thead class="bg-[#3C0606] text-white border-b border-gray-200">
                         <tr>
                             <th class="px-6 py-3 text-left cursor-pointer select-none" @click="toggleSort('name')">Name <span class="ml-1 text-xs text-gray-400" x-show="sort==='name'" x-text="dir==='asc' ? '▲' : '▼'"></span></th>
                             <th class="px-6 py-3 text-left cursor-pointer select-none" @click="toggleSort('email')">Email <span class="ml-1 text-xs text-gray-400" x-show="sort==='email'" x-text="dir==='asc' ? '▲' : '▼'"></span></th>

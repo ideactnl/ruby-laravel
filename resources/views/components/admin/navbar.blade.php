@@ -1,5 +1,5 @@
 <nav class="sticky top-0 z-50 bg-white/95 backdrop-blur border-t-0 border-[#fff] md:ml-64">
-    <div class="mx-auto w-full px-5 sm:px-8 lg:px-10 border-b border-[#ebebeb]">
+    <div class="mx-auto w-full px-5 md:px-8 border-b border-[#ebebeb]">
         <div class="flex h-20 items-center justify-between border-b border-gray-100/70">
             <div class="flex min-w-0 items-center gap-4">
                 <!-- Sidebar toggle (mobile) -->

@@ -4,7 +4,7 @@
 @section('navbar_subtitle', 'Audit trail of researcher exports')
 
 @section('content')
-<div x-data="logsTable()" x-init="init()" class="px-4 sm:px-6 lg:px-8">
+<div x-data="logsTable()" x-init="init()" class="log_menu">
     <div class="w-full flex flex-col gap-5">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
             <div class="flex items-center gap-3 text-sm text-gray-600">
@@ -12,34 +12,36 @@
                     <i class="fa-solid fa-clipboard-list mr-1.5"></i>
                     <span>Total: </span>&nbsp;<span x-text="total"></span>
                 </span>
-                <select x-model.number="perPage" @change="fetchData(1)" class="border border-gray-300 rounded-xl p-2 text-sm shadow-sm">
+                <select x-model.number="perPage" @change="fetchData(1)"
+                 class="border border-gray-300 text-sm shadow-sm px-1 py-2.5 rounded-lg focus:border-[#555] focus:ring-1 focus:outline-0 focus:ring-[#5E0F0F]/20">
                     <option value="10">10</option>
                     <option value="25">25</option>
                     <option value="50">50</option>
                     <option value="100">100</option>
                 </select>
             </div>
-            <div class="flex items-center gap-2">
-                <div class="relative">
-                    <input x-model="search" @keydown.enter.prevent="fetchData(1)" @blur="fetchData(1)" type="text" placeholder="Search by user, format, or description"
-                           class="w-80 border border-gray-300 rounded-xl p-2 pl-9 shadow-sm focus:ring-2 focus:ring-[#5E0F0F]/30 focus:border-[#5E0F0F]">
+            <div class="flex items-center gap-3 flex-wrap">
+                <div class="relative w-full md:w-auto">
+                    <x-form.input name="Search" type="text" required x-model="search"
+                     @keydown.enter.prevent="fetchData(1)" @blur="fetchData(1)" type="text" placeholder="Search by user, format, or description"
+                           class="w-full md:!w-80 pl-10" />
                     <span class="absolute left-3 top-2.5 text-gray-400"><i class="fa-solid fa-magnifying-glass"></i></span>
                 </div>
-                <select x-model="format" @change="fetchData(1)" class="w-44 border border-gray-300 rounded-xl p-2 shadow-sm">
+                <x-form.select name="preset" id="preset" x-model="preset" required x-model="format" @change="fetchData(1)" class="md:!w-44">
                     <option value="">All Formats</option>
                     <option value="csv">CSV</option>
                     <option value="xlsx">Excel</option>
                     <option value="json">JSON</option>
-                </select>
-                <select x-model="status" @change="fetchData(1)" class="w-44 border border-gray-300 rounded-xl p-2 shadow-sm">
+                </x-form.select>
+                <x-form.select name="preset" id="preset" x-model="preset" required x-model="status" @change="fetchData(1)" class="md:!w-44">
                     <option value="">All Status</option>
                     <option value="completed">Completed</option>
                     <option value="failed">Failed</option>
-                </select>
+                </x-form.select>
             </div>
         </div>
 
-        <div class="bg-white shadow rounded-2xl p-0 overflow-hidden">
+        <div class="bg-white shadow rounded-xl p-0 overflow-hidden">
             <div class="overflow-x-auto">
                 <table class="min-w-full table-fixed text-sm">
                     <colgroup>
@@ -50,7 +52,7 @@
                         <col style="width:15%">
                         <col style="width:10%">
                     </colgroup>
-                    <thead class="bg-gray-50 text-gray-600 border-b border-gray-200">
+                    <thead class="bg-[#3C0606] text-white border-b border-gray-200">
                         <tr>
                             <th class="px-6 py-3 text-left">User</th>
                             <th class="px-6 py-3 text-left">Format</th>
@@ -99,11 +101,11 @@
                 </table>
             </div>
 
-            <div class="flex items-center justify-between px-4 py-3 border-t bg-gray-50">
+            <div class="flex items-center justify-between p-4 pt-8 bg-gray-50">
                 <div class="text-xs text-gray-600">
                     Page <span x-text="page"></span> of <span x-text="lastPage"></span>
                 </div>
-                <nav class="flex items-center gap-1" aria-label="Pagination">
+                <nav class="flex items-center gap-1 pagintion" aria-label="Pagination">
                     <button @click="go(1)" :disabled="page===1" class="px-2.5 py-1.5 rounded-lg border text-sm disabled:opacity-50 cursor-pointer">«</button>
                     <button @click="prev()" :disabled="page<=1" class="px-2.5 py-1.5 rounded-lg border text-sm disabled:opacity-50 cursor-pointer">‹</button>
                     <template x-for="p in pages()" :key="p.key">

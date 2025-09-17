@@ -15,45 +15,45 @@
     ->count();
 @endphp
 
-<div class="px-4 sm:px-6 lg:px-8">
+<div class="dashboard">
     <div class="grid grid-cols-1 gap-6">
-        <div class="bg-white shadow rounded-2xl p-6">
+        <div class="bg-white shadow rounded-xl p-6">
             <h1 class="text-xl font-semibold mb-1">Welcome, {{ $user?->name }}!</h1>
             <p class="text-sm text-gray-600">You are logged in as <span class="font-medium">{{ ucfirst($role ?? 'user') }}</span>.</p>
 
             @if ($role === 'superadmin')
                 <div class="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <div class="rounded-xl border p-4">
-                        <div class="text-xs text-gray-500">Total Users</div>
-                        <div class="mt-1 text-2xl font-semibold">{{ number_format($totalUsers) }}</div>
+                    <div class="hover:bg-rose-50 rounded-md border border-rose-300 p-4">
+                        <div class="text-md text-gray-900">Total Users</div>
+                        <div class="mt-1 text-6xl font-semibold">{{ number_format($totalUsers) }}</div>
                         <a href="{{ route('users.index') }}" class="text-[#5E0F0F] text-xs mt-2 inline-flex items-center gap-1 hover:underline">
                             Manage users
                             <i class="fa-solid fa-arrow-right text-[10px]"></i>
                         </a>
                     </div>
-                    <div class="rounded-xl border p-4">
-                        <div class="text-xs text-gray-500">Researchers</div>
-                        <div class="mt-1 text-2xl font-semibold">{{ number_format($researchers) }}</div>
+                    <div class="hover:bg-rose-50 rounded-md border border-rose-300 p-4">
+                        <div class="text-md text-gray-900">Researchers</div>
+                        <div class="mt-1 text-6xl font-semibold">{{ number_format($researchers) }}</div>
                         <a href="{{ route('pbac.export.form') }}" class="text-[#5E0F0F] text-xs mt-2 inline-flex items-center gap-1 hover:underline">
                             Export data
                             <i class="fa-solid fa-arrow-right text-[10px]"></i>
                         </a>
                     </div>
-                    <div class="rounded-xl border p-4">
-                        <div class="text-xs text-gray-500">PBAC Logs</div>
-                        <div class="mt-1 text-2xl font-semibold">{{ number_format($logsCount) }}</div>
+                    <div class="hover:bg-rose-50 rounded-md border border-rose-300 p-4">
+                        <div class="text-md text-gray-900">PBAC Logs</div>
+                        <div class="mt-1 text-6xl font-semibold">{{ number_format($logsCount) }}</div>
                         <a href="{{ route('logs') }}" class="text-[#5E0F0F] text-xs mt-2 inline-flex items-center gap-1 hover:underline">
                             View logs
                             <i class="fa-solid fa-arrow-right text-[10px]"></i>
                         </a>
                     </div>
                 </div>
-                <div class="mt-4">
-                    <a href="{{ route('pbac.export.form') }}" class="inline-flex items-center gap-2 px-3 py-2 rounded-xl border text-sm">
+                <div class="flex flex-wrap gap-4 mt-8 flex-row">
+                    <a href="{{ route('pbac.export.form') }}" class="rounded-md bg-[#5E0F0F] border border-[#5E0F0F] px-4 py-2 text-md font-semibold text-white shadow hover:opacity-90 inline-flex items-center gap-2">
                         <i class="fa-solid fa-cloud-arrow-up"></i>
                         Queue export
                     </a>
-                    <a href="{{ route('logs') }}" class="inline-flex items-center gap-2 px-3 py-2 rounded-xl border text-sm ml-2">
+                    <a href="{{ route('logs') }}" class="rounded-md bg-[#5E0F0F] border border-[#5E0F0F] px-4 py-2 text-md font-semibold text-white shadow hover:opacity-90 inline-flex items-center gap-2">
                         <i class="fa-solid fa-clipboard-list"></i>
                         Logs
                     </a>

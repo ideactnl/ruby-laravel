@@ -4,11 +4,11 @@
 @section('navbar_subtitle', 'Queue PBAC dataset exports')
 
 @section('content')
-<div class="px-4 sm:px-6 lg:px-8">
+<div class="export-nav">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <!-- Form Card -->
-        <div class="max-w-3xl w-full mr-auto bg-white shadow rounded-2xl" x-data="{ preset: '{{ old('preset', '') }}' }">
-            <form method="POST" action="#" class="p-6 space-y-4" @submit.prevent="
+        <div class="max-w-3xl w-full mr-auto bg-white shadow rounded-xl p-6" x-data="{ preset: '{{ old('preset', '') }}' }">
+            <form method="POST" action="#" class="space-y-4" @submit.prevent="
                 $dispatch('export:start', {
                     type: document.getElementById('format')?.value || 'csv',
                     preset: preset || document.getElementById('preset')?.value,
@@ -64,28 +64,28 @@
                 </div>
 
                 <div class="pt-2 flex items-center gap-2">
-                    <button type="submit" class="inline-flex items-center justify-center px-4 py-2.5 bg-[#5E0F0F] text-white rounded-xl shadow-sm hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#5E0F0F]/30 cursor-pointer">
+                    <button type="submit" class="rounded-md bg-[#5E0F0F] border border-[#5E0F0F] px-4 py-2 text-md font-semibold text-white shadow hover:opacity-90 inline-flex items-center gap-2">
                         <i class="fa-solid fa-cloud-arrow-up mr-2"></i>
                         Queue Export
                     </button>
-                    <button type="button" @click="preset=''; document.getElementById('start_date').value=''; document.getElementById('end_date').value='';" class="px-4 py-2.5 rounded-xl border text-sm cursor-pointer">Clear</button>
+                    <button type="button" @click="preset=''; document.getElementById('start_date').value=''; document.getElementById('end_date').value='';" class="rounded-md bg-white hover:bg-[#5E0F0F]/5 border border-[#5E0F0F]/30 text-[#5E0F0F] px-4 py-2 text-md font-semibold shadow hover:opacity-90 inline-flex items-center gap-2">Clear</button>
                 </div>
             </form>
         </div>
 
-        <div class="bg-white shadow rounded-2xl p-6">
+        <div class="bg-white shadow rounded-xl p-6">
             <h3 class="text-base font-semibold mb-3">Export Status</h3>
             @include('components.admin.export-progress', [ 'type' => 'csv' ])
         </div>
     </div>
 
-    <div class="mt-6 bg-white shadow rounded-2xl p-6" x-data="recentDownloads()" x-init="init()">
+    <div class="mt-6 bg-white shadow rounded-xl p-6" x-data="recentDownloads()" x-init="init()">
         <div class="flex items-center justify-between mb-4">
             <h3 class="text-base font-semibold">Recent downloads</h3>
         </div>
-        <div class="rounded-2xl border overflow-hidden">
+        <div class="overflow-hidden flex gap-4 justify-between flex-col">
             <template x-for="item in items" :key="item.id">
-                <div class="px-4 py-3 flex items-center justify-between hover:bg-gray-50 transition-colors">
+                <div class="px-4 py-3 flex items-center justify-between hover:bg-gray-50 transition-colors border border-gray-200 rounded-md">
                     <div class="flex items-center gap-3 min-w-0">
                         <div class="h-8 w-8 rounded-lg bg-gray-100 flex items-center justify-center text-gray-500">
                             <i class="fa-solid fa-file-arrow-down text-xs"></i>
@@ -98,7 +98,7 @@
                     </div>
                     <div class="flex items-center gap-2">
                         <span class="text-[10px] px-2 py-0.5 rounded-full border" :class="item.expired ? 'bg-red-50 text-red-700 border-red-200' : 'bg-green-50 text-green-700 border-green-200'" x-text="item.expired ? 'Expired' : 'Active'"></span>
-                        <a :href="item.download_url" :class="(item.expired || !item.file_exists) ? 'pointer-events-none opacity-50' : ''" class="inline-flex items-center gap-1 text-xs px-2.5 py-1.5 rounded-lg border shadow-sm">
+                        <a :href="item.download_url" :class="(item.expired || !item.file_exists) ? 'pointer-events-none opacity-50' : ''" class="rounded-md bg-[#5E0F0F] border border-[#5E0F0F] px-4 py-2 text-md font-semibold text-white shadow hover:opacity-90 inline-flex items-center gap-2">
                             <i class="fa-solid fa-download"></i>
                             Download
                         </a>

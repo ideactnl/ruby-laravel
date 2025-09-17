@@ -1,6 +1,6 @@
 @props(['name'])
 
-<div class="mb-4">
+<div class="field-flex">
     {{ $slot }}
 
     @error($name)

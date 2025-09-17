@@ -4,7 +4,7 @@
 @section('navbar_subtitle', 'Edit user')
 
 @section('content')
-<div class="max-w-3xl w-full mr-auto bg-white shadow rounded-2xl">
+<div class="max-w-3xl w-full mr-auto bg-white shadow rounded-xl">
     <form method="POST" action="{{ route('users.update', $user) }}" class="p-6 space-y-4">
         @csrf
         @method('PUT')
@@ -42,9 +42,9 @@
             </x-form.select>
         </x-form.group>
 
-        <div class="pt-2 flex items-center gap-2">
-            <button type="submit" class="inline-flex items-center justify-center px-4 py-2.5 bg-[#5E0F0F] text-white rounded-xl shadow-sm hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#5E0F0F]/30 cursor-pointer">Update</button>
-            <a href="{{ route('users.index') }}" class="px-4 py-2.5 rounded-xl border text-sm">Cancel</a>
+        <div class="pt-6 flex items-center gap-4">
+            <button type="submit" class="rounded-md bg-[#5E0F0F] border border-[#5E0F0F] px-4 py-2 text-md font-semibold text-white shadow hover:opacity-90 inline-flex items-center gap-2 cursor-pointer">Update</button>
+            <a href="{{ route('users.index') }}" class="rounded-md bg-white hover:bg-[#5E0F0F]/5 border border-[#5E0F0F]/30 text-[#5E0F0F] px-4 py-2 text-md font-semibold shadow hover:opacity-90 inline-flex items-center gap-2">Cancel</a>
         </div>
     </form>
 </div>
