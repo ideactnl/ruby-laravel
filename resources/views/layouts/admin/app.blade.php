@@ -30,6 +30,7 @@
             @endauth
         </div>
     </div>
+    @include('components.admin.profile-modal')
     @stack('scripts')
     @include('components.common.confirm')
 </body>

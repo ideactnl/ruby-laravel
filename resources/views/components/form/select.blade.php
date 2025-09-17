@@ -1,14 +1,25 @@
-@props(['name'])
+@props(['name', 'enhanced' => false])
 
-<select
-    name="{{ $name }}"
-    id="{{ $name }}"
-    {{ $attributes->merge([
-        'class' => 'w-full px-3.5 py-2.5 border rounded-xl bg-white/90 shadow-sm appearance-none '
-            . ($errors->has($name)
-                ? 'border-red-500 focus:ring-2 focus:ring-red-200 focus:border-red-500'
-                : 'border-gray-300 focus:border-[#5E0F0F] focus:ring-2 focus:ring-[#5E0F0F]/20')
-    ]) }}
->
-    {{ $slot }}
-</select>
+@php
+$chipClasses = 'inline-flex items-center rounded-md border border-[#5E0F0F] px-3 py-2 text-sm font-semibold text-[#5E0F0F] bg-[#5E0F0F]/5';
+$classes = $chipClasses;
+@endphp
+
+@if($enhanced)
+<div x-data="{}" x-init="new TomSelect($refs.select, { create: false, sortField: { field: 'text', direction: 'asc' }, controlInput: null })">
+    <select x-ref="select" name="{{ $name }}" id="{{ $name }}"
+        {{ $attributes->merge(['class' => $classes]) }}>
+        {{ $slot }}
+    </select>
+</div>
+@else
+<div class="relative inline-flex">
+    <select name="{{ $name }}" id="{{ $name }}"
+        {{ $attributes->merge(['class' => $classes . ' pr-9 appearance-none']) }}>
+        {{ $slot }}
+    </select>
+    <span class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-[#5E0F0F]">
+        <i class="fa-solid fa-chevron-down text-xs"></i>
+    </span>
+</div>
+@endif

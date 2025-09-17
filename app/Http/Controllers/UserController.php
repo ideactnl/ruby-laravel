@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Password as PasswordRule;
 use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
@@ -137,5 +139,52 @@ class UserController extends Controller
         $user->delete();
 
         return redirect()->route('users.index')->with('success', 'User deleted.');
+    }
+
+    /**
+     * Update the authenticated user's own profile (name/password).
+     */
+    public function updateSelf(Request $request)
+    {
+        $user = $request->user();
+
+        $validated = $request->validate([
+            'name' => ['nullable', 'string', 'max:120'],
+            'current_password' => ['nullable', 'string'],
+            'new_password' => ['nullable', 'string', PasswordRule::defaults(), 'confirmed'],
+        ]);
+
+        $updatedName = false;
+        $updatedPassword = false;
+
+        if (isset($validated['name']) && $validated['name'] !== '' && $validated['name'] !== $user->name) {
+            $user->name = $validated['name'];
+            $updatedName = true;
+        }
+
+        if (! empty($validated['new_password'])) {
+            if (empty($validated['current_password']) || ! Hash::check($validated['current_password'], $user->password)) {
+                return $request->wantsJson()
+                    ? response()->json(['ok' => false, 'message' => 'Current password is incorrect.'], 422)
+                    : back()->withErrors(['current_password' => 'Your current password is incorrect.'])->withInput();
+            }
+            $user->password = Hash::make($validated['new_password']);
+            $updatedPassword = true;
+        }
+
+        if ($updatedName || $updatedPassword) {
+            $user->save();
+        }
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'ok' => true,
+                'message' => 'Profile updated successfully.',
+                'updated' => ['name' => $updatedName, 'password' => $updatedPassword],
+                'user' => ['name' => $user->name, 'email' => $user->email],
+            ]);
+        }
+
+        return back()->with('success', 'Profile updated successfully.');
     }
 }

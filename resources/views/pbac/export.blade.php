@@ -48,7 +48,7 @@
 
                     <div x-show="preset === 'custom'" x-transition>
                         <x-form.label name="start_date" required>Start Date</x-form.label>
-                        <x-form.input type="date" id="start_date" name="start_date" value="{{ old('start_date') }}" placeholder="YYYY-MM-DD" />
+                        <x-form.input type="date" id="start_date" name="start_date" value="{{ old('start_date') }}" placeholder="dd/mm/yyyy" variant="participant" />
                         @error('start_date')
                             <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
                         @enderror
@@ -56,7 +56,7 @@
 
                     <div x-show="preset === 'custom'" x-transition>
                         <x-form.label name="end_date" required>End Date</x-form.label>
-                        <x-form.input type="date" id="end_date" name="end_date" value="{{ old('end_date') }}" placeholder="YYYY-MM-DD" />
+                        <x-form.input type="date" id="end_date" name="end_date" value="{{ old('end_date') }}" placeholder="dd/mm/yyyy" variant="participant" />
                         @error('end_date')
                             <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
                         @enderror

@@ -18,10 +18,6 @@
                 <p class="mt-4 text-sm md:text-base leading-relaxed">
                     Empowering Women to improve their menstrual health.
                 </p>
-                <a href="#"
-                    class="mt-6 inline-block border border-white rounded-full px-6 py-2 text-white font-semibold hover:bg-white hover:text-[#520606] transition">
-                    Share your calendar
-                </a>
             </div>
         </div>
 

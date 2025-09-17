@@ -17,12 +17,12 @@
             <div class="flex items-center gap-2 sm:gap-3">
                 <span class="hidden rounded-full bg-gray-100 px-4 py-2 text-xs font-medium text-gray-700 sm:inline">{{ now()->format('d M Y, l') }}</span>
                 @auth
-                    <div class="relative" x-data="{open:false}" @click.outside="open=false">
+                    <div class="relative" x-data="{open:false, avatarInitial: '{{ strtoupper(substr(Auth::user()->name ?? 'A', 0, 1)) }}'}" @click.outside="open=false" x-init="window.appCurrentUserName='{{ addslashes(Auth::user()->name ?? 'Admin') }}'; window.addEventListener('profile:updated', e=>{ const n=(e.detail?.user?.name||'').trim(); if(n){ avatarInitial = n.charAt(0).toUpperCase(); window.appCurrentUserName = n; } });">
                         <button @click="open=!open" class="inline-flex h-9 w-9 items-center justify-center rounded-full bg-[#5E0F0F] text-white focus:outline-none cursor-pointer" aria-label="Account">
-                            A
+                            <span x-text="avatarInitial">A</span>
                         </button>
                         <div x-show="open" x-transition class="absolute right-0 mt-2 w-44 rounded-md border border-gray-200 bg-white shadow-lg py-1 z-50" style="display:none">
-                            <a href="{{ url('/dashboard') }}" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-50">Profile</a>
+                            <button type="button" @click="open=false; window.dispatchEvent(new CustomEvent('profile:open'))" class="block w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 cursor-pointer">Profile</button>
                             <form method="POST" action="{{ route('logout') }}" class="px-3 py-1">
                                 @csrf
                                 <button type="submit" class="w-full text-left text-sm text-red-600 hover:bg-gray-50 cursor-pointer">Logout</button>

@@ -25,27 +25,20 @@
     <div class="mb-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div class="flex items-center gap-3">
             <span class="inline-flex items-center rounded-md border border-[#5E0F0F] px-3 py-2 text-sm font-semibold text-[#5E0F0F] bg-[#5E0F0F]/5">Range</span>
-            <div class="relative">
-                <select x-model="preset" @change="refresh()" class="appearance-none rounded-md border border-[#5E0F0F] text-[#5E0F0F] bg-white px-3 py-2 pr-9 text-sm font-medium shadow-sm hover:bg-[#5E0F0F]/5 focus:outline-none focus:ring-2 focus:ring-[#5E0F0F]/30">
-                    <option value="month">This Month</option>
-                    <option value="quarter">This Quarter</option>
-                    <option value="year">This Year</option>
-                    <option value="custom">Custom Range</option>
-                </select>
-                <span class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-[#5E0F0F]">
-                    <i class="fa-solid fa-chevron-down text-xs"></i>
-                </span>
-            </div>
+            <x-form.select name="preset" x-model="preset" @change="refresh()" variant="participant" :enhanced="false">
+                <option value="month">This Month</option>
+                <option value="quarter">This Quarter</option>
+                <option value="year">This Year</option>
+                <option value="custom">Custom Range</option>
+            </x-form.select>
             <span class="ml-1 text-gray-500 text-sm" x-show="loading">Loading chart...</span>
         </div>
         <div class="flex items-center gap-6" x-show="preset==='custom'">
             <div class="flex items-center gap-2">
-                <label class="text-sm text-gray-700">Start</label>
-                <input type="date" x-model="start" @change="refresh()" class="rounded-md border border-[#5E0F0F] px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#5E0F0F]/30" />
+                <x-form.input type="date" name="start_date" x-model="start" @change="refresh()" variant="participant" placeholder="Start Date" />
             </div>
             <div class="flex items-center gap-2">
-                <label class="text-sm text-gray-700">End</label>
-                <input type="date" x-model="end" @change="refresh()" class="rounded-md border border-[#5E0F0F] px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#5E0F0F]/30" />
+                <x-form.input type="date" name="end_date" x-model="end" @change="refresh()" variant="participant" placeholder="End Date" />
             </div>
         </div>
     </div>

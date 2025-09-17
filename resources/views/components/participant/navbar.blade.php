@@ -25,10 +25,10 @@
                         window.location.href = '{{ route('participant.web.login') }}';
                     }}" @click.outside="open=false">
                         <button @click="open=!open" class="inline-flex h-9 w-9 items-center justify-center rounded-full bg-[#5E0F0F] text-white focus:outline-none cursor-pointer" aria-label="Account">
-                            P
+                            <span>{{ strtoupper(substr(Auth::guard('participant-web')->user()->registration_number ?? 'P', 0, 1)) }}</span>
                         </button>
                         <div x-show="open" x-transition class="absolute right-0 mt-2 w-44 rounded-md border border-gray-200 bg-white shadow-lg py-1 z-50" style="display:none">
-                            <a href="{{ route('participant.dashboard') }}" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-50">Profile</a>
+                            <button type="button" @click="open=false; window.dispatchEvent(new CustomEvent('profile:open'))" class="block w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 cursor-pointer">Profile</button>
                             <button @click="logout()" class="block w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-gray-50 cursor-pointer">Logout</button>
                         </div>
                     </div>

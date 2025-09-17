@@ -4,3 +4,17 @@
 [x-cloak] {
     display: none !important;
 }
+
+
+@layer base {
+    button,
+    [type='button'],
+    [type='reset'],
+    [type='submit'],
+    [type='date'],
+    a,
+    select,
+    [role='button'] {
+        cursor: pointer;
+    }
+}

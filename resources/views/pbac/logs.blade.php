@@ -8,34 +8,33 @@
     <div class="w-full flex flex-col gap-5">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
             <div class="flex items-center gap-3 text-sm text-gray-600">
-                <span class="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700">
-                    <i class="fa-solid fa-clipboard-list mr-1.5"></i>
-                    <span>Total: </span>&nbsp;<span x-text="total"></span>
-                </span>
-                <select x-model.number="perPage" @change="fetchData(1)" class="border border-gray-300 rounded-xl p-2 text-sm shadow-sm">
+                <x-form.select name="per_page" x-model.number="perPage" @change="fetchData(1)" :enhanced="false" variant="participant">
                     <option value="10">10</option>
                     <option value="25">25</option>
                     <option value="50">50</option>
                     <option value="100">100</option>
-                </select>
+                </x-form.select>
+                <span class="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700">
+                    <i class="fa-solid fa-clipboard-list mr-1.5"></i>
+                    <span>Total: </span>&nbsp;<span x-text="total"></span>
+                </span>
             </div>
             <div class="flex items-center gap-2">
                 <div class="relative">
-                    <input x-model="search" @keydown.enter.prevent="fetchData(1)" @blur="fetchData(1)" type="text" placeholder="Search by user, format, or description"
-                           class="w-80 border border-gray-300 rounded-xl p-2 pl-9 shadow-sm focus:ring-2 focus:ring-[#5E0F0F]/30 focus:border-[#5E0F0F]">
+                    <x-form.input name="search" x-model="search" @keydown.enter.prevent="fetchData(1)" @blur="fetchData(1)" type="text" placeholder="Search by user, format, or description" class="w-80 pl-9" />
                     <span class="absolute left-3 top-2.5 text-gray-400"><i class="fa-solid fa-magnifying-glass"></i></span>
                 </div>
-                <select x-model="format" @change="fetchData(1)" class="w-44 border border-gray-300 rounded-xl p-2 shadow-sm">
+                <x-form.select name="format" x-model="format" @change="fetchData(1)" :enhanced="false" variant="participant" class="w-44">
                     <option value="">All Formats</option>
                     <option value="csv">CSV</option>
                     <option value="xlsx">Excel</option>
                     <option value="json">JSON</option>
-                </select>
-                <select x-model="status" @change="fetchData(1)" class="w-44 border border-gray-300 rounded-xl p-2 shadow-sm">
+                </x-form.select>
+                <x-form.select name="status" x-model="status" @change="fetchData(1)" :enhanced="false" variant="participant" class="w-44">
                     <option value="">All Status</option>
                     <option value="completed">Completed</option>
                     <option value="failed">Failed</option>
-                </select>
+                </x-form.select>
             </div>
         </div>
 
