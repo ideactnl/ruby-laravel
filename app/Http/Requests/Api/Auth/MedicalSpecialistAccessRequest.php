@@ -34,7 +34,7 @@ class MedicalSpecialistAccessRequest extends FormRequest
             return null;
         }
 
-        return now()->addDays(7);
+        return now()->addHours(24);
     }
 
     /**
@@ -98,7 +98,7 @@ class MedicalSpecialistAccessRequest extends FormRequest
     {
         return [
             'action' => [
-                'description' => 'Action to perform: "enable" to set a new PIN (valid for 7 days), or "disable" to remove PIN and disable specialist access.',
+                'description' => 'Action to perform: "enable" to set a new PIN (valid for 24 hours), or "disable" to remove PIN and disable specialist access.',
                 'example' => 'enable',
             ],
             'pin' => [
