@@ -1,7 +1,7 @@
 @extends('layouts.admin.app')
 
-@section('navbar_title', 'Users')
-@section('navbar_subtitle', 'Create user')
+@section('navbar_title', 'ADMIN CONSOLE - CREATE USERS')
+@section('navbar_subtitle', 'Create a new user')
 
 @section('content')
 <div class="max-w-3xl w-full mr-auto bg-white shadow rounded-2xl">

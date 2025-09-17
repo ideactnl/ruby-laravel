@@ -1,7 +1,7 @@
 @extends('layouts.admin.app')
 
-@section('navbar_title', 'Users')
-@section('navbar_subtitle', 'Edit user')
+@section('navbar_title', 'ADMIN CONSOLE - UPDATE USER')
+@section('navbar_subtitle', 'Edit user details')
 
 @section('content')
 <div class="max-w-3xl w-full mr-auto bg-white shadow rounded-xl">
