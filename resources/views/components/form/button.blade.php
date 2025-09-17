@@ -3,7 +3,7 @@
     x-bind:disabled="loading"
     :class="loading ? 'opacity-50 cursor-not-allowed' : ''"
     {{ $attributes->merge([
-        'class' => 'inline-flex items-center justify-center px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition duration-150 ease-in-out'
+        'class' => 'inline-flex items-center justify-center px-4 py-2.5 bg-[#5E0F0F] text-white rounded-xl shadow-sm hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#5E0F0F]/30 transition duration-150 ease-in-out'
     ]) }}
 >
     <template x-if="loading">
@@ -12,5 +12,6 @@
             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
         </svg>
     </template>
-    <span x-text="loading ? '{{ __('Processing...') }}' : '{{ trim($slot) }}'"></span>
+    <span class="inline" x-show="!loading" x-cloak>{{ trim($slot) }}</span>
+    <span class="hidden" x-show="loading" x-cloak>{{ __('Processing...') }}</span>
 </button>

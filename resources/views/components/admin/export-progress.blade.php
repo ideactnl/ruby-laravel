@@ -80,7 +80,7 @@ window.AdminExportProgressComponent = function () {
         this.job = data.job || data;
         this.progress = this.job.progress || 0;
         this.status = this.job.status || 'queued';
-        window.dispatchEvent(new CustomEvent('alert:success', { detail: { message: 'Export queued.' } }));
+        window.dispatchEvent(new CustomEvent('alert:success', { detail: { key: this.job?.id || 'export', title: 'Export', message: 'Queued.' } }));
         this.poll();
       } catch(e){
         this.error = e.message || 'Failed to queue export';
@@ -102,8 +102,11 @@ window.AdminExportProgressComponent = function () {
           if (j.status==='completed' || j.status==='failed'){
             this.isBusy=false;
             this.$el.dispatchEvent(new CustomEvent('export:idle', { bubbles:true, detail: { status:j.status } }));
-            if (j.status==='completed') window.dispatchEvent(new CustomEvent('alert:success', { detail:{ message:'Export is ready.' }}));
-            else window.dispatchEvent(new CustomEvent('alert:error', { detail:{ message:'Export failed.' }}));
+            if (j.status==='completed') {
+              window.dispatchEvent(new CustomEvent('alert:success', { detail:{ key: this.job?.id || 'export', title: 'Export', message:'Ready.' } }));
+              window.dispatchEvent(new CustomEvent('exports:completed', { detail: { job: j } }));
+            }
+            else window.dispatchEvent(new CustomEvent('alert:error', { detail:{ key: this.job?.id || 'export', title: 'Export', message:'Failed.' } }));
             return;
           }
         }
@@ -142,7 +145,7 @@ window.AdminExportProgressComponent = function () {
         <div class="bg-[#5E0F0F] h-[6px] transition-all duration-300" :style="'width:' + progress + '%'"
         ></div>
       </div>
-      <div class="flex items-center justify-between mt-1.5">
+      <div class="flex items-center justify-between mt-2">
         <span class="inline-flex items-center gap-2">
           <span class="inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] sm:text-xs font-medium" :class="statusClass()" x-text="(status||'processing').replace(/^./, c=>c.toUpperCase())"></span>
           <span class="text-[10px] sm:text-xs text-gray-500" x-text="progress + '%'" aria-label="Progress"></span>
@@ -157,6 +160,16 @@ window.AdminExportProgressComponent = function () {
       </div>
     </div>
   </template>
+
+  <template x-if="!job && !error">
+    <div class="text-center text-gray-500 py-6">
+      <div class="inline-flex items-center justify-center h-10 w-10 rounded-full bg-gray-100 mb-2">
+        <i class="fa-solid fa-cloud-arrow-up text-gray-500"></i>
+      </div>
+      <div class="text-sm">No active export. Queue one to see progress here.</div>
+    </div>
+  </template>
+
   <template x-if="error">
     <p class="text-xs text-red-600 mt-2" x-text="error"></p>
   </template>

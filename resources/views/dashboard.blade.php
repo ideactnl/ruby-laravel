@@ -1,31 +1,76 @@
 @extends('layouts.admin.app')
 
-@section('content')
-<div class="container mx-auto mt-10 px-4">
-    <div class="bg-white shadow-md rounded-lg p-6">
-        <h1 class="text-2xl font-bold mb-4">Welcome, {{ Auth::user()->name }}!</h1>
+@section('navbar_title', 'Admin Console')
+@section('navbar_subtitle', 'Administrative area')
 
-        <div class="mb-6">
-            @php
-                $role = Auth::user()->getRoleNames()->first();
-            @endphp
+@section('content')
+@php
+    $user = Auth::user();
+    $role = $user?->getRoleNames()->first();
+    $totalUsers = \App\Models\User::count();
+    $researchers = \App\Models\User::role('researcher')->count();
+    $logsCount = \Illuminate\Support\Facades\DB::table('activity_log')
+    ->whereJsonContains('properties->event', 'completed')
+    ->orWhereJsonContains('properties->event', 'failed')
+    ->count();
+@endphp
+
+<div class="px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 gap-6">
+        <div class="bg-white shadow rounded-2xl p-6">
+            <h1 class="text-xl font-semibold mb-1">Welcome, {{ $user?->name }}!</h1>
+            <p class="text-sm text-gray-600">You are logged in as <span class="font-medium">{{ ucfirst($role ?? 'user') }}</span>.</p>
 
             @if ($role === 'superadmin')
-                <div class="text-green-700 font-semibold">
-                    You are logged in as a <strong>Super Admin</strong>.
+                <div class="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div class="rounded-xl border p-4">
+                        <div class="text-xs text-gray-500">Total Users</div>
+                        <div class="mt-1 text-2xl font-semibold">{{ number_format($totalUsers) }}</div>
+                        <a href="{{ route('users.index') }}" class="text-[#5E0F0F] text-xs mt-2 inline-flex items-center gap-1 hover:underline">
+                            Manage users
+                            <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                        </a>
+                    </div>
+                    <div class="rounded-xl border p-4">
+                        <div class="text-xs text-gray-500">Researchers</div>
+                        <div class="mt-1 text-2xl font-semibold">{{ number_format($researchers) }}</div>
+                        <a href="{{ route('pbac.export.form') }}" class="text-[#5E0F0F] text-xs mt-2 inline-flex items-center gap-1 hover:underline">
+                            Export data
+                            <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                        </a>
+                    </div>
+                    <div class="rounded-xl border p-4">
+                        <div class="text-xs text-gray-500">PBAC Logs</div>
+                        <div class="mt-1 text-2xl font-semibold">{{ number_format($logsCount) }}</div>
+                        <a href="{{ route('logs') }}" class="text-[#5E0F0F] text-xs mt-2 inline-flex items-center gap-1 hover:underline">
+                            View logs
+                            <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                        </a>
+                    </div>
                 </div>
-            @elseif ($role === 'admin')
-                <div class="text-blue-700 font-semibold">
-                    You are logged in as an <strong>Admin</strong>.
+                <div class="mt-4">
+                    <a href="{{ route('pbac.export.form') }}" class="inline-flex items-center gap-2 px-3 py-2 rounded-xl border text-sm">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                        Queue export
+                    </a>
+                    <a href="{{ route('logs') }}" class="inline-flex items-center gap-2 px-3 py-2 rounded-xl border text-sm ml-2">
+                        <i class="fa-solid fa-clipboard-list"></i>
+                        Logs
+                    </a>
                 </div>
             @elseif ($role === 'researcher')
-                <div class="text-gray-700 font-semibold">
-                    You are logged in as a <strong>Researcher</strong>.
+                <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="rounded-xl border p-4">
+                        <div class="text-xs text-gray-500">Export</div>
+                        <div class="mt-1 text-sm text-gray-600">Queue PBAC dataset exports</div>
+                        <a href="{{ route('pbac.export.form') }}" class="mt-2 inline-flex items-center gap-2 px-3 py-2 rounded-xl border text-sm">
+                            <i class="fa-solid fa-cloud-arrow-up"></i>
+                            Queue export
+                        </a>
+                    </div>
                 </div>
             @else
-                <div class="text-red-700 font-semibold">
-                    Your role <strong>{{ $role }}</strong> is not recognized.
-                </div>
+                <div class="mt-6 text-sm text-gray-600">No widgets are available for your role yet.</div>
             @endif
         </div>
     </div>
