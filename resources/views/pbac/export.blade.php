@@ -48,7 +48,7 @@
 
                     <div x-show="preset === 'custom'" x-transition>
                         <x-form.label name="start_date" required>Start Date</x-form.label>
-                        <x-form.input type="date" id="start_date" name="start_date" value="{{ old('start_date') }}" placeholder="YYYY-MM-DD" />
+                        <x-form.input type="date" id="start_date" name="start_date" value="{{ old('start_date') }}" placeholder="dd/mm/yyyy" variant="participant" />
                         @error('start_date')
                             <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
                         @enderror
@@ -56,7 +56,7 @@
 
                     <div x-show="preset === 'custom'" x-transition>
                         <x-form.label name="end_date" required>End Date</x-form.label>
-                        <x-form.input type="date" id="end_date" name="end_date" value="{{ old('end_date') }}" placeholder="YYYY-MM-DD" />
+                        <x-form.input type="date" id="end_date" name="end_date" value="{{ old('end_date') }}" placeholder="dd/mm/yyyy" variant="participant" />
                         @error('end_date')
                             <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
                         @enderror
@@ -85,8 +85,8 @@
         </div>
         <div class="overflow-hidden flex gap-4 justify-between flex-col">
             <template x-for="item in items" :key="item.id">
-                <div class="px-4 py-3 flex items-center justify-between hover:bg-gray-50 transition-colors border border-gray-200 rounded-md">
-                    <div class="flex items-center gap-3 min-w-0">
+                <div class="px-4 py-3 flex items-center justify-between hover:bg-gray-50 transition-colors border border-gray-200 rounded-md flex-wrap">
+                    <div class="flex flex-wrap items-center gap-3 min-w-0">
                         <div class="h-8 w-8 rounded-lg bg-gray-100 flex items-center justify-center text-gray-500">
                             <i class="fa-solid fa-file-arrow-down text-xs"></i>
                         </div>

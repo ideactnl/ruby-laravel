@@ -385,4 +385,32 @@ class ParticipantWebApiController extends Controller
 
         return response()->download($absolutePath, $filename);
     }
+
+    /**
+     * Get participant profile
+     *
+     * Returns the authenticated participant's profile details.
+     *
+     * @authenticated
+     *
+     * @response 200 {"profile":{"registration_number":"participant123","enable_data_sharing":true,"opt_in_for_research":false,"medical_specialist_temporary_pin_expires_at":"2025-09-17T12:00:00.000000Z","created_at":"2025-09-17T11:00:00.000000Z"}}
+     * @response 401 {"error":"Unauthenticated"}
+     */
+    public function profile(Request $request)
+    {
+        $participant = Auth::guard('participant-web')->user();
+        if (! $participant) {
+            return response()->json(['error' => 'Unauthenticated'], 401);
+        }
+
+        return response()->json([
+            'profile' => [
+                'registration_number' => $participant->registration_number,
+                'enable_data_sharing' => (bool) $participant->enable_data_sharing,
+                'opt_in_for_research' => (bool) $participant->opt_in_for_research,
+                'medical_specialist_temporary_pin_expires_at' => $participant->medical_specialist_temporary_pin_expires_at,
+                'created_at' => $participant->created_at,
+            ],
+        ]);
+    }
 }

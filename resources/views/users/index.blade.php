@@ -8,22 +8,23 @@
     <div class="w-full flex flex-col gap-5">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
             <div class="flex items-center gap-3 text-sm text-gray-600">
-                <span class="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700">
-                    <i class="fa-solid fa-users mr-1.5"></i>
-                    <span>Total: </span>&nbsp;<span x-text="total"></span>
-                </span>
-                <select x-model.number="perPage" @change="fetchData(1)" class="border border-gray-300 rounded-xl p-2 text-sm shadow-sm">
+                <x-form.select name="per_page" x-model.number="perPage" @change="fetchData(1)" :enhanced="false" variant="participant">
                     <option value="10">10</option>
                     <option value="25">25</option>
                     <option value="50">50</option>
                     <option value="100">100</option>
-                </select>
+                </x-form.select>
+                <span class="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700">
+                    <i class="fa-solid fa-users mr-1.5"></i>
+                    <span>Total: </span>&nbsp;<span x-text="total"></span>
+                </span>
             </div>
-            <div class="flex items-center gap-3">
-                 <div class="relative">
-                    <x-form.input name="Search" type="text" x-model="q" @keydown.enter.prevent="fetchData(1)" @blur="fetchData(1)" type="text" placeholder="Search name or email"
-                           class="!w-60 pl-10" />
-                    <span class="absolute left-3 top-2.5 text-gray-400"><i class="fa-solid fa-magnifying-glass"></i></span>
+            <div class="flex items-center gap-2">
+                <div class="relative">
+                    <x-form.input name="q" x-model="q" @keydown.enter.prevent="fetchData(1)" @blur="fetchData(1)" type="text" placeholder="Search name or email" class="w-80 pl-9" />
+                    <span class="absolute left-3 top-2.5 text-gray-400">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </span>
                 </div>
 
                 <a href="{{ route('users.create') }}" class="inline-flex items-center gap-2 bg-[#5E0F0F] text-white px-4 py-2 rounded-xl shadow hover:opacity-90">
@@ -62,10 +63,10 @@
                                 </td>
                                 <td class="px-6 py-3 align-middle text-right whitespace-nowrap">
                                     <div class="inline-flex items-center gap-2">
-                                        <a :href="`/users/${u.id}/edit`" class="inline-flex items-center justify-center h-8 w-8 rounded-md hover:bg-blue-50 text-blue-600 cursor-pointer" title="Edit">
+                                        <a :href="`/users/${u.id}/edit`" class="inline-flex items-center justify-center h-8 w-8 rounded-md hover:bg-[#5E0F0F]/10 text-[#5E0F0F] cursor-pointer" title="Edit">
                                             <i class="fa-solid fa-pen-to-square"></i>
                                         </a>
-                                        <button @click="requestDelete(u)" class="inline-flex items-center justify-center h-8 w-8 rounded-md hover:bg-red-50 text-red-600 cursor-pointer" title="Delete">
+                                        <button @click="requestDelete(u)" class="inline-flex items-center justify-center h-8 w-8 rounded-md hover:bg-[#5E0F0F]/10 text-[#5E0F0F] cursor-pointer" title="Delete">
                                             <i class="fa-solid fa-trash"></i>
                                         </button>
                                     </div>

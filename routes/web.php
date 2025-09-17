@@ -27,6 +27,7 @@ Route::middleware(['web'])->prefix('participant')->group(function () {
         Route::get('/dashboard', fn() => view('participant.dashboard'))->name('participant.dashboard');
         Route::get('/pbac', fn() => view('participant.export-my-data'))->name('participant.pbac');
         Route::get('/daily-view', fn() => view('participant.daily-view'))->name('participant.daily-view');
+        Route::get('/api/v1/participant/profile', [\App\Http\Controllers\Api\Participant\ParticipantWebApiController::class, 'profile'])->name('participant.api.profile');
     });
 
 });
@@ -54,6 +55,7 @@ Route::get('/admin', fn() => redirect()->to('/login'));
 Auth::routes(['register' => false]);
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
+    Route::post('/profile', [UserController::class, 'updateSelf'])->name('profile.update');
 });
 
 /*

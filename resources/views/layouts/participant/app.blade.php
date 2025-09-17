@@ -31,6 +31,7 @@
             @endauth
         </div>
     </div>
+    @include('components.participant.profile-modal')
     @stack('scripts')
 </body>
 </html>

@@ -23,13 +23,8 @@
                 </button>
             </div>
         </div>
-        <div class="justify-self-end flex items-center">
-            <button @click="openDate()"
-                    class="inline-flex items-center gap-2 rounded-md bg-[#5E0F0F] px-4 py-2 text-sm font-semibold text-white shadow hover:opacity-90 cursor-pointer">
-                Select Date
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-4 w-4"><path d="M6 9l6 6 6-6"/></svg>
-            </button>
-            <input x-ref="datePick" type="date" x-model="date" @change="fetchData()" class="sr-only" />
+        <div class="justify-self-end">
+            <x-form.input type="date" name="daily_date" x-model="date" @change="fetchData()" variant="participant" placeholder="Select Date" />
         </div>
     </div>
 

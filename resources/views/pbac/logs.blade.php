@@ -8,32 +8,29 @@
     <div class="w-full flex flex-col gap-5">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
             <div class="flex items-center gap-3 text-sm text-gray-600">
-                <span class="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700">
-                    <i class="fa-solid fa-clipboard-list mr-1.5"></i>
-                    <span>Total: </span>&nbsp;<span x-text="total"></span>
-                </span>
-                <select x-model.number="perPage" @change="fetchData(1)"
-                 class="border border-gray-300 text-sm shadow-sm px-1 py-2.5 rounded-lg focus:border-[#555] focus:ring-1 focus:outline-0 focus:ring-[#5E0F0F]/20">
+                <x-form.select name="per_page" x-model.number="perPage" @change="fetchData(1)" :enhanced="false" variant="participant">
                     <option value="10">10</option>
                     <option value="25">25</option>
                     <option value="50">50</option>
                     <option value="100">100</option>
-                </select>
+                </x-form.select>
+                <span class="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700">
+                    <i class="fa-solid fa-clipboard-list mr-1.5"></i>
+                    <span>Total: </span>&nbsp;<span x-text="total"></span>
+                </span>
             </div>
-            <div class="flex items-center gap-3 flex-wrap">
-                <div class="relative w-full md:w-auto">
-                    <x-form.input name="Search" type="text" required x-model="search"
-                     @keydown.enter.prevent="fetchData(1)" @blur="fetchData(1)" type="text" placeholder="Search by user, format, or description"
-                           class="w-full md:!w-80 pl-10" />
+            <div class="flex items-center gap-2">
+                <div class="relative">
+                    <x-form.input name="search" x-model="search" @keydown.enter.prevent="fetchData(1)" @blur="fetchData(1)" type="text" placeholder="Search by user, format, or description" class="w-80 pl-9" />
                     <span class="absolute left-3 top-2.5 text-gray-400"><i class="fa-solid fa-magnifying-glass"></i></span>
                 </div>
-                <x-form.select name="preset" id="preset" x-model="preset" required x-model="format" @change="fetchData(1)" class="md:!w-44">
+                <x-form.select name="format" x-model="format" @change="fetchData(1)" :enhanced="false" variant="participant" class="w-44">
                     <option value="">All Formats</option>
                     <option value="csv">CSV</option>
                     <option value="xlsx">Excel</option>
                     <option value="json">JSON</option>
                 </x-form.select>
-                <x-form.select name="preset" id="preset" x-model="preset" required x-model="status" @change="fetchData(1)" class="md:!w-44">
+                <x-form.select name="status" x-model="status" @change="fetchData(1)" :enhanced="false" variant="participant" class="w-44">
                     <option value="">All Status</option>
                     <option value="completed">Completed</option>
                     <option value="failed">Failed</option>
