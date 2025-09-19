@@ -31,7 +31,9 @@ class PbacExportService
             ->map(function ($items, $date) {
                 return [
                     'date' => $date,
-                    'total_score' => $items->sum('score'),
+                    'total_score' => $items->sum(function ($item) {
+                        return $item->blood_loss ? $item->blood_loss['amount'] : 0;
+                    }),
                 ];
             })
             ->values();
@@ -121,22 +123,25 @@ class PbacExportService
 
     /**
      * Format PBAC records into chart-ready structure.
+     * Returns the same nested structure as the participant API for consistency.
      */
     public function getChartDataFormatted(Collection $pbacRecords): Collection
     {
         return $pbacRecords->map(function ($record) {
             return [
                 'reported_date' => $record->reported_date,
-                'pbac_score_per_day' => $record->pbac_score_per_day,
-                'pain_score_per_day' => $record->pain_score_per_day,
-                'quality_of_life' => $record->quality_of_life,
-                'energy_level' => $record->energy_level,
-                'influence_factor' => $record->influence_factor,
-                'pain_medication' => $record->pain_medication,
-                'complaints_with_defecation' => $record->complaints_with_defecation,
-                'complaints_with_urinating' => $record->complaints_with_urinating,
-                'quality_of_sleep' => $record->quality_of_sleep,
-                'exercise' => $record->exercise,
+                'pillars' => [
+                    'blood_loss' => $record->blood_loss,
+                    'pain' => $record->pain,
+                    'impact' => $record->impact,
+                    'general_health' => $record->general_health,
+                    'mood' => $record->mood,
+                    'stool_urine' => $record->stool_urine,
+                    'diet' => $record->diet,
+                    'exercise' => $record->exercise,
+                    'sex' => $record->sex,
+                    'notes' => $record->notes,
+                ],
             ];
         });
     }

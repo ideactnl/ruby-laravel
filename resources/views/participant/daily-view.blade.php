@@ -47,9 +47,21 @@
                 <div class="swiper-wrapper">
                     <template x-for="item in items" :key="item.key">
                         <div class="swiper-slide !w-auto">
-                            <div class="w-[280px] h-[240px] rounded-lg bg-rose-50 shadow-sm border border-gray-200 p-6 flex flex-col items-center justify-center mx-auto">
-                                <div class="text-center text-[26px] font-medium tracking-wide text-gray-900 uppercase mb-6" x-text="item.label"></div>
-                                <div :class="`inline-flex items-center justify-center rounded px-3 py-1 text-sm font-semibold w-[54.58px] h-[49.58px] text-[20px] text-white ${item.badge}`" x-text="item.display"></div>
+                            <div class="w-[280px] h-[240px] rounded-lg bg-rose-50 shadow-sm border border-gray-200 p-6 flex flex-col items-center justify-center mx-auto relative">
+                                <div class="text-center text-[26px] font-medium tracking-wide text-gray-900 uppercase mb-6 cursor-grab active:cursor-grabbing select-none" x-text="item.label"></div>
+                                
+                                <div class="relative group">
+                                    <div :class="`inline-flex items-center justify-center rounded px-3 py-1 text-sm font-semibold w-[54.58px] h-[49.58px] text-[20px] text-white ${item.badge} cursor-help`" 
+                                         x-text="item.value"
+                                         @mousedown.stop
+                                         @touchstart.stop></div>
+                                    
+                                    <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-3 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg shadow-xl opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none whitespace-nowrap z-50 max-w-xs"
+                                         x-text="item.tooltip">
+                                    </div>
+                                    <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 -mb-1 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900 opacity-0 group-hover:opacity-100 transition-all duration-300 z-50">
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </template>

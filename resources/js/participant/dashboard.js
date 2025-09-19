@@ -1,21 +1,25 @@
+import { getDynamicIconAndTooltip, PILLAR_ICONS } from './calendar-icons.js';
+import { buildEventsFromRows } from './calendar-data.js';
+
 window.filterMenu = function filterMenu(){
   return {
     open:false,
     options: [
-      { value: 'pbac', label: 'Blood Loss', color: '#DC2626', iconCls: 'fa-droplet text-red-600' },
+      { value: 'blood_loss', label: 'Blood Loss', color: '#DC2626', iconCls: 'fa-droplet text-red-600' },
       { value: 'pain', label: 'Pain', color: '#F59E0B', iconCls: 'fa-burst text-amber-500' },
-      { value: 'general', label: 'General Health', color: '#22C55E', iconCls: 'fa-heart-pulse text-green-500' },
-      { value: 'mood', label: 'Mood', color: '#10B981', iconCls: 'fa-face-smile text-emerald-500' },
-      { value: 'stool', label: 'Stool/Urine', color: '#0EA5E9', iconCls: 'fa-toilet text-sky-500' },
+      { value: 'impact', label: 'Impact', color: '#22C55E', iconCls: 'fa-heart-pulse text-green-500' },
+      { value: 'general_health', label: 'General Health', color: '#10B981', iconCls: 'fa-battery-half text-emerald-500' },
+      { value: 'mood', label: 'Mood', color: '#8B5CF6', iconCls: 'fa-face-smile text-violet-500' },
+      { value: 'stool_urine', label: 'Stool/Urine', color: '#0EA5E9', iconCls: 'fa-toilet text-sky-500' },
       { value: 'diet', label: 'Diet', color: '#EAB308', iconCls: 'fa-utensils text-yellow-500' },
       { value: 'exercise', label: 'Exercise', color: '#FB923C', iconCls: 'fa-person-running text-orange-400' },
-      { value: 'sex', label: 'Sex', color: '#F472B6', iconCls: 'fa-venus-mars text-pink-400' },
-      { value: 'sleep', label: 'Sleep (hrs)', color: '#64748B', iconCls: 'fa-moon text-slate-500' },
+      { value: 'sex', label: 'Sexual Health', color: '#F472B6', iconCls: 'fa-venus-mars text-pink-400' },
+      { value: 'notes', label: 'Notes', color: '#64748B', iconCls: 'fa-note-sticky text-slate-500' },
     ],
     selected: [],
     init(){
       const saved = localStorage.getItem('calendar_selected_types');
-      this.selected = saved ? JSON.parse(saved) : ['pbac','pain','sleep'];
+      this.selected = saved ? JSON.parse(saved) : ['blood_loss','pain','impact'];
       if (this.selected.length > 3) this.selected = this.selected.slice(0,3);
       window.selectedCalendarTypes = new Set(this.selected);
     },
@@ -45,17 +49,7 @@ window.filterMenu = function filterMenu(){
   }
 };
 
-const ICONS = {
-  pbac: { cls: 'fa-droplet text-red-600', label: 'Blood Loss' },
-  pain: { cls: 'fa-burst text-amber-500', label: 'Pain' },
-  sleep: { cls: 'fa-moon text-slate-500', label: 'Sleep (hrs)' },
-  general: { cls: 'fa-heart-pulse text-green-500', label: 'General Health' },
-  mood: { cls: 'fa-face-smile text-emerald-500', label: 'Mood/Influence' },
-  stool: { cls: 'fa-toilet text-sky-500', label: 'Stool/Urine' },
-  exercise: { cls: 'fa-person-running text-orange-400', label: 'Exercise' },
-  diet: { cls: 'fa-utensils text-yellow-500', label: 'Diet' },
-  sex: { cls: 'fa-venus-mars text-pink-400', label: 'Sex' },
-};
+// Use imported PILLAR_ICONS from calendar-icons.js
 
 window.addEventListener('DOMContentLoaded', () => {
   const el = document.getElementById('participantCalendar');
@@ -64,28 +58,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
   const rangeCache = new Map();
   let currentFetchController = null;
-
-  function buildEventsFromRows(rows, selected){
-    const evts = [];
-    const pushIf = (date, cond, type, value) => {
-      if (cond && selected.has(type)) {
-        evts.push({ start: date, allDay: true, display: 'list-item', extendedProps: { type, value } });
-      }
-    };
-    for (const r of rows) {
-      const date = r.reported_date;
-      pushIf(date, r.pbac_score_per_day > 0, 'pbac', r.pbac_score_per_day);
-      pushIf(date, r.pain_score_per_day > 0, 'pain', r.pain_score_per_day);
-      pushIf(date, (r.sleep_hours ?? 0) > 0, 'sleep', r.sleep_hours);
-      pushIf(date, (r.quality_of_life ?? 0) > 0, 'general', r.quality_of_life);
-      pushIf(date, (r.influence_factor ?? 0) > 0, 'mood', r.influence_factor);
-      pushIf(date, (r.complaints_with_defecation ?? 0) > 0 || (r.complaints_with_urinating ?? 0) > 0, 'stool', 1);
-      pushIf(date, (r.exercise ?? 0) > 0, 'exercise', r.exercise);
-      pushIf(date, (r.diet ?? 0) > 0, 'diet', r.diet);
-      pushIf(date, (r.sex ?? 0) > 0, 'sex', r.sex);
-    }
-    return evts;
-  }
 
   const calendar = new Calendar(el, {
     initialView: 'dayGridMonth',
@@ -138,12 +110,14 @@ window.addEventListener('DOMContentLoaded', () => {
     eventContent: function(arg) {
       const type = arg.event.extendedProps.type;
       const value = arg.event.extendedProps.value;
-      const spec = ICONS[type] || { cls: 'fa-circle text-gray-400', label: type };
+      
+      const { iconClass, tooltip } = getDynamicIconAndTooltip(type, value);
+      
       const wrap = document.createElement('span');
       wrap.className = 'inline-flex items-center gap-1 px-0.5';
       const i = document.createElement('i');
-      i.className = `fa-solid ${spec.cls} text-2xl`;
-      i.title = `${spec.label}: ${type==='sleep' ? (value+'h') : value}`;
+      i.className = `fa-solid ${iconClass} text-2xl`;
+      i.title = tooltip;
       wrap.appendChild(i);
       return { domNodes: [wrap] };
     },

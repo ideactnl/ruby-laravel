@@ -16,120 +16,177 @@ return new class extends Migration
             $table->integer('participant_id')->nullable()->index();
             $table->date('reported_date')->index();
 
-            // Q3 questions
-            $table->integer('q3a')->nullable();
-            $table->integer('q3b')->nullable();
-            $table->integer('q3c')->nullable();
-            $table->integer('q3d')->nullable();
+            // Core flags and metadata
+            $table->boolean('is_live')->nullable();
+            $table->boolean('is_blood_loss_answered')->nullable();
+            $table->integer('menstrual_blood_loss')->nullable();
+            $table->boolean('spotting')->nullable();
+            $table->boolean('no_blood_loss')->nullable();
+            $table->boolean('no_pain')->nullable();
+            $table->boolean('is_bl_first_day_period')->nullable();
 
-            // Q4 questions
-            $table->integer('q4a')->nullable();
-            $table->integer('q4b')->nullable();
-            $table->integer('q4c')->nullable();
-            $table->integer('q4d')->nullable();
-            $table->integer('q4e')->nullable();
-            $table->integer('q4f')->nullable();
+            // Blood loss methods and details
+            $table->boolean('is_bl_pads')->nullable();
+            $table->boolean('is_bl_tampon')->nullable();
+            $table->boolean('is_bl_menstrual_cup')->nullable();
+            $table->boolean('is_bl_period_underwear')->nullable();
+            $table->boolean('is_bl_other')->nullable();
+            $table->string('is_bl_other_text', 255)->nullable();
+            $table->integer('bl_pad_small')->nullable();
+            $table->integer('bl_pad_medium')->nullable();
+            $table->integer('bl_pad_large')->nullable();
+            $table->integer('bl_tampon_small')->nullable();
+            $table->integer('bl_tampon_medium')->nullable();
+            $table->integer('bl_tampon_large')->nullable();
+            $table->boolean('is_bl_very_light')->nullable();
+            $table->boolean('is_bl_light')->nullable();
+            $table->boolean('is_bl_moderate')->nullable();
+            $table->boolean('is_bl_heavy')->nullable();
+            $table->boolean('is_bl_very_heavy')->nullable();
+            $table->boolean('is_bl_blood_clots')->nullable();
+            $table->boolean('is_bl_double_protection')->nullable();
+            $table->boolean('is_bl_leaked_clothes')->nullable();
+            $table->boolean('is_bl_change_products')->nullable();
+            $table->boolean('is_bl_wake_up_night')->nullable();
 
-            // Q5 questions
-            $table->integer('q5a')->nullable();
-            $table->integer('q5b')->nullable();
-            $table->integer('q5c')->nullable();
-            $table->integer('q5d')->nullable();
-            $table->integer('q5e')->nullable();
-            $table->integer('q5f')->nullable();
-            $table->integer('q5g')->nullable();
-            $table->integer('q5h')->nullable();
-            $table->integer('q5i')->nullable();
-            $table->integer('q5j')->nullable();
-            $table->integer('q5k')->nullable();
-            $table->integer('q5l')->nullable();
-            $table->integer('q5m')->nullable();
-            $table->integer('q5n')->nullable();
-            $table->integer('q5o')->nullable();
-            $table->integer('q5p')->nullable();
+            // Pain section
+            $table->boolean('is_pain_answered')->nullable();
+            $table->integer('pain_slider_value')->nullable();
+            $table->boolean('is_pain_headache_migraine')->nullable();
+            $table->boolean('is_pain_during_peeing')->nullable();
+            $table->boolean('is_pain_during_pooping')->nullable();
+            $table->boolean('is_pain_during_sex')->nullable();
+            // Pain locations - front
+            $table->boolean('is_pain_image1_umbilical')->nullable();
+            $table->boolean('is_pain_image1_left_umbilical')->nullable();
+            $table->boolean('is_pain_image1_right_umbilical')->nullable();
+            $table->boolean('is_pain_image1_bladder')->nullable();
+            $table->boolean('is_pain_image1_left_groin')->nullable();
+            $table->boolean('is_pain_image1_right_groin')->nullable();
+            $table->boolean('is_pain_image1_left_leg')->nullable();
+            $table->boolean('is_pain_image1_right_leg')->nullable();
+            // Pain locations - back
+            $table->boolean('is_pain_image2_upper_back')->nullable();
+            $table->boolean('is_pain_image2_back')->nullable();
+            $table->boolean('is_pain_image2_left_buttock')->nullable();
+            $table->boolean('is_pain_image2_right_buttock')->nullable();
+            $table->boolean('is_pain_image2_left_back_leg')->nullable();
+            $table->boolean('is_pain_image2_right_back_leg')->nullable();
 
-            // Q6 questions
-            $table->integer('q6a')->nullable();
-            $table->integer('q6b')->nullable();
-            $table->integer('q6c')->nullable();
-            $table->integer('q6d')->nullable();
-            $table->integer('q6e')->nullable();
-            $table->integer('q6f')->nullable();
+            // Impact section
+            $table->boolean('is_impact_answered')->nullable();
+            $table->integer('impact_slider_grade_your_day')->nullable();
+            $table->integer('impact_slider_complaints')->nullable();
+            $table->boolean('is_impact_used_medication')->nullable();
+            $table->boolean('is_impact_missed_work')->nullable();
+            $table->boolean('is_impact_missed_school')->nullable();
+            $table->boolean('is_impact_could_no_sport')->nullable();
+            $table->boolean('is_impact_missed_special_activities')->nullable();
+            $table->boolean('is_impact_missed_leisure_activities')->nullable();
+            $table->boolean('is_impact_had_to_sit_more')->nullable();
+            $table->boolean('is_impact_could_not_move')->nullable();
+            $table->boolean('is_impact_had_to_stay_longer_in_bed')->nullable();
+            $table->boolean('is_impact_could_not_do_unpaid_work')->nullable();
+            $table->boolean('is_impact_other')->nullable();
+            $table->string('is_impact_other_text', 255)->nullable();
+            $table->boolean('is_impact_med_paracetamol')->nullable();
+            $table->boolean('is_impact_med_diclofenac')->nullable();
+            $table->boolean('is_impact_med_naproxen')->nullable();
+            $table->boolean('is_impact_med_iron_pills')->nullable();
+            $table->boolean('is_impact_med_tramodol')->nullable();
+            $table->boolean('is_impact_med_oxynorm')->nullable();
+            $table->boolean('is_impact_med_anticonception_pill')->nullable();
+            $table->boolean('is_impact_med_other_hormones')->nullable();
+            $table->boolean('is_impact_med_tranexamine_zuur')->nullable();
+            $table->boolean('is_impact_med_other')->nullable();
+            $table->string('is_impact_med_other_text', 255)->nullable();
+            $table->boolean('is_impact_medicine_effective')->nullable();
 
-            // Q7 questions
-            $table->integer('q7a')->nullable();
-            $table->integer('q7b')->nullable();
+            // General health
+            $table->boolean('is_general_health_answered')->nullable();
+            $table->integer('general_health_energy_level_slider_value')->nullable();
+            $table->boolean('is_general_health_dizzy')->nullable();
+            $table->boolean('is_general_health_nauseous')->nullable();
+            $table->boolean('is_general_health_headache_migraine')->nullable();
+            $table->boolean('is_general_health_bloated')->nullable();
+            $table->boolean('is_general_health_painful_sensitive_breasts')->nullable();
+            $table->boolean('is_general_health_acne')->nullable();
+            $table->boolean('is_general_health_muscle_joint_pain')->nullable();
 
-            // Q8 questions
-            $table->integer('q8a')->nullable();
-            $table->integer('q8b')->nullable();
-            $table->integer('q8c')->nullable();
-            $table->integer('q8d')->nullable();
-            $table->integer('q8e')->nullable();
-            $table->integer('q8f')->nullable();
+            // Mood
+            $table->boolean('is_mood_answered')->nullable();
+            $table->boolean('is_mood_calm')->nullable();
+            $table->boolean('is_mood_happy')->nullable();
+            $table->boolean('is_mood_excited')->nullable();
+            $table->boolean('is_mood_anxious_stressed')->nullable();
+            $table->boolean('is_mood_ashamed')->nullable();
+            $table->boolean('is_mood_angry_irritable')->nullable();
+            $table->boolean('is_mood_sensitive')->nullable();
+            $table->boolean('is_mood_swings')->nullable();
+            $table->boolean('is_mood_worthless_guilty')->nullable();
+            $table->boolean('is_mood_overwhelmed')->nullable();
+            $table->boolean('is_mood_hopes')->nullable();
+            $table->boolean('is_mood_depressed_sad_down')->nullable();
 
-            // Q9 questions
-            $table->integer('q9a')->nullable();
-            $table->integer('q9b')->nullable();
-            $table->integer('q9c')->nullable();
-            $table->integer('q9d')->nullable();
-            $table->integer('q9e')->nullable();
-            $table->integer('q9f')->nullable();
-            $table->integer('q9g')->nullable();
+            // Urine / Stool
+            $table->boolean('is_urine_stool_answered')->nullable();
+            $table->boolean('is_urine_stool_blood_in_urine')->nullable();
+            $table->boolean('is_urine_stool_blood_in_stool')->nullable();
+            $table->boolean('is_urine_stool_hard')->nullable();
+            $table->boolean('is_urine_stool_normal')->nullable();
+            $table->boolean('is_urine_stool_soft')->nullable();
+            $table->boolean('is_urine_stool_diarrhea')->nullable();
+            $table->boolean('is_urine_stool_something_else')->nullable();
+            $table->string('is_urine_stool_something_else_text', 255)->nullable();
+            $table->boolean('is_urine_stool_no_stool')->nullable();
 
-            // Q10-Q16 questions
-            $table->integer('q10')->nullable();
-            $table->integer('q11')->nullable();
-            $table->integer('q12')->nullable();
+            // Sleep
+            $table->boolean('is_sleep_answered')->nullable();
+            $table->string('sleep_fell_asleep_time', 8)->nullable();
+            $table->string('sleep_woke_up_time', 8)->nullable();
+            $table->integer('sleep_hours_of_sleep')->nullable();
+            $table->boolean('is_sleep_work_school_day')->nullable();
+            $table->boolean('is_sleep_free_day')->nullable();
+            $table->boolean('is_sleep_trouble_asleep')->nullable();
+            $table->boolean('is_sleep_tired_rested')->nullable();
+            $table->boolean('is_sleep_wake_up_during_night')->nullable();
 
-            // Q13 questions
-            $table->integer('q13a')->nullable();
-            $table->integer('q13b')->nullable();
-            $table->integer('q13c')->nullable();
-            $table->integer('q13d')->nullable();
-            $table->integer('q13e')->nullable();
+            // Exercise
+            $table->boolean('is_exercise_answered')->nullable();
+            $table->boolean('is_exercise_less_thirty')->nullable();
+            $table->boolean('is_exercise_thirty_to_sixty')->nullable();
+            $table->boolean('is_exercise_greater_sixty')->nullable();
+            $table->boolean('is_exercise_high_impact')->nullable();
+            $table->boolean('is_exercise_low_impact')->nullable();
 
-            // Q14 questions
-            $table->integer('q14a')->nullable();
-            $table->integer('q14b')->nullable();
-            $table->integer('q14c')->nullable();
-            $table->integer('q14d')->nullable();
-            $table->integer('q14e')->nullable();
+            // Diet
+            $table->boolean('is_diet_answered')->nullable();
+            $table->boolean('is_diet_vegetables')->nullable();
+            $table->boolean('is_diet_fruit')->nullable();
+            $table->boolean('is_diet_potato_rice_bread')->nullable();
+            $table->boolean('is_diet_dairy')->nullable();
+            $table->boolean('is_diet_nuts_tofu_tempe')->nullable();
+            $table->boolean('is_diet_eggs')->nullable();
+            $table->boolean('is_diet_fish')->nullable();
+            $table->boolean('is_diet_meat')->nullable();
+            $table->boolean('is_diet_soda')->nullable();
+            $table->boolean('is_diet_water')->nullable();
+            $table->boolean('is_diet_coffee')->nullable();
+            $table->boolean('is_diet_alcohol')->nullable();
 
-            $table->integer('q15')->nullable();
+            // Sex
+            $table->boolean('is_sex_answered')->nullable();
+            $table->boolean('is_sex_today')->nullable();
+            $table->boolean('is_sex_avoided')->nullable();
+            $table->boolean('is_sex_bloodloss_during_after')->nullable();
+            $table->boolean('is_sex_discomfort_pelvic_area')->nullable();
+            $table->boolean('is_sex_emotionally_physically_satisfied')->nullable();
 
-            // Q16 questions
-            $table->integer('q16a')->nullable();
-            $table->integer('q16b')->nullable();
-            $table->integer('q16c')->nullable();
+            // Notes
+            $table->boolean('is_additional_notes_answered')->nullable();
+            $table->text('additional_notes')->nullable();
 
-            // Q17 questions
-            $table->integer('q17a')->nullable();
-            $table->string('q17b', 100)->nullable();
-            $table->string('q17c', 100)->nullable();
-            $table->integer('q17d')->nullable();
-            $table->integer('q17e')->nullable();
-            $table->integer('q17f')->nullable();
-            $table->integer('q17g')->nullable();
-
-            // Q18 questions
-            $table->integer('q18a')->nullable();
-            $table->integer('q18b')->nullable();
-            $table->integer('q18c')->nullable();
-            $table->integer('q18d')->nullable();
-            $table->integer('q18e')->nullable();
-
-            // Q19 questions
-            $table->integer('q19a')->nullable();
-            $table->integer('q19b')->nullable();
-            $table->integer('q19c')->nullable();
-            $table->integer('q19d')->nullable();
-            $table->integer('q19e')->nullable();
-            $table->integer('q19f')->nullable();
-            $table->integer('q19g')->nullable();
-            $table->integer('q19h')->nullable();
-            $table->integer('q19i')->nullable();
-
+            $table->unique(['participant_id', 'reported_date']);
             $table->timestamps();
         });
     }

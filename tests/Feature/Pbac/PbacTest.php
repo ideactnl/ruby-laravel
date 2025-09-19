@@ -8,26 +8,25 @@ use Laravel\Sanctum\Sanctum;
 uses(RefreshDatabase::class);
 
 /**
- * @covers PBAC API Endpoints
+ * @covers PBAC API Endpoints (v2)
  *
- * This suite tests all PBAC API endpoints, including creation, retrieval, filtering, and participant check.
+ * This suite tests all PBAC API endpoints (v2/mobile schema), including creation, retrieval,
+ * filtering, and participant check.
  */
 describe('PBAC API', function () {
 
     /**
      * @test
      *
-     * @covers PBACController::index
      * It should return all PBAC records for an authenticated participant.
      */
     it('retrieves all PBAC records for authenticated participant', function () {
         $participant = Participant::factory()->create();
         $pbac = Pbac::factory()->create([
             'participant_id' => $participant->id,
-            'q3a' => 7,
-            'q4a' => 2,
-            'q3c' => 5,
             'reported_date' => '2025-07-01',
+            'bl_pad_large' => 2,
+            'spotting' => false,
         ]);
         Sanctum::actingAs($participant, ['*']);
 
@@ -38,18 +37,12 @@ describe('PBAC API', function () {
                 'success' => true,
                 'message' => 'PBAC records retrieved successfully.',
                 'data' => [[
-                    'ReportedDate' => '2025-07-01',
-                    'BL' => 7,
-                    'PadL' => 2,
-                    'Mens' => 5,
+                    'reportedDate' => '2025-07-01',
                 ]],
             ])
             ->assertJsonStructure([
                 'data' => [[
-                    'ReportedDate',
-                    'BL',
-                    'PadL',
-                    'Mens',
+                    'reportedDate',
                 ]],
             ]);
     });
@@ -62,17 +55,15 @@ describe('PBAC API', function () {
     /**
      * @test
      *
-     * @covers PBACController::show
      * It should return a single PBAC record for an authenticated participant.
      */
     it('shows a single PBAC record for authenticated participant', function () {
         $participant = Participant::factory()->create();
         $pbac = Pbac::factory()->create([
             'participant_id' => $participant->id,
-            'q3a' => 8,     
-            'q4a' => 3,
-            'q3c' => 6,
             'reported_date' => '2025-07-02',
+            'bl_pad_large' => 3,
+            'spotting' => true,
         ]);
         Sanctum::actingAs($participant, ['*']);
 
@@ -83,10 +74,7 @@ describe('PBAC API', function () {
                 'success' => true,
                 'message' => 'PBAC record retrieved successfully.',
                 'data' => [
-                    'ReportedDate' => '2025-07-02',
-                    'BL' => 8,
-                    'PadL' => 3,
-                    'Mens' => 6,
+                    'reportedDate' => '2025-07-02',
                 ],
             ]);
     });
@@ -94,7 +82,6 @@ describe('PBAC API', function () {
     /**
      * @test
      *
-     * @covers PBACController::show
      * It should reject show if not authenticated.
      */
     it('returns 401 if not authenticated for show', function () {
@@ -106,7 +93,6 @@ describe('PBAC API', function () {
     /**
      * @test
      *
-     * @covers PBACController::filter
      * It should filter PBAC records by year for an authenticated participant.
      */
     it('filters PBAC records by year', function () {
@@ -128,33 +114,28 @@ describe('PBAC API', function () {
                 'success' => true,
                 'message' => 'PBAC records retrieved successfully.',
             ])
-            ->assertJsonFragment(['ReportedDate' => '2025-07-01'])
-            ->assertJsonMissing(['ReportedDate' => '2024-07-01']);
+            ->assertJsonFragment(['reportedDate' => '2025-07-01'])
+            ->assertJsonMissing(['reportedDate' => '2024-07-01']);
     });
 
     /**
      * @test
      *
-     * @covers PBACController::store
      * It should create a PBAC record for an authenticated participant with multiple question codes.
      */
     it('creates a PBAC record for authenticated participant', function () {
         $participant = Participant::factory()->create();
         Sanctum::actingAs($participant, ['*']);
         $payload = [
-            'ReportedDate' => '2025-07-01',
-            'BL' => 2,
-            'PadL' => 1,
-            'Mens' => 5,
-            'Pain' => 4,
-            'PainL1' => 2,
-            'PainL2' => 3,
-            'PainL3' => 1,
-            'PainTrig1' => 1,
-            'PainBig' => 2,
-            'work' => 1,
-            'school' => 0,
-            'QoL' => 8,
+            'reportedDate' => '2025-07-01',
+            'isBloodLossAnswered' => 1,
+            'blPadLarge' => 1,
+            'blPadMedium' => 2,
+            'blPadSmall' => 0,
+            'isPainAnswered' => 1,
+            'painSliderValue' => 4,
+            'isImpactAnswered' => 1,
+            'impactSliderGradeYourDay' => 8,
         ];
         $response = $this->postJson('/api/v1/pbac', $payload);
         $response->assertCreated()
@@ -162,19 +143,19 @@ describe('PBAC API', function () {
                 'success' => true,
                 'message' => 'PBAC record created successfully.',
                 'data' => [
-                    'ReportedDate' => '2025-07-01',
-                    'BL' => 2,
-                    'PadL' => 1,
-                    'Mens' => 5,
-                    'Pain' => 4,
-                    'PainL1' => 2,
-                    'PainL2' => 3,
-                    'PainL3' => 1,
-                    'PainTrig1' => 1,
-                    'PainBig' => 2,
-                    'work' => 1,
-                    'school' => 0,
-                    'QoL' => 8,
+                    'reportedDate' => '2025-07-01',
+                    'bloodLoss' => [
+                        'answered' => true,
+                        'amount' => 3,
+                    ],
+                    'pain' => [
+                        'answered' => true,
+                        'value' => 4,
+                    ],
+                    'impact' => [
+                        'answered' => true,
+                        'gradeYourDay' => 8,
+                    ],
                 ],
             ]);
     });
@@ -182,22 +163,17 @@ describe('PBAC API', function () {
     /**
      * @test
      *
-     * @covers PBACController::store
      * It should reject PBAC creation if the participant is not authenticated.
      */
     it('returns 401 if not authenticated for store', function () {
-        $payload = [
-            'ReportedDate' => '2025-07-01',
-        ];
+        $payload = [ 'reportedDate' => '2025-07-01' ];
         $response = $this->postJson('/api/v1/pbac', $payload);
-        $response->assertUnauthorized();
         $response->assertUnauthorized();
     });
 
     /**
      * @test
      *
-     * @covers PBACController::check
      * It should confirm the existence of a participant for an authenticated participant.
      */
     it('checks participant existence', function () {
@@ -210,7 +186,6 @@ describe('PBAC API', function () {
     /**
      * @test
      *
-     * @covers PBACController::check
      * It should reject participant check if not authenticated.
      */
     it('returns 401 if not authenticated for check', function () {

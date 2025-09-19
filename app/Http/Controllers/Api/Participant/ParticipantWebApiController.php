@@ -94,7 +94,7 @@ class ParticipantWebApiController extends Controller
      * @queryParam start_date date optional Y-m-d; required when preset=custom. Example: 2025-09-01
      * @queryParam end_date date optional Y-m-d; required when preset=custom. Example: 2025-09-30
      *
-     * @response 200 {"participant":{"id":1,"registration_number":"participant123"},"calendar":[{"reported_date":"2025-09-10","pbac_score_per_day":12,"spotting_yes_no":0,"pain_score_per_day":3,"influence_factor":2,"pain_medication":1,"quality_of_life":2,"energy_level":3,"complaints_with_defecation":0,"complaints_with_urinating":0,"quality_of_sleep":4,"exercise":1,"sleep_hours":6.5}]}
+     * @response 200 {"participant":{"id":1,"registration_number":"participant123"},"calendar":[{"reported_date":"2025-09-10","pillars":{"blood_loss":{"answered":true,"amount":12,"severity":"moderate"},"pain":{"answered":true,"value":3},"impact":{"answered":true,"gradeYourDay":2},"general_health":{"answered":true,"energyLevel":3},"exercise":{"answered":true,"any":true}},"sleep_hours":6.5}]}
      * @response 401 {"error":"Unauthenticated"}
      */
     public function dashboard(Request $request)
@@ -114,10 +114,12 @@ class ParticipantWebApiController extends Controller
         $calendar = [];
         foreach ($records as $r) {
             $sleepHours = null;
-            if (! empty($r->q17b) && ! empty($r->q17c)) {
+            if (! is_null($r->sleep_hours_of_sleep)) {
+                $sleepHours = (float) $r->sleep_hours_of_sleep;
+            } elseif (! empty($r->sleep_fell_asleep_time) && ! empty($r->sleep_woke_up_time)) {
                 try {
-                    $start = Carbon::createFromFormat('H:i', (string) $r->q17b);
-                    $end = Carbon::createFromFormat('H:i', (string) $r->q17c);
+                    $start = Carbon::createFromFormat('H:i', (string) $r->sleep_fell_asleep_time);
+                    $end = Carbon::createFromFormat('H:i', (string) $r->sleep_woke_up_time);
                     if ($end->lessThanOrEqualTo($start)) {
                         $end->addDay();
                     }
@@ -129,17 +131,18 @@ class ParticipantWebApiController extends Controller
 
             $calendar[] = [
                 'reported_date' => $r->reported_date,
-                'pbac_score_per_day' => $r->pbac_score_per_day,
-                'spotting_yes_no' => $r->spotting_yes_no,
-                'pain_score_per_day' => $r->pain_score_per_day,
-                'influence_factor' => $r->influence_factor,
-                'pain_medication' => $r->pain_medication,
-                'quality_of_life' => $r->quality_of_life,
-                'energy_level' => $r->energy_level,
-                'complaints_with_defecation' => $r->complaints_with_defecation,
-                'complaints_with_urinating' => $r->complaints_with_urinating,
-                'quality_of_sleep' => $r->quality_of_sleep,
-                'exercise' => $r->exercise,
+                'pillars' => [
+                    'blood_loss' => $r->blood_loss,
+                    'pain' => $r->pain,
+                    'impact' => $r->impact,
+                    'general_health' => $r->general_health,
+                    'mood' => $r->mood,
+                    'stool_urine' => $r->stool_urine,
+                    'diet' => $r->diet,
+                    'exercise' => $r->exercise,
+                    'sex' => $r->sex,
+                    'notes' => $r->notes,
+                ],
                 'sleep_hours' => $sleepHours,
             ];
         }
@@ -164,7 +167,7 @@ class ParticipantWebApiController extends Controller
      *
      * @queryParam date date required Target date (Y-m-d). Example: 2025-09-10
      *
-     * @response 200 {"date":"2025-09-10","data":{"reported_date":"2025-09-10","pbac_score_per_day":7,"pain_score_per_day":3,"sleep_hours":6.5,"quality_of_life":2,"influence_factor":0,"pain_medication":1,"spotting_yes_no":0,"energy_level":3,"complaints_with_defecation":0,"complaints_with_urinating":0,"quality_of_sleep":4,"exercise":1}}
+     * @response 200 {"date":"2025-09-10","data":{"reported_date":"2025-09-10","pillars":{"blood_loss":{"answered":true,"amount":7},"pain":{"answered":true,"value":3},"impact":{"answered":true,"gradeYourDay":2},"general_health":{"answered":true,"energyLevel":3},"exercise":{"answered":true,"any":true}},"sleep_hours":6.5}}
      */
     public function dailyData(Request $request)
     {
@@ -188,10 +191,12 @@ class ParticipantWebApiController extends Controller
         }
 
         $sleepHours = null;
-        if (! empty($record->q17b) && ! empty($record->q17c)) {
+        if (! is_null($record->sleep_hours_of_sleep)) {
+            $sleepHours = (float) $record->sleep_hours_of_sleep;
+        } elseif (! empty($record->sleep_fell_asleep_time) && ! empty($record->sleep_woke_up_time)) {
             try {
-                $start = Carbon::createFromFormat('H:i', (string) $record->q17b);
-                $end = Carbon::createFromFormat('H:i', (string) $record->q17c);
+                $start = Carbon::createFromFormat('H:i', (string) $record->sleep_fell_asleep_time);
+                $end = Carbon::createFromFormat('H:i', (string) $record->sleep_woke_up_time);
                 if ($end->lessThanOrEqualTo($start)) {
                     $end->addDay();
                 }
@@ -203,17 +208,18 @@ class ParticipantWebApiController extends Controller
 
         $data = [
             'reported_date' => $record->reported_date,
-            'pbac_score_per_day' => $record->pbac_score_per_day,
-            'spotting_yes_no' => $record->spotting_yes_no,
-            'pain_score_per_day' => $record->pain_score_per_day,
-            'influence_factor' => $record->influence_factor,
-            'pain_medication' => $record->pain_medication,
-            'quality_of_life' => $record->quality_of_life,
-            'energy_level' => $record->energy_level,
-            'complaints_with_defecation' => $record->complaints_with_defecation,
-            'complaints_with_urinating' => $record->complaints_with_urinating,
-            'quality_of_sleep' => $record->quality_of_sleep,
-            'exercise' => $record->exercise,
+            'pillars' => [
+                'blood_loss' => $record->blood_loss,
+                'pain' => $record->pain,
+                'impact' => $record->impact,
+                'general_health' => $record->general_health,
+                'mood' => $record->mood,
+                'stool_urine' => $record->stool_urine,
+                'diet' => $record->diet,
+                'exercise' => $record->exercise,
+                'sex' => $record->sex,
+                'notes' => $record->notes,
+            ],
             'sleep_hours' => $sleepHours,
         ];
 
