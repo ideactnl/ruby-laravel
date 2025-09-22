@@ -137,6 +137,7 @@ class PbacExportService
                     'general_health' => $record->general_health,
                     'mood' => $record->mood,
                     'stool_urine' => $record->stool_urine,
+                    'sleep' => $record->sleep,
                     'diet' => $record->diet,
                     'exercise' => $record->exercise,
                     'sex' => $record->sex,

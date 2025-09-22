@@ -24,6 +24,8 @@
                 <span>&copy; {{ date('Y') }} RubyNU. All rights reserved.</span>
                 <span class="hidden sm:inline">|</span>
                 <a href="{{ route('login') }}" class="text-white hover:text-gray-200 transition-colors">Admin Login</a>
+                <span class="hidden sm:inline">|</span>
+                <a href="/docs" class="text-white hover:text-gray-200 transition-colors">Docs</a>
             </div>
         </footer>
     </div>

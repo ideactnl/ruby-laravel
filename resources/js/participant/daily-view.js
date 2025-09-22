@@ -144,6 +144,22 @@ window.dailyView = function dailyView() {
       return `Issues: ${issues.join(' and ')}`;
     },
 
+    getSleepTooltip(pillar) {
+      if (!pillar || !pillar.calculatedHours) return 'No sleep data recorded';
+      const hours = pillar.calculatedHours;
+      const issues = [];
+      
+      if (pillar.troubleAsleep) issues.push('trouble falling asleep');
+      if (pillar.wakeUpDuringNight) issues.push('woke up during night');
+      if (!pillar.tiredRested) issues.push('not well rested');
+      
+      let tooltip = `Sleep: ${hours} hours`;
+      if (issues.length > 0) {
+        tooltip += ` | Issues: ${issues.join(', ')}`;
+      }
+      return tooltip;
+    },
+
     getDietTooltip(pillar) {
       if (!pillar) return 'No diet items recorded';
       const positives = pillar.positives || [];
@@ -252,6 +268,14 @@ window.dailyView = function dailyView() {
               pillar: pillars.stool_urine,
               value: (pillars.stool_urine?.urine?.blood ? 1 : 0) + (pillars.stool_urine?.stool?.blood ? 1 : 0),
               tooltip: this.getStoolTooltip(pillars.stool_urine)
+            },
+            { 
+              key:'sleep', 
+              label:'sleep', 
+              badge:'bg-indigo-500', 
+              pillar: pillars.sleep,
+              value: pillars.sleep?.calculatedHours ?? 0,
+              tooltip: this.getSleepTooltip(pillars.sleep)
             },
             { 
               key:'diet', 

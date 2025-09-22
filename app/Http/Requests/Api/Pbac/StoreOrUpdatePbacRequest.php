@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Api\Pbac;
 
+use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreOrUpdatePbacRequest extends FormRequest
@@ -143,7 +144,13 @@ class StoreOrUpdatePbacRequest extends FormRequest
             'isSleepAnswered' => 'nullable|boolean',
             'sleepFellAsleepTime' => 'nullable|date_format:H:i',
             'sleepWokeUpTime' => 'nullable|date_format:H:i',
-            'sleepHoursOfSleep' => 'nullable|date_format:H:i',
+            'sleepHoursOfSleep' => [
+                'nullable',
+                'date_format:H:i',
+                function ($attribute, $value, $fail) {
+                    $this->validateSleepConsistency($attribute, $value, $fail);
+                },
+            ],
             'isSleepWorkSchoolDay' => 'nullable|boolean',
             'isSleepFreeDay' => 'nullable|boolean',
             'isSleepTroubleAsleep' => 'nullable|boolean',
@@ -370,5 +377,41 @@ class StoreOrUpdatePbacRequest extends FormRequest
             'isAdditionalNotesAnswered' => ['description' => 'Additional notes answered', 'example' => 1, 'required' => false, 'type' => 'boolean'],
             'additionalNotes' => ['description' => 'Additional notes text', 'example' => 'Felt okay overall.', 'required' => false, 'type' => 'string'],
         ];
+    }
+
+    /**
+     * Validate sleep time consistency between manual entry and calculated times.
+     */
+    protected function validateSleepConsistency($attribute, $value, $fail)
+    {
+        if (is_null($value)) {
+            return;
+        }
+
+        $fellAsleep = $this->input('sleepFellAsleepTime');
+        $wokeUp = $this->input('sleepWokeUpTime');
+
+        if (empty($fellAsleep) || empty($wokeUp)) {
+            return;
+        }
+
+        try {
+            $start = Carbon::createFromFormat('H:i', $fellAsleep);
+            $end = Carbon::createFromFormat('H:i', $wokeUp);
+            if ($end->lessThanOrEqualTo($start)) {
+                $end->addDay();
+            }
+            $calculatedHours = round($start->diffInMinutes($end) / 60, 1);
+
+            $manualTime = Carbon::createFromFormat('H:i', $value);
+            $manualHours = round($manualTime->hour + ($manualTime->minute / 60), 1);
+
+            $difference = abs($calculatedHours - $manualHours);
+            if ($difference > 1.0) {
+                $fail("The sleep hours entered ({$manualHours}h) don't match the calculated time from {$fellAsleep} to {$wokeUp} ({$calculatedHours}h). Please check your entries.");
+            }
+        } catch (\Exception $e) {
+            return;
+        }
     }
 }

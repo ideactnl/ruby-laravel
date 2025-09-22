@@ -13,6 +13,7 @@ export const PILLAR_ICONS = {
   general_health: { cls: 'fa-battery-half text-emerald-500', label: 'General Health' },
   mood: { cls: 'fa-face-smile text-violet-500', label: 'Mood' },
   stool_urine: { cls: 'fa-toilet text-sky-500', label: 'Stool/Urine' },
+  sleep: { cls: 'fa-bed text-indigo-500', label: 'Sleep' },
   exercise: { cls: 'fa-person-running text-orange-400', label: 'Exercise' },
   diet: { cls: 'fa-utensils text-yellow-500', label: 'Diet' },
   sex: { cls: 'fa-venus-mars text-pink-400', label: 'Sexual Health' },
@@ -52,6 +53,9 @@ export function getDynamicIconAndTooltip(type, value) {
       
     case 'stool_urine':
       return getStoolUrineIcon(value, baseSpec);
+      
+    case 'sleep':
+      return getSleepIcon(value, baseSpec);
       
     case 'diet':
       return getDietIcon(value, baseSpec);
@@ -276,6 +280,41 @@ function getStoolUrineIcon(value, baseSpec) {
   const tooltip = issues.length > 0 ? 
     `Stool/Urine: ${issues.join(', ')}` : 
     'Stool/Urine: Issues noted';
+  return { iconClass, tooltip };
+}
+
+/**
+ * Sleep - Color-coded based on sleep duration and quality
+ */
+function getSleepIcon(value, baseSpec) {
+  if (typeof value !== 'object') return { iconClass: baseSpec.cls, tooltip: `${baseSpec.label}: ${value}` };
+  
+  const hours = value.calculatedHours || 0;
+  const troubleAsleep = value.troubleAsleep;
+  const wakeUpDuringNight = value.wakeUpDuringNight;
+  const tiredRested = value.tiredRested;
+  
+  let iconClass, tooltip;
+  const issues = [];
+  if (troubleAsleep) issues.push('trouble falling asleep');
+  if (wakeUpDuringNight) issues.push('woke up during night');
+  if (!tiredRested) issues.push('not well rested');
+  
+  // Color based on sleep duration and quality
+  if (hours >= 7 && hours <= 9 && issues.length === 0) {
+    iconClass = 'fa-bed text-green-500'; // Good sleep
+    tooltip = `Sleep: Good (${hours}h)`;
+  } else if (hours >= 6 && hours <= 10 && issues.length <= 1) {
+    iconClass = 'fa-bed text-yellow-500'; // Okay sleep
+    tooltip = `Sleep: Okay (${hours}h)`;
+  } else {
+    iconClass = 'fa-bed text-red-500'; // Poor sleep
+    tooltip = `Sleep: Poor (${hours}h)`;
+  }
+  
+  if (issues.length > 0) {
+    tooltip += ` - ${issues.join(', ')}`;
+  }
   return { iconClass, tooltip };
 }
 

@@ -88,6 +88,18 @@ export function buildEventsFromRows(rows, selected) {
       });
     }
     
+    // Sleep - pass sleep hours and quality indicators
+    if ((pillars.sleep?.calculatedHours ?? 0) > 0) {
+      pushIf(date, true, 'sleep', {
+        calculatedHours: pillars.sleep.calculatedHours,
+        fellAsleepTime: pillars.sleep.fellAsleepTime,
+        wokeUpTime: pillars.sleep.wokeUpTime,
+        troubleAsleep: pillars.sleep.troubleAsleep,
+        tiredRested: pillars.sleep.tiredRested,
+        wakeUpDuringNight: pillars.sleep.wakeUpDuringNight
+      });
+    }
+    
     // Diet - pass positive and negative items
     if ((pillars.diet?.positives?.length ?? 0) > 0 || (pillars.diet?.negatives?.length ?? 0) > 0) {
       pushIf(date, true, 'diet', {

@@ -8,7 +8,6 @@ use App\Models\Participant;
 use App\Models\Pbac;
 use App\Services\ExportTrackingService;
 use App\Services\PbacExportService;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -94,7 +93,7 @@ class ParticipantWebApiController extends Controller
      * @queryParam start_date date optional Y-m-d; required when preset=custom. Example: 2025-09-01
      * @queryParam end_date date optional Y-m-d; required when preset=custom. Example: 2025-09-30
      *
-     * @response 200 {"participant":{"id":1,"registration_number":"participant123"},"calendar":[{"reported_date":"2025-09-10","pillars":{"blood_loss":{"answered":true,"amount":12,"severity":"moderate"},"pain":{"answered":true,"value":3},"impact":{"answered":true,"gradeYourDay":2},"general_health":{"answered":true,"energyLevel":3},"exercise":{"answered":true,"any":true}},"sleep_hours":6.5}]}
+     * @response 200 {"participant":{"id":1,"registration_number":"participant123"},"calendar":[{"reported_date":"2025-09-10","pillars":{"blood_loss":{"answered":true,"amount":12,"severity":"moderate"},"pain":{"answered":true,"value":3},"impact":{"answered":true,"gradeYourDay":2},"general_health":{"answered":true,"energyLevel":3},"sleep":{"answered":true,"calculatedHours":6.5},"exercise":{"answered":true,"any":true}},"sleep_hours":6.5}]}
      * @response 401 {"error":"Unauthenticated"}
      */
     public function dashboard(Request $request)
@@ -113,29 +112,8 @@ class ParticipantWebApiController extends Controller
         $records = $calendarBase->get();
         $calendar = [];
         foreach ($records as $r) {
-            $sleepHours = null;
-            if (! is_null($r->sleep_hours_of_sleep)) {
-                try {
-                    $time = Carbon::createFromFormat('H:i', (string) $r->sleep_hours_of_sleep);
-                    $sleepHours = round($time->hour + ($time->minute / 60), 1);
-                } catch (\Exception $e) {
-                    $sleepHours = null;
-                }
-            } elseif (! empty($r->sleep_fell_asleep_time) && ! empty($r->sleep_woke_up_time)) {
-                try {
-                    $start = Carbon::createFromFormat('H:i', (string) $r->sleep_fell_asleep_time);
-                    $end = Carbon::createFromFormat('H:i', (string) $r->sleep_woke_up_time);
-                    if ($end->lessThanOrEqualTo($start)) {
-                        $end->addDay();
-                    }
-                    $sleepHours = round($start->diffInMinutes($end) / 60, 1);
-                } catch (\Exception $e) {
-                    $sleepHours = null;
-                }
-            }
-
             $calendar[] = [
-                'reported_date' => $r->reported_date,
+                'reported_date' => $r->reported_date->format('Y-m-d'),
                 'pillars' => [
                     'blood_loss' => $r->blood_loss,
                     'pain' => $r->pain,
@@ -143,12 +121,13 @@ class ParticipantWebApiController extends Controller
                     'general_health' => $r->general_health,
                     'mood' => $r->mood,
                     'stool_urine' => $r->stool_urine,
+                    'sleep' => $r->sleep,
                     'diet' => $r->diet,
                     'exercise' => $r->exercise,
                     'sex' => $r->sex,
                     'notes' => $r->notes,
                 ],
-                'sleep_hours' => $sleepHours,
+                'sleep_hours' => $r->sleep['calculatedHours'] ?? null,
             ];
         }
 
@@ -172,7 +151,7 @@ class ParticipantWebApiController extends Controller
      *
      * @queryParam date date required Target date (Y-m-d). Example: 2025-09-10
      *
-     * @response 200 {"date":"2025-09-10","data":{"reported_date":"2025-09-10","pillars":{"blood_loss":{"answered":true,"amount":7},"pain":{"answered":true,"value":3},"impact":{"answered":true,"gradeYourDay":2},"general_health":{"answered":true,"energyLevel":3},"exercise":{"answered":true,"any":true}},"sleep_hours":6.5}}
+     * @response 200 {"date":"2025-09-10","data":{"reported_date":"2025-09-10","pillars":{"blood_loss":{"answered":true,"amount":7},"pain":{"answered":true,"value":3},"impact":{"answered":true,"gradeYourDay":2},"general_health":{"answered":true,"energyLevel":3},"sleep":{"answered":true,"calculatedHours":6.5},"exercise":{"answered":true,"any":true}},"sleep_hours":6.5}}
      */
     public function dailyData(Request $request)
     {
@@ -195,28 +174,6 @@ class ParticipantWebApiController extends Controller
             return response()->json(['date' => $date, 'data' => null]);
         }
 
-        $sleepHours = null;
-        if (! is_null($record->sleep_hours_of_sleep)) {
-            try {
-                // Parse HH:MM format and convert to decimal hours
-                $time = Carbon::createFromFormat('H:i', (string) $record->sleep_hours_of_sleep);
-                $sleepHours = round($time->hour + ($time->minute / 60), 1);
-            } catch (\Exception $e) {
-                $sleepHours = null;
-            }
-        } elseif (! empty($record->sleep_fell_asleep_time) && ! empty($record->sleep_woke_up_time)) {
-            try {
-                $start = Carbon::createFromFormat('H:i', (string) $record->sleep_fell_asleep_time);
-                $end = Carbon::createFromFormat('H:i', (string) $record->sleep_woke_up_time);
-                if ($end->lessThanOrEqualTo($start)) {
-                    $end->addDay();
-                }
-                $sleepHours = round($start->diffInMinutes($end) / 60, 1);
-            } catch (\Exception $e) {
-                $sleepHours = null;
-            }
-        }
-
         $data = [
             'reported_date' => $record->reported_date,
             'pillars' => [
@@ -226,12 +183,13 @@ class ParticipantWebApiController extends Controller
                 'general_health' => $record->general_health,
                 'mood' => $record->mood,
                 'stool_urine' => $record->stool_urine,
+                'sleep' => $record->sleep,
                 'diet' => $record->diet,
                 'exercise' => $record->exercise,
                 'sex' => $record->sex,
                 'notes' => $record->notes,
             ],
-            'sleep_hours' => $sleepHours,
+            'sleep_hours' => $record->sleep['calculatedHours'] ?? null,
         ];
 
         return response()->json([

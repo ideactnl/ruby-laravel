@@ -11,6 +11,7 @@ window.filterMenu = function filterMenu(){
       { value: 'general_health', label: 'General Health', color: '#10B981', iconCls: 'fa-battery-half text-emerald-500' },
       { value: 'mood', label: 'Mood', color: '#8B5CF6', iconCls: 'fa-face-smile text-violet-500' },
       { value: 'stool_urine', label: 'Stool/Urine', color: '#0EA5E9', iconCls: 'fa-toilet text-sky-500' },
+      { value: 'sleep', label: 'Sleep', color: '#6366F1', iconCls: 'fa-bed text-indigo-500' },
       { value: 'diet', label: 'Diet', color: '#EAB308', iconCls: 'fa-utensils text-yellow-500' },
       { value: 'exercise', label: 'Exercise', color: '#FB923C', iconCls: 'fa-person-running text-orange-400' },
       { value: 'sex', label: 'Sexual Health', color: '#F472B6', iconCls: 'fa-venus-mars text-pink-400' },

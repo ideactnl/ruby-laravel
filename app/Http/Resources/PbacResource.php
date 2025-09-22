@@ -186,6 +186,7 @@ class PbacResource extends JsonResource
             'generalHealth' => $this->general_health,
             'mood' => $this->mood,
             'stoolUrine' => $this->stool_urine,
+            'sleep' => $this->sleep,
             'diet' => $this->diet,
             'exercise' => $this->exercise,
             'sex' => $this->sex,

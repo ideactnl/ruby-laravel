@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
     general_health: '#10B981', // emerald
     mood: '#8B5CF6', // violet
     stool_urine: '#0EA5E9', // sky
+    sleep: '#6366F1', // indigo
     diet: '#EAB308', // yellow
     exercise: '#FB923C', // orange
     sex: '#F472B6', // pink
@@ -43,6 +44,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const generalHealthBars = rows.map(r => r.pillars?.general_health?.energyLevel ?? 0);
     const moodBars = rows.map(r => (r.pillars?.mood?.positives?.length ?? 0) + (r.pillars?.mood?.negatives?.length ?? 0));
     const stoolUrineBars = rows.map(r => (r.pillars?.stool_urine?.urine?.blood ? 1 : 0) + (r.pillars?.stool_urine?.stool?.blood ? 1 : 0));
+    const sleepBars = rows.map(r => r.pillars?.sleep?.calculatedHours ?? 0);
     const dietBars = rows.map(r => (r.pillars?.diet?.positives?.length ?? 0) + (r.pillars?.diet?.negatives?.length ?? 0));
     const exerciseBars = rows.map(r => r.pillars?.exercise?.any ? 1 : 0);
     const sexBars = rows.map(r => r.pillars?.sex?.today ? 1 : 0);
@@ -56,6 +58,7 @@ document.addEventListener('DOMContentLoaded', function() {
       { type: 'bar', label: 'General Health', data: generalHealthBars, backgroundColor: COLORS.general_health },
       { type: 'bar', label: 'Mood', data: moodBars, backgroundColor: COLORS.mood },
       { type: 'bar', label: 'Stool/Urine', data: stoolUrineBars, backgroundColor: COLORS.stool_urine },
+      { type: 'bar', label: 'Sleep', data: sleepBars, backgroundColor: COLORS.sleep },
       { type: 'bar', label: 'Diet', data: dietBars, backgroundColor: COLORS.diet },
       { type: 'bar', label: 'Exercise', data: exerciseBars, backgroundColor: COLORS.exercise },
       { type: 'bar', label: 'Sex', data: sexBars, backgroundColor: COLORS.sex },
