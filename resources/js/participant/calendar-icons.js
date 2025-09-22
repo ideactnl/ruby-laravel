@@ -36,20 +36,14 @@ export function getDynamicIconAndTooltip(type, value) {
     case 'pain':
       return getPainIcon(value, baseSpec);
       
-    case 'exercise':
-      return getExerciseIcon(value, baseSpec);
-      
-    case 'notes':
-      return getNotesIcon(value, baseSpec);
-      
-    case 'mood':
-      return getMoodIcon(value, baseSpec);
-      
     case 'impact':
       return getImpactIcon(value, baseSpec);
       
     case 'general_health':
       return getGeneralHealthIcon(value, baseSpec);
+      
+    case 'mood':
+      return getMoodIcon(value, baseSpec);
       
     case 'stool_urine':
       return getStoolUrineIcon(value, baseSpec);
@@ -57,17 +51,20 @@ export function getDynamicIconAndTooltip(type, value) {
     case 'sleep':
       return getSleepIcon(value, baseSpec);
       
+    case 'exercise':
+      return getExerciseIcon(value, baseSpec);
+      
     case 'diet':
       return getDietIcon(value, baseSpec);
       
     case 'sex':
       return getSexIcon(value, baseSpec);
-  }
-  
-  // Default fallback for simple values
-  return { 
-    iconClass: baseSpec.cls, 
-    tooltip: `${baseSpec.label}: ${value}` 
+      
+    case 'notes':
+      return getNotesIcon(value, baseSpec);
+      
+    default:
+      return { iconClass: baseSpec.cls, tooltip: `${value}` };
   };
 }
 
@@ -78,22 +75,40 @@ function getBloodLossIcon(value, baseSpec) {
   if (typeof value !== 'object') return { iconClass: baseSpec.cls, tooltip: `${baseSpec.label}: ${value}` };
   
   const amount = value.amount || 0;
-  const severity = value.severity || 'light';
+  const severity = value.severity || 'none';
   const spotting = value.spotting;
   
   let iconClass, tooltip;
   if (spotting) {
     iconClass = 'fa-droplet text-red-400';
     tooltip = `Blood Loss: Spotting (${amount})`;
-  } else if (severity === 'heavy' || amount > 20) {
-    iconClass = 'fa-droplet text-red-700';
-    tooltip = `Blood Loss: Heavy (${amount})`;
-  } else if (severity === 'moderate' || amount > 10) {
-    iconClass = 'fa-droplet text-red-500';
-    tooltip = `Blood Loss: Moderate (${amount})`;
   } else {
-    iconClass = 'fa-droplet text-red-300';
-    tooltip = `Blood Loss: Light (${amount})`;
+    // Use backend severity directly (user-selected, not threshold-based)
+    switch(severity) {
+      case 'very_heavy':
+        iconClass = 'fa-droplet text-red-900';
+        tooltip = `Blood Loss: Very Heavy (${amount})`;
+        break;
+      case 'heavy':
+        iconClass = 'fa-droplet text-red-700';
+        tooltip = `Blood Loss: Heavy (${amount})`;
+        break;
+      case 'moderate':
+        iconClass = 'fa-droplet text-red-500';
+        tooltip = `Blood Loss: Moderate (${amount})`;
+        break;
+      case 'light':
+        iconClass = 'fa-droplet text-red-400';
+        tooltip = `Blood Loss: Light (${amount})`;
+        break;
+      case 'very_light':
+        iconClass = 'fa-droplet text-red-300';
+        tooltip = `Blood Loss: Very Light (${amount})`;
+        break;
+      default: // 'none'
+        iconClass = 'fa-droplet text-gray-400';
+        tooltip = `Blood Loss: None (${amount})`;
+    }
   }
   return { iconClass, tooltip };
 }
@@ -129,6 +144,97 @@ function getPainIcon(value, baseSpec) {
 }
 
 /**
+ * General Health - Battery level based on energy
+ */
+function getGeneralHealthIcon(value, baseSpec) {
+  if (typeof value !== 'object') return { iconClass: baseSpec.cls, tooltip: `${baseSpec.label}: ${value}` };
+  
+  const energyLevel = value.energyLevel || 0;
+  const symptoms = value.symptoms || [];
+  
+  let iconClass, tooltip;
+  if (energyLevel >= 8) {
+    iconClass = 'fa-battery-full text-green-500';
+    tooltip = `Energy: High (${energyLevel}/10)`;
+  } else if (energyLevel >= 6) {
+    iconClass = 'fa-battery-three-quarters text-green-400';
+    tooltip = `Energy: Good (${energyLevel}/10)`;
+  } else if (energyLevel >= 4) {
+    iconClass = 'fa-battery-half text-yellow-500';
+    tooltip = `Energy: Moderate (${energyLevel}/10)`;
+  } else if (energyLevel >= 2) {
+    iconClass = 'fa-battery-quarter text-orange-500';
+    tooltip = `Energy: Low (${energyLevel}/10)`;
+  } else {
+    iconClass = 'fa-battery-empty text-red-500';
+    tooltip = `Energy: Very Low (${energyLevel}/10)`;
+  }
+  
+  if (symptoms.length > 0) {
+    tooltip += ` - ${symptoms.length} symptom(s)`;
+  }
+  return { iconClass, tooltip };
+}
+
+/**
+ * Mood - Face based on positive/negative balance
+ */
+function getMoodIcon(value, baseSpec) {
+  if (typeof value !== 'object') return { iconClass: baseSpec.cls, tooltip: `${baseSpec.label}: ${value}` };
+  
+  const positives = value.positives || [];
+  const negatives = value.negatives || [];
+  const balance = positives.length - negatives.length;
+  
+  let iconClass, tooltip;
+  if (balance > 2) {
+    iconClass = 'fa-face-grin text-green-500';
+    tooltip = `Mood: Very Positive`;
+  } else if (balance > 0) {
+    iconClass = 'fa-face-smile text-green-400';
+    tooltip = `Mood: Positive`;
+  } else if (balance === 0) {
+    iconClass = 'fa-face-meh text-yellow-500';
+    tooltip = `Mood: Neutral`;
+  } else if (balance > -3) {
+    iconClass = 'fa-face-frown text-orange-500';
+    tooltip = `Mood: Negative`;
+  } else {
+    iconClass = 'fa-face-sad-tear text-red-500';
+    tooltip = `Mood: Very Negative`;
+  }
+  
+  tooltip += ` (+${positives.length}/-${negatives.length})`;
+  return { iconClass, tooltip };
+}
+
+/**
+ * Stool/Urine - Toilet icon with issue indicators
+ */
+function getStoolUrineIcon(value, baseSpec) {
+  if (typeof value !== 'object') return { iconClass: baseSpec.cls, tooltip: `${baseSpec.label}: ${value}` };
+  
+  const urine = value.urine || {};
+  const stool = value.stool || {};
+  const hasBlood = urine.blood || stool.blood;
+  const hasIssues = Object.keys(urine).length > 0 || Object.keys(stool).length > 0;
+  
+  let iconClass, tooltip;
+  if (hasBlood) {
+    iconClass = 'fa-toilet text-red-500';
+    tooltip = `Stool/Urine: Blood detected`;
+  } else if (hasIssues) {
+    iconClass = 'fa-toilet text-yellow-500';
+    tooltip = `Stool/Urine: Issues noted`;
+  } else {
+    iconClass = 'fa-toilet text-green-500';
+    tooltip = `Stool/Urine: Normal`;
+  }
+  
+  return { iconClass, tooltip };
+}
+
+/**
  * Exercise - Time range display
  */
 function getExerciseIcon(value, baseSpec) {
@@ -154,45 +260,66 @@ function getExerciseIcon(value, baseSpec) {
 }
 
 /**
- * Notes - Show actual note text
+ * Diet - Utensils with positive/negative balance
  */
-function getNotesIcon(value, baseSpec) {
-  if (typeof value !== 'object') return { iconClass: baseSpec.cls, tooltip: `${baseSpec.label}: ${value}` };
-  
-  const noteText = value.text || 'Note recorded';
-  return { 
-    iconClass: baseSpec.cls, 
-    tooltip: `Note: ${noteText}` 
-  };
-}
-
-/**
- * Mood - Face emojis based on positive/negative balance
- */
-function getMoodIcon(value, baseSpec) {
+function getDietIcon(value, baseSpec) {
   if (typeof value !== 'object') return { iconClass: baseSpec.cls, tooltip: `${baseSpec.label}: ${value}` };
   
   const positives = value.positives || [];
   const negatives = value.negatives || [];
-  const totalCount = positives.length + negatives.length;
+  const neutrals = value.neutrals || [];
+  const total = positives.length + negatives.length + neutrals.length;
   
   let iconClass, tooltip;
-  if (negatives.length > positives.length) {
-    iconClass = 'fa-face-sad-tear text-blue-500'; // 😢
-    tooltip = `Mood: Challenging (${negatives.length} negative, ${positives.length} positive)`;
-  } else if (positives.length > negatives.length) {
-    iconClass = 'fa-face-grin text-green-500'; // 😁
-    tooltip = `Mood: Good (${positives.length} positive, ${negatives.length} negative)`;
-  } else if (totalCount > 0) {
-    iconClass = 'fa-face-meh text-yellow-500'; // 😐
-    tooltip = `Mood: Mixed (${positives.length} positive, ${negatives.length} negative)`;
+  if (negatives.length === 0 && positives.length > 0) {
+    iconClass = 'fa-utensils text-green-500';
+    tooltip = `Diet: Healthy (${total} items)`;
+  } else if (negatives.length <= positives.length) {
+    iconClass = 'fa-utensils text-yellow-500';
+    tooltip = `Diet: Mixed (${total} items)`;
   } else {
-    iconClass = 'fa-face-smile text-gray-500'; // 🙂
-    tooltip = 'Mood: Neutral';
+    iconClass = 'fa-utensils text-red-500';
+    tooltip = `Diet: Concerning (${total} items)`;
   }
+  
   return { iconClass, tooltip };
 }
 
+/**
+ * Sex - Heart with satisfaction indicators
+ */
+function getSexIcon(value, baseSpec) {
+  if (typeof value !== 'object') return { iconClass: baseSpec.cls, tooltip: `${baseSpec.label}: ${value}` };
+  
+  const today = value.today;
+  const avoided = value.avoided;
+  const issues = value.issues || [];
+  const satisfied = value.satisfied;
+  
+  let iconClass, tooltip;
+  if (avoided) {
+    iconClass = 'fa-heart-crack text-red-500';
+    tooltip = `Sex: Avoided due to pain`;
+  } else if (today && satisfied) {
+    iconClass = 'fa-heart text-green-500';
+    tooltip = `Sex: Satisfying experience`;
+  } else if (today && issues.length > 0) {
+    iconClass = 'fa-heart text-yellow-500';
+    tooltip = `Sex: With issues (${issues.length})`;
+  } else if (today) {
+    iconClass = 'fa-heart text-blue-500';
+    tooltip = `Sex: Activity recorded`;
+  } else {
+    iconClass = 'fa-heart text-gray-400';
+    tooltip = `Sex: No activity`;
+  }
+  
+  return { iconClass, tooltip };
+}
+
+/**
+ * Notes - Show actual note text
+ */
 /**
  * Impact - Heart icons based on grade your day
  */
@@ -221,65 +348,6 @@ function getImpactIcon(value, baseSpec) {
   if (limitations.length > 0) {
     tooltip += ` - ${limitations.length} limitation(s)`;
   }
-  if (medications?.used) {
-    tooltip += ` - Used medication`;
-  }
-  return { iconClass, tooltip };
-}
-
-/**
- * General Health - Battery icons based on energy level
- */
-function getGeneralHealthIcon(value, baseSpec) {
-  if (typeof value !== 'object') return { iconClass: baseSpec.cls, tooltip: `${baseSpec.label}: ${value}` };
-  
-  const energy = value.energyLevel || 0;
-  const symptoms = value.symptoms || [];
-  
-  let iconClass, tooltip;
-  if (energy >= 8) {
-    iconClass = 'fa-battery-full text-green-600'; // High energy
-    tooltip = `Energy: High (${energy}/10)`;
-  } else if (energy >= 6) {
-    iconClass = 'fa-battery-three-quarters text-green-400'; // Good energy
-    tooltip = `Energy: Good (${energy}/10)`;
-  } else if (energy >= 4) {
-    iconClass = 'fa-battery-half text-yellow-500'; // Medium energy
-    tooltip = `Energy: Medium (${energy}/10)`;
-  } else {
-    iconClass = 'fa-battery-quarter text-red-500'; // Low energy
-    tooltip = `Energy: Low (${energy}/10)`;
-  }
-  
-  if (symptoms.length > 0) {
-    tooltip += ` - ${symptoms.length} symptom(s)`;
-  }
-  return { iconClass, tooltip };
-}
-
-/**
- * Stool/Urine - Color-coded based on issues
- */
-function getStoolUrineIcon(value, baseSpec) {
-  if (typeof value !== 'object') return { iconClass: baseSpec.cls, tooltip: `${baseSpec.label}: ${value}` };
-  
-  const urineBlood = value.urine?.blood;
-  const stoolBlood = value.stool?.blood;
-  const issues = [];
-  
-  if (urineBlood) issues.push('blood in urine');
-  if (stoolBlood) issues.push('blood in stool');
-  
-  let iconClass = 'fa-toilet text-sky-500';
-  if (issues.length > 1) {
-    iconClass = 'fa-toilet text-red-500'; // Multiple issues
-  } else if (issues.length === 1) {
-    iconClass = 'fa-toilet text-orange-500'; // Single issue
-  }
-  
-  const tooltip = issues.length > 0 ? 
-    `Stool/Urine: ${issues.join(', ')}` : 
-    'Stool/Urine: Issues noted';
   return { iconClass, tooltip };
 }
 
@@ -300,7 +368,6 @@ function getSleepIcon(value, baseSpec) {
   if (wakeUpDuringNight) issues.push('woke up during night');
   if (!tiredRested) issues.push('not well rested');
   
-  // Color based on sleep duration and quality
   if (hours >= 7 && hours <= 9 && issues.length === 0) {
     iconClass = 'fa-bed text-green-500'; // Good sleep
     tooltip = `Sleep: Good (${hours}h)`;
@@ -318,55 +385,12 @@ function getSleepIcon(value, baseSpec) {
   return { iconClass, tooltip };
 }
 
-/**
- * Diet - Color-coded based on healthy vs unhealthy items
- */
-function getDietIcon(value, baseSpec) {
+function getNotesIcon(value, baseSpec) {
   if (typeof value !== 'object') return { iconClass: baseSpec.cls, tooltip: `${baseSpec.label}: ${value}` };
   
-  const positives = value.positives || [];
-  const negatives = value.negatives || [];
-  const neutrals = value.neutrals || [];
-  const total = positives.length + negatives.length + neutrals.length;
-  
-  let iconClass, tooltip;
-  if (positives.length > negatives.length) {
-    iconClass = 'fa-utensils text-green-500'; // Healthy diet
-    tooltip = `Diet: Healthy (${positives.length} good, ${negatives.length} poor items)`;
-  } else if (negatives.length > positives.length) {
-    iconClass = 'fa-utensils text-red-500'; // Poor diet
-    tooltip = `Diet: Poor (${negatives.length} poor, ${positives.length} good items)`;
-  } else {
-    iconClass = 'fa-utensils text-yellow-500'; // Mixed diet
-    tooltip = `Diet: Mixed (${total} items total)`;
-  }
-  return { iconClass, tooltip };
-}
-
-/**
- * Sexual Health - Status-based colors
- */
-function getSexIcon(value, baseSpec) {
-  if (typeof value !== 'object') return { iconClass: baseSpec.cls, tooltip: `${baseSpec.label}: ${value}` };
-  
-  const today = value.today;
-  const avoided = value.avoided;
-  const issues = value.issues || [];
-  const satisfied = value.satisfied;
-  
-  let iconClass, tooltip;
-  if (avoided) {
-    iconClass = 'fa-venus-mars text-gray-500'; // Avoided
-    tooltip = 'Sexual Health: Avoided intimacy';
-  } else if (issues.length > 0) {
-    iconClass = 'fa-venus-mars text-orange-500'; // Issues
-    tooltip = `Sexual Health: ${issues.length} issue(s) noted`;
-  } else if (satisfied) {
-    iconClass = 'fa-venus-mars text-green-500'; // Satisfied
-    tooltip = 'Sexual Health: Satisfied';
-  } else {
-    iconClass = 'fa-venus-mars text-pink-400'; // Active
-    tooltip = 'Sexual Health: Active';
-  }
-  return { iconClass, tooltip };
+  const noteText = value.text || 'Note recorded';
+  return { 
+    iconClass: baseSpec.cls, 
+    tooltip: `Note: ${noteText}` 
+  };
 }
