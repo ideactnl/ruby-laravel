@@ -115,7 +115,12 @@ class ParticipantWebApiController extends Controller
         foreach ($records as $r) {
             $sleepHours = null;
             if (! is_null($r->sleep_hours_of_sleep)) {
-                $sleepHours = (float) $r->sleep_hours_of_sleep;
+                try {
+                    $time = Carbon::createFromFormat('H:i', (string) $r->sleep_hours_of_sleep);
+                    $sleepHours = round($time->hour + ($time->minute / 60), 1);
+                } catch (\Exception $e) {
+                    $sleepHours = null;
+                }
             } elseif (! empty($r->sleep_fell_asleep_time) && ! empty($r->sleep_woke_up_time)) {
                 try {
                     $start = Carbon::createFromFormat('H:i', (string) $r->sleep_fell_asleep_time);
@@ -192,7 +197,13 @@ class ParticipantWebApiController extends Controller
 
         $sleepHours = null;
         if (! is_null($record->sleep_hours_of_sleep)) {
-            $sleepHours = (float) $record->sleep_hours_of_sleep;
+            try {
+                // Parse HH:MM format and convert to decimal hours
+                $time = Carbon::createFromFormat('H:i', (string) $record->sleep_hours_of_sleep);
+                $sleepHours = round($time->hour + ($time->minute / 60), 1);
+            } catch (\Exception $e) {
+                $sleepHours = null;
+            }
         } elseif (! empty($record->sleep_fell_asleep_time) && ! empty($record->sleep_woke_up_time)) {
             try {
                 $start = Carbon::createFromFormat('H:i', (string) $record->sleep_fell_asleep_time);

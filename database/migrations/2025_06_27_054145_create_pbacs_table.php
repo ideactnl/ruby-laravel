@@ -144,7 +144,7 @@ return new class extends Migration
             $table->boolean('is_sleep_answered')->nullable();
             $table->string('sleep_fell_asleep_time', 8)->nullable();
             $table->string('sleep_woke_up_time', 8)->nullable();
-            $table->integer('sleep_hours_of_sleep')->nullable();
+            $table->string('sleep_hours_of_sleep', 8)->nullable();
             $table->boolean('is_sleep_work_school_day')->nullable();
             $table->boolean('is_sleep_free_day')->nullable();
             $table->boolean('is_sleep_trouble_asleep')->nullable();

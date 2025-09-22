@@ -6,6 +6,21 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Sanctum\HasApiTokens;
 
+/**
+ * @property int $id
+ * @property string $registration_number
+ * @property string $password
+ * @property string $pin
+ * @property bool|null $enable_data_sharing
+ * @property bool|null $opt_in_for_research
+ * @property bool|null $allow_medical_specialist_login
+ * @property string|null $medical_specialist_temporary_pin
+ * @property \Carbon\CarbonInterface|null $medical_specialist_temporary_pin_expires_at
+ * @property \Carbon\CarbonInterface|null $created_at
+ * @property \Carbon\CarbonInterface|null $updated_at
+ *
+ * @mixin \Illuminate\Database\Eloquent\Builder
+ */
 class Participant extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\ParticipantFactory> */
