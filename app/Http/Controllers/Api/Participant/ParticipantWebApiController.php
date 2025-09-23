@@ -16,13 +16,7 @@ use Illuminate\Validation\ValidationException;
 /**
  * @group Participant Dashboard
  *
- * Endpoints for participant web dashboard authentication and data access using SPA-style (cookie-based) authentication.
- *
- * Flow overview:
- * - Initialize CSRF with `GET /sanctum/csrf-cookie`.
- * - Authenticate with `POST /api/v1/participant/login` using registration number + password.
- * - Subsequent requests send the session cookie automatically.
- * - Use `POST /api/v1/participant/logout` to end the session.
+ * Endpoints for participant web dashboard authentication and data access using session & cookie based authentication.
  */
 class ParticipantWebApiController extends Controller
 {
@@ -31,11 +25,16 @@ class ParticipantWebApiController extends Controller
      *
      * Authenticates a participant and starts a session for the web dashboard.
      *
+     * @unauthenticated
+     *
      * @bodyParam registration_number string required Participant registration number. Example: participant123
      * @bodyParam password string required Password. Example: secret123
      *
      * @response 200 {"success": true, "participant": {"id": 1, "registration_number": "participant123"}}
      * @response 422 {"message":"The given data was invalid.","errors":{"registration_number":["The provided credentials are incorrect."]}}
+     *
+     * @responseField success boolean Whether the login was successful
+     * @responseField participant object The authenticated participant data
      */
     public function login(Request $request)
     {
@@ -69,8 +68,15 @@ class ParticipantWebApiController extends Controller
      *
      * Ends the current participant session.
      *
+     * <b style="color: red;">AUTHENTICATION REQUIRED: Must have active session to logout</b>
+     *
+     * @unauthenticated
+     *
      * @response 200 {"success": true, "message": "Logged out successfully"}
      * @response 401 {"error": "Unauthenticated"}
+     *
+     * @responseField success boolean Whether the logout was successful
+     * @responseField message string Confirmation message
      */
     public function logout(Request $request)
     {
@@ -87,7 +93,9 @@ class ParticipantWebApiController extends Controller
      * Returns participant flags and a date-filtered calendar collection with computed per-day metrics.
      * Used by the calendar, daily view, and export chart.
      *
-     * @authenticated
+     * <b style="color: red;">AUTHENTICATION REQUIRED: Must have active session (login via `/api/v1/participant/login` first)</b>
+     *
+     * @unauthenticated
      *
      * @queryParam preset string optional One of: month, quarter, year, custom. Default: month. Example: month
      * @queryParam start_date date optional Y-m-d; required when preset=custom. Example: 2025-09-01
@@ -95,6 +103,9 @@ class ParticipantWebApiController extends Controller
      *
      * @response 200 {"participant":{"id":1,"registration_number":"participant123"},"calendar":[{"reported_date":"2025-09-10","pillars":{"blood_loss":{"answered":true,"amount":12,"severity":"moderate"},"pain":{"answered":true,"value":3},"impact":{"answered":true,"gradeYourDay":2},"general_health":{"answered":true,"energyLevel":3},"sleep":{"answered":true,"calculatedHours":6.5},"exercise":{"answered":true,"any":true}},"sleep_hours":6.5}]}
      * @response 401 {"error":"Unauthenticated"}
+     *
+     * @responseField participant object The authenticated participant information
+     * @responseField calendar array Array of PBAC records with computed pillar data
      */
     public function dashboard(Request $request)
     {
@@ -147,11 +158,15 @@ class ParticipantWebApiController extends Controller
      *
      * Returns the computed metrics for the specified date.
      *
-     * @authenticated
+     * <b style="color: red;">AUTHENTICATION REQUIRED: Must have active session (login via `/api/v1/participant/login` first)</b>
+     *
+     * @unauthenticated
      *
      * @queryParam date date required Target date (Y-m-d). Example: 2025-09-10
      *
      * @response 200 {"date":"2025-09-10","data":{"reported_date":"2025-09-10","pillars":{"blood_loss":{"answered":true,"amount":7},"pain":{"answered":true,"value":3},"impact":{"answered":true,"gradeYourDay":2},"general_health":{"answered":true,"energyLevel":3},"sleep":{"answered":true,"calculatedHours":6.5},"exercise":{"answered":true,"any":true}},"sleep_hours":6.5}}
+     * @response 401 {"error":"Unauthenticated"}
+     * @response 422 {"error":"Invalid query parameters.","errors":{"date":["The date field is required."]}}
      */
     public function dailyData(Request $request)
     {
@@ -159,9 +174,21 @@ class ParticipantWebApiController extends Controller
         if (! $participant) {
             return response()->json(['error' => 'Unauthenticated'], 401);
         }
-        $validated = $request->validate([
+        $validated = $request->query();
+
+        // Validate query parameters
+        $validator = validator($validated, [
             'date' => ['required', 'date'],
         ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'error' => 'Invalid query parameters.',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        $validated = $validator->validated();
         $date = $validated['date'];
 
         $record = Pbac::query()
@@ -203,14 +230,19 @@ class ParticipantWebApiController extends Controller
      *
      * Queues a CSV export for the authenticated participant and returns a tracking job payload.
      *
-     * @authenticated
+     * <b style="color: red;">AUTHENTICATION REQUIRED: Must have active session (login via `/api/v1/participant/login` first)</b>
      *
-     * @queryParam preset string optional One of: month, quarter, year, custom. Default: month.
-     * @queryParam start_date date optional Y-m-d; required when preset=custom.
-     * @queryParam end_date date optional Y-m-d; required when preset=custom.
+     * @unauthenticated
+     *
+     * @queryParam preset string optional One of: month, quarter, year, custom. Default: month. Example: month
+     * @queryParam start_date date optional Y-m-d; required when preset=custom. Example: 2025-01-01
+     * @queryParam end_date date optional Y-m-d; required when preset=custom. Example: 2025-01-31
      *
      * @response 202 {"job":{"id":"uuid","type":"csv","status":"queued","progress":0,"file_path":null,"download_url":null}}
      * @response 401 {"error":"Unauthenticated"}
+     * @response 422 {"error":"Invalid query parameters.","errors":{"start_date":["The start date field must be a valid date."]}}
+     *
+     * @responseField job object The queued export job information with tracking details
      */
     public function exportPbacData(Request $request, PbacExportService $exportService)
     {
@@ -219,11 +251,21 @@ class ParticipantWebApiController extends Controller
             return response()->json(['error' => 'Unauthenticated'], 401);
         }
 
-        $request->validate([
+        $validated = $request->query();
+
+        // Validate query parameters
+        $validator = validator($validated, [
             'preset' => ['nullable', 'in:month,quarter,year,custom'],
             'start_date' => ['nullable', 'date'],
             'end_date' => ['nullable', 'date', 'after_or_equal:start_date'],
         ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'error' => 'Invalid query parameters.',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
 
         $job = $exportService->queueParticipantCsv($request, $participant->id);
 
@@ -236,16 +278,21 @@ class ParticipantWebApiController extends Controller
      * Queues a PDF export (chart image provided by the client) for the authenticated participant
      * and returns a tracking job payload.
      *
-     * @authenticated
+     * <b style="color: red;">AUTHENTICATION REQUIRED: Must have active session (login via `/api/v1/participant/login` first)</b>
      *
-     * @bodyParam chart_image string required Base64 image data URL (data:image/png;base64,...) Example: data:image/png;base64,iVBORw...
-     * @bodyParam preset string optional One of: month, quarter, year, custom
-     * @bodyParam start_date date optional Y-m-d; used when preset=custom
-     * @bodyParam end_date date optional Y-m-d; used when preset=custom
+     * @unauthenticated
+     *
+     * @bodyParam chart_image string required Base64 image data URL (data:image/png;base64,...) Example: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==
+     * @bodyParam preset string optional One of: month, quarter, year, custom. Example: month
+     * @bodyParam start_date date optional Y-m-d; used when preset=custom. Example: 2025-01-01
+     * @bodyParam end_date date optional Y-m-d; used when preset=custom. Example: 2025-01-31
      *
      * @response 202 {"job":{"id":"uuid","type":"pdf","status":"queued","progress":0,"file_path":null,"download_url":null}}
      * @response 400 {"error":"Invalid image format"}
      * @response 401 {"error":"Unauthenticated"}
+     * @response 422 {"message":"The given data was invalid.","errors":{"chart_image":["The chart image field is required."]}}
+     *
+     * @responseField job object The queued PDF export job information with tracking details
      */
     public function exportChartPdf(Request $request, PbacExportService $exportService)
     {
@@ -274,11 +321,15 @@ class ParticipantWebApiController extends Controller
      *
      * Returns the most recent queued/processing job for the authenticated participant.
      *
-     * @authenticated
+     * <b style="color: red;">AUTHENTICATION REQUIRED: Must have active session (login via `/api/v1/participant/login` first)</b>
+     *
+     * @unauthenticated
      *
      * @response 200 {"job": {"id":"uuid","type":"csv","status":"processing","progress":25}}
      * @response 200 {"job": null}
      * @response 401 {"error":"Unauthenticated"}
+     *
+     * @responseField job object|null The active export job or null if no job is active
      */
     public function activeExport(Request $request, ExportTrackingService $tracker)
     {
@@ -298,13 +349,17 @@ class ParticipantWebApiController extends Controller
      *
      * Returns the export job payload by its ID. The job must belong to the authenticated participant.
      *
-     * @authenticated
+     * <b style="color: red;">AUTHENTICATION REQUIRED: Must have active session (login via `/api/v1/participant/login` first)</b>
+     *
+     * @unauthenticated
      *
      * @urlParam jobId string required The export job UUID. Example: 3b0a3a80-5f8a-4a28-bb79-fd2c4b15c9ef
      *
      * @response 200 {"job": {"id":"uuid","type":"csv","status":"completed","progress":100,"file_path":"exports/participant/1/pbac_export_....csv"}}
      * @response 401 {"error":"Unauthenticated"}
      * @response 404 {"error":"Not found"}
+     *
+     * @responseField job object The export job with current status and progress information
      */
     public function exportStatus(string $jobId, ExportTrackingService $tracker)
     {
@@ -327,7 +382,9 @@ class ParticipantWebApiController extends Controller
      *
      * Streams a completed export file for the authenticated participant (signed URL).
      *
-     * @authenticated
+     * <b style="color: red;">AUTHENTICATION REQUIRED: Must have active session (login via `/api/v1/participant/login` first)</b>
+     *
+     * @unauthenticated
      *
      * @urlParam jobId string required The export job UUID. Example: 3b0a3a80-5f8a-4a28-bb79-fd2c4b15c9ef
      *

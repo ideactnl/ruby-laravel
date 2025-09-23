@@ -8,6 +8,9 @@ use App\Http\Resources\PbacResource;
 use App\Models\Pbac;
 use Illuminate\Http\Request;
 
+/**
+ * @group PBAC
+ */
 class PbacController extends Controller
 {
     /**
@@ -15,8 +18,6 @@ class PbacController extends Controller
      *
      * Returns entries using the mobile-style field names (camelCase). Computed fields like
      * pbacScorePerDay are included for convenience and are derived from stored data.
-     *
-     * @group PBAC
      *
      * @authenticated
      *
@@ -69,8 +70,6 @@ class PbacController extends Controller
      * Quick identity/auth check endpoint for the mobile app. Returns the currently authenticated
      * participant as the source of truth.
      *
-     * @group PBAC
-     *
      * @authenticated
      *
      * @response 200 {
@@ -103,7 +102,6 @@ class PbacController extends Controller
             ], 401);
         }
 
-        // Authenticated via Sanctum; participant is present
         return response()->json([
             'message' => 'Participant found.',
             'participant' => $participant,
@@ -115,8 +113,6 @@ class PbacController extends Controller
      *
      * Provide mobile-style fields (see body parameters on this endpoint in the docs). If an entry
      * for the given reportedDate exists, it will be updated; otherwise, it will be created.
-     *
-     * @group PBAC
      *
      * @authenticated
      *
@@ -190,8 +186,6 @@ class PbacController extends Controller
     /**
      * Retrieve a single PBAC record by its ID for the authenticated participant.
      *
-     * @group PBAC
-     *
      * @urlParam id integer required The PBAC record ID. Example: 1
      *
      * @authenticated
@@ -246,8 +240,6 @@ class PbacController extends Controller
     /**
      * Filter PBAC records for the authenticated participant by day, month, and/or year.
      *
-     * @group PBAC
-     *
      * @queryParam day integer optional The day to filter. Example: 3
      * @queryParam month integer optional The month to filter. Example: 9
      * @queryParam year integer optional The year to filter. Example: 2025
@@ -263,6 +255,15 @@ class PbacController extends Controller
      *   "success": false,
      *   "message": "Authentication required. Please provide a valid Bearer token.",
      *   "data": null
+     * }
+     * @response 422 {
+     *   "success": false,
+     *   "message": "Invalid query parameters.",
+     *   "errors": {
+     *     "day": ["The day must be an integer."],
+     *     "month": ["The month must be an integer."],
+     *     "year": ["The year must be an integer."]
+     *   }
      * }
      *
      * @responseField success boolean Whether the request was successful
@@ -280,11 +281,23 @@ class PbacController extends Controller
             ], 401);
         }
 
-        $validated = $request->validate([
+        $validated = $request->query();
+
+        $validator = validator($validated, [
             'day' => 'nullable|integer',
             'month' => 'nullable|integer',
             'year' => 'nullable|integer',
         ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid query parameters.',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        $validated = $validator->validated();
 
         $q = Pbac::forParticipant($participant->id);
         if (! empty($validated['year'])) {

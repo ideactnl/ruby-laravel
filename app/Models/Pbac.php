@@ -163,6 +163,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read array|null $general_health
  * @property-read array|null $mood
  * @property-read array|null $stool_urine
+ * @property-read array|null $sleep
  * @property-read array|null $diet
  * @property-read array|null $exercise
  * @property-read array|null $sex

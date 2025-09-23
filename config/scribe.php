@@ -97,7 +97,7 @@ return [
     // How is your API authenticated? This information will be used in the displayed docs, generated examples and response calls.
     'auth' => [
         // Set this to true if ANY endpoints in your API use authentication.
-        'enabled' => false,
+        'enabled' => true,
 
         // Set this to true if your API should be authenticated by default. If so, you must also set `enabled` (above) to true.
         // You can then use @unauthenticated or @authenticated on individual endpoints to change their status from the default.
@@ -107,7 +107,7 @@ return [
         'in' => AuthIn::BEARER->value,
 
         // The name of the auth parameter (e.g. token, key, apiKey) or header (e.g. Authorization, Api-Key).
-        'name' => 'key',
+        'name' => 'Authorization',
 
         // The value of the parameter to be used by Scribe to authenticate response calls.
         // This will NOT be included in the generated documentation. If empty, Scribe will use a random value.
@@ -115,10 +115,10 @@ return [
 
         // Placeholder your users will see for the auth parameter in the example requests.
         // Set this to null if you want Scribe to use a random value as placeholder instead.
-        'placeholder' => '{YOUR_AUTH_KEY}',
+        'placeholder' => '{YOUR_AUTH_TOKEN}',
 
         // Any extra authentication-related info for your users. Markdown and HTML are supported.
-        'extra_info' => 'You can retrieve your token by visiting your dashboard and clicking <b>Generate API token</b>.',
+        'extra_info' => 'You can retrieve your Bearer token by calling the <b>Login</b> endpoint with your registration number and PIN. Include the token in the Authorization header as <code>Bearer {token}</code>.',
     ],
 
     // Text to place in the "Introduction" section, right after the `description`. Markdown and HTML are supported.
@@ -173,7 +173,34 @@ return [
         // You can override this by listing the groups, subgroups and endpoints here in the order you want them.
         // See https://scribe.knuckles.wtf/blog/laravel-v4#easier-sorting and https://scribe.knuckles.wtf/laravel/reference/config#order for details
         // Note: does not work for `external` docs types
-        'order' => [],
+        'order' => [
+            'Auth' => [
+                'POST /api/v1/register',                // Register first
+                'POST /api/v1/login',                   // Login second
+                'POST /api/v1/login-logs',              // Login logs third
+                'PATCH /api/v1/profile',                // Profile update fourth
+                'POST /api/v1/medical-specialist/access', // Medical access fifth
+                'POST /api/v1/logout',                  // Logout LAST
+            ],
+            'PBAC' => [
+                'POST /api/v1/pbac',                    // Create/Update (first)
+                'GET /api/v1/pbac',                     // List all (second)
+                'GET /api/v1/pbac/{pbac}',              // Show single (third)
+                'GET /api/v1/pbac/check',               // Check participant (fourth)
+                'GET /api/v1/pbac/filter',              // Filter records (fifth)
+            ],
+            'Participant Dashboard' => [
+                'POST /api/v1/participant/login',       // Login first
+                'GET /api/v1/participant/dashboard',     // Dashboard data second
+                'GET /api/v1/participant/daily',         // Daily data third
+                'GET /api/v1/participant/pbac/export',   // CSV export fourth
+                'POST /api/v1/participant/pbac/chart/export/pdf', // PDF export fifth
+                'GET /api/v1/participant/exports/active', // Active export job sixth
+                'GET /api/v1/participant/exports/{jobId}', // Export job by ID seventh
+                'GET /api/v1/participant/exports/{jobId}/download', // Download eighth
+                'POST /api/v1/participant/logout',       // Logout LAST
+            ],
+        ],
     ],
 
     // Custom logo path. This will be used as the value of the src attribute for the <img> tag,
@@ -181,7 +208,7 @@ return [
     // For example, if your logo is in public/img:
     // - 'logo' => '../img/logo.png' // for `static` type (output folder is public/docs)
     // - 'logo' => 'img/logo.png' // for `laravel` type
-    'logo' => false,
+    'logo' => 'images/colored-logo.png',
 
     // Customize the "Last updated" value displayed in the docs by specifying tokens and formats.
     // Examples:

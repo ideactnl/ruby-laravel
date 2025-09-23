@@ -28,6 +28,8 @@ class AuthController extends Controller
      *
      * Registers a participant with a registration number, PIN, and agreement to share data for research.
      *
+     * @unauthenticated
+     *
      * @bodyParam registration_number string required The unique registration number for the participant. Example: participant123
      * @bodyParam pin string required The PIN code for mobile login (min 6 chars). Example: 123456
      * @bodyParam opt_in_for_research boolean required Must be true to register. Example: true
@@ -69,6 +71,8 @@ class AuthController extends Controller
      * Login (PIN-based)
      *
      * Authenticates a participant using registration number and PIN. Returns a Sanctum Bearer access_token for API access.
+     *
+     * @unauthenticated
      *
      * @bodyParam registration_number string required The participant's registration number. Example: participant123
      * @bodyParam pin string required The participant's PIN. Example: 123456
@@ -121,6 +125,8 @@ class AuthController extends Controller
      * Get login logs for a registration number.
      *
      * Returns login logs for the given registration number.
+     *
+     * @unauthenticated
      *
      * @bodyParam registration_number string required The registration number. Example: participant123
      *
@@ -286,8 +292,8 @@ class AuthController extends Controller
      * **Requires authentication via Bearer token in the Authorization header.**
      *
      *
-     * @bodyParam action string required Either 'enable' or 'disable'. Example: "enable"
-     * @bodyParam pin string required when action is 'enable'. Numeric PIN (4-6 digits). Example: "1234"
+     * @bodyParam action string required Either 'enable' or 'disable'. Example: enable
+     * @bodyParam pin string required when action is 'enable'. Numeric PIN (4-6 digits). Example: 1234
      *
      * @response 200 {
      *   "success": true,
