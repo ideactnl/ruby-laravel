@@ -88,7 +88,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property bool|null $is_impact_med_tranexamine_zuur
  * @property bool|null $is_impact_med_other
  * @property string|null $is_impact_med_other_text
- * @property bool|null $is_impact_medicine_effective
+ * @property int|null $is_impact_medicine_effective
  * @property bool|null $is_general_health_answered
  * @property int|null $general_health_energy_level_slider_value
  * @property bool|null $is_general_health_dizzy
@@ -273,6 +273,7 @@ class Pbac extends Model
         'pain_slider_value' => 'integer',
         'impact_slider_grade_your_day' => 'integer',
         'impact_slider_complaints' => 'integer',
+        'is_impact_medicine_effective' => 'integer',
         'general_health_energy_level_slider_value' => 'integer',
     ];
 
@@ -294,7 +295,7 @@ class Pbac extends Model
         'is_impact_answered' => 'boolean', 'is_impact_used_medication' => 'boolean', 'is_impact_missed_work' => 'boolean', 'is_impact_missed_school' => 'boolean',
         'is_impact_could_no_sport' => 'boolean', 'is_impact_missed_special_activities' => 'boolean', 'is_impact_missed_leisure_activities' => 'boolean',
         'is_impact_had_to_sit_more' => 'boolean', 'is_impact_could_not_move' => 'boolean', 'is_impact_had_to_stay_longer_in_bed' => 'boolean',
-        'is_impact_could_not_do_unpaid_work' => 'boolean', 'is_impact_other' => 'boolean', 'is_impact_medicine_effective' => 'boolean',
+        'is_impact_could_not_do_unpaid_work' => 'boolean', 'is_impact_other' => 'boolean',
         'is_impact_med_paracetamol' => 'boolean', 'is_impact_med_diclofenac' => 'boolean', 'is_impact_med_naproxen' => 'boolean', 'is_impact_med_iron_pills' => 'boolean',
         'is_impact_med_tramodol' => 'boolean', 'is_impact_med_oxynorm' => 'boolean', 'is_impact_med_anticonception_pill' => 'boolean', 'is_impact_med_other_hormones' => 'boolean',
         'is_impact_med_tranexamine_zuur' => 'boolean', 'is_impact_med_other' => 'boolean',

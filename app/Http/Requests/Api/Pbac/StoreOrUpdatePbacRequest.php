@@ -100,7 +100,7 @@ class StoreOrUpdatePbacRequest extends FormRequest
             'isImpactMedTranexamineZuur' => 'nullable|boolean',
             'isImpactMedOther' => 'nullable|boolean',
             'isImpactMedOtherText' => 'nullable|string|max:255',
-            'isImpactMedicineEffective' => 'nullable|boolean',
+            'isImpactMedicineEffective' => 'nullable|integer|min:0|max:10',
 
             // ** General health ** //
             'isGeneralHealthAnswered' => 'nullable|boolean',
@@ -291,7 +291,7 @@ class StoreOrUpdatePbacRequest extends FormRequest
             'isImpactMedTranexamineZuur' => ['description' => 'Medication: Tranexamine zuur', 'example' => 0, 'required' => false, 'type' => 'boolean'],
             'isImpactMedOther' => ['description' => 'Medication: Other', 'example' => 0, 'required' => false, 'type' => 'boolean'],
             'isImpactMedOtherText' => ['description' => 'Medication other text', 'example' => '', 'required' => false, 'type' => 'string'],
-            'isImpactMedicineEffective' => ['description' => 'Medication effective', 'example' => 1, 'required' => false, 'type' => 'boolean'],
+            'isImpactMedicineEffective' => ['description' => 'Medication effectiveness slider (0-10)', 'example' => 7, 'required' => false, 'type' => 'integer'],
 
             // ** General health ** //
             'isGeneralHealthAnswered' => ['description' => 'General health section answered', 'example' => 1, 'required' => false, 'type' => 'boolean'],

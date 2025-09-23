@@ -100,7 +100,7 @@ return new class extends Migration
             $table->boolean('is_impact_med_tranexamine_zuur')->nullable();
             $table->boolean('is_impact_med_other')->nullable();
             $table->string('is_impact_med_other_text', 255)->nullable();
-            $table->boolean('is_impact_medicine_effective')->nullable();
+            $table->integer('is_impact_medicine_effective')->nullable();
 
             // General health
             $table->boolean('is_general_health_answered')->nullable();

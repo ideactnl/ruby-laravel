@@ -90,7 +90,7 @@ class PbacFactory extends Factory
             'is_impact_med_other_hormones' => $this->faker->boolean(),
             'is_impact_med_other' => $this->faker->boolean(),
             'is_impact_med_other_text' => $this->faker->text(),
-            'is_impact_medicine_effective' => $this->faker->boolean(),
+            'is_impact_medicine_effective' => $this->faker->numberBetween(0, 10),
         ];
     }
 }
