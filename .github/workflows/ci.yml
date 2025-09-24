@@ -28,14 +28,10 @@ jobs:
         run: composer install --no-interaction --prefer-dist --optimize-autoloader
       - name: Run PHPStan (Static Analysis on app/)
         run: composer stan
-        env:
-          APP_ENV: testing
       - name: Run Laravel Pint (Code Style on app/ config/)
         run: composer lint
       - name: Run Laravel Tests (Feature & Unit)
         run: php artisan test --env=testing
-        env:
-          APP_ENV: testing
   # deploy:
   #   needs: test
   #   if: github.ref == 'refs/heads/main'
