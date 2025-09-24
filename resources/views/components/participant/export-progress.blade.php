@@ -72,7 +72,33 @@
                         res = await fetch(endpoints.csv(qp.toString()), { credentials: 'include' });
                     } else {
                         const canvas = document.getElementById(this.chartCanvasId);
-                        const chartImage = canvas ? canvas.toDataURL('image/png') : null;
+                        let chartImage = null;
+                        if (canvas) {
+                            const originalWidth = canvas.width;
+                            const originalHeight = canvas.height;
+                            const originalStyleWidth = canvas.style.width;
+                            const originalStyleHeight = canvas.style.height;
+                            
+                            const scaleFactor = 3;
+                            canvas.width = Math.max(1200, originalWidth) * scaleFactor;
+                            canvas.height = Math.max(600, originalHeight) * scaleFactor;
+                            canvas.style.width = originalStyleWidth;
+                            canvas.style.height = originalStyleHeight;
+                            
+                            if (window.__rubyChart) {
+                                window.__rubyChart.resize();
+                                window.__rubyChart.update('none');
+                            }
+                            
+                            chartImage = canvas.toDataURL('image/png', 1.0);
+                            
+                            canvas.width = originalWidth;
+                            canvas.height = originalHeight;
+                            
+                            if (window.__rubyChart) {
+                                window.__rubyChart.resize();
+                            }
+                        }
                         res = await fetch(endpoints.pdf, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json', ...this.csrfHeader() },
@@ -86,7 +112,6 @@
                     this.job = data.job || data;
                     this.progress = this.job.progress || 0;
                     this.status = this.job.status || 'queued';
-                    // Emit alert for queued
                     window.dispatchEvent(new CustomEvent('alert:success', { detail: { message: (this.type === 'csv' ? 'CSV' : 'PDF') + ' export queued.' } }));
                     this.poll();
                 } catch (e) {
