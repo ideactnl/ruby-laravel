@@ -7,7 +7,7 @@
     <div class="mb-3 flex items-center justify-between">
         <h2 id="cal-month-label" x-cloak class="text-xl sm:text-2xl font-extrabold tracking-tight text-gray-900">&nbsp;</h2>
         <div class="relative" @click.outside="open=false" x-cloak>
-            <button @click="open=!open" class="inline-flex items-center gap-2 rounded-md bg-[#5E0F0F] px-4 py-2 text-sm font-semibold text-white shadow hover:opacity-90 cursor-pointer">
+            <button @click="open=!open" class="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-white shadow hover:bg-primary-800 cursor-pointer transition-colors">
                 <span>Domains (<span x-cloak x-text="selected.length"></span>/3)</span>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-4 w-4"><path d="M6 9l6 6 6-6"/></svg>
             </button>
@@ -44,7 +44,7 @@
             title="Back to current month"
             aria-label="Back to current month"
             x-cloak
-            class="hidden absolute bottom-4 right-0 z-50 inline-flex items-center gap-2 rounded-full bg-[#5E0F0F] text-white shadow-lg hover:opacity-90 px-4 py-3 cursor-pointer">
+            class="hidden absolute bottom-4 right-0 z-50 inline-flex items-center gap-2 rounded-full bg-primary text-white shadow-lg hover:bg-primary-800 px-4 py-3 cursor-pointer transition-colors">
             <i class="fa-solid fa-clock-rotate-left text-lg"></i>
             <span class="text-sm font-medium">Back to current month</span>
         </button>

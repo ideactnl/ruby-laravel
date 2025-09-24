@@ -24,7 +24,7 @@
 >
     <div class="mb-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div class="flex items-center gap-3">
-            <span class="inline-flex items-center rounded-md border border-[#5E0F0F] px-3 py-2 text-sm font-semibold text-[#5E0F0F] bg-[#5E0F0F]/5">Range</span>
+            <span class="inline-flex items-center rounded-md border border-primary px-3 py-2 text-sm font-semibold text-primary bg-primary/5">Range</span>
             <x-form.select name="preset" x-model="preset" @change="refresh()" variant="participant" :enhanced="false">
                 <option value="month">This Month</option>
                 <option value="quarter">This Quarter</option>
@@ -53,11 +53,11 @@
             <canvas id="exportChart"></canvas>
         </div>
         <div class="mt-4 flex items-center justify-end gap-3">
-            <button @click="exportPDF()" :disabled="busy" :class="busy ? 'opacity-60 cursor-not-allowed' : ''" class="inline-flex items-center gap-2 rounded-md bg-[#5E0F0F] px-4 py-2 text-sm font-semibold text-white shadow hover:opacity-90">
+            <button @click="exportPDF()" :disabled="busy" :class="busy ? 'opacity-60 cursor-not-allowed' : ''" class="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-white shadow hover:opacity-90">
                 Export as PDF
                 <i class="fa-solid fa-file-pdf"></i>
             </button>
-            <button @click="exportCSV()" :disabled="busy" :class="busy ? 'opacity-60 cursor-not-allowed' : ''" class="inline-flex items-center gap-2 rounded-md bg-[#5E0F0F] px-4 py-2 text-sm font-semibold text-white shadow hover:opacity-90">
+            <button @click="exportCSV()" :disabled="busy" :class="busy ? 'opacity-60 cursor-not-allowed' : ''" class="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-white shadow hover:opacity-90">
                 Export as CSV
                 <i class="fa-solid fa-file-csv"></i>
             </button>

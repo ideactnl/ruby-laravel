@@ -1,5 +1,5 @@
 <aside
-    class="fixed inset-y-0 left-0 z-[99] w-72 transform bg-[#3C0606] text-white shadow-none transition-transform duration-300
+    class="fixed inset-y-0 left-0 z-[99] w-72 transform bg-primary text-white shadow-none transition-transform duration-300
            md:inset-y-0 md:left-0 md:w-64 md:translate-x-0 flex flex-col overflow-x-hidden"
     :class="{ '-translate-x-full': !sidebarOpen, 'translate-x-0': sidebarOpen }"
     aria-label="Admin sidebar"
@@ -43,7 +43,7 @@
                     <a href="{{ $item['href'] }}"
                        class="group relative flex h-14 items-center gap-3 pl-5 pr-6 text-sm font-medium transition
                               {{ $isActive
-                                    ? 'active-nav bg-white text-[#111] rounded-l-[26px] rounded-r-[0px] shadow'
+                                    ? 'active-nav bg-white text-neutral-900 rounded-l-[26px] rounded-r-[0px] shadow'
                                     : 'text-white hover:bg-white/10 rounded-xl' }}">
 
                         <!-- Icon (Font Awesome) -->

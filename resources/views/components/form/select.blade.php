@@ -1,8 +1,8 @@
 @props(['name', 'enhanced' => false])
 
 @php
-$chipClasses = 'inline-flex w-full items-center shadow rounded-md border border-gray-300 px-3.5 py-2.5 text-sm font-semibold text-[#555] bg-[#fff]
- focus:ring-1 focus:outline-0 focus:ring-[#fff] focus:text-[#5E0F0F] focus:bg-[#5E0F0F]/5 focus:border-[#5E0F0F]';
+$chipClasses = 'inline-flex w-full items-center shadow rounded-md border border-gray-300 px-3.5 py-2.5 text-sm font-semibold text-neutral-600 bg-white
+ focus:ring-1 focus:outline-0 focus:ring-white focus:text-primary focus:bg-primary/5 focus:border-primary';
 $classes = $chipClasses;
 @endphp
 
@@ -19,7 +19,7 @@ $classes = $chipClasses;
         {{ $attributes->merge(['class' => $classes . ' pr-9 appearance-none']) }}>
         {{ $slot }}
     </select>
-    <span class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-[#555]">
+    <span class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-neutral-700">
         <i class="fa-solid fa-chevron-down text-xs"></i>
     </span>
 </div>

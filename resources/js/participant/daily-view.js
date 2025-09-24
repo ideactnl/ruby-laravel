@@ -232,7 +232,7 @@ window.dailyView = function dailyView() {
             { 
               key:'pain', 
               label:'pain', 
-              badge:'bg-[#5E0F0F]', 
+              badge:'bg-primary', 
               pillar: pillars.pain,
               value: pillars.pain?.value ?? 0,
               tooltip: this.getPainTooltip(pillars.pain)
