@@ -12,12 +12,12 @@
         <div class="justify-self-center">
             <div class="inline-flex items-center gap-3">
                 <button @click="prevDay()"
-                        class="inline-flex items-center justify-center gap-2 rounded-md bg-[#5E0F0F] w-[120px] px-4 py-2 text-sm font-semibold text-white shadow hover:opacity-90 cursor-pointer">
+                        class="inline-flex items-center justify-center gap-2 rounded-md bg-primary w-[120px] px-4 py-2 text-sm font-semibold text-white shadow hover:opacity-90 cursor-pointer">
                     <i class="fa-solid fa-angles-left"></i>
                     Previous
                 </button>
                 <button @click="nextDay()"
-                        class="inline-flex items-center justify-center gap-2 rounded-md bg-[#5E0F0F] w-[120px] px-4 py-2 text-sm font-semibold text-white shadow hover:opacity-90 cursor-pointer">
+                        class="inline-flex items-center justify-center gap-2 rounded-md bg-primary w-[120px] px-4 py-2 text-sm font-semibold text-white shadow hover:opacity-90 cursor-pointer">
                     Next
                     <i class="fa-solid fa-angles-right"></i>
                 </button>
@@ -26,7 +26,7 @@
 
         <div class="justify-self-end">
             <button @click="openDate()"
-                    class="inline-flex items-center gap-2 rounded-md bg-[#5E0F0F] px-4 py-2 text-sm font-semibold text-white shadow hover:opacity-90">
+                    class="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-white shadow hover:bg-primary-800 cursor-pointer transition-colors">
                 Select Date
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-4 w-4"><path d="M6 9l6 6 6-6"/></svg>
             </button>
@@ -72,7 +72,7 @@
 
     <template x-if="!loading && videos.length">
         <div>
-            <h2 class="text-[22px] font-medium uppercase text-black tracking-tight mb-5">menstrual health</h2>
+            <h2 class="text-[22px] font-medium uppercase text-black tracking-tight mb-5"></h2>
             <div class="swiper" x-ref="vidSwiper">
                 <div class="swiper-wrapper">
                     <template x-for="(vid,vi) in videos" :key="'vid-'+vi">
@@ -87,7 +87,7 @@
                                     </template>
                                     <div class="absolute inset-0 flex items-center justify-center">
                                         <span class="inline-flex h-12 w-12 items-center justify-center rounded-full bg-white/90 shadow">
-                                            <i class="fa-solid fa-play text-[#5E0F0F]"></i>
+                                            <i class="fa-solid fa-play text-primary"></i>
                                         </span>
                                     </div>
                                 </div>

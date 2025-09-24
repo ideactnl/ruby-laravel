@@ -49,7 +49,7 @@
                         <col style="width:15%">
                         <col style="width:10%">
                     </colgroup>
-                    <thead class="bg-[#3C0606] text-white border-b border-gray-200">
+                    <thead class="bg-primary text-white border-b border-gray-200">
                         <tr>
                             <th class="px-6 py-3 text-left">User</th>
                             <th class="px-6 py-3 text-left">Format</th>
@@ -107,7 +107,7 @@
                     <button @click="prev()" :disabled="page<=1" class="px-2.5 py-1.5 rounded-lg border text-sm disabled:opacity-50 cursor-pointer">‹</button>
                     <template x-for="p in pages()" :key="p.key">
                         <span x-show="p.type==='gap'" class="px-2 text-gray-400">…</span>
-                        <button x-show="p.type==='page'" @click="go(p.num)" :class="p.num===page ? 'bg-[#5E0F0F] text-white' : 'bg-white text-gray-700 hover:bg-gray-100'" class="px-3 py-1.5 rounded-lg border text-sm cursor-pointer" x-text="p.num"></button>
+                        <button x-show="p.type==='page'" @click="go(p.num)" :class="p.num===page ? 'bg-primary text-white' : 'bg-white text-gray-700 hover:bg-gray-100'" class="px-3 py-1.5 rounded-lg border text-sm cursor-pointer" x-text="p.num"></button>
                     </template>
                     <button @click="next()" :disabled="page>=lastPage" class="px-2.5 py-1.5 rounded-lg border text-sm disabled:opacity-50 cursor-pointer">›</button>
                     <button @click="go(lastPage)" :disabled="page===lastPage" class="px-2.5 py-1.5 rounded-lg border text-sm disabled:opacity-50 cursor-pointer">»</button>

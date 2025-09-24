@@ -39,13 +39,13 @@
                 return s.charAt(0).toUpperCase() + s.slice(1);
             },
             statusClass(){
-                const base = 'bg-[#5E0F0F]/10 text-[#5E0F0F] border-[#5E0F0F]/30';
-                const strong = 'bg-[#5E0F0F]/15 text-[#5E0F0F] border-[#5E0F0F]/40';
+                const base = 'bg-primary/10 text-primary border-primary/30';
+                const strong = 'bg-primary/15 text-primary border-primary/40';
                 switch (this.status) {
                     case 'queued': return base;
                     case 'processing': return strong;
                     case 'completed': return base;
-                    case 'failed': return 'bg-red-50 text-[#5E0F0F] border-red-200';
+                    case 'failed': return 'bg-red-50 text-primary border-red-200';
                     default: return base;
                 }
             },
@@ -184,7 +184,7 @@
     <template x-if="job">
         <div class="mt-2">
             <div class="w-full bg-gray-200/70 rounded-full overflow-hidden h-[6px]">
-                <div class="bg-[#5E0F0F] h-[6px] transition-all duration-300"
+                <div class="bg-primary h-[6px] transition-all duration-300"
                     :style="'width:' + progress + '%'"
                 ></div>
             </div>
@@ -196,7 +196,7 @@
                     <span class="text-[10px] sm:text-xs text-gray-500" x-text="progress + '%'" aria-label="Progress"></span>
                 </span>
                 <div class="flex items-center gap-3" x-show="job && status === 'completed' && downloadUrl()">
-                    <a :href="downloadUrl()" class="text-[11px] sm:text-xs inline-flex items-center gap-1 text-[#5E0F0F] hover:underline">
+                    <a :href="downloadUrl()" class="text-[11px] sm:text-xs inline-flex items-center gap-1 text-primary hover:underline hover:text-primary-800 transition-colors">
                         <i class="fa-solid fa-download"></i>
                         Download
                     </a>

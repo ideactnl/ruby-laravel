@@ -5,7 +5,7 @@
     <div class="w-full max-w-4xl bg-white rounded-lg overflow-hidden flex flex-col md:flex-row shadow-[0_5px_15px_rgba(0,0,0,0.35)]">
         
         <!-- Left Section -->
-        <div class="w-full md:w-1/2 bg-[#5E0F0F] text-white flex flex-col justify-center items-center p-8 md:p-10">
+        <div class="w-full md:w-1/2 bg-primary text-white flex flex-col justify-center items-center p-8 md:p-10">
             <div class="flex flex-col items-center text-center">
                 <!-- Logo -->
                 <div class="bg-white rounded-full p-4 mb-6">
@@ -65,19 +65,16 @@
                     <x-form.input 
                         name="pin" 
                         type="password" 
-                        required 
                         placeholder="Enter your 4-6 digit PIN" />
                 </x-form.group>
 
                 <div class="mt-6">
                     <button type="submit"
-                        class="w-full bg-[#5E0F0F] hover:bg-[#7a1414] text-white font-semibold py-2 px-4 rounded transition duration-200 focus:outline-none focus:ring-2 focus:ring-[#5E0F0F] focus:ring-opacity-50">
+                        class="w-full bg-primary hover:bg-primary-800 text-white font-semibold py-2 px-4 rounded transition duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50">
                         <i class="fas fa-sign-in-alt mr-2"></i>
                         Access Patient Data
                     </button>
                 </div>
-                
-                <div class="mt-4 text-xs text-gray-500 text-center">
                     <p>Access is limited to 24 hours from PIN generation.</p>
                     <p>Contact the patient to renew expired access.</p>
                 </div>

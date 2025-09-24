@@ -40,7 +40,7 @@
         </x-form.group>
 
         <div class="pt-2 flex items-center gap-2">
-            <button type="submit" class="inline-flex items-center justify-center px-4 py-2.5 bg-[#5E0F0F] text-white rounded-xl shadow-sm hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#5E0F0F]/30 cursor-pointer">Save</button>
+            <button type="submit" class="inline-flex items-center justify-center px-4 py-2.5 bg-primary text-white rounded-xl shadow-sm hover:bg-primary-800 focus:outline-none focus:ring-2 focus:ring-primary/30 cursor-pointer transition-colors">Save</button>
             <a href="{{ route('users.index') }}" class="px-4 py-2.5 rounded-xl border text-sm">Cancel</a>
         </div>
     </form>
