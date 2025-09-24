@@ -3,15 +3,11 @@
 namespace App\Http\Controllers\Api\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\Auth\LoginLogsRequest;
 use App\Http\Requests\Api\Auth\LoginRequest;
 use App\Http\Requests\Api\Auth\MedicalSpecialistAccessRequest;
 use App\Http\Requests\Api\Auth\RegisterRequest;
 use App\Http\Requests\Api\Auth\UpdateProfileRequest;
 use App\Http\Resources\ParticipantResource;
-use App\Models\LoginLog;
-use App\Models\Participant;
-use App\Services\LoginLogService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -106,8 +102,6 @@ class AuthController extends Controller
             ], 401);
         }
 
-        (new LoginLogService)->log($participant->registration_number);
-
         $token = $participant->createToken('api')->plainTextToken;
 
         return response()->json([
@@ -117,63 +111,6 @@ class AuthController extends Controller
                 'participant' => new ParticipantResource($participant),
                 'access_token' => $token,
             ],
-        ]);
-
-    }
-
-    /**
-     * Get login logs for a registration number.
-     *
-     * Returns login logs for the given registration number.
-     *
-     * @unauthenticated
-     *
-     * @bodyParam registration_number string required The registration number. Example: participant123
-     *
-     * @response 200 {
-     *   "success": true,
-     *   "message": "Logs retrieved successfully.",
-     *   "data": [
-     *     {"id": 1, "registration_number": "participant123", "login_at": "2025-07-02T11:00:00"}
-     *   ]
-     * }
-     * @response 404 {
-     *   "success": false,
-     *   "message": "No logs found for this registration number.",
-     *   "data": null
-     * }
-     *
-     * @responseField success boolean Whether the request was successful
-     * @responseField message string A human-readable message
-     * @responseField data array|null The login logs or null
-     */
-    public function loginLogs(LoginLogsRequest $request): JsonResponse
-    {
-        $data = $request->validated();
-        $registrationNumber = $data['registration_number'];
-
-        $participant = Participant::where('registration_number', $registrationNumber)->first();
-        if (! $participant) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Participant with this registration number does not exist.',
-                'data' => null,
-            ], 404);
-        }
-
-        $logs = LoginLog::where('registration_number', $registrationNumber)->get();
-        if ($logs->isEmpty()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'No logs found for this registration number.',
-                'data' => null,
-            ], 404);
-        }
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Logs retrieved successfully.',
-            'data' => $logs,
         ]);
 
     }

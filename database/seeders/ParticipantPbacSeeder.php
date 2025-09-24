@@ -41,14 +41,14 @@ class ParticipantPbacSeeder extends Seeder
             Participant::factory()->create([
                 'registration_number' => 'participant1',
                 'password' => bcrypt('password'),
-                'pin' => bcrypt('1234'),
+                'pin' => bcrypt('123456'),
                 'enable_data_sharing' => true,
                 'opt_in_for_research' => true,
             ]),
             Participant::factory()->create([
                 'registration_number' => 'participant2',
                 'password' => bcrypt('password'),
-                'pin' => bcrypt('5678'),
+                'pin' => bcrypt('123456'),
                 'enable_data_sharing' => true,
                 'opt_in_for_research' => false,
             ]),
