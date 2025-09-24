@@ -175,9 +175,15 @@ class PbacController extends Controller
                 'data' => new PbacResource($pbac),
             ], $created ? 201 : 200);
         } catch (\Exception $e) {
+            \Log::error('PBAC save failed', [
+                'error' => $e->getMessage(),
+                'participant_id' => $participant->id,
+                'reported_date' => $validated['reportedDate'] ?? null,
+            ]);
+
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to save PBAC record: '.$e->getMessage(),
+                'message' => 'Failed to save PBAC record. Please check your data and try again.',
                 'data' => null,
             ], 400);
         }
