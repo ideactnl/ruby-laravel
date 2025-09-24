@@ -43,23 +43,23 @@ class GenerateParticipantPbacChartPdf implements ShouldQueue
                 'startDate' => $this->startDate,
                 'endDate' => $this->endDate,
             ])
-            ->setPaper('A4', 'landscape')
-            ->setOptions([
-                'dpi' => 300,
-                'defaultFont' => 'DejaVu Sans',
-                'isRemoteEnabled' => true,
-                'isHtml5ParserEnabled' => true,
-                'isFontSubsettingEnabled' => true,
-                'chroot' => storage_path(),
-                'logOutputFile' => storage_path('logs/dompdf.log'),
-                'fontCache' => storage_path('fonts/'),
-                'tempDir' => storage_path('temp/'),
-                'pdf_backend' => 'CPDF',
-                'default_media_type' => 'screen',
-                'default_paper_size' => 'A4',
-                'font_height_ratio' => 1.1,
-                'enable_css_float' => true,
-            ]);
+                ->setPaper('A4', 'landscape')
+                ->setOptions([
+                    'dpi' => 300,
+                    'defaultFont' => 'DejaVu Sans',
+                    'isRemoteEnabled' => true,
+                    'isHtml5ParserEnabled' => true,
+                    'isFontSubsettingEnabled' => true,
+                    'chroot' => storage_path(),
+                    'logOutputFile' => storage_path('logs/dompdf.log'),
+                    'fontCache' => storage_path('fonts/'),
+                    'tempDir' => storage_path('temp/'),
+                    'pdf_backend' => 'CPDF',
+                    'default_media_type' => 'screen',
+                    'default_paper_size' => 'A4',
+                    'font_height_ratio' => 1.1,
+                    'enable_css_float' => true,
+                ]);
 
             $tracker->markProgress($this->trackingJobId, 70);
             Storage::disk('local')->makeDirectory("exports/participant/{$this->participantId}");
