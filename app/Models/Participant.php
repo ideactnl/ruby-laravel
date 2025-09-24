@@ -55,9 +55,22 @@ class Participant extends Authenticatable
         'medical_specialist_temporary_pin',
     ];
 
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
     protected $casts = [
         'medical_specialist_temporary_pin_expires_at' => 'datetime',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
+
+    /**
+     * Get the PBAC records for the participant.
+     */
+    public function pbacs(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Pbac::class);
+    }
 }
