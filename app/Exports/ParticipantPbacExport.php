@@ -39,17 +39,15 @@ class ParticipantPbacExport implements FromQuery, ShouldQueue, WithHeadings, Wit
     {
         return [
             'Reported Date',
-            'PBAC Score',
-            'Pain Score',
-            'Quality of Life',
-            'Energy Level',
-            'Spotting',
-            'Influence Factor',
-            'Pain Medication',
-            'Defecation Complaints',
-            'Urinating Complaints',
-            'Quality of Sleep',
-            'Exercise',
+            'Blood Loss Amount',
+            'Blood Loss Severity',
+            'Pain Value',
+            'Impact Grade Your Day',
+            'General Health Energy Level',
+            'Mood Positives Count',
+            'Mood Negatives Count',
+            'Exercise Any',
+            'Notes Has Note',
         ];
     }
 
@@ -57,17 +55,15 @@ class ParticipantPbacExport implements FromQuery, ShouldQueue, WithHeadings, Wit
     {
         return [
             $pbac->reported_date,
-            $pbac->pbac_score_per_day,
-            $pbac->pain_score_per_day,
-            $pbac->quality_of_life,
-            $pbac->energy_level,
-            $pbac->spotting_yes_no,
-            $pbac->influence_factor,
-            $pbac->pain_medication,
-            $pbac->complaints_with_defecation,
-            $pbac->complaints_with_urinating,
-            $pbac->quality_of_sleep,
-            $pbac->exercise,
+            $pbac->blood_loss ? $pbac->blood_loss['amount'] : null,
+            $pbac->blood_loss ? $pbac->blood_loss['severity'] : null,
+            $pbac->pain ? $pbac->pain['value'] : null,
+            $pbac->impact ? $pbac->impact['gradeYourDay'] : null,
+            $pbac->general_health ? $pbac->general_health['energyLevel'] : null,
+            $pbac->mood ? count($pbac->mood['positives']) : null,
+            $pbac->mood ? count($pbac->mood['negatives']) : null,
+            $pbac->exercise ? ($pbac->exercise['any'] ? 1 : 0) : null,
+            $pbac->notes ? ($pbac->notes['hasNote'] ? 1 : 0) : null,
         ];
     }
 }

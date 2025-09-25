@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    @include('components.participant.head')
+    @include('components.medical-specialist.head')
 </head>
 <body class="min-h-screen bg-white">
     <div class="min-h-screen flex flex-col">
@@ -11,7 +11,7 @@
                     <img src="{{ asset('images/logo.png') }}" alt="RubyNU logo" class="h-13 w-auto object-contain" />
                     <span class="sr-only">RubyNU</span>
                 </a>
-                <div class="text-sm text-white">Participant Portal</div>
+                <div class="text-sm text-white">Medical Specialist Portal</div>
             </div>
         </header>
 
@@ -24,8 +24,6 @@
                 <span>&copy; {{ date('Y') }} RubyNU. All rights reserved.</span>
                 <span class="hidden sm:inline">|</span>
                 <a href="{{ route('login') }}" class="text-white hover:text-gray-200 transition-colors">Admin Login</a>
-                <span class="hidden sm:inline">|</span>
-                <a href="/docs" class="text-white hover:text-gray-200 transition-colors">Docs</a>
             </div>
         </footer>
     </div>

@@ -6,6 +6,25 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
+/**
+ * @property string $id
+ * @property int $participant_id
+ * @property string $type
+ * @property string $status
+ * @property int|null $progress
+ * @property string|null $file_path
+ * @property string|null $download_url
+ * @property \Carbon\CarbonInterface|null $queued_at
+ * @property \Carbon\CarbonInterface|null $started_at
+ * @property \Carbon\CarbonInterface|null $finished_at
+ * @property string|null $error
+ * @property string|null $queue_job_id
+ * @property array|null $meta
+ * @property \Carbon\CarbonInterface|null $created_at
+ * @property \Carbon\CarbonInterface|null $updated_at
+ *
+ * @mixin \Illuminate\Database\Eloquent\Builder
+ */
 class ExportJob extends Model
 {
     use HasFactory;

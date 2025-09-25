@@ -17,11 +17,9 @@ class UserController extends Controller
     {
         $query = User::query()->with('roles');
 
-        if (! auth()->user()?->hasRole('superadmin')) {
-            $query->whereDoesntHave('roles', function ($q) {
-                $q->where('name', 'Superadmin');
-            });
-        }
+        $query->whereDoesntHave('roles', function ($q) {
+            $q->where('name', 'superadmin');
+        });
 
         if ($q = request('q')) {
             $query->where(function ($w) use ($q) {
@@ -109,18 +107,28 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        $data = $request->validate([
+        $validationRules = [
             'name' => 'required|string',
             'email' => "required|email|unique:users,email,{$user->id}",
-            'password' => 'nullable|string|min:6|confirmed',
             'role' => 'required|exists:roles,name',
-        ]);
+        ];
 
-        $user->update([
+        if ($request->filled('password')) {
+            $validationRules['password'] = 'required|string|min:6|confirmed';
+        }
+
+        $data = $request->validate($validationRules);
+
+        $updateData = [
             'name' => $data['name'],
             'email' => $data['email'],
-            'password' => $data['password'] ? bcrypt($data['password']) : $user->password,
-        ]);
+        ];
+
+        if ($request->filled('password')) {
+            $updateData['password'] = bcrypt($data['password']);
+        }
+
+        $user->update($updateData);
 
         $user->syncRoles([$data['role']]);
 

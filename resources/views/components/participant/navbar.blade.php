@@ -1,5 +1,5 @@
-<nav class="sticky top-0 z-50 bg-white/95 backdrop-blur border-t-0 border-[#fff] md:ml-64">
-    <div class="mx-auto w-full px-5 md:px-8 border-b border-[#ebebeb]">
+<nav class="sticky top-0 z-50 bg-white/95 backdrop-blur border-t-0 border-white md:ml-64">
+    <div class="mx-auto w-full px-5 md:px-8 border-b border-neutral-200">
         <div class="flex h-20 items-center justify-between border-b border-gray-100/70">
             <div class="flex min-w-0 items-center gap-4">
                 <button class="md:hidden rounded-md p-2 text-gray-700 hover:bg-gray-100" @click="sidebarOpen = !sidebarOpen" aria-label="Toggle sidebar">
@@ -8,7 +8,7 @@
                     </svg>
                 </button>
                 <div class="truncate">
-                    <h1 class="truncate text-lg font-bold tracking-wide text-[#000] sm:text-2xl">@yield('navbar_title', 'RUBY WOMEN ')</h1>
+                    <h1 class="truncate text-lg font-bold tracking-wide text-neutral-900 sm:text-2xl">@yield('navbar_title', 'RUBY WOMEN ')</h1>
                     <p class="text-xs text-gray-600 mt-2 sm:text-sm">@yield('navbar_subtitle', 'Your Monthly Overview of data from the Ruby Mobile App')</p>
                 </div>
             </div>
@@ -24,7 +24,7 @@
                         } catch(e) {}
                         window.location.href = '{{ route('participant.web.login') }}';
                     }}" @click.outside="open=false">
-                        <button @click="open=!open" class="inline-flex h-9 w-9 items-center justify-center rounded-full bg-[#5E0F0F] text-white focus:outline-none cursor-pointer" aria-label="Account">
+                        <button @click="open=!open" class="inline-flex h-9 w-9 items-center justify-center rounded-full bg-primary text-white focus:outline-none cursor-pointer hover:bg-primary-800 transition-colors" aria-label="Account">
                             <span>{{ strtoupper(substr(Auth::guard('participant-web')->user()->registration_number ?? 'P', 0, 1)) }}</span>
                         </button>
                         <div x-show="open" x-transition class="absolute right-0 mt-2 w-44 rounded-md border border-gray-200 bg-white shadow-lg py-1 z-50" style="display:none">

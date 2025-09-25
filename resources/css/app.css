@@ -1,12 +1,56 @@
 @import "tailwindcss";
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 
-[x-cloak] {
-    display: none !important;
+@font-face {
+    font-family: 'Geist';
+    font-style: normal;
+    font-weight: 100 900;
+    font-display: swap;
+    src: url('/fonts/Geist/Geist-VariableFont_wght.ttf') format('truetype-variations');
 }
 
+@theme {
+    --font-family-sans: 'Geist', ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    
+    /* Primary Color System */
+    --color-primary-800: #991b1b;
+    --color-primary: #5E0F0F;
+    
+    /* Essential Neutral Colors */
+    --color-neutral-200: #e2e8f0;
+    --color-neutral-700: #334155;
+    --color-neutral-900: #0f172a;
+    
+    /* Success, Erorrs & Warnings */
+    --color-success-50: #f0fdf4;
+    --color-success: #16a34a;
+    --color-warning-50: #fffbeb;
+    --color-warning: #f59e0b;
+    --color-danger-50: #fef2f2;
+    --color-danger: #dc2626;
+    --color-accent-50: #f0f9ff;
+    --color-accent: #0ea5e9;
+}
 
 @layer base {
+    html {
+        font-family: var(--font-family-sans);
+    }
+    
+    body {
+        font-family: var(--font-family-sans);
+        font-feature-settings: normal;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+    
+    h1, h2, h3, h4, h5, h6,
+    p, span, div, a, button,
+    input, textarea, select,
+    label, li, td, th {
+        font-family: var(--font-family-sans);
+    }
+    
     button,
     [type='button'],
     [type='reset'],
@@ -17,4 +61,14 @@
     [role='button'] {
         cursor: pointer;
     }
+}
+
+@layer utilities {
+    .font-geist {
+        font-family: var(--font-family-sans);
+    }
+}
+
+[x-cloak] {
+    display: none !important;
 }

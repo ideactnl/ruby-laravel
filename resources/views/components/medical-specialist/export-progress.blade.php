@@ -4,13 +4,13 @@
 ])
 
 <script>
-    if (!window.RubyExportProgressComponent) {
-    window.RubyExportProgressComponent = function (opts) {
+    if (!window.MedicalSpecialistExportProgressComponent) {
+    window.MedicalSpecialistExportProgressComponent = function (opts) {
         const endpoints = {
-            csv: (params) => `/api/v1/participant/pbac/export?${params}`,
-            pdf: '/api/v1/participant/pbac/chart/export/pdf',
-            active: '/api/v1/participant/exports/active',
-            status: (id) => `/api/v1/participant/exports/${id}`,
+            csv: (params) => `/medical-specialist/export?${params}`,
+            pdf: '/medical-specialist/export-pdf',
+            active: '/medical-specialist/exports/active',
+            status: (id) => `/medical-specialist/exports/${id}`,
         };
         return {
             type: opts?.type || 'csv',
@@ -51,9 +51,8 @@
             },
 
             csrfHeader() {
-                const match = document.cookie.match(/(?:^|; )XSRF-TOKEN=([^;]+)/);
-                const token = match ? decodeURIComponent(match[1]) : null;
-                return token ? { 'X-XSRF-TOKEN': token } : {};
+                const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+                return token ? { 'X-CSRF-TOKEN': token } : {};
             },
 
             async start(preset, start, end) {
@@ -69,7 +68,9 @@
                         if (preset) qp.set('preset', preset);
                         if (start) qp.set('start_date', start);
                         if (end) qp.set('end_date', end);
-                        res = await fetch(endpoints.csv(qp.toString()), { credentials: 'include' });
+                        res = await fetch(endpoints.csv(qp.toString()), { 
+                            headers: { 'Accept': 'application/json', ...this.csrfHeader() }
+                        });
                     } else {
                         const canvas = document.getElementById(this.chartCanvasId);
                         let chartImage = null;
@@ -101,11 +102,11 @@
                         }
                         res = await fetch(endpoints.pdf, {
                             method: 'POST',
-                            headers: { 'Content-Type': 'application/json', ...this.csrfHeader() },
-                            credentials: 'include',
+                            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', ...this.csrfHeader() },
                             body: JSON.stringify({ chart_image: chartImage, preset, start_date: start, end_date: end })
                         });
                     }
+                    
                     data = await res.json();
                     if (!res.ok) throw new Error(data?.error || 'Failed to queue export');
 
@@ -125,7 +126,9 @@
             async poll() {
                 if (!this.job || !this.job.id) { this.isBusy = false; return; }
                 try {
-                    const res = await fetch(endpoints.status(this.job.id), { credentials: 'include' });
+                    const res = await fetch(endpoints.status(this.job.id), { 
+                        headers: { 'Accept': 'application/json' }
+                    });
                     if (res.ok) {
                         const payload = await res.json();
                         const j = payload.job || payload;
@@ -149,7 +152,9 @@
 
             async resume() {
                 try {
-                    const res = await fetch(endpoints.active, { credentials: 'include' });
+                    const res = await fetch(endpoints.active, { 
+                        headers: { 'Accept': 'application/json' }
+                    });
                     if (res.ok) {
                         const data = await res.json();
                         if (data.job) {
@@ -177,7 +182,7 @@
 </script>
 
 <div
-    x-data="RubyExportProgressComponent({ type: '{{ $type }}', chartCanvasId: '{{ $chartCanvasId }}' })"
+    x-data="MedicalSpecialistExportProgressComponent({ type: '{{ $type }}', chartCanvasId: '{{ $chartCanvasId }}' })"
     @export:start.window="handleStart($event)"
     class="w-full"
 >

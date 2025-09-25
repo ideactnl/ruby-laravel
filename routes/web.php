@@ -40,10 +40,17 @@ Route::middleware(['web'])->prefix('participant')->group(function () {
 Route::prefix('medical-specialist')->name('medical-specialist.')->group(function () {
     Route::get('/login', [MedicalSpecialistController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [MedicalSpecialistController::class, 'login'])->name('login.submit');
-    Route::get('/dashboard', [MedicalSpecialistController::class, 'dashboard'])->name('dashboard');
-    Route::get('/export', [MedicalSpecialistController::class, 'exportPbacData'])->name('export');
-    Route::post('/export-pdf', [MedicalSpecialistController::class, 'exportPbacPdf'])->name('export.pdf');
-    Route::post('/logout', [MedicalSpecialistController::class, 'logout'])->name('logout');
+    
+    Route::middleware('auth.medical-specialist')->group(function () {
+        Route::get('/dashboard', [MedicalSpecialistController::class, 'dashboard'])->name('dashboard');
+        Route::get('/chart-data', [MedicalSpecialistController::class, 'getChartData'])->name('chart-data');
+        Route::get('/export', [MedicalSpecialistController::class, 'exportPbacData'])->name('export');
+        Route::post('/export-pdf', [MedicalSpecialistController::class, 'exportPbacPdf'])->name('export.pdf');
+        Route::get('/exports/active', [MedicalSpecialistController::class, 'activeExport'])->name('exports.active');
+        Route::get('/exports/{jobId}', [MedicalSpecialistController::class, 'exportStatus'])->name('exports.status');
+        Route::get('/exports/{jobId}/download', [MedicalSpecialistController::class, 'downloadExport'])->middleware('signed')->name('exports.download');
+        Route::post('/logout', [MedicalSpecialistController::class, 'logout'])->name('logout');
+    });
 });
 
 /*

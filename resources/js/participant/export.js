@@ -1,11 +1,16 @@
 (function(){
   const COLORS = {
-    pbac: '#3b82f6', // blue
-    spotting: '#facc15', // yellow
-    pain: '#22c55e', // green
-    influence: '#ef4444', // red
-    meds: '#f472b6', // pink
-    qol: '#5E0F0F', // maroon
+    blood_loss: '#DC2626', // red
+    pain: '#F59E0B', // amber
+    impact: '#22C55E', // green
+    general_health: '#10B981', // emerald
+    mood: '#8B5CF6', // violet
+    stool_urine: '#0EA5E9', // sky
+    sleep: '#6366F1', // indigo
+    diet: '#EAB308', // yellow
+    exercise: '#FB923C', // orange
+    sex: '#F472B6', // pink
+    notes: '#64748B', // slate
     line: '#60a5fa' // light blue
   };
 
@@ -18,21 +23,31 @@
     const useYear = years.size > 1 || (window.__rubyPreset === 'year');
     const labels = dates.map(d => d.toLocaleDateString(undefined, useYear ? { month:'short', day:'2-digit', year:'numeric' } : { month:'short', day:'2-digit' }));
 
-    const pbacBars = rows.map(r => r.pbac_score_per_day ?? 0);
-    const spottingBars = rows.map(r => r.spotting_yes_no ?? 0);
-    const painBars = rows.map(r => r.pain_score_per_day ?? 0);
-    const influenceBars = rows.map(r => r.influence_factor ?? 0);
-    const medsBars = rows.map(r => r.pain_medication ?? 0);
-    const qolBars = rows.map(r => r.quality_of_life ?? 0);
-    const lineSeries = pbacBars; // Trend
+    const bloodLossBars = rows.map(r => r.pillars?.blood_loss?.amount ?? 0);
+    const painBars = rows.map(r => r.pillars?.pain?.value ?? 0);
+    const impactBars = rows.map(r => r.pillars?.impact?.gradeYourDay ?? 0);
+    const generalHealthBars = rows.map(r => r.pillars?.general_health?.energyLevel ?? 0);
+    const moodBars = rows.map(r => (r.pillars?.mood?.positives?.length ?? 0) + (r.pillars?.mood?.negatives?.length ?? 0));
+    const stoolUrineBars = rows.map(r => (r.pillars?.stool_urine?.urine?.blood ? 1 : 0) + (r.pillars?.stool_urine?.stool?.blood ? 1 : 0));
+    const sleepBars = rows.map(r => r.pillars?.sleep?.calculatedHours ?? 0);
+    const dietBars = rows.map(r => (r.pillars?.diet?.positives?.length ?? 0) + (r.pillars?.diet?.negatives?.length ?? 0));
+    const exerciseBars = rows.map(r => r.pillars?.exercise?.any ? 1 : 0);
+    const sexBars = rows.map(r => r.pillars?.sex?.today ? 1 : 0);
+    const notesBars = rows.map(r => r.pillars?.notes?.hasNote ? 1 : 0);
+    const lineSeries = bloodLossBars;
 
     const datasets = [
-      { type: 'bar', label: 'PBAC Score Per Day', data: pbacBars, backgroundColor: COLORS.pbac },
-      { type: 'bar', label: 'Spotting Yes/No', data: spottingBars, backgroundColor: COLORS.spotting },
-      { type: 'bar', label: 'Pain Score Per Day', data: painBars, backgroundColor: COLORS.pain },
-      { type: 'bar', label: 'Influence Factor', data: influenceBars, backgroundColor: COLORS.influence },
-      { type: 'bar', label: 'Pain Medication', data: medsBars, backgroundColor: COLORS.meds },
-      { type: 'bar', label: 'Quality of Life', data: qolBars, backgroundColor: COLORS.qol },
+      { type: 'bar', label: 'Blood Loss', data: bloodLossBars, backgroundColor: COLORS.blood_loss },
+      { type: 'bar', label: 'Pain', data: painBars, backgroundColor: COLORS.pain },
+      { type: 'bar', label: 'Impact', data: impactBars, backgroundColor: COLORS.impact },
+      { type: 'bar', label: 'General Health', data: generalHealthBars, backgroundColor: COLORS.general_health },
+      { type: 'bar', label: 'Mood', data: moodBars, backgroundColor: COLORS.mood },
+      { type: 'bar', label: 'Stool/Urine', data: stoolUrineBars, backgroundColor: COLORS.stool_urine },
+      { type: 'bar', label: 'Sleep', data: sleepBars, backgroundColor: COLORS.sleep },
+      { type: 'bar', label: 'Diet', data: dietBars, backgroundColor: COLORS.diet },
+      { type: 'bar', label: 'Exercise', data: exerciseBars, backgroundColor: COLORS.exercise },
+      { type: 'bar', label: 'Sex', data: sexBars, backgroundColor: COLORS.sex },
+      { type: 'bar', label: 'Notes', data: notesBars, backgroundColor: COLORS.notes },
       { type: 'line', label: 'Trend', data: lineSeries, borderColor: COLORS.line, backgroundColor: COLORS.line, tension: 0.35, yAxisID: 'y' }
     ];
     return { labels, datasets };

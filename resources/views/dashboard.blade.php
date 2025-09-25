@@ -26,7 +26,7 @@
                     <div class="hover:bg-rose-50 rounded-md border border-rose-300 p-4">
                         <div class="text-md text-gray-900">Total Users</div>
                         <div class="mt-1 text-6xl font-semibold">{{ number_format($totalUsers) }}</div>
-                        <a href="{{ route('users.index') }}" class="text-[#5E0F0F] text-xs mt-2 inline-flex items-center gap-1 hover:underline">
+                        <a href="{{ route('users.index') }}" class="text-primary text-xs mt-2 inline-flex items-center gap-1 hover:underline hover:text-primary-800 transition-colors">
                             Manage users
                             <i class="fa-solid fa-arrow-right text-[10px]"></i>
                         </a>
@@ -34,7 +34,7 @@
                     <div class="hover:bg-rose-50 rounded-md border border-rose-300 p-4">
                         <div class="text-md text-gray-900">Researchers</div>
                         <div class="mt-1 text-6xl font-semibold">{{ number_format($researchers) }}</div>
-                        <a href="{{ route('pbac.export.form') }}" class="text-[#5E0F0F] text-xs mt-2 inline-flex items-center gap-1 hover:underline">
+                        <a href="{{ route('pbac.export.form') }}" class="text-primary text-xs mt-2 inline-flex items-center gap-1 hover:underline hover:text-primary-800 transition-colors">
                             Export data
                             <i class="fa-solid fa-arrow-right text-[10px]"></i>
                         </a>
@@ -42,18 +42,18 @@
                     <div class="hover:bg-rose-50 rounded-md border border-rose-300 p-4">
                         <div class="text-md text-gray-900">PBAC Logs</div>
                         <div class="mt-1 text-6xl font-semibold">{{ number_format($logsCount) }}</div>
-                        <a href="{{ route('logs') }}" class="text-[#5E0F0F] text-xs mt-2 inline-flex items-center gap-1 hover:underline">
+                        <a href="{{ route('logs') }}" class="text-primary text-xs mt-2 inline-flex items-center gap-1 hover:underline hover:text-primary-800 transition-colors">
                             View logs
                             <i class="fa-solid fa-arrow-right text-[10px]"></i>
                         </a>
                     </div>
                 </div>
                 <div class="flex flex-wrap gap-4 mt-8 flex-row">
-                    <a href="{{ route('pbac.export.form') }}" class="rounded-md bg-[#5E0F0F] border border-[#5E0F0F] px-4 py-2 text-md font-semibold text-white shadow hover:opacity-90 inline-flex items-center gap-2">
+                    <a href="{{ route('pbac.export.form') }}" class="rounded-md bg-primary border border-primary px-4 py-2 text-md font-semibold text-white shadow hover:bg-primary-800 hover:border-primary-800 inline-flex items-center gap-2 transition-colors">
                         <i class="fa-solid fa-cloud-arrow-up"></i>
                         Queue export
                     </a>
-                    <a href="{{ route('logs') }}" class="rounded-md bg-[#5E0F0F] border border-[#5E0F0F] px-4 py-2 text-md font-semibold text-white shadow hover:opacity-90 inline-flex items-center gap-2">
+                    <a href="{{ route('logs') }}" class="rounded-md bg-primary border border-primary px-4 py-2 text-md font-semibold text-white shadow hover:bg-primary-800 hover:border-primary-800 inline-flex items-center gap-2 transition-colors">
                         <i class="fa-solid fa-clipboard-list"></i>
                         Logs
                     </a>

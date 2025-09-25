@@ -1,20 +1,41 @@
 <div x-data="toastCenter()"
      x-init="init()"
-     class="absolute top-4 right-4 sm:right-6 z-[1100] space-y-2 w-[calc(100%-2rem)] sm:w-80">
+     class="fixed top-4 right-4 sm:right-6 z-[1100] space-y-3 w-[calc(100%-2rem)] sm:w-96">
 
     <template x-for="t in toasts" :key="t.id">
-        <div x-show="true" x-transition.opacity x-transition.scale.origin.top.right
+        <div x-show="true" 
+             x-transition:enter="transition ease-out duration-300 transform"
+             x-transition:enter-start="translate-x-full opacity-0"
+             x-transition:enter-end="translate-x-0 opacity-100"
+             x-transition:leave="transition ease-in duration-200 transform"
+             x-transition:leave-start="translate-x-0 opacity-100"
+             x-transition:leave-end="translate-x-full opacity-0"
              :class="wrapperClass(t.type)"
-             class="relative rounded-lg shadow-md border overflow-hidden bg-white">
-            <div class="flex items-start gap-2.5 p-3">
-                <div :class="iconWrapClass(t.type)" class="h-6 w-6 rounded-md flex items-center justify-center">
-                    <i :class="iconClass(t.type)" class="text-white text-[10px]"></i>
+             class="rounded-lg shadow-lg border border-gray-200 overflow-hidden">
+            
+            <!-- Progress bar -->
+            <div class="h-1 bg-gray-100">
+                <div class="h-full transition-all duration-100 ease-linear" 
+                     :class="barClass(t.type)" 
+                     :style="`width: ${t.progress}%`"></div>
+            </div>
+            
+            <div class="flex items-start gap-3 p-4">
+                <!-- Icon -->
+                <div :class="iconWrapClass(t.type)" 
+                     class="h-6 w-6 rounded-full flex items-center justify-center flex-shrink-0">
+                    <i :class="iconClass(t.type)" class="text-white text-xs"></i>
                 </div>
-                <div class="flex-1 text-xs text-gray-800 leading-snug">
-                    <p class="font-medium" x-text="t.title"></p>
-                    <p class="mt-0.5 text-gray-600" x-text="t.message"></p>
+                
+                <!-- Content -->
+                <div class="flex-1 min-w-0">
+                    <p class="font-medium text-sm text-gray-900" x-text="t.title"></p>
+                    <p class="text-sm text-gray-600 mt-1" x-text="t.message"></p>
                 </div>
-                <button @click="remove(t.id)" class="text-gray-400 hover:text-gray-600 cursor-pointer">
+                
+                <!-- Close button -->
+                <button @click="remove(t.id)" 
+                        class="flex-shrink-0 text-gray-400 hover:text-gray-600 transition-colors cursor-pointer">
                     <i class="fa-solid fa-xmark text-sm"></i>
                 </button>
             </div>
@@ -69,10 +90,42 @@ function toastCenter(){
             }, 100);
         },
         remove(id){ this.toasts = this.toasts.filter(t=>t.id!==id); },
-        wrapperClass(type){ return 'border-l-4 ' + ({success:'border-green-500', error:'border-red-500', info:'border-blue-500', warning:'border-yellow-500'}[type] || 'border-gray-300'); },
-        iconWrapClass(type){ return ({success:'bg-green-500', error:'bg-red-500', info:'bg-blue-500', warning:'bg-yellow-500'}[type] || 'bg-gray-400'); },
-        barClass(type){ return ({success:'bg-green-500', error:'bg-red-500', info:'bg-blue-500', warning:'bg-yellow-500'}[type] || 'bg-gray-400'); },
-        iconClass(type){ return ({success:'fa-solid fa-check', error:'fa-solid fa-triangle-exclamation', info:'fa-solid fa-circle-info', warning:'fa-solid fa-exclamation'}[type] || 'fa-solid fa-bell'); }
+        wrapperClass(type){ 
+            const classes = {
+                success: 'border-l-4 border-success bg-success-50',
+                error: 'border-l-4 border-danger bg-danger-50',
+                info: 'border-l-4 border-accent bg-accent-50',
+                warning: 'border-l-4 border-warning bg-warning-50'
+            };
+            return classes[type] || 'border-l-4 border-gray-300 bg-gray-50';
+        },
+        iconWrapClass(type){ 
+            const classes = {
+                success: 'bg-success',
+                error: 'bg-danger',
+                info: 'bg-accent', 
+                warning: 'bg-warning'
+            };
+            return classes[type] || 'bg-gray-500';
+        },
+        barClass(type){ 
+            const classes = {
+                success: 'bg-success',
+                error: 'bg-danger',
+                info: 'bg-accent',
+                warning: 'bg-warning'
+            };
+            return classes[type] || 'bg-gray-500';
+        },
+        iconClass(type){ 
+            const icons = {
+                success: 'fa-solid fa-check',
+                error: 'fa-solid fa-triangle-exclamation', 
+                info: 'fa-solid fa-circle-info',
+                warning: 'fa-solid fa-exclamation'
+            };
+            return icons[type] || 'fa-solid fa-bell';
+        }
     }
 }
 </script>

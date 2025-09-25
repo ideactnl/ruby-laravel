@@ -1,24 +1,25 @@
 <?php
 
-describe('Pbac@getPbacScorePerDayAttribute', function () {
-    it('calculates PBAC score per day as sum of q4a to q4f', function () {
+describe('Pbac@getBloodLossAttribute', function () {
+    it('calculates blood loss amount as sum of bl_pad/tampon counts', function () {
         $pbac = new \App\Models\Pbac([
-            'q4a' => 1,
-            'q4b' => 2,
-            'q4c' => 3,
-            'q4d' => 4,
-            'q4e' => 5,
-            'q4f' => 6,
+            'is_blood_loss_answered' => true,
+            'bl_pad_large' => 1,
+            'bl_pad_medium' => 2,
+            'bl_pad_small' => 3,
+            'bl_tampon_large' => 4,
+            'bl_tampon_medium' => 5,
+            'bl_tampon_small' => 6,
         ]);
-        expect($pbac->pbac_score_per_day)->toBe(21);
+        expect($pbac->blood_loss['amount'])->toBe(21);
     });
 });
 
-describe('Pbac@getSpottingYesNoAttribute', function () {
-    it('returns 1 if q3b is 1, else 0', function () {
-        $pbac1 = new \App\Models\Pbac(['q3b' => 1]);
-        $pbac0 = new \App\Models\Pbac(['q3b' => 0]);
-        expect($pbac1->spotting_yes_no)->toBe(1);
-        expect($pbac0->spotting_yes_no)->toBe(0);
+describe('Pbac@getBloodLossAttribute', function () {
+    it('returns structured blood loss data with spotting flag', function () {
+        $pbac1 = new \App\Models\Pbac(['spotting' => true, 'is_blood_loss_answered' => true]);
+        $pbac0 = new \App\Models\Pbac(['spotting' => false, 'is_blood_loss_answered' => true]);
+        expect($pbac1->blood_loss['flags']['spotting'])->toBe(true);
+        expect($pbac0->blood_loss['flags']['spotting'])->toBe(false);
     });
 });

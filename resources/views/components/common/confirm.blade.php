@@ -8,7 +8,7 @@
             </div>
             <div class="px-6 py-4 flex items-center justify-end gap-2">
                 <button @click="close()" class="px-4 py-2 rounded-lg border text-sm cursor-pointer">Cancel</button>
-                <button @click="confirm()" class="px-4 py-2 rounded-lg bg-[#5E0F0F] text-white text-sm cursor-pointer">Confirm</button>
+                <button @click="confirm()" class="px-4 py-2 rounded-lg bg-primary text-white text-sm cursor-pointer hover:bg-primary-800 transition-colors">Confirm</button>
             </div>
         </div>
     </div>

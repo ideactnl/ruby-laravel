@@ -63,12 +63,12 @@
                     </div>
                 </div>
 
-                <div class="pt-2 flex items-center gap-2">
-                    <button type="submit" class="rounded-md bg-[#5E0F0F] border border-[#5E0F0F] px-4 py-2 text-md font-semibold text-white shadow hover:opacity-90 inline-flex items-center gap-2">
+                <div class="pt-2 flex items-center gap-4">
+                    <button type="submit" class="rounded-md bg-primary border border-primary px-4 py-2 text-md font-semibold text-white shadow hover:bg-primary-800 hover:border-primary-800 inline-flex items-center gap-2 transition-colors">
                         <i class="fa-solid fa-cloud-arrow-up mr-2"></i>
                         Queue Export
                     </button>
-                    <button type="button" @click="preset=''; document.getElementById('start_date').value=''; document.getElementById('end_date').value='';" class="rounded-md bg-white hover:bg-[#5E0F0F]/5 border border-[#5E0F0F]/30 text-[#5E0F0F] px-4 py-2 text-md font-semibold shadow hover:opacity-90 inline-flex items-center gap-2">Clear</button>
+                    <button type="button" @click="preset=''; document.getElementById('start_date').value=''; document.getElementById('end_date').value='';" class="rounded-md bg-white hover:bg-primary/5 border border-primary/30 text-primary px-4 py-2 text-md font-semibold shadow hover:opacity-90 inline-flex items-center gap-2 transition-colors">Clear</button>
                 </div>
             </form>
         </div>
@@ -98,7 +98,7 @@
                     </div>
                     <div class="flex items-center gap-2 md:w-auto w-full justify-between">
                         <span class="text-[10px] px-2 py-0.5 rounded-full border" :class="item.expired ? 'bg-red-50 text-red-700 border-red-200' : 'bg-green-50 text-green-700 border-green-200'" x-text="item.expired ? 'Expired' : 'Active'"></span>
-                        <a :href="item.download_url" :class="(item.expired || !item.file_exists) ? 'pointer-events-none opacity-50' : ''" class="rounded-md bg-[#5E0F0F] border border-[#5E0F0F] px-4 py-2 text-md font-semibold text-white shadow hover:opacity-90 inline-flex items-center gap-2">
+                        <a :href="item.download_url" :class="(item.expired || !item.file_exists) ? 'pointer-events-none opacity-50' : ''" class="rounded-md bg-primary border border-primary px-4 py-2 text-md font-semibold text-white shadow hover:bg-primary-800 hover:border-primary-800 inline-flex items-center gap-2 transition-colors">
                             <i class="fa-solid fa-download"></i>
                             Download
                         </a>

@@ -26,12 +26,16 @@ jobs:
           php-version: 8.2
       - name: Install dependencies
         run: composer install --no-interaction --prefer-dist --optimize-autoloader
+      - name: Set up Laravel environment for PHPStan
+        run: |
+          cp .env.example .env
+          php artisan key:generate
       - name: Run PHPStan (Static Analysis on app/)
         run: composer stan
       - name: Run Laravel Pint (Code Style on app/ config/)
         run: composer lint
       - name: Run Laravel Tests (Feature & Unit)
-        run: php artisan test
+        run: php artisan test --env=testing
   # deploy:
   #   needs: test
   #   if: github.ref == 'refs/heads/main'

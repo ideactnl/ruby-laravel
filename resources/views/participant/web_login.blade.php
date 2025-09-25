@@ -7,7 +7,7 @@
 
 
         <!-- Left Section -->
-        <div class="w-full md:w-1/2 bg-[#520606] text-white flex flex-col justify-center items-center p-8 md:p-10">
+        <div class="w-full md:w-1/2 bg-primary text-white flex flex-col justify-center items-center p-8 md:p-10">
             <div class="flex flex-col items-center text-center">
                 <!-- Logo -->
                 <div class="bg-white rounded-full p-4 mb-6">
@@ -45,7 +45,7 @@
 
                 <div class="mt-6">
                     <button type="submit"
-                        class="w-full bg-[#520606] hover:bg-[#eb5666] text-white font-semibold py-2 px-4 rounded transition disabled:opacity-50"
+                        class="w-full bg-primary hover:bg-primary text-white font-semibold py-2 px-4 rounded transition disabled:opacity-50"
                         x-bind:disabled="loading">
                         <span x-show="!loading">Login</span>
                         <span x-show="loading">Logging in...</span>

@@ -55,7 +55,7 @@ class PbacService
         if (! $participant) {
             throw new Exception('Participant not found');
         }
-        $reportedDate = $input['reported_date'] ?? $input['ReportedDate'] ?? null;
+        $reportedDate = $input['reported_date'] ?? $input['reportedDate'] ?? null;
         if (! $reportedDate) {
             throw new Exception('Reported date is required');
         }
@@ -64,7 +64,10 @@ class PbacService
             'reported_date' => $reportedDate,
         ]);
         $created = ! $pbac->exists;
-        $pbac->fill(Pbac::mapLegacyInputFields($input));
+        $data = Pbac::camelToSnake($input);
+        $data['reported_date'] = $reportedDate;
+        unset($data['registration_number'], $data['reporteddate'], $data['ReportedDate']);
+        $pbac->fill($data);
         $pbac->save();
 
         return [$pbac, $created];

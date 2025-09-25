@@ -39,9 +39,9 @@
             </x-form.select>
         </x-form.group>
 
-        <div class="pt-2 flex items-center gap-2">
-            <button type="submit" class="inline-flex items-center justify-center px-4 py-2.5 bg-[#5E0F0F] text-white rounded-xl shadow-sm hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#5E0F0F]/30 cursor-pointer">Save</button>
-            <a href="{{ route('users.index') }}" class="px-4 py-2.5 rounded-xl border text-sm">Cancel</a>
+        <div class="pt-6 flex items-center gap-4">
+            <button type="submit" class="rounded-md bg-primary border border-primary px-4 py-2 text-md font-semibold text-white shadow hover:bg-primary-800 hover:border-primary-800 inline-flex items-center gap-2 cursor-pointer transition-colors">Save</button>
+            <a href="{{ route('users.index') }}" class="rounded-md bg-white hover:bg-primary/5 border border-primary/30 text-primary px-4 py-2 text-md font-semibold shadow hover:opacity-90 inline-flex items-center gap-2 transition-colors">Cancel</a>
         </div>
     </form>
 </div>

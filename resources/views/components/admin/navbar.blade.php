@@ -1,5 +1,5 @@
-<nav class="sticky top-0 z-50 bg-white/95 backdrop-blur border-t-0 border-[#fff] md:ml-64">
-    <div class="mx-auto w-full px-5 md:px-8 border-b border-[#ebebeb]">
+<nav class="sticky top-0 z-50 bg-white/95 backdrop-blur border-t-0 border-white md:ml-64">
+    <div class="mx-auto w-full px-5 md:px-8 border-b border-neutral-200">
         <div class="flex h-20 items-center justify-between border-b border-gray-100/70">
             <div class="flex min-w-0 items-center gap-4">
                 <!-- Sidebar toggle (mobile) -->
@@ -9,7 +9,7 @@
                     </svg>
                 </button>
                 <div class="truncate">
-                    <h1 class="truncate text-lg font-bold tracking-wide text-[#000] sm:text-2xl">@yield('navbar_title', 'Admin Console')</h1>
+                    <h1 class="truncate text-lg font-bold tracking-wide text-neutral-900 sm:text-2xl">@yield('navbar_title', 'Admin Console')</h1>
                     <p class="text-xs text-gray-600 mt-2 sm:text-sm">@yield('navbar_subtitle', 'Administrative area')</p>
                 </div>
             </div>
@@ -18,7 +18,7 @@
                 <span class="hidden rounded-full bg-gray-100 px-4 py-2 text-xs font-medium text-gray-700 sm:inline">{{ now()->format('d M Y, l') }}</span>
                 @auth
                     <div class="relative" x-data="{open:false, avatarInitial: '{{ strtoupper(substr(Auth::user()->name ?? 'A', 0, 1)) }}'}" @click.outside="open=false" x-init="window.appCurrentUserName='{{ addslashes(Auth::user()->name ?? 'Admin') }}'; window.addEventListener('profile:updated', e=>{ const n=(e.detail?.user?.name||'').trim(); if(n){ avatarInitial = n.charAt(0).toUpperCase(); window.appCurrentUserName = n; } });">
-                        <button @click="open=!open" class="inline-flex h-9 w-9 items-center justify-center rounded-full bg-[#5E0F0F] text-white focus:outline-none cursor-pointer" aria-label="Account">
+                        <button @click="open=!open" class="inline-flex h-9 w-9 items-center justify-center rounded-full bg-primary text-white focus:outline-none cursor-pointer hover:bg-primary-800 transition-colors" aria-label="Account">
                             <span x-text="avatarInitial">A</span>
                         </button>
                         <div x-show="open" x-transition class="absolute right-0 mt-2 w-44 rounded-md border border-gray-200 bg-white shadow-lg py-1 z-50" style="display:none">
