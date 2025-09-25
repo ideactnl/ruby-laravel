@@ -1,0 +1,172 @@
+name: Manual Rollback
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to rollback'
+        required: true
+        type: choice
+        options:
+          - staging
+          - production
+      backup_timestamp:
+        description: 'Backup timestamp (YYYYMMDD_HHMMSS) - leave empty for latest'
+        required: false
+        type: string
+
+jobs:
+  rollback:
+    name: Rollback ${{ github.event.inputs.environment }}
+    runs-on: ubuntu-latest
+    environment: 
+      name: ${{ github.event.inputs.environment == 'staging' && 'STAGING' || 'PRODUCTION' }}
+    steps:
+      - name: Rollback to Previous Version
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.PORT }}
+          script: |
+            set -e
+            
+            ENV="${{ github.event.inputs.environment }}"
+            BACKUP_TIMESTAMP="${{ github.event.inputs.backup_timestamp }}"
+            
+            if [ "$ENV" = "staging" ]; then
+              PROJECT_PATH="${{ secrets.PATH }}/ruby-staging"
+              BACKUP_PREFIX="ruby-staging-backup"
+            else
+              PROJECT_PATH="${{ secrets.PATH }}/ruby"
+              BACKUP_PREFIX="ruby-backup"
+            fi
+            
+            echo "🔄 Starting rollback for $ENV environment..."
+            echo "📁 Project: $PROJECT_PATH"
+            
+            cd ${{ secrets.PATH }}
+            
+            # Find backup to restore
+            if [ -n "$BACKUP_TIMESTAMP" ]; then
+              BACKUP_PATH="${{ secrets.PATH }}/${BACKUP_PREFIX}-${BACKUP_TIMESTAMP}"
+              if [ ! -d "$BACKUP_PATH" ]; then
+                echo "❌ Backup not found: $BACKUP_PATH"
+                echo "Available backups:"
+                ls -la ${BACKUP_PREFIX}-* 2>/dev/null || echo "No backups found"
+                exit 1
+              fi
+            else
+              # Find latest backup
+              BACKUP_PATH=$(ls -dt ${BACKUP_PREFIX}-* 2>/dev/null | head -n 1)
+              if [ -z "$BACKUP_PATH" ]; then
+                echo "❌ No backups found for $ENV"
+                exit 1
+              fi
+              BACKUP_PATH="${{ secrets.PATH }}/$BACKUP_PATH"
+            fi
+            
+            echo "💾 Using backup: $BACKUP_PATH"
+            
+            # Confirm backup exists and is valid
+            if [ ! -d "$BACKUP_PATH" ] || [ ! -f "$BACKUP_PATH/artisan" ]; then
+              echo "❌ Invalid backup directory: $BACKUP_PATH"
+              exit 1
+            fi
+            
+            cd $PROJECT_PATH
+            
+            # Enable maintenance mode
+            echo "🔧 Enabling maintenance mode..."
+            php artisan down --retry=60 --secret="${{ secrets.MAINTENANCE_SECRET }}" || true
+            
+            # Create backup of current state before rollback
+            CURRENT_BACKUP="${{ secrets.PATH }}/${BACKUP_PREFIX}-before-rollback-$(date +%Y%m%d_%H%M%S)"
+            echo "📦 Backing up current state to: $CURRENT_BACKUP"
+            cp -r . $CURRENT_BACKUP
+            
+            # Perform rollback
+            echo "🔄 Rolling back to previous version..."
+            rm -rf $PROJECT_PATH/*
+            cp -r $BACKUP_PATH/* $PROJECT_PATH/
+            
+            cd $PROJECT_PATH
+            
+            # Ensure proper permissions
+            chmod -R 755 storage bootstrap/cache
+            
+            # Clear caches (they might be outdated)
+            echo "🧹 Clearing caches..."
+            php artisan config:clear || true
+            php artisan route:clear || true
+            php artisan view:clear || true
+            php artisan cache:clear || true
+            
+            # Rebuild caches
+            echo "🔄 Rebuilding caches..."
+            php artisan config:cache
+            php artisan route:cache
+            php artisan view:cache
+            
+            # Restart queue
+            php artisan queue:restart || true
+            
+            # Disable maintenance mode
+            echo "✅ Disabling maintenance mode..."
+            php artisan up
+            
+            echo "✅ Rollback completed successfully!"
+            echo "📋 Rollback details:"
+            echo "   Environment: $ENV"
+            echo "   Restored from: $BACKUP_PATH"
+            echo "   Current state backed up to: $CURRENT_BACKUP"
+            
+            # Show current git status
+            echo "📊 Current git status:"
+            git log --oneline -n 3 || true
+
+  list-backups:
+    name: List Available Backups
+    runs-on: ubuntu-latest
+    if: github.event.inputs.environment != ''
+    environment: 
+      name: ${{ github.event.inputs.environment == 'staging' && 'STAGING' || 'PRODUCTION' }}
+    steps:
+      - name: List Backups
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.PORT }}
+          script: |
+            ENV="${{ github.event.inputs.environment }}"
+            
+            if [ "$ENV" = "staging" ]; then
+              BACKUP_PREFIX="ruby-staging-backup"
+            else
+              BACKUP_PREFIX="ruby-backup"
+            fi
+            
+            echo "📋 Available backups for $ENV:"
+            echo "================================"
+            
+            cd ${{ secrets.PATH }}
+            
+            if ls ${BACKUP_PREFIX}-* 1> /dev/null 2>&1; then
+              for backup in $(ls -dt ${BACKUP_PREFIX}-* 2>/dev/null); do
+                if [ -d "$backup" ]; then
+                  TIMESTAMP=$(echo $backup | sed "s/${BACKUP_PREFIX}-//")
+                  SIZE=$(du -sh "$backup" | cut -f1)
+                  CREATED=$(stat -c %y "$backup" 2>/dev/null | cut -d'.' -f1 || echo "Unknown")
+                  echo "📦 $TIMESTAMP (Size: $SIZE, Created: $CREATED)"
+                fi
+              done
+            else
+              echo "❌ No backups found for $ENV environment"
+            fi
+            
+            echo "================================"
+            echo "💡 To rollback to a specific backup, use the timestamp (YYYYMMDD_HHMMSS)"
+            echo "💡 Leave backup_timestamp empty to use the latest backup"

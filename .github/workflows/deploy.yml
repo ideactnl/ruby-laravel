@@ -1,0 +1,293 @@
+name: Test & Deploy
+
+on:
+  push:
+    branches: [main, staging, development, "feature/*", "fix/*"]
+  pull_request:
+    branches: [main, staging, development, "feature/*", "fix/*"]
+
+env:
+  PHP_VERSION: 8.4
+  NODE_VERSION: 22
+
+jobs:
+  test:
+    name: Test & Quality Checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv
+          coverage: none
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: |
+          composer install --no-interaction --prefer-dist --optimize-autoloader
+          npm ci
+
+      - name: Prepare Laravel
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+          npm run build
+
+      - name: Run Tests
+        run: |
+          composer stan
+          composer lint
+          php artisan test --env=testing
+
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.ref == 'refs/heads/staging' && github.event_name == 'push'
+    environment: STAGING
+    concurrency: staging_deployment
+    steps:
+      - name: Deploy to Server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.PORT }}
+          script: |
+            set -e
+            
+            PROJECT_PATH="${{ secrets.PATH }}/ruby-staging"
+            BACKUP_PATH="${{ secrets.PATH }}/ruby-staging-backup-$(date +%Y%m%d_%H%M%S)"
+            
+            echo "🚀 Starting staging deployment..."
+            echo "📁 Project: $PROJECT_PATH"
+            echo "💾 Backup: $BACKUP_PATH"
+            
+            cd $PROJECT_PATH
+            
+            # Create backup before deployment
+            echo "📦 Creating backup..."
+            cp -r . $BACKUP_PATH
+            
+            # Store backup path for potential rollback
+            echo $BACKUP_PATH > /tmp/staging_backup_path
+            
+            # Maintenance mode
+            echo "🔧 Enabling maintenance mode..."
+            php artisan down --retry=60 --secret="${{ secrets.MAINTENANCE_SECRET }}" || true
+            
+            # Function for rollback
+            rollback_staging() {
+              echo "❌ Deployment failed! Rolling back..."
+              if [ -f /tmp/staging_backup_path ]; then
+                BACKUP_PATH=$(cat /tmp/staging_backup_path)
+                if [ -d "$BACKUP_PATH" ]; then
+                  echo "🔄 Restoring from backup: $BACKUP_PATH"
+                  rm -rf $PROJECT_PATH/*
+                  cp -r $BACKUP_PATH/* $PROJECT_PATH/
+                  cd $PROJECT_PATH
+                  php artisan up
+                  echo "✅ Rollback completed"
+                  exit 1
+                fi
+              fi
+              echo "❌ Rollback failed - manual intervention required"
+              exit 1
+            }
+            
+            # Set trap for automatic rollback on error
+            trap rollback_staging ERR
+            
+            # Update code
+            echo "📥 Updating code..."
+            git fetch origin staging
+            git reset --hard origin/staging
+            git clean -fd
+            
+            # Install dependencies
+            echo "📦 Installing dependencies..."
+            composer install --no-dev --optimize-autoloader --no-interaction
+            npm ci
+            
+            # Build assets and generate docs
+            echo "🏗️ Building assets..."
+            npm run build
+            
+            echo "📚 Generating API documentation..."
+            php artisan scribe:generate
+            
+            # Update environment variables
+            echo "⚙️ Updating environment..."
+            
+            # Function to update or add env variable
+            update_env() {
+              local key=$1
+              local value=$2
+              if grep -q "^${key}=" .env; then
+                sed -i "s/^${key}=.*/${key}=${value}/" .env
+              else
+                echo "${key}=${value}" >> .env
+              fi
+            }
+            
+            # Update environment variables
+            update_env "APP_ENV" "${{ vars.APP_ENV || 'staging' }}"
+            update_env "APP_DEBUG" "${{ vars.APP_DEBUG || 'true' }}"
+            update_env "APP_URL" "${{ vars.APP_URL || 'http://ruby-staging.ideact-server.nl' }}"
+            update_env "DB_DATABASE" "${{ vars.DB_DATABASE || 'ruby_staging' }}"
+            update_env "QUEUE_CONNECTION" "${{ vars.QUEUE_CONNECTION || 'database' }}"
+            update_env "LOG_LEVEL" "${{ vars.LOG_LEVEL || 'debug' }}"
+            
+            # Laravel optimizations
+            echo "🚀 Running Laravel optimizations..."
+            php artisan migrate --force
+            php artisan config:cache
+            php artisan route:cache
+            php artisan view:cache
+            php artisan queue:restart || true
+            
+            # Disable maintenance mode
+            echo "✅ Disabling maintenance mode..."
+            php artisan up
+            
+            # Clean up old backups (keep last 5)
+            echo "🧹 Cleaning old backups..."
+            cd ${{ secrets.PATH }}
+            ls -dt ruby-staging-backup-* 2>/dev/null | tail -n +6 | xargs rm -rf || true
+            
+            # Clear trap
+            trap - ERR
+            
+            echo "✅ Staging deployment completed successfully!"
+
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    environment: PRODUCTION
+    concurrency: production_deployment
+    steps:
+      - name: Deploy to Server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.PORT }}
+          script: |
+            set -e
+            
+            PROJECT_PATH="${{ secrets.PATH }}/ruby"
+            BACKUP_PATH="${{ secrets.PATH }}/ruby-backup-$(date +%Y%m%d_%H%M%S)"
+            
+            echo "🚀 Starting production deployment..."
+            echo "📁 Project: $PROJECT_PATH"
+            echo "💾 Backup: $BACKUP_PATH"
+            
+            cd $PROJECT_PATH
+            
+            # Create backup before deployment
+            echo "📦 Creating backup..."
+            cp -r . $BACKUP_PATH
+            
+            # Store backup path for potential rollback
+            echo $BACKUP_PATH > /tmp/production_backup_path
+            
+            # Maintenance mode
+            echo "🔧 Enabling maintenance mode..."
+            php artisan down --retry=60 --secret="${{ secrets.MAINTENANCE_SECRET }}"
+            
+            # Function for rollback
+            rollback_production() {
+              echo "❌ Deployment failed! Rolling back..."
+              if [ -f /tmp/production_backup_path ]; then
+                BACKUP_PATH=$(cat /tmp/production_backup_path)
+                if [ -d "$BACKUP_PATH" ]; then
+                  echo "🔄 Restoring from backup: $BACKUP_PATH"
+                  rm -rf $PROJECT_PATH/*
+                  cp -r $BACKUP_PATH/* $PROJECT_PATH/
+                  cd $PROJECT_PATH
+                  php artisan up
+                  echo "✅ Rollback completed"
+                  exit 1
+                fi
+              fi
+              echo "❌ Rollback failed - manual intervention required"
+              exit 1
+            }
+            
+            # Set trap for automatic rollback on error
+            trap rollback_production ERR
+            
+            # Update code
+            echo "📥 Updating code..."
+            git fetch origin main
+            git reset --hard origin/main
+            git clean -fd
+            
+            # Install dependencies
+            echo "📦 Installing dependencies..."
+            composer install --no-dev --optimize-autoloader --no-interaction
+            npm ci
+            
+            # Build assets and generate docs
+            echo "🏗️ Building assets..."
+            npm run build
+            
+            echo "📚 Generating API documentation..."
+            php artisan scribe:generate
+            
+            # Update environment variables
+            echo "⚙️ Updating environment..."
+            
+            # Function to update or add env variable
+            update_env() {
+              local key=$1
+              local value=$2
+              if grep -q "^${key}=" .env; then
+                sed -i "s/^${key}=.*/${key}=${value}/" .env
+              else
+                echo "${key}=${value}" >> .env
+              fi
+            }
+            
+            # Update environment variables
+            update_env "APP_ENV" "${{ vars.APP_ENV || 'production' }}"
+            update_env "APP_DEBUG" "${{ vars.APP_DEBUG || 'false' }}"
+            update_env "APP_URL" "${{ vars.APP_URL || 'http://ruby.ideact-server.nl' }}"
+            update_env "DB_DATABASE" "${{ vars.DB_DATABASE || 'ruby_production' }}"
+            update_env "QUEUE_CONNECTION" "${{ vars.QUEUE_CONNECTION || 'database' }}"
+            update_env "LOG_LEVEL" "${{ vars.LOG_LEVEL || 'error' }}"
+            
+            # Laravel optimizations
+            echo "🚀 Running Laravel optimizations..."
+            php artisan migrate --force
+            php artisan config:cache
+            php artisan route:cache
+            php artisan view:cache
+            php artisan queue:restart || true
+            
+            # Disable maintenance mode
+            echo "✅ Disabling maintenance mode..."
+            php artisan up
+            
+            # Clean up old backups (keep last 5)
+            echo "🧹 Cleaning old backups..."
+            cd ${{ secrets.PATH }}
+            ls -dt ruby-backup-* 2>/dev/null | tail -n +6 | xargs rm -rf || true
+            
+            # Clear trap
+            trap - ERR
+            
+            echo "✅ Production deployment completed successfully!"
