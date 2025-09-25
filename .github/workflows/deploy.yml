@@ -117,6 +117,12 @@ jobs:
             # Install dependencies
             echo "📦 Installing dependencies..."
             composer install --no-dev --optimize-autoloader --no-interaction
+            # Ensure Node.js is in PATH for SSH environment
+            export PATH="/usr/bin:/usr/local/bin:/opt/nodejs/bin:/usr/home/ideacts/.nvm/versions/node/*/bin:$PATH"
+            echo "🔍 Checking Node.js availability..."
+            which node || echo "❌ Node.js not found in PATH"
+            which npm || echo "❌ npm not found in PATH"
+            
             npm ci
             
             # Build assets and generate docs
@@ -239,6 +245,12 @@ jobs:
             # Install dependencies
             echo "📦 Installing dependencies..."
             composer install --no-dev --optimize-autoloader --no-interaction
+            # Ensure Node.js is in PATH for SSH environment
+            export PATH="/usr/bin:/usr/local/bin:/opt/nodejs/bin:/usr/home/ideacts/.nvm/versions/node/*/bin:$PATH"
+            echo "🔍 Checking Node.js availability..."
+            which node || echo "❌ Node.js not found in PATH"
+            which npm || echo "❌ npm not found in PATH"
+            
             npm ci
             
             # Build assets and generate docs
