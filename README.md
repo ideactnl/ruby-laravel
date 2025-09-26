@@ -1,137 +1,223 @@
-## Ruby-Laravel API Project
+# Ruby-Laravel API Project
 
-This is a Laravel API application, containerized with Docker and deployable to Render or any cloud provider.
+A comprehensive Laravel API application for medical data management with automated deployment workflows and comprehensive testing.
 
----
+## 🚀 Features
 
-### 1. Local Development with Laravel Sail (Recommended)
+- **RESTful API** - Complete API endpoints for medical specialist and participant data
+- **Authentication** - Secure user authentication with Laravel Sanctum
+- **Role-based Access** - Medical specialist and participant role management
+- **Data Export** - PDF and Excel export functionality
+- **API Documentation** - Auto-generated documentation with Scribe
+- **Automated Testing** - PHPStan, Laravel Pint, and PHPUnit integration
+- **CI/CD Pipeline** - Automated deployment to staging and production
+- **Backup System** - Automated backups with rollback capabilities
 
-Laravel Sail provides a full-featured local dev environment with MySQL, Redis, etc., all via Docker Compose.
+## 🛠️ Tech Stack
 
-**Setup:**
-1. Copy `.env.example` to `.env` and configure your environment variables (especially DB settings for MySQL).
-2. Install Sail (if not already):
-   ```sh
-   composer require laravel/sail --dev
-   php artisan sail:install
+- **Backend**: Laravel 12.x, PHP 8.3+
+- **Database**: MySQL
+- **Frontend Assets**: Vite, Node.js 22+
+- **Testing**: PHPUnit, PHPStan, Laravel Pint
+- **Documentation**: Scribe API Documentation
+- **Deployment**: GitHub Actions, SSH deployment
+
+## 📋 Prerequisites
+
+- PHP 8.3 or higher
+- Composer
+- Node.js 22+ and npm
+- MySQL database
+- Git
+
+## 🔧 Local Development Setup
+
+> **💡 Laravel Sail Alternative:** This project includes a `docker-compose.yml` file for Laravel Sail. If you're familiar with Sail, you can use `./vendor/bin/sail up -d` for a complete Docker-based development environment with MySQL, Redis, and other services. The instructions below are for traditional local setup.
+
+### 1. Clone and Install Dependencies
+
+```bash
+# Clone the repository
+git clone <repository-url>
+cd ruby-laravel
+
+# Install PHP dependencies
+composer install
+
+# Install Node.js dependencies
+npm install
+```
+
+### 2. Environment Configuration
+
+```bash
+# Copy environment file
+cp .env.example .env
+
+# Generate application key
+php artisan key:generate
+
+# Configure your .env file with:
+# - Database credentials
+# - Application URL
+# - Mail settings (if needed)
+# - Any other environment-specific settings
+```
+
+### 3. Database Setup
+
+```bash
+# Run database migrations
+php artisan migrate
+
+# Seed the database (optional)
+php artisan db:seed
+```
+
+### 4. Build Frontend Assets
+
+```bash
+# Development build
+npm run dev
+
+# Production build
+npm run build
+
+# Watch for changes (development)
+npm run dev -- --watch
+```
+
+### 5. Generate API Documentation
+
+```bash
+# Generate API documentation
+php artisan scribe:generate
+
+# Access documentation at: /docs
+```
+
+## 🧪 Testing
+
+### Run All Tests
+
+```bash
+# Run PHPUnit tests
+php artisan test
+
+# Run static analysis
+composer stan
+
+# Run code formatting
+composer lint
+
+# OR Run all of the above together
+composer ci
+```
+
+### Individual Test Commands
+
+```bash
+# PHPStan (Static Analysis)
+./vendor/bin/phpstan analyse
+
+# Laravel Pint (Code Formatting)
+./vendor/bin/pint
+
+# PHPUnit (Unit & Feature Tests)
+./vendor/bin/phpunit
+```
+
+## 🚀 Deployment
+
+### Automated Deployment
+
+The project uses GitHub Actions for automated deployment:
+
+- **Staging**: Deploys automatically on push to `staging` branch
+- **Production**: Deploys automatically on push to `main` branch
+
+### Manual Deployment
+
+For manual deployment, ensure you have:
+
+1. **Server Requirements**:
+   - PHP 8.3+
+   - Composer
+   - Node.js 22+
+   - MySQL
+   - Web server (Apache/Nginx)
+
+2. **Deployment Steps**:
+   ```bash
+   # On your server
+   composer install --no-dev --optimize-autoloader
+   npm ci
+   npm run build
+   php artisan migrate --force
+   php artisan config:cache
+   php artisan route:cache
+   php artisan view:cache
    ```
-3. Start Sail:
-   ```sh
-   ./vendor/bin/sail up -d
-   # Or, if you have Sail aliased:
-   sail up -d
-   ```
-4. Access your app at [http://localhost](http://localhost)
 
-**Common Sail Commands:**
-- Run Artisan: `sail artisan <command>`
-- Run Composer: `sail composer <command>`
-- Run tests: `sail test`
-- Stop services: `sail down`
+## 🔄 Rollback
 
-> **Note:** Sail uses MySQL by default. Update your `.env` to use MySQL for Sail. Do not use SQLite for production.
+### Automated Rollback
 
----
+Use the GitHub Actions "Manual Rollback" workflow:
 
-### 2. Local Development with Standalone Docker
+1. Go to **Actions** tab in GitHub
+2. Select **"Manual Rollback"** workflow
+3. Click **"Run workflow"**
+4. Choose environment (`staging` or `production`)
+5. Optionally specify backup timestamp
 
-You can also build and run the project using plain Docker (with SQLite for local only):
+### Manual Rollback
 
-#### Build the Docker image
-```sh
-docker build -t ruby-laravel-local .
+```bash
+# List available backups
+ls -la /path/to/backups/
+
+# Restore from backup
+cp -r /path/to/backup/* /path/to/project/
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
 ```
 
-#### Run the container
+## 📚 API Documentation
 
-> **Note:** You must provide a valid Laravel APP_KEY. Generate it locally with:
-> ```sh
-> php artisan key:generate --show
-> ```
-> Copy the output and use it as the value for `APP_KEY` in the command below.
+- **Local**: `http://localhost/docs`
+- **Staging**: `https://staging-domain/docs`
+- **Production**: `https://production-domain/docs`
 
-```sh
-docker run -d -p 8082:80 \
-  -e DB_CONNECTION=sqlite \
-  -e DB_DATABASE=/var/www/html/storage/database.sqlite \
-  -e APP_KEY=<YOUR_APP_KEY> \
-  -e APP_DEBUG=true \
-  -e APP_URL=http://localhost:8082 \
-  ruby-laravel-local
+## 🔧 Development Commands
+
+```bash
+# Clear all caches
+php artisan optimize:clear
+
+# Generate IDE helper files
+php artisan ide-helper:generate
+php artisan ide-helper:models
+
+# Queue management
+php artisan queue:work
+php artisan queue:restart
+
+# Maintenance mode
+php artisan down
+php artisan up
 ```
 
-#### Set correct permissions for SQLite (replace `<container_id>` with the ID from `docker ps`)
-```sh
-docker exec -it <container_id> touch /var/www/html/storage/database.sqlite
+### Code Standards
 
-docker exec -it <container_id> chown nginx:nginx /var/www/html/storage/database.sqlite
+- Follow **PSR-12** coding standards
+- Write **tests** for new features
+- Update **documentation** as needed
+- Run **quality checks** before committing
 
-docker exec -it <container_id> chmod 666 /var/www/html/storage/database.sqlite
-```
-
-- The API will be available at [http://localhost:8082](http://localhost:8082)
-- The Scribe API documentation will be available at [http://localhost:8082/docs](http://localhost:8082/docs)
-
-> **Note:** For local dev, SQLite is used for convenience. **Never use SQLite for production!**
-
+## 📝 License
+This project is proprietary and confidential.
 ---
 
-### 3. Deployment & CI/CD (Branching and Automation)
-
-#### Branching Strategy
-- **main**: Production branch. All code merged here is considered production-ready.
-- **staging**: Used for pre-production testing and QA.
-- **development**: Active development branch for ongoing features and integration.
-- **feature/***: Short-lived branches for individual features or fixes.
-
-#### CI (Continuous Integration)
-- On every push or pull request to `main`, `staging`, `development`, or any `feature/*` branch, the CI workflow runs:
-  - Composer install
-  - Static analysis (PHPStan)
-  - Code style checks (Laravel Pint)
-  - All Laravel tests
-- This ensures code quality and prevents regressions before merging.
-
-#### CD (Continuous Deployment)
-- **Automatic deployment is triggered only for the `main` branch.**
-- When code is pushed to `main`, the CD workflow sends a deploy hook to Render using a secure secret.
-- Render then builds and deploys the latest code from `main`.
-- All environment variables and secrets are managed in the Render dashboard.
-
-#### Recommended Workflow
-1. Develop features or fixes in `feature/*` branches.
-2. Merge into `development` for integration/testing.
-3. Promote to `staging` for QA.
-4. Merge into `main` to trigger production deployment.
-
-- **Environment Variables:** Set all secrets (e.g., `APP_KEY`, DB credentials) in your Render dashboard or cloud provider. Do **not** rely on `.env` files in production.
-- **Database:** Use a dedicated, secure database (MySQL/PostgreSQL). Never use SQLite in production or share a local dev DB file.
-- **Build & Deploy:** Render will run your deploy script automatically. Ensure your Dockerfile and scripts do not depend on `.env` files.
-- **API Docs:** Scribe docs are generated and served at `/docs`.
-
-> **Render Deployment Note:**
-> - When deploying to Render with Docker, set all secrets and environment variables (including `APP_KEY`, `APP_URL`, etc.) in the Render dashboard.
-> - Use `DB_URL` (not `DATABASE_URL`) for your database connection string—Render sets this automatically for PostgreSQL/MySQL.
-> - See the [official Render guide](https://render.com/docs/deploy-php-laravel-docker) for more details.
-
----
-
-### API Documentation
-- API docs are auto-generated with Scribe.
-- To regenerate locally:
-  ```sh
-  php artisan scribe:generate
-  ```
-
----
-
-### Troubleshooting
-
-- **Permission errors with SQLite?**
-  Ensure you have set the correct permissions as shown in the Docker section above.
-- **Laravel key errors?**
-  Make sure you generate and provide a valid `APP_KEY` as an environment variable.
-- **API docs not updating?**
-  Regenerate with `php artisan scribe:generate` and ensure config cache is cleared before docs generation.
-
-For more help, see [Laravel Docs](https://laravel.com/docs) or [Render’s PHP guide](https://render.com/docs/deploy-php-laravel-docker).
+**Happy coding!** 🎉
