@@ -54,7 +54,9 @@ jobs:
     needs: test
     if: github.ref == 'refs/heads/staging' && github.event_name == 'push' && !contains(github.event.head_commit.message, '[skip deploy]')
     environment: STAGING
-    concurrency: staging_deployment
+    concurrency: 
+      group: staging_deployment
+      cancel-in-progress: false
     steps:
       - name: Deploy to Server
         uses: appleboy/ssh-action@v1.0.3
@@ -72,6 +74,15 @@ jobs:
             echo "🚀 Starting staging deployment..."
             echo "📁 Project: $PROJECT_PATH"
             echo "💾 Backup: $BACKUP_PATH"
+            
+            # Check if deployment is already running
+            if [ -f /tmp/staging_deployment_lock ]; then
+              echo "⚠️ Another deployment is already running. Exiting."
+              exit 0
+            fi
+            
+            # Create deployment lock
+            echo "$(date)" > /tmp/staging_deployment_lock
             
             cd $PROJECT_PATH
             
@@ -98,6 +109,7 @@ jobs:
                   cd $PROJECT_PATH
                   php artisan up
                   echo "✅ Rollback completed"
+                  rm -f /tmp/staging_deployment_lock
                   exit 1
                 fi
               fi
@@ -140,7 +152,7 @@ jobs:
               local key=$1
               local value=$2
               if grep -q "^${key}=" .env; then
-                sed -i "s/^${key}=.*/${key}=${value}/" .env
+                sed -i "s|^${key}=.*|${key}=${value}|" .env
               else
                 echo "${key}=${value}" >> .env
               fi
@@ -174,6 +186,9 @@ jobs:
             # Clear trap
             trap - ERR
             
+            # Remove deployment lock
+            rm -f /tmp/staging_deployment_lock
+            
             echo "✅ Staging deployment completed successfully!"
 
   deploy-production:
@@ -182,7 +197,9 @@ jobs:
     needs: test
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     environment: PRODUCTION
-    concurrency: production_deployment
+    concurrency: 
+      group: production_deployment
+      cancel-in-progress: false
     steps:
       - name: Deploy to Server
         uses: appleboy/ssh-action@v1.0.3
@@ -200,6 +217,15 @@ jobs:
             echo "🚀 Starting production deployment..."
             echo "📁 Project: $PROJECT_PATH"
             echo "💾 Backup: $BACKUP_PATH"
+            
+            # Check if deployment is already running
+            if [ -f /tmp/production_deployment_lock ]; then
+              echo "⚠️ Another deployment is already running. Exiting."
+              exit 0
+            fi
+            
+            # Create deployment lock
+            echo "$(date)" > /tmp/production_deployment_lock
             
             cd $PROJECT_PATH
             
@@ -226,6 +252,7 @@ jobs:
                   cd $PROJECT_PATH
                   php artisan up
                   echo "✅ Rollback completed"
+                  rm -f /tmp/production_deployment_lock
                   exit 1
                 fi
               fi
@@ -268,7 +295,7 @@ jobs:
               local key=$1
               local value=$2
               if grep -q "^${key}=" .env; then
-                sed -i "s/^${key}=.*/${key}=${value}/" .env
+                sed -i "s|^${key}=.*|${key}=${value}|" .env
               else
                 echo "${key}=${value}" >> .env
               fi
@@ -301,5 +328,8 @@ jobs:
             
             # Clear trap
             trap - ERR
+            
+            # Remove deployment lock
+            rm -f /tmp/production_deployment_lock
             
             echo "✅ Production deployment completed successfully!"
