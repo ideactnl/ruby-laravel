@@ -1,18 +1,18 @@
 <aside
-    class="fixed inset-y-0 left-0 z-[99] w-72 transform text-white shadow-none transition-transform duration-300
+    class="fixed inset-y-0 left-0 z-[99] w-72 transform bg-primary text-white shadow-none transition-transform duration-300
            md:inset-y-0 md:left-0 md:w-64 md:translate-x-0 flex flex-col overflow-x-hidden"
     :class="{ '-translate-x-full': !sidebarOpen, 'translate-x-0': sidebarOpen }"
     aria-label="Participant sidebar"
 >
     <!-- Logo panel -->
-    <div class="logo-panel bg-primary pl-3 pr-0 pt-0">
+    <div class="logo-panel mb-1 pl-3 pr-0 pt-0">
         <div class="h-28 flex items-center justify-center px-0">
             <img src="{{ asset('images/logo.png') }}" alt="RubyNU logo" class="max-h-20 w-auto object-contain" />
         </div>
     </div>
 
-    <div class="bg-primary pl-3 pr-0 h-[100vh] overflow-y-auto">
-        <nav class="flex-1 flex flex-col justify-between overflow-y-auto overflow-x-hidden">
+    <div class="pl-3 pr-0">
+        <nav class="flex-1 flex flex-col justify-between overflow-visible">
             <ul class="space-y-2 pl-1 pr-0 sidebar-list-nav">
             @php
                 $items = [
