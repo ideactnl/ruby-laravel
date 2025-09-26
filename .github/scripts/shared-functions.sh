@@ -204,14 +204,39 @@ create_storage_link() {
     log_success "Storage link created"
 }
 
+# Ensure Laravel app key exists
+ensure_app_key() {
+    log_step "Ensuring Laravel app key exists..."
+    
+    # Check if APP_KEY is set in .env
+    if ! grep -q "^APP_KEY=base64:" .env 2>/dev/null || [ -z "$(grep "^APP_KEY=" .env | cut -d'=' -f2)" ]; then
+        log_step "Generating Laravel application key..."
+        php artisan key:generate --force
+        log_success "Application key generated"
+    else
+        log_success "Application key already exists"
+    fi
+}
+
 # Run Laravel optimizations
 run_laravel_optimizations() {
     log_step "Running Laravel optimizations..."
+    
+    # Clear all caches first (in case of stale config)
+    php artisan config:clear
+    php artisan cache:clear || true
+    php artisan route:clear || true
+    php artisan view:clear || true
+    
+    # Run migrations
     php artisan migrate --force
+    
+    # Rebuild caches
     php artisan config:cache
     php artisan route:cache
     php artisan view:cache
     php artisan queue:restart || true
+    
     log_success "Laravel optimizations completed"
 }
 

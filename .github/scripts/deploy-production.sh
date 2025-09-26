@@ -75,6 +75,9 @@ main() {
     update_env_var "QUEUE_CONNECTION" "$QUEUE_CONNECTION"
     update_env_var "LOG_LEVEL" "$LOG_LEVEL"
     
+    # Ensure Laravel app key exists
+    ensure_app_key
+    
     # Create storage link
     create_storage_link
     
