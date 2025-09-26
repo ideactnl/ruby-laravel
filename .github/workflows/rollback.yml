@@ -41,8 +41,12 @@ jobs:
             export BACKUP_DIR="${{ secrets.PATH }}/${{ github.event.inputs.environment == 'staging' && 'ruby_staging_backups' || 'ruby_backups' }}"
             export MAINTENANCE_SECRET="${{ secrets.MAINTENANCE_SECRET }}"
             
-            # Run list command
+            # Update code to get latest scripts
             cd "$PROJECT_PATH"
+            git fetch origin ${{ github.event.inputs.environment == 'staging' && 'staging' || 'main' }}
+            git reset --hard origin/${{ github.event.inputs.environment == 'staging' && 'staging' || 'main' }}
+            
+            # Run list command
             chmod +x .github/scripts/rollback-${{ github.event.inputs.environment }}.sh
             ./.github/scripts/rollback-${{ github.event.inputs.environment }}.sh --list
 
@@ -75,8 +79,12 @@ jobs:
             export MAINTENANCE_SECRET="${{ secrets.MAINTENANCE_SECRET }}"
             export FORCE_ROLLBACK="${{ github.event.inputs.force_production == 'true' && 'true' || 'false' }}"
             
-            # Run rollback script
+            # Update code to get latest scripts
             cd "$PROJECT_PATH"
+            git fetch origin ${{ github.event.inputs.environment == 'staging' && 'staging' || 'main' }}
+            git reset --hard origin/${{ github.event.inputs.environment == 'staging' && 'staging' || 'main' }}
+            
+            # Run rollback script
             chmod +x .github/scripts/rollback-${{ github.event.inputs.environment }}.sh
             
             if [ -n "$BACKUP_NAME" ]; then

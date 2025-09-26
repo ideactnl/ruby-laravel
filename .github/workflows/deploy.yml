@@ -76,8 +76,13 @@ jobs:
             export LOG_LEVEL="${{ vars.LOG_LEVEL || 'debug' }}"
             export MAINTENANCE_SECRET="${{ secrets.MAINTENANCE_SECRET }}"
             
-            # Run deployment script
+            # Change to project directory and update code (including scripts)
             cd "$PROJECT_PATH"
+            git fetch origin staging
+            git reset --hard origin/staging
+            git clean -fd
+            
+            # Now run the deployment script
             chmod +x .github/scripts/deploy-staging.sh
             ./.github/scripts/deploy-staging.sh
 
@@ -111,7 +116,12 @@ jobs:
             export LOG_LEVEL="${{ vars.LOG_LEVEL || 'error' }}"
             export MAINTENANCE_SECRET="${{ secrets.MAINTENANCE_SECRET }}"
             
-            # Run deployment script
+            # Change to project directory and update code (including scripts)
             cd "$PROJECT_PATH"
+            git fetch origin main
+            git reset --hard origin/main
+            git clean -fd
+            
+            # Now run the deployment script
             chmod +x .github/scripts/deploy-production.sh
             ./.github/scripts/deploy-production.sh
