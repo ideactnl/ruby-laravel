@@ -50,8 +50,15 @@ class ExportTrackingService
     {
         if (! $downloadUrl) {
             try {
+                $job = ExportJob::find($jobId);
+                $context = $job?->meta['context'] ?? 'participant';
+
+                $routeName = $context === 'medical-specialist'
+                    ? 'medical-specialist.exports.download'
+                    : 'participant.exports.download';
+
                 $downloadUrl = URL::temporarySignedRoute(
-                    'participant.exports.download',
+                    $routeName,
                     now()->addMinutes(30),
                     ['jobId' => $jobId]
                 );

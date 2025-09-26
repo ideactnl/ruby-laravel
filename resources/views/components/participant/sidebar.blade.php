@@ -18,11 +18,11 @@
                 $items = [
                     ['label' => 'Calendar', 'href' => route('participant.dashboard'), 'active' => request()->routeIs('participant.dashboard')],
                     ['label' => 'Daily view', 'href' => route('participant.daily-view', ['date' => now()->toDateString()]), 'active' => request()->routeIs('participant.daily-view')],
-                    ['label' => 'Education', 'href' => '#', 'active' => false],
-                    ['label' => 'Selfmanagement', 'href' => '#', 'active' => false],
-                    ['label' => 'Myths & facts', 'href' => '#', 'active' => false],
-                    ['label' => 'Export', 'href' => Route::has('participant.pbac') ? route('participant.pbac') : '#', 'active' => request()->routeIs('participant.pbac')],
-                    ['label' => 'General information', 'href' => '#', 'active' => false],
+                    ['label' => 'Education', 'href' => route('participant.education'), 'active' => request()->routeIs('participant.education')],
+                    ['label' => 'Selfmanagement', 'href' => route('participant.self-management'), 'active' => request()->routeIs('participant.self-management')],
+                    ['label' => 'Links to external websites', 'href' => route('participant.external-links'), 'active' => request()->routeIs('participant.external-links')],
+                    ['label' => 'Export', 'href' => route('participant.pbac'), 'active' => request()->routeIs('participant.pbac')],
+                    ['label' => 'General information', 'href' => route('participant.general-information'), 'active' => request()->routeIs('participant.general-information')],
                 ];
             @endphp
 
@@ -44,7 +44,7 @@
             'Daily view' => 'fa-eye',
             'Education' => 'fa-graduation-cap',
             'Selfmanagement' => 'fa-hand-holding-dollar',
-            'Myths & facts' => 'fa-clipboard-check',
+            'Links to external websites' => 'fa-external-link-alt',
             'Export' => 'fa-file-export',
             'General information' => 'fa-circle-info',
         ];
@@ -53,7 +53,13 @@
     <i class="fa-solid {{ $iconCls }} text-[18px]"></i>
 </span>
 
-                        <span class="whitespace-nowrap font-semibold tracking-wide">{{ $item['label'] }}</span>
+                        <span class="font-semibold tracking-wide leading-tight">
+                            @if($item['label'] === 'Links to external websites')
+                                Links to external<br>websites
+                            @else
+                                {{ $item['label'] }}
+                            @endif
+                        </span>
                     </a>
                 </li>
             @endforeach

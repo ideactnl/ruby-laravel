@@ -445,4 +445,60 @@ class ParticipantWebApiController extends Controller
             ],
         ]);
     }
+
+    /**
+     * Show dashboard web page
+     */
+    public function dashboardPage()
+    {
+        return view('participant.dashboard');
+    }
+
+    /**
+     * Show PBAC export web page
+     */
+    public function pbacPage()
+    {
+        return view('participant.export-my-data');
+    }
+
+    /**
+     * Show daily view web page
+     */
+    public function dailyViewPage()
+    {
+        return view('participant.daily-view');
+    }
+
+    /**
+     * Show education page
+     */
+    public function education()
+    {
+        return view('participant.education');
+    }
+
+    /**
+     * Show self-management page
+     */
+    public function selfManagement()
+    {
+        return view('participant.self-management');
+    }
+
+    /**
+     * Show general information page
+     */
+    public function generalInformation()
+    {
+        return view('participant.general-information');
+    }
+
+    /**
+     * Show links to external websites page
+     */
+    public function externalLinks()
+    {
+        return view('participant.external-links');
+    }
 }

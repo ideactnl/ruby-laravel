@@ -19,7 +19,7 @@ class MedicalSpecialistAuth
         $participantId = session('medical_specialist_id');
 
         if (! $participantId) {
-            return redirect()->route('medical-specialist.login')
+            return redirect('/medical-specialist/login')
                 ->withErrors(['error' => 'Please log in to access this page.']);
         }
 
@@ -28,7 +28,7 @@ class MedicalSpecialistAuth
         if (! $participant) {
             session()->forget('medical_specialist_id');
 
-            return redirect()->route('medical-specialist.login')
+            return redirect('/medical-specialist/login')
                 ->withErrors(['error' => 'Invalid session. Please log in again.']);
         }
 
@@ -39,7 +39,7 @@ class MedicalSpecialistAuth
 
             session()->forget('medical_specialist_id');
 
-            return redirect()->route('medical-specialist.login')
+            return redirect('/medical-specialist/login')
                 ->withErrors(['error' => 'Your access has expired or been revoked. Please contact the participant to renew access.']);
         }
 

@@ -24,9 +24,13 @@ Route::middleware(['web'])->prefix('participant')->group(function () {
     })->name('participant.web.login');
 
     Route::middleware('auth.participant')->group(function () {
-        Route::get('/dashboard', fn() => view('participant.dashboard'))->name('participant.dashboard');
-        Route::get('/pbac', fn() => view('participant.export-my-data'))->name('participant.pbac');
-        Route::get('/daily-view', fn() => view('participant.daily-view'))->name('participant.daily-view');
+        Route::get('/dashboard', [\App\Http\Controllers\Api\Participant\ParticipantWebApiController::class, 'dashboardPage'])->name('participant.dashboard');
+        Route::get('/pbac', [\App\Http\Controllers\Api\Participant\ParticipantWebApiController::class, 'pbacPage'])->name('participant.pbac');
+        Route::get('/daily-view', [\App\Http\Controllers\Api\Participant\ParticipantWebApiController::class, 'dailyViewPage'])->name('participant.daily-view');
+        Route::get('/education', [\App\Http\Controllers\Api\Participant\ParticipantWebApiController::class, 'education'])->name('participant.education');
+        Route::get('/self-management', [\App\Http\Controllers\Api\Participant\ParticipantWebApiController::class, 'selfManagement'])->name('participant.self-management');
+        Route::get('/external-links', [\App\Http\Controllers\Api\Participant\ParticipantWebApiController::class, 'externalLinks'])->name('participant.external-links');
+        Route::get('/general-information', [\App\Http\Controllers\Api\Participant\ParticipantWebApiController::class, 'generalInformation'])->name('participant.general-information');
         Route::get('/api/v1/participant/profile', [\App\Http\Controllers\Api\Participant\ParticipantWebApiController::class, 'profile'])->name('participant.api.profile');
     });
 

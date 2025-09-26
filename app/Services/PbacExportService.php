@@ -150,7 +150,7 @@ class PbacExportService
     /**
      * Queue participant CSV export and return tracking payload.
      */
-    public function queueParticipantCsv(Request $request, int $participantId): array
+    public function queueParticipantCsv(Request $request, int $participantId, string $context = 'participant'): array
     {
         [$startDate, $endDate] = CommonHelper::getDateRangeFromPreset(
             $request->input('preset', 'month'),
@@ -165,6 +165,7 @@ class PbacExportService
             'start_date' => $request->input('start_date'),
             'end_date' => $request->input('end_date'),
             'filename' => $filename,
+            'context' => $context,
         ]);
 
         ExportParticipantPbacCsv::dispatch($participantId, $startDate, $endDate, $filename, $job->id);
@@ -175,7 +176,7 @@ class PbacExportService
     /**
      * Queue PDF generation from a base64 chart image and return tracking payload.
      */
-    public function queueChartPdfFromImage(Request $request, int $participantId): array
+    public function queueChartPdfFromImage(Request $request, int $participantId, string $context = 'participant'): array
     {
         $imageData = $request->input('chart_image');
         $preset = $request->input('preset');
@@ -189,6 +190,7 @@ class PbacExportService
             'start_date' => $startDate,
             'end_date' => $endDate,
             'filename' => $filename,
+            'context' => $context,
         ]);
 
         GenerateParticipantPbacChartPdf::dispatch(

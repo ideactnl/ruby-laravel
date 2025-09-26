@@ -5,11 +5,8 @@
     window.__medicalSpecialistChartData = @json($chartData);
 </script>
 <script>
-// Wait for Chart.js and DOM to be ready
 document.addEventListener('DOMContentLoaded', function() {
-  // Ensure Chart.js is loaded
   if (!window.Chart) {
-    console.error('Chart.js not loaded!');
     return;
   }
 
@@ -101,7 +98,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const canvas = document.getElementById('exportChart');
     
     if (!canvas || !window.Chart) {
-      console.error('Missing canvas or Chart.js:', { canvas: !!canvas, chartJs: !!window.Chart });
       return;
     }
     
@@ -161,15 +157,11 @@ document.addEventListener('DOMContentLoaded', function() {
     
     let rows;
     if (preset === 'month' && !start && !end && window.__medicalSpecialistChartData) {
-      console.log('Using preloaded data:', window.__medicalSpecialistChartData);
       rows = window.__medicalSpecialistChartData;
     } else {
-      console.log('Fetching data from API...');
       try {
         rows = await fetchDashboard(preset, start, end);
-        console.log('API data received:', rows);
       } catch (error) {
-        console.error('Failed to fetch data:', error);
         throw error;
       }
     }
@@ -187,19 +179,15 @@ document.addEventListener('DOMContentLoaded', function() {
     x-data="{
         preset:'month', start:'', end:'', loading:false, error:'', busy:false,
         async refresh(){
-            console.log('refresh called:', { preset: this.preset, start: this.start, end: this.end });
             try { 
                 this.loading = true; 
                 this.error='';
-                console.log('RubyExport available:', !!window.RubyExport);
                 if (window.RubyExport && window.RubyExport.loadChart) {
                     await window.RubyExport.loadChart(this.preset, this.start, this.end);
                 } else {
-                    console.error('RubyExport.loadChart not available');
                     this.error = 'Chart system not initialized';
                 }
             } catch(e) { 
-                console.error('Chart refresh error:', e);
                 this.error='Failed to load chart: ' + e.message; 
             } finally { 
                 this.loading=false; 
@@ -218,7 +206,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const e=d.toISOString().slice(0,10); 
         start=s; 
         end=e; 
-        console.log('Medical Specialist Chart Init:', { preset, start, end, chartData: window.__medicalSpecialistChartData });
         $nextTick(()=>refresh()); 
     }"
     @export:busy.window="busy = true"

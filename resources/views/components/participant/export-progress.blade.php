@@ -92,8 +92,11 @@
                             
                             chartImage = canvas.toDataURL('image/png', 1.0);
                             
+                            // Restore original canvas dimensions
                             canvas.width = originalWidth;
                             canvas.height = originalHeight;
+                            canvas.style.width = originalStyleWidth;
+                            canvas.style.height = originalStyleHeight;
                             
                             if (window.__rubyChart) {
                                 window.__rubyChart.resize();

@@ -188,7 +188,7 @@ class MedicalSpecialistController extends Controller
         }
 
         try {
-            $job = $this->pbacExportService->queueParticipantCsv($request, $participant->id);
+            $job = $this->pbacExportService->queueParticipantCsv($request, $participant->id, 'medical-specialist');
 
             return response()->json(['job' => $job], 202);
         } catch (\Exception $e) {
@@ -220,7 +220,7 @@ class MedicalSpecialistController extends Controller
         }
 
         try {
-            $job = $this->pbacExportService->queueChartPdfFromImage($request, $participant->id);
+            $job = $this->pbacExportService->queueChartPdfFromImage($request, $participant->id, 'medical-specialist');
 
             return response()->json(['job' => $job], 202);
         } catch (\Exception $e) {
