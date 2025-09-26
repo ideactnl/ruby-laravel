@@ -26,7 +26,7 @@ tr, td {
   content: "";
   position: absolute;
   top: -40px;
-  right: -6px;
+  right: -5px;
   width: 35px;
   height: 45px;
   background: #5e0f0f;
@@ -34,7 +34,7 @@ tr, td {
   border-top-color: #5e0f0f;
   border-left: 0;
   border-bottom-right-radius: 100%;
-  z-index: -1;
+  z-index: 1;
 }
 .active-nav::after {
   content: "";
@@ -64,8 +64,8 @@ tr, td {
 .active-nav span.inline-flex::before {
   content: "";
   position: absolute;
-  top: -17px;
-  right: -21px;
+  top: -20px;
+  right: -14px;
   width: 35px;
   height: 20px;
   background: #fff;
