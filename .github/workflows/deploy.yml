@@ -2,9 +2,9 @@ name: Deploy Application
 
 on:
   push:
-    branches: [main, staging]
+    branches: [main, staging, development]
   pull_request:
-    branches: [main, staging]
+    branches: [main, staging, development]
 
 jobs:
   test:
