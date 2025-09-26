@@ -16,3 +16,63 @@ tr, td {
     border: 1px solid #ddd;
     font-size: 16px;
 }
+.active-nav {
+  position: relative;
+  z-index: 0; /* Ensure pseudo-elements sit behind */
+}
+
+/* Top corner highlight */
+.active-nav::before {
+  content: "";
+  position: absolute;
+  top: -40px;
+  right: -6px;
+  width: 35px;
+  height: 45px;
+  background: #5e0f0f;
+  border: 5px solid #ffffff;
+  border-top-color: #5e0f0f;
+  border-left: 0;
+  border-bottom-right-radius: 100%;
+  z-index: -1;
+}
+.active-nav::after {
+  content: "";
+  position: absolute;
+  bottom: -40px;
+  right: -5px;
+  width: 35px;
+  height: 45px;
+  background: #5e0f0f;
+  border: 5px solid #ffffff;
+  border-bottom-color: #5e0f0f;
+  border-left: 0;
+  border-top-right-radius: 100%;
+  z-index: -1;
+}
+.active-nav span.inline-flex::after {
+  content: "";
+  position: absolute;
+  bottom: -20px;
+  right: -14px;
+  width: 35px;
+  height: 20px;
+  background: #fff;
+  z-index: -1;
+  border-radius: 0  0 50px 0px; 
+}
+.active-nav span.inline-flex::before {
+  content: "";
+  position: absolute;
+  top: -17px;
+  right: -21px;
+  width: 35px;
+  height: 20px;
+  background: #fff;
+  z-index: -1;
+  border-radius: 50px  0 0px 0px;
+}
+.sidebar-list-nav li a{
+  z-index: 9;
+}
+ /* style="border-bottom-right-radius:50px;" */

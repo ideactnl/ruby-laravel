@@ -63,7 +63,7 @@
                     </div>
                 </div>
 
-                <div class="pt-2 flex items-center gap-2">
+                <div class="pt-2 flex items-center gap-4">
                     <button type="submit" class="rounded-md bg-primary border border-primary px-4 py-2 text-md font-semibold text-white shadow hover:bg-primary-800 hover:border-primary-800 inline-flex items-center gap-2 transition-colors">
                         <i class="fa-solid fa-cloud-arrow-up mr-2"></i>
                         Queue Export

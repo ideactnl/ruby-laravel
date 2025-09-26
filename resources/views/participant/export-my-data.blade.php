@@ -3,7 +3,7 @@
 @section('navbar_subtitle', 'Export Your PBAC Data Based on the Selected Dates')
 
 @section('content')
-<div class="px-0 pr-4 sm:pr-6 lg:px-8 py-6"
+<div class=""
     x-data="{
         preset:'month', start:'', end:'', loading:false, error:'', busy:false,
         async refresh(){
@@ -49,7 +49,7 @@
 
     <div class="bg-white rounded-lg border border-gray-100 p-4">
         <div id="exportLegend" class="flex flex-wrap items-center gap-6 px-2 pb-2"></div>
-        <div class="overflow-hidden h-[320px] sm:h-[380px] md:h-[420px] lg:h-[480px]">
+        <div class="overflow-hidden h-[320px] md:h-[480px] w-full">
             <canvas id="exportChart"></canvas>
         </div>
         <div class="mt-4 flex items-center justify-end gap-3">

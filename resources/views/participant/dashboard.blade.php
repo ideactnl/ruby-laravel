@@ -3,7 +3,7 @@
 @section('navbar_subtitle', 'Monthly Overview Showing The Relationship Between Selected Domains')
 
 @section('content')
-<div class="px-0 pr-4 sm:pr-6 lg:pr-8 py-6" x-data="filterMenu()" x-init="init()">
+<div class="" x-data="filterMenu()" x-init="init()">
     <div class="mb-3 flex items-center justify-between">
         <h2 id="cal-month-label" x-cloak class="text-xl sm:text-2xl font-extrabold tracking-tight text-gray-900">&nbsp;</h2>
         <div class="relative" @click.outside="open=false" x-cloak>
