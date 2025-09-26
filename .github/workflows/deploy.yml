@@ -69,7 +69,11 @@ jobs:
             set -e
             
             PROJECT_PATH="${{ secrets.PATH }}/ruby-staging"
-            BACKUP_PATH="${{ secrets.PATH }}/ruby-staging-backup-$(date +%Y%m%d_%H%M%S)"
+            BACKUP_DIR="${{ secrets.PATH }}/ruby_staging_backups"
+            BACKUP_PATH="$BACKUP_DIR/ruby-staging-backup-$(date +%Y%m%d_%H%M%S)"
+            
+            # Create backup directory if it doesn't exist
+            mkdir -p $BACKUP_DIR
             
             echo "🚀 Starting staging deployment..."
             echo "📁 Project: $PROJECT_PATH"
@@ -95,7 +99,8 @@ jobs:
             
             # Maintenance mode
             echo "🔧 Enabling maintenance mode..."
-            php artisan down --retry=60 --secret="${{ secrets.MAINTENANCE_SECRET }}" || true
+            php artisan down --retry=60 --secret="${{ secrets.MAINTENANCE_SECRET }}" --render="errors::503" || true
+            echo "✅ Maintenance mode enabled"
             
             # Function for rollback
             rollback_staging() {
@@ -129,6 +134,7 @@ jobs:
             # Install dependencies
             echo "📦 Installing dependencies..."
             composer install --no-dev --optimize-autoloader --no-interaction
+            echo "✅ Composer dependencies installed"
             # Ensure Node.js is in PATH for SSH environment
             export PATH="/usr/bin:/usr/local/bin:/opt/nodejs/bin:/usr/home/ideacts/.nvm/versions/node/v22.19.0/bin:$PATH"
             echo "🔍 Checking Node.js availability..."
@@ -136,10 +142,12 @@ jobs:
             which npm || echo "❌ npm not found in PATH"
             
             npm ci
+            echo "✅ NPM dependencies installed"
             
             # Build assets and generate docs
             echo "🏗️ Building assets..."
             npm run build
+            echo "✅ Assets built successfully"
             
             echo "📚 Generating API documentation..."
             php artisan scribe:generate
@@ -180,8 +188,9 @@ jobs:
             
             # Clean up old backups (keep last 5)
             echo "🧹 Cleaning old backups..."
-            cd ${{ secrets.PATH }}
+            cd $BACKUP_DIR
             ls -dt ruby-staging-backup-* 2>/dev/null | tail -n +6 | xargs rm -rf || true
+            echo "✅ Backup cleanup completed"
             
             # Clear trap
             trap - ERR
@@ -212,7 +221,11 @@ jobs:
             set -e
             
             PROJECT_PATH="${{ secrets.PATH }}/ruby"
-            BACKUP_PATH="${{ secrets.PATH }}/ruby-backup-$(date +%Y%m%d_%H%M%S)"
+            BACKUP_DIR="${{ secrets.PATH }}/ruby_backups"
+            BACKUP_PATH="$BACKUP_DIR/ruby-backup-$(date +%Y%m%d_%H%M%S)"
+            
+            # Create backup directory if it doesn't exist
+            mkdir -p $BACKUP_DIR
             
             echo "🚀 Starting production deployment..."
             echo "📁 Project: $PROJECT_PATH"
@@ -272,6 +285,7 @@ jobs:
             # Install dependencies
             echo "📦 Installing dependencies..."
             composer install --no-dev --optimize-autoloader --no-interaction
+            echo "✅ Composer dependencies installed"
             # Ensure Node.js is in PATH for SSH environment
             export PATH="/usr/bin:/usr/local/bin:/opt/nodejs/bin:/usr/home/ideacts/.nvm/versions/node/v22.19.0/bin:$PATH"
             echo "🔍 Checking Node.js availability..."
@@ -279,10 +293,12 @@ jobs:
             which npm || echo "❌ npm not found in PATH"
             
             npm ci
+            echo "✅ NPM dependencies installed"
             
             # Build assets and generate docs
             echo "🏗️ Building assets..."
             npm run build
+            echo "✅ Assets built successfully"
             
             echo "📚 Generating API documentation..."
             php artisan scribe:generate
@@ -323,8 +339,9 @@ jobs:
             
             # Clean up old backups (keep last 5)
             echo "🧹 Cleaning old backups..."
-            cd ${{ secrets.PATH }}
+            cd $BACKUP_DIR
             ls -dt ruby-backup-* 2>/dev/null | tail -n +6 | xargs rm -rf || true
+            echo "✅ Backup cleanup completed"
             
             # Clear trap
             trap - ERR
