@@ -4,12 +4,12 @@
 
 @section('content')
 <div class="max-w-7xl mx-auto pl-0 pr-0 py-6" x-data="dailyView()" x-init="init()">
-    <div class="grid grid-cols-3 items-center mb-6">
+    <div class="grid grid-cols-1 md:grid-cols-3 items-center mb-6 gap-4">
         <div class="justify-self-start">
             <h2 class="text-[22px] font-semibold text-gray-900" x-text="heading"></h2>
         </div>
 
-        <div class="justify-self-center">
+        <div class="md:justify-self-center">
             <div class="inline-flex items-center gap-3">
                 <button @click="prevDay()"
                         class="inline-flex items-center justify-center gap-2 rounded-md bg-primary w-[120px] px-4 py-2 text-sm font-semibold text-white shadow hover:opacity-90 cursor-pointer">
@@ -24,7 +24,7 @@
             </div>
         </div>                
 
-        <div class="justify-self-end">
+        <div class="md:justify-self-end">
             <button @click="openDate()"
                     class="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-white shadow hover:bg-primary-800 cursor-pointer transition-colors">
                 Select Date

@@ -12,7 +12,7 @@
     </div>
 
     <div class="pl-3 pr-0">
-        <nav class="flex-1 flex flex-col justify-between overflow-clip">
+        <nav class="flex-1 flex flex-col justify-between overflow-visible">
             <ul class="space-y-2 pl-1 pr-0 admin sidebar-list-nav">
             @php
                 $user = auth()->user();

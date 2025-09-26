@@ -2,7 +2,7 @@
     <div class="mx-auto w-full px-5 md:px-8 border-b border-neutral-200">
         <div class="flex h-20 items-center justify-between border-b border-gray-100/70">
             <div class="flex min-w-0 items-center gap-4">
-                <div class="truncate">
+                <div class="truncate hidden md:block">
                     <h1 class="truncate text-lg font-bold tracking-wide text-neutral-900 sm:text-2xl">@yield('navbar_title', 'RUBY - MEDICAL SPECIALIST')</h1>
                     <p class="text-xs text-gray-600 mt-2 sm:text-sm">@yield('navbar_subtitle', 'Export Patient Data - Secure Medical Professional Access')</p>
                 </div>

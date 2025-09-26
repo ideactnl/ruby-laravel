@@ -8,7 +8,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
                     </svg>
                 </button>
-                <div class="truncate">
+                <div class="truncate hidden md:block">
                     <h1 class="truncate text-lg font-bold tracking-wide text-neutral-900 sm:text-2xl">@yield('navbar_title', 'Admin Console')</h1>
                     <p class="text-xs text-gray-600 mt-2 sm:text-sm">@yield('navbar_subtitle', 'Administrative area')</p>
                 </div>
