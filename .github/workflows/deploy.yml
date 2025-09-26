@@ -135,22 +135,25 @@ jobs:
             echo "📦 Installing dependencies..."
             composer install --no-dev --optimize-autoloader --no-interaction
             echo "✅ Composer dependencies installed"
-            # Ensure Node.js is in PATH for SSH environment
-            export PATH="/usr/bin:/usr/local/bin:/opt/nodejs/bin:/usr/home/ideacts/.nvm/versions/node/v22.19.0/bin:$PATH"
-            echo "🔍 Checking Node.js availability..."
-            which node || echo "❌ Node.js not found in PATH"
-            which npm || echo "❌ npm not found in PATH"
+            # Setup Node.js and build assets
+            setup_nodejs_and_build() {
+              export PATH="/usr/bin:/usr/local/bin:/opt/nodejs/bin:/usr/home/ideacts/.nvm/versions/node/v22.19.0/bin:$PATH"
+              echo "🔍 Checking Node.js availability..."
+              which node || echo "❌ Node.js not found in PATH"
+              which npm || echo "❌ npm not found in PATH"
+              
+              npm ci
+              echo "✅ NPM dependencies installed"
+              
+              echo "🏗️ Building assets..."
+              npm run build
+              echo "✅ Assets built successfully"
+              
+              echo "📚 Generating API documentation..."
+              php artisan scribe:generate
+            }
             
-            npm ci
-            echo "✅ NPM dependencies installed"
-            
-            # Build assets and generate docs
-            echo "🏗️ Building assets..."
-            npm run build
-            echo "✅ Assets built successfully"
-            
-            echo "📚 Generating API documentation..."
-            php artisan scribe:generate
+            setup_nodejs_and_build
             
             # Update environment variables
             echo "⚙️ Updating environment..."
@@ -175,12 +178,16 @@ jobs:
             update_env "LOG_LEVEL" "${{ vars.LOG_LEVEL || 'debug' }}"
             
             # Laravel optimizations
-            echo "🚀 Running Laravel optimizations..."
-            php artisan migrate --force
-            php artisan config:cache
-            php artisan route:cache
-            php artisan view:cache
-            php artisan queue:restart || true
+            run_laravel_optimizations() {
+              echo "🚀 Running Laravel optimizations..."
+              php artisan migrate --force
+              php artisan config:cache
+              php artisan route:cache
+              php artisan view:cache
+              php artisan queue:restart || true
+            }
+            
+            run_laravel_optimizations
             
             # Disable maintenance mode
             echo "✅ Disabling maintenance mode..."
@@ -286,22 +293,25 @@ jobs:
             echo "📦 Installing dependencies..."
             composer install --no-dev --optimize-autoloader --no-interaction
             echo "✅ Composer dependencies installed"
-            # Ensure Node.js is in PATH for SSH environment
-            export PATH="/usr/bin:/usr/local/bin:/opt/nodejs/bin:/usr/home/ideacts/.nvm/versions/node/v22.19.0/bin:$PATH"
-            echo "🔍 Checking Node.js availability..."
-            which node || echo "❌ Node.js not found in PATH"
-            which npm || echo "❌ npm not found in PATH"
+            # Setup Node.js and build assets
+            setup_nodejs_and_build() {
+              export PATH="/usr/bin:/usr/local/bin:/opt/nodejs/bin:/usr/home/ideacts/.nvm/versions/node/v22.19.0/bin:$PATH"
+              echo "🔍 Checking Node.js availability..."
+              which node || echo "❌ Node.js not found in PATH"
+              which npm || echo "❌ npm not found in PATH"
+              
+              npm ci
+              echo "✅ NPM dependencies installed"
+              
+              echo "🏗️ Building assets..."
+              npm run build
+              echo "✅ Assets built successfully"
+              
+              echo "📚 Generating API documentation..."
+              php artisan scribe:generate
+            }
             
-            npm ci
-            echo "✅ NPM dependencies installed"
-            
-            # Build assets and generate docs
-            echo "🏗️ Building assets..."
-            npm run build
-            echo "✅ Assets built successfully"
-            
-            echo "📚 Generating API documentation..."
-            php artisan scribe:generate
+            setup_nodejs_and_build
             
             # Update environment variables
             echo "⚙️ Updating environment..."
@@ -326,12 +336,16 @@ jobs:
             update_env "LOG_LEVEL" "${{ vars.LOG_LEVEL || 'error' }}"
             
             # Laravel optimizations
-            echo "🚀 Running Laravel optimizations..."
-            php artisan migrate --force
-            php artisan config:cache
-            php artisan route:cache
-            php artisan view:cache
-            php artisan queue:restart || true
+            run_laravel_optimizations() {
+              echo "🚀 Running Laravel optimizations..."
+              php artisan migrate --force
+              php artisan config:cache
+              php artisan route:cache
+              php artisan view:cache
+              php artisan queue:restart || true
+            }
+            
+            run_laravel_optimizations
             
             # Disable maintenance mode
             echo "✅ Disabling maintenance mode..."
