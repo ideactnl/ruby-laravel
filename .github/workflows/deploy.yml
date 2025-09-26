@@ -52,7 +52,7 @@ jobs:
     name: Deploy to Staging
     runs-on: ubuntu-latest
     needs: test
-    if: github.ref == 'refs/heads/staging' && github.event_name == 'push'
+    if: github.ref == 'refs/heads/staging' && github.event_name == 'push' && !contains(github.event.head_commit.message, '[skip deploy]')
     environment: STAGING
     concurrency: staging_deployment
     steps:
@@ -118,7 +118,7 @@ jobs:
             echo "📦 Installing dependencies..."
             composer install --no-dev --optimize-autoloader --no-interaction
             # Ensure Node.js is in PATH for SSH environment
-            export PATH="/usr/bin:/usr/local/bin:/opt/nodejs/bin:/usr/home/ideacts/.nvm/versions/node/*/bin:$PATH"
+            export PATH="/usr/bin:/usr/local/bin:/opt/nodejs/bin:/usr/home/ideacts/.nvm/versions/node/v22.19.0/bin:$PATH"
             echo "🔍 Checking Node.js availability..."
             which node || echo "❌ Node.js not found in PATH"
             which npm || echo "❌ npm not found in PATH"
@@ -246,7 +246,7 @@ jobs:
             echo "📦 Installing dependencies..."
             composer install --no-dev --optimize-autoloader --no-interaction
             # Ensure Node.js is in PATH for SSH environment
-            export PATH="/usr/bin:/usr/local/bin:/opt/nodejs/bin:/usr/home/ideacts/.nvm/versions/node/*/bin:$PATH"
+            export PATH="/usr/bin:/usr/local/bin:/opt/nodejs/bin:/usr/home/ideacts/.nvm/versions/node/v22.19.0/bin:$PATH"
             echo "🔍 Checking Node.js availability..."
             which node || echo "❌ Node.js not found in PATH"
             which npm || echo "❌ npm not found in PATH"
