@@ -1,5 +1,5 @@
 <aside
-    class="fixed inset-y-0 left-0 z-[99] w-72 transform bg-primary text-white shadow-none transition-transform duration-300
+    class="fixed inset-y-0 left-0 z-[99] w-full bg-white text-black transform md:bg-primary md:text-white shadow-none transition-transform duration-300
            md:inset-y-0 md:left-0 md:w-64 md:translate-x-0 flex flex-col overflow-x-hidden"
     :class="{ '-translate-x-full': !sidebarOpen, 'translate-x-0': sidebarOpen }"
     aria-label="Admin sidebar"
@@ -11,9 +11,9 @@
         </div>
     </div>
 
-    <div class="pl-3 pr-0">
+    <div class="p-0 md:pl-3 md:pr-0">
         <nav class="flex-1 flex flex-col justify-between overflow-visible">
-            <ul class="space-y-2 pl-1 pr-0 admin sidebar-list-nav">
+            <ul class="space-y-2 md:pl-1 pr-0 admin sidebar-list-nav">
             @php
                 $user = auth()->user();
                 $items = [];
