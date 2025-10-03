@@ -80,7 +80,7 @@ class StoreOrUpdatePbacRequest extends FormRequest
             'isImpactUsedMedication' => 'nullable|boolean',
             'isImpactMissedWork' => 'nullable|boolean',
             'isImpactMissedSchool' => 'nullable|boolean',
-            'isImpactCouldNoSport' => 'nullable|boolean',
+            'isImpactCouldNotSport' => 'nullable|boolean',
             'isImpactMissedSpecialActivities' => 'nullable|boolean',
             'isImpactMissedLeisureActivities' => 'nullable|boolean',
             'isImpactHadToSitMore' => 'nullable|boolean',
@@ -100,11 +100,11 @@ class StoreOrUpdatePbacRequest extends FormRequest
             'isImpactMedTranexamineZuur' => 'nullable|boolean',
             'isImpactMedOther' => 'nullable|boolean',
             'isImpactMedOtherText' => 'nullable|string|max:255',
-            'isImpactMedicineEffective' => 'nullable|integer|min:0|max:10',
+            'isImpactMedicineEffective' => 'nullable|integer|min:-2|max:2',
 
             // ** General health ** //
             'isGeneralHealthAnswered' => 'nullable|boolean',
-            'generalHealthEnergyLevelSliderValue' => 'nullable|integer',
+            'generalHealthEnergyLevelSliderValue' => 'nullable|integer|min:1|max:5',
             'isGeneralHealthDizzy' => 'nullable|boolean',
             'isGeneralHealthNauseous' => 'nullable|boolean',
             'isGeneralHealthHeadacheMigraine' => 'nullable|boolean',
@@ -121,10 +121,11 @@ class StoreOrUpdatePbacRequest extends FormRequest
             'isMoodAnxiousStressed' => 'nullable|boolean',
             'isMoodAshamed' => 'nullable|boolean',
             'isMoodAngryIrritable' => 'nullable|boolean',
-            'isMoodSensitive' => 'nullable|boolean',
+            'isMoodSad' => 'nullable|boolean',
             'isMoodSwings' => 'nullable|boolean',
             'isMoodWorthlessGuilty' => 'nullable|boolean',
             'isMoodOverwhelmed' => 'nullable|boolean',
+            'isMoodHopeless' => 'nullable|boolean',
             'isMoodHopes' => 'nullable|boolean',
             'isMoodDepressedSadDown' => 'nullable|boolean',
 
@@ -164,6 +165,7 @@ class StoreOrUpdatePbacRequest extends FormRequest
             'isExerciseGreaterSixty' => 'nullable|boolean',
             'isExerciseHighImpact' => 'nullable|boolean',
             'isExerciseLowImpact' => 'nullable|boolean',
+            'isExercisePrecision' => 'nullable|boolean',
 
             // ** Diet ** //
             'isDietAnswered' => 'nullable|boolean',
@@ -175,6 +177,7 @@ class StoreOrUpdatePbacRequest extends FormRequest
             'isDietEggs' => 'nullable|boolean',
             'isDietFish' => 'nullable|boolean',
             'isDietMeat' => 'nullable|boolean',
+            'isDietSnacks' => 'nullable|boolean',
             'isDietSoda' => 'nullable|boolean',
             'isDietWater' => 'nullable|boolean',
             'isDietCoffee' => 'nullable|boolean',
@@ -271,7 +274,7 @@ class StoreOrUpdatePbacRequest extends FormRequest
             'isImpactUsedMedication' => ['description' => 'Used medication', 'example' => 1, 'required' => false, 'type' => 'boolean'],
             'isImpactMissedWork' => ['description' => 'Missed work', 'example' => 0, 'required' => false, 'type' => 'boolean'],
             'isImpactMissedSchool' => ['description' => 'Missed school', 'example' => 0, 'required' => false, 'type' => 'boolean'],
-            'isImpactCouldNoSport' => ['description' => 'Could not do sport', 'example' => 0, 'required' => false, 'type' => 'boolean'],
+            'isImpactCouldNotSport' => ['description' => 'Could not do sport', 'example' => 0, 'required' => false, 'type' => 'boolean'],
             'isImpactMissedSpecialActivities' => ['description' => 'Missed special activities', 'example' => 0, 'required' => false, 'type' => 'boolean'],
             'isImpactMissedLeisureActivities' => ['description' => 'Missed leisure activities', 'example' => 0, 'required' => false, 'type' => 'boolean'],
             'isImpactHadToSitMore' => ['description' => 'Had to sit more', 'example' => 0, 'required' => false, 'type' => 'boolean'],
@@ -291,11 +294,11 @@ class StoreOrUpdatePbacRequest extends FormRequest
             'isImpactMedTranexamineZuur' => ['description' => 'Medication: Tranexamine zuur', 'example' => 0, 'required' => false, 'type' => 'boolean'],
             'isImpactMedOther' => ['description' => 'Medication: Other', 'example' => 0, 'required' => false, 'type' => 'boolean'],
             'isImpactMedOtherText' => ['description' => 'Medication other text', 'example' => '', 'required' => false, 'type' => 'string'],
-            'isImpactMedicineEffective' => ['description' => 'Medication effectiveness slider (0-10)', 'example' => 7, 'required' => false, 'type' => 'integer'],
+            'isImpactMedicineEffective' => ['description' => 'Medication effectiveness slider (-2 to 2, negative means ineffective)', 'example' => 2, 'required' => false, 'type' => 'integer'],
 
             // ** General health ** //
             'isGeneralHealthAnswered' => ['description' => 'General health section answered', 'example' => 1, 'required' => false, 'type' => 'boolean'],
-            'generalHealthEnergyLevelSliderValue' => ['description' => 'Energy level slider', 'example' => 6, 'required' => false, 'type' => 'integer'],
+            'generalHealthEnergyLevelSliderValue' => ['description' => 'Energy level slider (1=Very Low, 2=Low, 3=Moderate, 4=Good, 5=High)', 'example' => 4, 'required' => false, 'type' => 'integer'],
             'isGeneralHealthDizzy' => ['description' => 'Dizzy', 'example' => 0, 'required' => false, 'type' => 'boolean'],
             'isGeneralHealthNauseous' => ['description' => 'Nauseous', 'example' => 0, 'required' => false, 'type' => 'boolean'],
             'isGeneralHealthHeadacheMigraine' => ['description' => 'Headache/migraine', 'example' => 0, 'required' => false, 'type' => 'boolean'],
@@ -312,10 +315,11 @@ class StoreOrUpdatePbacRequest extends FormRequest
             'isMoodAnxiousStressed' => ['description' => 'Anxious/stressed', 'example' => 0, 'required' => false, 'type' => 'boolean'],
             'isMoodAshamed' => ['description' => 'Ashamed', 'example' => 0, 'required' => false, 'type' => 'boolean'],
             'isMoodAngryIrritable' => ['description' => 'Angry/irritable', 'example' => 0, 'required' => false, 'type' => 'boolean'],
-            'isMoodSensitive' => ['description' => 'Sensitive', 'example' => 0, 'required' => false, 'type' => 'boolean'],
+            'isMoodSad' => ['description' => 'Sad', 'example' => 0, 'required' => false, 'type' => 'boolean'],
             'isMoodSwings' => ['description' => 'Mood swings', 'example' => 0, 'required' => false, 'type' => 'boolean'],
             'isMoodWorthlessGuilty' => ['description' => 'Worthless/guilty', 'example' => 0, 'required' => false, 'type' => 'boolean'],
             'isMoodOverwhelmed' => ['description' => 'Overwhelmed', 'example' => 0, 'required' => false, 'type' => 'boolean'],
+            'isMoodHopeless' => ['description' => 'Hopeless', 'example' => 0, 'required' => false, 'type' => 'boolean'],
             'isMoodHopes' => ['description' => 'Hopes', 'example' => 0, 'required' => false, 'type' => 'boolean'],
             'isMoodDepressedSadDown' => ['description' => 'Depressed/sad/down', 'example' => 0, 'required' => false, 'type' => 'boolean'],
 
@@ -349,6 +353,7 @@ class StoreOrUpdatePbacRequest extends FormRequest
             'isExerciseGreaterSixty' => ['description' => 'Exercised more than 60 minutes', 'example' => 0, 'required' => false, 'type' => 'boolean'],
             'isExerciseHighImpact' => ['description' => 'High impact exercise', 'example' => 0, 'required' => false, 'type' => 'boolean'],
             'isExerciseLowImpact' => ['description' => 'Low impact exercise', 'example' => 0, 'required' => false, 'type' => 'boolean'],
+            'isExercisePrecision' => ['description' => 'Precision exercise', 'example' => 0, 'required' => false, 'type' => 'boolean'],
 
             // ** Diet ** //
             'isDietAnswered' => ['description' => 'Diet section answered', 'example' => 1, 'required' => false, 'type' => 'boolean'],
@@ -360,6 +365,7 @@ class StoreOrUpdatePbacRequest extends FormRequest
             'isDietEggs' => ['description' => 'Ate eggs', 'example' => 0, 'required' => false, 'type' => 'boolean'],
             'isDietFish' => ['description' => 'Ate fish', 'example' => 0, 'required' => false, 'type' => 'boolean'],
             'isDietMeat' => ['description' => 'Ate meat', 'example' => 0, 'required' => false, 'type' => 'boolean'],
+            'isDietSnacks' => ['description' => 'Ate snacks', 'example' => 0, 'required' => false, 'type' => 'boolean'],
             'isDietSoda' => ['description' => 'Drank soda', 'example' => 0, 'required' => false, 'type' => 'boolean'],
             'isDietWater' => ['description' => 'Drank water', 'example' => 1, 'required' => false, 'type' => 'boolean'],
             'isDietCoffee' => ['description' => 'Drank coffee', 'example' => 0, 'required' => false, 'type' => 'boolean'],

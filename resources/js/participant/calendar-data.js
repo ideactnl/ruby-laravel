@@ -31,7 +31,7 @@ export function buildEventsFromRows(rows, selected) {
       });
     }
     
-    // Pain - pass value for face emoji selection
+    // Pain - pass value for custom icon selection
     if ((pillars.pain?.value ?? 0) > 0) {
       pushIf(date, true, 'pain', {
         value: pillars.pain.value,
@@ -64,32 +64,32 @@ export function buildEventsFromRows(rows, selected) {
       });
     }
     
-    // General Health - pass energy level and symptoms
-    if ((pillars.general_health?.energyLevel ?? 0) > 0) {
+    // General Health - pass energy level and symptoms (show if answered)
+    if (pillars.general_health?.answered) {
       pushIf(date, true, 'general_health', {
         energyLevel: pillars.general_health.energyLevel,
         symptoms: pillars.general_health.symptoms || []
       });
     }
     
-    // Mood - pass positive and negative indicators
-    if ((pillars.mood?.negatives?.length ?? 0) > 0 || (pillars.mood?.positives?.length ?? 0) > 0) {
+    // Mood - pass positive and negative indicators (show if answered)
+    if (pillars.mood?.answered) {
       pushIf(date, true, 'mood', {
         positives: pillars.mood.positives || [],
         negatives: pillars.mood.negatives || []
       });
     }
     
-    // Stool/Urine - pass detailed info
-    if (pillars.stool_urine?.urine?.blood || pillars.stool_urine?.stool?.blood) {
+    // Stool/Urine - pass detailed info (show if answered)
+    if (pillars.stool_urine?.answered) {
       pushIf(date, true, 'stool_urine', {
         urine: pillars.stool_urine.urine || {},
         stool: pillars.stool_urine.stool || {}
       });
     }
     
-    // Sleep - pass sleep hours and quality indicators
-    if ((pillars.sleep?.calculatedHours ?? 0) > 0) {
+    // Sleep - pass sleep hours and quality indicators (show if answered)
+    if (pillars.sleep?.answered) {
       pushIf(date, true, 'sleep', {
         calculatedHours: pillars.sleep.calculatedHours,
         fellAsleepTime: pillars.sleep.fellAsleepTime,
@@ -100,8 +100,9 @@ export function buildEventsFromRows(rows, selected) {
       });
     }
     
-    // Diet - pass positive and negative items
-    if ((pillars.diet?.positives?.length ?? 0) > 0 || (pillars.diet?.negatives?.length ?? 0) > 0) {
+    // Diet - pass positive, negative, and neutral items
+    if ((pillars.diet?.positives?.length ?? 0) > 0 || (pillars.diet?.negatives?.length ?? 0) > 0 || 
+        (pillars.diet?.neutrals?.length ?? 0) > 0) {
       pushIf(date, true, 'diet', {
         positives: pillars.diet.positives || [],
         negatives: pillars.diet.negatives || [],

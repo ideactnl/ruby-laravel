@@ -73,7 +73,7 @@ class PbacResource extends JsonResource
             'isImpactUsedMedication' => $this->is_impact_used_medication,
             'isImpactMissedWork' => $this->is_impact_missed_work,
             'isImpactMissedSchool' => $this->is_impact_missed_school,
-            'isImpactCouldNoSport' => $this->is_impact_could_no_sport,
+            'isImpactCouldNotSport' => $this->is_impact_could_not_sport,
             'isImpactMissedSpecialActivities' => $this->is_impact_missed_special_activities,
             'isImpactMissedLeisureActivities' => $this->is_impact_missed_leisure_activities,
             'isImpactHadToSitMore' => $this->is_impact_had_to_sit_more,
@@ -114,10 +114,11 @@ class PbacResource extends JsonResource
             'isMoodAnxiousStressed' => $this->is_mood_anxious_stressed,
             'isMoodAshamed' => $this->is_mood_ashamed,
             'isMoodAngryIrritable' => $this->is_mood_angry_irritable,
-            'isMoodSensitive' => $this->is_mood_sensitive,
+            'isMoodSad' => $this->is_mood_sad,
             'isMoodSwings' => $this->is_mood_swings,
             'isMoodWorthlessGuilty' => $this->is_mood_worthless_guilty,
             'isMoodOverwhelmed' => $this->is_mood_overwhelmed,
+            'isMoodHopeless' => $this->is_mood_hopeless,
             'isMoodHopes' => $this->is_mood_hopes,
             'isMoodDepressedSadDown' => $this->is_mood_depressed_sad_down,
 
@@ -151,6 +152,7 @@ class PbacResource extends JsonResource
             'isExerciseGreaterSixty' => $this->is_exercise_greater_sixty,
             'isExerciseHighImpact' => $this->is_exercise_high_impact,
             'isExerciseLowImpact' => $this->is_exercise_low_impact,
+            'isExercisePrecision' => $this->is_exercise_precision,
 
             // *** Diet *** //
             'isDietAnswered' => $this->is_diet_answered,
@@ -162,6 +164,7 @@ class PbacResource extends JsonResource
             'isDietEggs' => $this->is_diet_eggs,
             'isDietFish' => $this->is_diet_fish,
             'isDietMeat' => $this->is_diet_meat,
+            'isDietSnacks' => $this->is_diet_snacks,
             'isDietSoda' => $this->is_diet_soda,
             'isDietWater' => $this->is_diet_water,
             'isDietCoffee' => $this->is_diet_coffee,

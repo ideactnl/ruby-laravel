@@ -68,7 +68,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property bool|null $is_impact_used_medication
  * @property bool|null $is_impact_missed_work
  * @property bool|null $is_impact_missed_school
- * @property bool|null $is_impact_could_no_sport
+ * @property bool|null $is_impact_could_not_sport
  * @property bool|null $is_impact_missed_special_activities
  * @property bool|null $is_impact_missed_leisure_activities
  * @property bool|null $is_impact_had_to_sit_more
@@ -105,10 +105,11 @@ use Illuminate\Database\Eloquent\Model;
  * @property bool|null $is_mood_anxious_stressed
  * @property bool|null $is_mood_ashamed
  * @property bool|null $is_mood_angry_irritable
- * @property bool|null $is_mood_sensitive
+ * @property bool|null $is_mood_sad
  * @property bool|null $is_mood_swings
  * @property bool|null $is_mood_worthless_guilty
  * @property bool|null $is_mood_overwhelmed
+ * @property bool|null $is_mood_hopeless
  * @property bool|null $is_mood_hopes
  * @property bool|null $is_mood_depressed_sad_down
  * @property bool|null $is_urine_stool_answered
@@ -136,6 +137,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property bool|null $is_exercise_greater_sixty
  * @property bool|null $is_exercise_high_impact
  * @property bool|null $is_exercise_low_impact
+ * @property bool|null $is_exercise_precision
  * @property bool|null $is_diet_answered
  * @property bool|null $is_diet_vegetables
  * @property bool|null $is_diet_fruit
@@ -145,6 +147,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property bool|null $is_diet_eggs
  * @property bool|null $is_diet_fish
  * @property bool|null $is_diet_meat
+ * @property bool|null $is_diet_snacks
  * @property bool|null $is_diet_soda
  * @property bool|null $is_diet_water
  * @property bool|null $is_diet_coffee
@@ -203,7 +206,7 @@ class Pbac extends Model
 
     private const IMPACT_FIELDS = [
         'is_impact_answered', 'impact_slider_grade_your_day', 'impact_slider_complaints', 'is_impact_used_medication',
-        'is_impact_missed_work', 'is_impact_missed_school', 'is_impact_could_no_sport', 'is_impact_missed_special_activities',
+        'is_impact_missed_work', 'is_impact_missed_school', 'is_impact_could_not_sport', 'is_impact_missed_special_activities',
         'is_impact_missed_leisure_activities', 'is_impact_had_to_sit_more', 'is_impact_could_not_move',
         'is_impact_had_to_stay_longer_in_bed', 'is_impact_could_not_do_unpaid_work', 'is_impact_other', 'is_impact_other_text',
         'is_impact_med_paracetamol', 'is_impact_med_diclofenac', 'is_impact_med_naproxen', 'is_impact_med_iron_pills',
@@ -219,8 +222,8 @@ class Pbac extends Model
 
     private const MOOD_FIELDS = [
         'is_mood_answered', 'is_mood_calm', 'is_mood_happy', 'is_mood_excited', 'is_mood_anxious_stressed',
-        'is_mood_ashamed', 'is_mood_angry_irritable', 'is_mood_sensitive', 'is_mood_swings', 'is_mood_worthless_guilty',
-        'is_mood_overwhelmed', 'is_mood_hopes', 'is_mood_depressed_sad_down',
+        'is_mood_ashamed', 'is_mood_angry_irritable', 'is_mood_sad', 'is_mood_swings', 'is_mood_worthless_guilty',
+        'is_mood_overwhelmed', 'is_mood_hopeless', 'is_mood_hopes', 'is_mood_depressed_sad_down',
     ];
 
     private const URINE_STOOL_FIELDS = [
@@ -237,12 +240,12 @@ class Pbac extends Model
 
     private const EXERCISE_FIELDS = [
         'is_exercise_answered', 'is_exercise_less_thirty', 'is_exercise_thirty_to_sixty', 'is_exercise_greater_sixty',
-        'is_exercise_high_impact', 'is_exercise_low_impact',
+        'is_exercise_high_impact', 'is_exercise_low_impact', 'is_exercise_precision',
     ];
 
     private const DIET_FIELDS = [
         'is_diet_answered', 'is_diet_vegetables', 'is_diet_fruit', 'is_diet_potato_rice_bread', 'is_diet_dairy',
-        'is_diet_nuts_tofu_tempe', 'is_diet_eggs', 'is_diet_fish', 'is_diet_meat', 'is_diet_soda', 'is_diet_water',
+        'is_diet_nuts_tofu_tempe', 'is_diet_eggs', 'is_diet_fish', 'is_diet_meat', 'is_diet_snacks', 'is_diet_soda', 'is_diet_water',
         'is_diet_coffee', 'is_diet_alcohol',
     ];
 
@@ -294,7 +297,7 @@ class Pbac extends Model
 
         // Impact
         'is_impact_answered' => 'boolean', 'is_impact_used_medication' => 'boolean', 'is_impact_missed_work' => 'boolean', 'is_impact_missed_school' => 'boolean',
-        'is_impact_could_no_sport' => 'boolean', 'is_impact_missed_special_activities' => 'boolean', 'is_impact_missed_leisure_activities' => 'boolean',
+        'is_impact_could_not_sport' => 'boolean', 'is_impact_missed_special_activities' => 'boolean', 'is_impact_missed_leisure_activities' => 'boolean',
         'is_impact_had_to_sit_more' => 'boolean', 'is_impact_could_not_move' => 'boolean', 'is_impact_had_to_stay_longer_in_bed' => 'boolean',
         'is_impact_could_not_do_unpaid_work' => 'boolean', 'is_impact_other' => 'boolean',
         'is_impact_med_paracetamol' => 'boolean', 'is_impact_med_diclofenac' => 'boolean', 'is_impact_med_naproxen' => 'boolean', 'is_impact_med_iron_pills' => 'boolean',
@@ -308,8 +311,8 @@ class Pbac extends Model
 
         // Mood
         'is_mood_answered' => 'boolean', 'is_mood_calm' => 'boolean', 'is_mood_happy' => 'boolean', 'is_mood_excited' => 'boolean',
-        'is_mood_anxious_stressed' => 'boolean', 'is_mood_ashamed' => 'boolean', 'is_mood_angry_irritable' => 'boolean', 'is_mood_sensitive' => 'boolean',
-        'is_mood_swings' => 'boolean', 'is_mood_worthless_guilty' => 'boolean', 'is_mood_overwhelmed' => 'boolean', 'is_mood_hopes' => 'boolean', 'is_mood_depressed_sad_down' => 'boolean',
+        'is_mood_anxious_stressed' => 'boolean', 'is_mood_ashamed' => 'boolean', 'is_mood_angry_irritable' => 'boolean', 'is_mood_sad' => 'boolean',
+        'is_mood_swings' => 'boolean', 'is_mood_worthless_guilty' => 'boolean', 'is_mood_overwhelmed' => 'boolean', 'is_mood_hopeless' => 'boolean', 'is_mood_hopes' => 'boolean', 'is_mood_depressed_sad_down' => 'boolean',
 
         // Urine & Stool
         'is_urine_stool_answered' => 'boolean', 'is_urine_stool_blood_in_urine' => 'boolean', 'is_urine_stool_blood_in_stool' => 'boolean',
@@ -322,12 +325,12 @@ class Pbac extends Model
 
         // Exercise
         'is_exercise_answered' => 'boolean', 'is_exercise_less_thirty' => 'boolean', 'is_exercise_thirty_to_sixty' => 'boolean',
-        'is_exercise_greater_sixty' => 'boolean', 'is_exercise_high_impact' => 'boolean', 'is_exercise_low_impact' => 'boolean',
+        'is_exercise_greater_sixty' => 'boolean', 'is_exercise_high_impact' => 'boolean', 'is_exercise_low_impact' => 'boolean', 'is_exercise_precision' => 'boolean',
 
         // Diet
         'is_diet_answered' => 'boolean', 'is_diet_vegetables' => 'boolean', 'is_diet_fruit' => 'boolean', 'is_diet_potato_rice_bread' => 'boolean',
         'is_diet_dairy' => 'boolean', 'is_diet_nuts_tofu_tempe' => 'boolean', 'is_diet_eggs' => 'boolean', 'is_diet_fish' => 'boolean',
-        'is_diet_meat' => 'boolean', 'is_diet_soda' => 'boolean', 'is_diet_water' => 'boolean', 'is_diet_coffee' => 'boolean', 'is_diet_alcohol' => 'boolean',
+        'is_diet_meat' => 'boolean', 'is_diet_snacks' => 'boolean', 'is_diet_soda' => 'boolean', 'is_diet_water' => 'boolean', 'is_diet_coffee' => 'boolean', 'is_diet_alcohol' => 'boolean',
 
         // Sex
         'is_sex_answered' => 'boolean', 'is_sex_today' => 'boolean', 'is_sex_avoided' => 'boolean', 'is_sex_bloodloss_during_after' => 'boolean',
@@ -600,17 +603,20 @@ class Pbac extends Model
             return null;
         }
         $limitations = [];
+        if ($this->is_impact_used_medication) {
+            $limitations[] = 'used_medication';
+        }
         if ($this->is_impact_missed_work) {
             $limitations[] = 'missed_work';
         }
         if ($this->is_impact_missed_school) {
             $limitations[] = 'missed_school';
         }
-        if ($this->is_impact_could_no_sport) {
-            $limitations[] = 'could_no_sport';
+        if ($this->is_impact_could_not_sport) {
+            $limitations[] = 'could_not_sport';
         }
         if ($this->is_impact_missed_special_activities) {
-            $limitations[] = 'missed_special_activities';
+            $limitations[] = 'missed_social_activities';
         }
         if ($this->is_impact_missed_leisure_activities) {
             $limitations[] = 'missed_leisure_activities';
@@ -619,7 +625,7 @@ class Pbac extends Model
             $limitations[] = 'had_to_sit_more';
         }
         if ($this->is_impact_could_not_move) {
-            $limitations[] = 'could_not_move';
+            $limitations[] = 'had_to_lie_down';
         }
         if ($this->is_impact_had_to_stay_longer_in_bed) {
             $limitations[] = 'had_to_stay_longer_in_bed';
@@ -745,17 +751,20 @@ class Pbac extends Model
         if ($this->is_mood_angry_irritable) {
             $negatives[] = 'angry_irritable';
         }
-        if ($this->is_mood_sensitive) {
-            $negatives[] = 'sensitive';
+        if ($this->is_mood_sad) {
+            $negatives[] = 'sad';
         }
         if ($this->is_mood_swings) {
-            $negatives[] = 'swings';
+            $negatives[] = 'mood_swings';
         }
         if ($this->is_mood_worthless_guilty) {
             $negatives[] = 'worthless_guilty';
         }
         if ($this->is_mood_overwhelmed) {
             $negatives[] = 'overwhelmed';
+        }
+        if ($this->is_mood_hopeless) {
+            $negatives[] = 'hopeless';
         }
         if ($this->is_mood_depressed_sad_down) {
             $negatives[] = 'depressed_sad_down';
@@ -777,6 +786,22 @@ class Pbac extends Model
             return null;
         }
 
+        // Determine stool consistency for icon mapping
+        $consistency = null;
+        if ($this->is_urine_stool_hard) {
+            $consistency = 'hard';
+        } elseif ($this->is_urine_stool_soft) {
+            $consistency = 'soft';
+        } elseif ($this->is_urine_stool_diarrhea) {
+            $consistency = 'watery';
+        } elseif ($this->is_urine_stool_something_else) {
+            $consistency = 'something_else';
+        } elseif ($this->is_urine_stool_no_stool) {
+            $consistency = 'no_stool';
+        } elseif ($this->is_urine_stool_normal) {
+            $consistency = 'normal';
+        }
+
         return [
             'answered' => true,
             'urine' => [
@@ -785,6 +810,7 @@ class Pbac extends Model
             ],
             'stool' => [
                 'blood' => (bool) ($this->is_urine_stool_blood_in_stool ?? false),
+                'consistency' => $consistency,
                 'hard' => (bool) ($this->is_urine_stool_hard ?? false),
                 'soft' => (bool) ($this->is_urine_stool_soft ?? false),
                 'diarrhea' => (bool) ($this->is_urine_stool_diarrhea ?? false),
@@ -879,16 +905,19 @@ class Pbac extends Model
             $neutrals[] = 'potato_rice_bread';
         }
         if ($this->is_diet_dairy) {
-            $neutrals[] = 'dairy';
+            $neutrals[] = 'dairy_products';
         }
         if ($this->is_diet_eggs) {
-            $neutrals[] = 'eggs';
+            $neutrals[] = 'egg';
         }
         if ($this->is_diet_meat) {
             $neutrals[] = 'meat';
         }
         if ($this->is_diet_coffee) {
             $neutrals[] = 'coffee';
+        }
+        if ($this->is_diet_snacks) {
+            $neutrals[] = 'snacks';
         }
 
         return [
@@ -923,6 +952,9 @@ class Pbac extends Model
         }
         if ($this->is_exercise_low_impact) {
             $impacts[] = 'low_impact';
+        }
+        if ($this->is_exercise_precision) {
+            $impacts[] = 'precision_exercise';
         }
         $any = ! empty($levels) || ! empty($impacts);
 
