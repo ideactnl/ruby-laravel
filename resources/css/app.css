@@ -67,6 +67,148 @@
     .font-geist {
         font-family: var(--font-family-sans);
     }
+    
+    /* PBAC Calendar Icon Enhancements */
+    .pbac-calendar-icon {
+        filter: contrast(1.1) saturate(1.2) brightness(1.05);
+        transition: all 0.2s ease-in-out;
+        cursor: help;
+    }
+    
+    .pbac-calendar-icon:hover {
+        filter: contrast(1.2) saturate(1.4) brightness(1.1);
+        transform: scale(1.05);
+    }
+    
+    /* Enhanced Tooltip Styling */
+    .pbac-tooltip {
+        position: relative;
+        z-index: 1000;
+    }
+    
+    .pbac-tooltip::after {
+        content: attr(data-tooltip);
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0, 0, 0, 0.9);
+        color: white;
+        padding: 8px 12px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 500;
+        white-space: nowrap;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+        pointer-events: none;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(8px);
+        max-width: 280px;
+        white-space: normal;
+        line-height: 1.4;
+    }
+    
+    .pbac-tooltip::before {
+        content: '';
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%) translateY(100%);
+        border: 5px solid transparent;
+        border-top-color: rgba(0, 0, 0, 0.9);
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+    }
+    
+    .pbac-tooltip:hover::after,
+    .pbac-tooltip:hover::before {
+        opacity: 1;
+        visibility: visible;
+        transform: translateX(-50%) translateY(-8px);
+    }
+    
+    .pbac-tooltip:hover::before {
+        transform: translateX(-50%) translateY(-3px);
+    }
+    
+    /* Basic FullCalendar Event Styling */
+    .fc-event {
+        background: transparent !important;
+        border: none !important;
+        padding: 0 !important;
+    }
+    
+    .fc-daygrid-event {
+        background: transparent !important;
+        border: none !important;
+        margin: 1px !important;
+    }
+    
+    .fc-daygrid-event-harness {
+        margin: 2px !important;
+    }
+    
+    /* Mobile touch optimizations for calendar */
+    #participantCalendar {
+        touch-action: pan-y;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+    }
+    
+    /* Mobile-specific fixes for icon display */
+    @media (max-width: 768px) {
+        .fc-daygrid-day-frame {
+            min-height: 50px !important;
+        }
+        
+        .fc-daygrid-day-number {
+            padding: 4px !important;
+            font-size: 12px !important;
+        }
+        
+        /* Ensure icons are visible on mobile */
+        .pbac-calendar-icon {
+            width: 18px !important;
+            height: 18px !important;
+            min-width: 18px !important;
+            min-height: 18px !important;
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+        
+        /* Better spacing for mobile events */
+        .fc-daygrid-day-events {
+            padding: 1px !important;
+            min-height: 20px !important;
+        }
+        
+        .fc-daygrid-event {
+            margin: 0.5px !important;
+            padding: 1px !important;
+            min-height: 20px !important;
+        }
+        
+        .fc-daygrid-event-harness {
+            margin: 1px !important;
+        }
+        
+        /* Ensure event content is visible */
+        .fc-event-main {
+            padding: 0 !important;
+            overflow: visible !important;
+        }
+        
+        /* Force column layout on mobile */
+        .fc-daygrid-day-events.columns-3 {
+            columns: 2 !important;
+            column-gap: 2px !important;
+        }
+    }
 }
 
 [x-cloak] {

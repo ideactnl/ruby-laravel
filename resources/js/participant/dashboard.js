@@ -1,21 +1,21 @@
-import { getDynamicIconAndTooltip, PILLAR_ICONS } from './calendar-icons.js';
+import { getDynamicIconAndTooltip } from './calendar-icons.js';
 import { buildEventsFromRows } from './calendar-data.js';
 
 window.filterMenu = function filterMenu(){
   return {
     open:false,
     options: [
-      { value: 'blood_loss', label: 'Blood Loss', color: '#DC2626', iconCls: 'fa-droplet text-red-600' },
-      { value: 'pain', label: 'Pain', color: '#F59E0B', iconCls: 'fa-burst text-amber-500' },
-      { value: 'impact', label: 'Impact', color: '#22C55E', iconCls: 'fa-heart-pulse text-green-500' },
-      { value: 'general_health', label: 'General Health', color: '#10B981', iconCls: 'fa-battery-half text-emerald-500' },
-      { value: 'mood', label: 'Mood', color: '#8B5CF6', iconCls: 'fa-face-smile text-violet-500' },
-      { value: 'stool_urine', label: 'Stool/Urine', color: '#0EA5E9', iconCls: 'fa-toilet text-sky-500' },
-      { value: 'sleep', label: 'Sleep', color: '#6366F1', iconCls: 'fa-bed text-indigo-500' },
-      { value: 'diet', label: 'Diet', color: '#EAB308', iconCls: 'fa-utensils text-yellow-500' },
-      { value: 'exercise', label: 'Exercise', color: '#FB923C', iconCls: 'fa-person-running text-orange-400' },
-      { value: 'sex', label: 'Sexual Health', color: '#F472B6', iconCls: 'fa-venus-mars text-pink-400' },
-      { value: 'notes', label: 'Notes', color: '#64748B', iconCls: 'fa-note-sticky text-slate-500' },
+      { value: 'blood_loss', label: 'Blood Loss', color: '#DC2626', iconSrc: '/images/grid_blood_loss.png' },
+      { value: 'pain', label: 'Pain', color: '#F59E0B', iconSrc: '/images/grid_pain.png' },
+      { value: 'impact', label: 'Impact', color: '#22C55E', iconSrc: '/images/grid_impact.png' },
+      { value: 'general_health', label: 'General Health', color: '#10B981', iconSrc: '/images/grid_general_health.png' },
+      { value: 'mood', label: 'Mood', color: '#8B5CF6', iconSrc: '/images/grid_mood.png' },
+      { value: 'stool_urine', label: 'Stool/Urine', color: '#0EA5E9', iconSrc: '/images/grid_urine_stool.png' },
+      { value: 'sleep', label: 'Sleep', color: '#6366F1', iconSrc: '/images/grid_sleep.png' },
+      { value: 'diet', label: 'Diet', color: '#EAB308', iconSrc: '/images/grid_diet.png' },
+      { value: 'exercise', label: 'Exercise', color: '#FB923C', iconSrc: '/images/grid_sport.png' },
+      { value: 'sex', label: 'Sexual Health', color: '#F472B6', iconSrc: '/images/grid_sex.png' },
+      { value: 'notes', label: 'Notes', color: '#64748B', iconSrc: '/images/grid_notes.png' },
     ],
     selected: [],
     init(){
@@ -50,7 +50,6 @@ window.filterMenu = function filterMenu(){
   }
 };
 
-// Use imported PILLAR_ICONS from calendar-icons.js
 
 window.addEventListener('DOMContentLoaded', () => {
   const el = document.getElementById('participantCalendar');
@@ -73,6 +72,10 @@ window.addEventListener('DOMContentLoaded', () => {
     },
 
     dateClick(info){
+      // Prevent accidental clicks during mobile scrolling
+      if (window.isScrolling || touchMoved) {
+        return false;
+      }
       window.location.href = `/participant/daily-view?date=${info.dateStr}`;
     },
 
@@ -112,27 +115,61 @@ window.addEventListener('DOMContentLoaded', () => {
       const type = arg.event.extendedProps.type;
       const value = arg.event.extendedProps.value;
       
-      const { iconClass, tooltip } = getDynamicIconAndTooltip(type, value);
+      const { iconSrc, tooltip } = getDynamicIconAndTooltip(type, value);
       
       const wrap = document.createElement('span');
       wrap.className = 'inline-flex items-center gap-1 px-0.5';
-      const i = document.createElement('i');
-      i.className = `fa-solid ${iconClass} text-2xl`;
-      i.title = tooltip;
-      wrap.appendChild(i);
+      
+      if (iconSrc) {
+        const img = document.createElement('img');
+        img.src = iconSrc;
+        img.className = 'w-6 h-6 object-contain pbac-calendar-icon pbac-tooltip';
+        img.setAttribute('data-tooltip', tooltip);
+        img.title = tooltip;
+        img.alt = tooltip.split('\n')[0];
+        img.loading = 'lazy';
+        wrap.appendChild(img);
+      } else {
+        const div = document.createElement('div');
+        div.className = 'w-6 h-6 bg-gray-200 flex items-center justify-center text-xs text-gray-600 pbac-tooltip';
+        div.setAttribute('data-tooltip', tooltip);
+        div.title = tooltip;
+        div.textContent = type.charAt(0).toUpperCase();
+        wrap.appendChild(div);
+      }
+      
       return { domNodes: [wrap] };
     },
     eventDidMount: function(arg){
       const container = arg.el.closest('.fc-daygrid-day-events');
       if (container){
         container.classList.remove('grid','grid-cols-3');
-        container.classList.add('block','columns-3','w-4/5','mx-auto','px-1','pb-1');
+        // Check if mobile
+        const isMobile = window.innerWidth <= 768;
+        if (isMobile) {
+          container.classList.add('block','columns-2','w-full','mx-auto','px-0.5','pb-0.5');
+        } else {
+          container.classList.add('block','columns-3','w-4/5','mx-auto','px-1','pb-1');
+        }
       }
       const harness = arg.el.closest('.fc-daygrid-event-harness');
       if (harness){
-        harness.classList.add('relative','mb-2.5','mt-2');
+        const isMobile = window.innerWidth <= 768;
+        if (isMobile) {
+          harness.classList.add('relative','mb-1','mt-1');
+        } else {
+          harness.classList.add('relative','mb-2.5','mt-2');
+        }
       }
       arg.el.classList.add('inline-flex','items-center','gap-1','bg-transparent','border-0','px-0.5','w-auto');
+      
+      // Ensure icons are visible on mobile
+      const icon = arg.el.querySelector('.pbac-calendar-icon');
+      if (icon) {
+        icon.style.display = 'block';
+        icon.style.visibility = 'visible';
+        icon.style.opacity = '1';
+      }
     }
   });
 
@@ -236,32 +273,102 @@ window.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('mouseup', () => { dragging = false; });
 
   let touchStartY = null;
+  let touchStartX = null;
   let touchActive = false;
+  let touchMoved = false;
+  const mobileThreshold = 60; // Increased threshold for mobile
+  
+  // Global scroll state tracking
+  window.isScrolling = false;
+  let scrollTimeout;
+  
   el.addEventListener('touchstart', (e) => {
     if (!e.touches || e.touches.length !== 1) return;
     touchActive = true;
+    touchMoved = false;
     touchStartY = e.touches[0].clientY;
+    touchStartX = e.touches[0].clientX;
   }, { passive: true });
+  
   el.addEventListener('touchmove', (e) => {
     if (!touchActive || !e.touches || e.touches.length !== 1) return;
-    const diff = e.touches[0].clientY - touchStartY;
-    if (Math.abs(diff) > dragThreshold) {
-      touchActive = false;
-      e.preventDefault();
-      if (diff < 0) {
-        goNextThrottled();
-      } else {
-        goPrevThrottled();
+    
+    const currentY = e.touches[0].clientY;
+    const currentX = e.touches[0].clientX;
+    const diffY = currentY - touchStartY;
+    const diffX = currentX - touchStartX;
+    
+    // Mark as scrolling if any movement detected
+    if (Math.abs(diffY) > 5 || Math.abs(diffX) > 5) {
+      window.isScrolling = true;
+      touchMoved = true;
+      
+      // Clear existing timeout and set new one
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(() => {
+        window.isScrolling = false;
+      }, 300); // Reset scroll state after 300ms of no movement
+    }
+    
+    // Check if this is primarily a vertical swipe (not horizontal)
+    if (Math.abs(diffY) > Math.abs(diffX) && Math.abs(diffY) > 20) {
+      // Only prevent default and navigate if we've moved enough
+      if (Math.abs(diffY) > mobileThreshold) {
+        touchActive = false;
+        e.preventDefault();
+        e.stopPropagation();
+        
+        if (diffY < 0) {
+          // Swipe up = next month
+          goNextThrottled();
+        } else {
+          // Swipe down = previous month
+          goPrevThrottled();
+        }
       }
+    } else if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 20) {
+      // Horizontal swipe detected - don't interfere with normal scrolling
+      touchActive = false;
     }
   }, { passive: false });
-  el.addEventListener('touchend', () => { touchActive = false; }, { passive: true });
+  
+  el.addEventListener('touchend', (e) => {
+    // Reset touch state
+    touchActive = false;
+    
+    // If we moved during touch, prevent clicks for a short time
+    if (touchMoved) {
+      // Keep scroll state active for a bit longer to prevent immediate clicks
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(() => {
+        window.isScrolling = false;
+        touchMoved = false;
+      }, 150); // Shorter delay for touchend
+    } else {
+      // No movement, allow immediate clicks
+      touchMoved = false;
+      window.isScrolling = false;
+    }
+  }, { passive: true });
 
   const applyDayTopCenter = () => {
     el.querySelectorAll('.fc-daygrid-day-top').forEach(t => t.classList.add('justify-center'));
   };
   applyDayTopCenter();
   calendar.on('datesSet', applyDayTopCenter);
+
+  // Handle mobile layout changes on resize/orientation change
+  const handleResize = () => {
+    // Re-render calendar to apply mobile-specific layouts
+    setTimeout(() => {
+      if (window.participantCalendar) {
+        window.participantCalendar.updateSize();
+      }
+    }, 100);
+  };
+  
+  window.addEventListener('resize', handleResize);
+  window.addEventListener('orientationchange', handleResize);
 
   (async () => {
     try {

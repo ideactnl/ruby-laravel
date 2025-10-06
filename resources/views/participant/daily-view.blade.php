@@ -47,20 +47,43 @@
                 <div class="swiper-wrapper">
                     <template x-for="item in items" :key="item.key">
                         <div class="swiper-slide !w-auto">
-                            <div class="w-[280px] h-[240px] rounded-lg bg-rose-50 shadow-sm border border-gray-200 p-6 flex flex-col items-center justify-center mx-auto relative">
-                                <div class="text-center text-[26px] font-medium tracking-wide text-gray-900 uppercase mb-6 cursor-grab active:cursor-grabbing select-none" x-text="item.label"></div>
+                            <div class="w-[280px] h-[200px] rounded-lg bg-white shadow-sm border border-gray-200 p-4 mx-auto relative hover:shadow-md transition-shadow">
+                                <!-- Header with icon and title -->
+                                <div class="flex items-center justify-between mb-3">
+                                    <div class="flex items-center gap-2">
+                                        <img :src="item.iconSrc" :alt="item.label" class="w-8 h-8 object-contain" x-show="item.iconSrc">
+                                        <h3 class="text-sm font-semibold text-gray-900 uppercase tracking-wide" x-text="item.label"></h3>
+                                    </div>
+                                    <div :class="`w-3 h-3 rounded-full ${item.statusColor}`" :title="item.statusText"></div>
+                                </div>
                                 
-                                <div class="relative group">
-                                    <div :class="`inline-flex items-center justify-center rounded px-3 py-1 text-sm font-semibold w-[54.58px] h-[49.58px] text-[20px] text-white ${item.badge} cursor-help`" 
-                                         x-text="item.value"
-                                         @mousedown.stop
-                                         @touchstart.stop></div>
+                                <!-- Visual representation with icons -->
+                                <div class="mb-4 flex-1 flex items-center justify-center">
+                                    <!-- Severity/Level icons -->
+                                    <div class="flex items-center gap-1" x-show="item.severityIcons && item.severityIcons.length > 0">
+                                        <template x-for="(icon, index) in item.severityIcons" :key="index">
+                                            <img :src="icon.src" :alt="icon.alt" :class="`w-6 h-6 object-contain ${icon.active ? 'opacity-100' : 'opacity-30'}`">
+                                        </template>
+                                    </div>
                                     
-                                    <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-3 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg shadow-xl opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none whitespace-nowrap z-50 max-w-xs"
-                                         x-text="item.tooltip">
+                                    <!-- Single status icon -->
+                                    <div x-show="item.statusIcon && (!item.severityIcons || item.severityIcons.length === 0)">
+                                        <img :src="item.statusIcon.src" :alt="item.statusIcon.alt" class="w-12 h-12 object-contain">
                                     </div>
-                                    <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 -mb-1 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900 opacity-0 group-hover:opacity-100 transition-all duration-300 z-50">
-                                    </div>
+                                </div>
+                                
+                                <!-- Context and additional info -->
+                                <div class="mb-3">
+                                    <div class="text-sm font-medium text-gray-700 text-center" x-text="item.context" x-show="item.context"></div>
+                                    <div class="text-xs text-gray-600 text-center mt-1" x-text="item.additionalInfo" x-show="item.additionalInfo"></div>
+                                </div>
+                                
+                                <!-- More button -->
+                                <div class="absolute bottom-3 right-3">
+                                    <button @click="openDomainModal(item)" 
+                                            class="bg-primary text-white text-xs px-3 py-1 rounded-full hover:bg-primary-600 transition-colors">
+                                        More
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -99,5 +122,37 @@
             </div>
         </div>
     </template>
+
+    <!-- Domain Detail Modal -->
+    <div x-show="showModal" x-cloak 
+         class="fixed inset-0 z-50 overflow-y-auto" 
+         @keydown.escape.window="closeModal()">
+        <!-- Backdrop -->
+        <div class="fixed inset-0 bg-white bg-opacity-20 backdrop-blur-sm transition-opacity" 
+             @click="closeModal()"></div>
+        
+        <!-- Modal Content -->
+        <div class="flex min-h-full items-center justify-center p-4">
+            <div class="relative bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto md:ml-32"
+                 @click.stop>
+                <!-- Header -->
+                <div class="flex items-center justify-between p-6 border-b border-gray-200">
+                    <div class="flex items-center gap-3">
+                        <img :src="modalData?.iconSrc" :alt="modalData?.label" class="w-8 h-8 object-contain" x-show="modalData?.iconSrc">
+                        <h2 class="text-xl font-semibold text-gray-900" x-text="modalData?.label"></h2>
+                    </div>
+                    <button @click="closeModal()" class="text-gray-400 hover:text-gray-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                
+                <!-- Modal Body -->
+                <div class="p-6" x-html="modalContent">
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 @endsection

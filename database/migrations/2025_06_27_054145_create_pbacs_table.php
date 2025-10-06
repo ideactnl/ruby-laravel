@@ -80,7 +80,7 @@ return new class extends Migration
             $table->boolean('is_impact_used_medication')->nullable();
             $table->boolean('is_impact_missed_work')->nullable();
             $table->boolean('is_impact_missed_school')->nullable();
-            $table->boolean('is_impact_could_no_sport')->nullable();
+            $table->boolean('is_impact_could_not_sport')->nullable();
             $table->boolean('is_impact_missed_special_activities')->nullable();
             $table->boolean('is_impact_missed_leisure_activities')->nullable();
             $table->boolean('is_impact_had_to_sit_more')->nullable();
@@ -121,10 +121,11 @@ return new class extends Migration
             $table->boolean('is_mood_anxious_stressed')->nullable();
             $table->boolean('is_mood_ashamed')->nullable();
             $table->boolean('is_mood_angry_irritable')->nullable();
-            $table->boolean('is_mood_sensitive')->nullable();
+            $table->boolean('is_mood_sad')->nullable();
             $table->boolean('is_mood_swings')->nullable();
             $table->boolean('is_mood_worthless_guilty')->nullable();
             $table->boolean('is_mood_overwhelmed')->nullable();
+            $table->boolean('is_mood_hopeless')->nullable();
             $table->boolean('is_mood_hopes')->nullable();
             $table->boolean('is_mood_depressed_sad_down')->nullable();
 
@@ -158,6 +159,7 @@ return new class extends Migration
             $table->boolean('is_exercise_greater_sixty')->nullable();
             $table->boolean('is_exercise_high_impact')->nullable();
             $table->boolean('is_exercise_low_impact')->nullable();
+            $table->boolean('is_exercise_precision')->nullable();
 
             // Diet
             $table->boolean('is_diet_answered')->nullable();
@@ -169,6 +171,7 @@ return new class extends Migration
             $table->boolean('is_diet_eggs')->nullable();
             $table->boolean('is_diet_fish')->nullable();
             $table->boolean('is_diet_meat')->nullable();
+            $table->boolean('is_diet_snacks')->nullable();
             $table->boolean('is_diet_soda')->nullable();
             $table->boolean('is_diet_water')->nullable();
             $table->boolean('is_diet_coffee')->nullable();
