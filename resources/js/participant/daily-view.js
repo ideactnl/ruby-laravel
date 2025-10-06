@@ -56,6 +56,16 @@ window.dailyView = function dailyView() {
       
       // Fetch initial data
       this.fetchData();
+      
+      // Ensure video swiper is initialized after DOM is ready
+      this.$nextTick(() => {
+        // Small delay to ensure DOM is fully rendered
+        setTimeout(() => {
+          if (this._swiperManager && this.$refs?.vidSwiper) {
+            this._swiperManager.initVideosSwiper();
+          }
+        }, 100);
+      });
     },
     
     // Date navigation methods

@@ -37,17 +37,14 @@
     <template x-if="loading">
         <div class="text-gray-600">Loading...</div>
     </template>
-    <template x-if="!loading && !data">
-        <p class="text-sm text-gray-500 mb-3">No data for this date.</p>
-    </template>
-
-    <template x-if="!loading && data">
+    <!-- Domain Cards Section -->
+    <template x-if="!loading && items.length > 0">
         <div class="mb-8">
             <div class="swiper" x-ref="symSwiper">
                 <div class="swiper-wrapper">
                     <template x-for="item in items" :key="item.key">
                         <div class="swiper-slide !w-auto">
-                            <div class="w-[280px] h-[200px] rounded-lg bg-white shadow-sm border border-gray-200 p-4 mx-auto relative hover:shadow-md transition-shadow">
+                            <div class="w-[350px] h-[200px] rounded-lg bg-white shadow-sm border border-gray-200 p-4 mx-auto relative hover:shadow-md transition-shadow">
                                 <!-- Header with icon and title -->
                                 <div class="flex items-center justify-between mb-3">
                                     <div class="flex items-center gap-2">
@@ -60,10 +57,14 @@
                                 <!-- Visual representation with icons -->
                                 <div class="mb-4 flex-1 flex items-center justify-center">
                                     <!-- Severity/Level icons -->
-                                    <div class="flex items-center gap-1" x-show="item.severityIcons && item.severityIcons.length > 0">
+                                    <div class="flex items-center justify-center flex-wrap gap-1" x-show="item.severityIcons && item.severityIcons.length > 0">
                                         <template x-for="(icon, index) in item.severityIcons" :key="index">
-                                            <div :class="`p-1 rounded-full ${icon.active ? 'bg-blue-100 border-2 border-blue-500' : ''}`">
-                                                <img :src="icon.src" :alt="icon.alt" :class="`w-6 h-6 object-contain ${icon.active ? 'opacity-100' : 'opacity-30'}`">
+                                            <div :class="`${icon.active ? 'p-1 bg-blue-100 border-2 border-blue-500 rounded-full' : 'p-1'} flex-shrink-0`">
+                                                <img :src="icon.src" :alt="icon.alt" 
+                                                     :class="`object-contain ${icon.active ? 'opacity-100' : 'opacity-30'} ${
+                                                         item.severityIcons.length > 8 ? 'w-5 h-5' : 
+                                                         item.severityIcons.length > 6 ? 'w-6 h-6' : 'w-7 h-7'
+                                                     }`">
                                             </div>
                                         </template>
                                     </div>
@@ -95,7 +96,15 @@
         </div>
     </template>
 
-    <template x-if="!loading && videos.length">
+    <!-- No Data Message -->
+    <template x-if="!loading && items.length === 0">
+        <div class="mb-8">
+            <p class="text-sm text-gray-500 text-center py-8">No symptom data recorded for this date.</p>
+        </div>
+    </template>
+
+    <!-- Videos Section - Always Show -->
+    <template x-if="!loading">
         <div>
             <h2 class="text-[22px] font-medium uppercase text-black tracking-tight mb-5"></h2>
             <div class="swiper" x-ref="vidSwiper">

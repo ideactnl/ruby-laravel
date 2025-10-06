@@ -46,28 +46,29 @@ export class CalendarLayout {
     const container = arg.el.closest('.fc-daygrid-day-events');
     const dayFrame = arg.el.closest('.fc-daygrid-day-frame');
     
-    if (container) {
-      container.classList.add('pbac-events-container');
-      container.classList.remove('grid', 'grid-cols-3');
+    if (container && dayFrame) {
+      const eventElement = arg.el.closest('.fc-daygrid-event-harness') || arg.el;
       
-      const dayEvents = container.querySelectorAll('.fc-daygrid-event');
-      const eventCount = dayEvents.length;
-      
-      container.classList.add(`pbac-events-count-${eventCount}`);
-      
-      if (dayFrame) {
-        dayFrame.classList.add(`pbac-day-count-${eventCount}`);
+      if (eventElement.parentNode) {
+        eventElement.parentNode.removeChild(eventElement);
       }
       
-      const isMobile = window.innerWidth <= 768;
-      if (isMobile) {
-        CalendarLayout.applyMobileLayout(container, dayFrame, eventCount);
-      } else {
-        CalendarLayout.applyDesktopLayout(container, eventCount);
-      }
+      dayFrame.appendChild(eventElement);
       
-      const selectedCount = window.selectedCalendarTypes ? window.selectedCalendarTypes.size : 0;
-      container.classList.add(`pbac-selected-domains-${selectedCount}`);
+      const allEvents = dayFrame.querySelectorAll('.fc-daygrid-event');
+      const eventCount = allEvents.length;
+      dayFrame.classList.add(`pbac-day-count-${eventCount}`);
+      dayFrame.classList.add('pbac-free-flow-events');
+      
+      setTimeout(() => {
+        const emptyContainer = dayFrame.querySelector('.fc-daygrid-day-events');
+        if (emptyContainer) {
+          emptyContainer.style.display = 'none';
+          emptyContainer.style.visibility = 'hidden';
+          emptyContainer.style.height = '0';
+          emptyContainer.style.overflow = 'hidden';
+        }
+      }, 0);
     }
 
     // Apply event harness styling
@@ -81,10 +82,8 @@ export class CalendarLayout {
       }
     }
 
-    // Apply event element styling
     arg.el.classList.add('inline-flex', 'items-center', 'gap-1', 'bg-transparent', 'border-0', 'px-0.5', 'w-auto');
     
-    // Ensure icon visibility
     const icon = arg.el.querySelector('.pbac-calendar-icon');
     if (icon) {
       icon.style.display = 'block';

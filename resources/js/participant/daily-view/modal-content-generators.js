@@ -31,16 +31,41 @@ export class ModalContentGenerators {
     
     content += '</div>';
     
+    // Detailed information section
+    content += '<div class="space-y-4">';
+    
     if (spotting) {
       content += '<div class="bg-orange-50 border border-orange-200 rounded-lg p-4">';
-      content += '<div class="flex items-center gap-2">';
+      content += '<div class="flex items-center gap-2 mb-2">';
       content += '<img src="/images/spotting.png" alt="Spotting" class="w-6 h-6 object-contain">';
       content += '<span class="font-medium text-orange-800">Spotting Detected</span>';
       content += '</div>';
+      content += '<p class="text-sm text-orange-700">Light bleeding between periods or at unexpected times. This may be normal but worth tracking for patterns.</p>';
+      content += '</div>';
+    } else if (severity && severity !== 'none') {
+      content += '<div class="bg-blue-50 border border-blue-200 rounded-lg p-4">';
+      content += '<h4 class="font-medium text-blue-800 mb-2">Blood Loss Details</h4>';
+      
+      const severityDescriptions = {
+        'very_light': 'Very light flow - minimal bleeding, may only need panty liners',
+        'light': 'Light flow - comfortable with regular pads or tampons',
+        'moderate': 'Moderate flow - normal menstrual bleeding, may need to change protection every 3-4 hours',
+        'heavy': 'Heavy flow - requires frequent changes of protection, may impact daily activities',
+        'very_heavy': 'Very heavy flow - may require super absorbent products, could significantly impact daily life'
+      };
+      
+      content += `<p class="text-sm text-blue-700 mb-2"><strong>Severity:</strong> ${severity.charAt(0).toUpperCase() + severity.slice(1).replace('_', ' ')}</p>`;
+      content += `<p class="text-sm text-blue-700">${severityDescriptions[severity] || 'Blood loss recorded'}</p>`;
       content += '</div>';
     }
     
-    content += `<p class="text-gray-600">Amount recorded: ${amount} ml</p>`;
+    // Amount and tracking info
+    content += '<div class="bg-gray-50 border border-gray-200 rounded-lg p-4">';
+    content += '<h4 class="font-medium text-gray-800 mb-2">Tracking Information</h4>';
+    content += `<p class="text-sm text-gray-700 mb-1"><strong>Amount recorded:</strong> ${amount} ml</p>`;
+    content += '<p class="text-xs text-gray-600">Tracking blood loss helps identify patterns and assess overall menstrual health. Share this data with your healthcare provider if you notice significant changes.</p>';
+    content += '</div>';
+    
     content += '</div>';
     content += '</div>';
     
@@ -75,11 +100,38 @@ export class ModalContentGenerators {
     
     content += '</div>';
     
+    // Detailed pain information
+    content += '<div class="space-y-4">';
+    
+    // Pain intensity description
+    content += '<div class="bg-blue-50 border border-blue-200 rounded-lg p-4">';
+    content += '<h4 class="font-medium text-blue-800 mb-2">Pain Assessment</h4>';
+    
+    const painDescriptions = {
+      0: 'No pain - feeling comfortable',
+      1: 'Minimal pain - barely noticeable, does not interfere with activities',
+      2: 'Mild pain - noticeable but tolerable, minimal interference with activities',
+      3: 'Mild to moderate pain - some interference with activities',
+      4: 'Moderate pain - interferes with concentration and activities',
+      5: 'Moderate to severe pain - significantly interferes with activities',
+      6: 'Severe pain - difficult to ignore, limits activities',
+      7: 'Very severe pain - dominates senses, difficult to think clearly',
+      8: 'Intense pain - physical activity severely limited',
+      9: 'Excruciating pain - unable to engage in normal activities',
+      10: 'Unbearable pain - bedridden, may require emergency care'
+    };
+    
+    const painLevelText = value <= 1 ? 'Minimal' : value <= 3 ? 'Mild' : value <= 5 ? 'Moderate' : value <= 7 ? 'Severe' : 'Very Severe';
+    
+    content += `<p class="text-sm text-blue-700 mb-2"><strong>Pain Level:</strong> ${value}/10 (${painLevelText})</p>`;
+    content += `<p class="text-sm text-blue-700">${painDescriptions[value] || painDescriptions[Math.min(10, Math.max(0, Math.round(value)))]}</p>`;
+    content += '</div>';
+    
     // Affected regions
     if (regions.length > 0) {
       content += '<div class="bg-red-50 border border-red-200 rounded-lg p-4">';
-      content += '<h4 class="font-medium text-red-800 mb-2">Affected Areas:</h4>';
-      content += '<div class="grid grid-cols-2 gap-2">';
+      content += '<h4 class="font-medium text-red-800 mb-2">Affected Body Regions</h4>';
+      content += '<div class="grid grid-cols-2 gap-2 mb-3">';
       
       const regionLabels = {
         'umbilical': 'Umbilical', 'left_umbilical': 'Left Umbilical', 'right_umbilical': 'Right Umbilical',
@@ -95,8 +147,24 @@ export class ModalContentGenerators {
       });
       
       content += '</div>';
+      content += '<p class="text-xs text-red-600">Pain in multiple regions may indicate referred pain or systemic conditions. Consider discussing patterns with your healthcare provider.</p>';
       content += '</div>';
     }
+    
+    // Management suggestions
+    content += '<div class="bg-gray-50 border border-gray-200 rounded-lg p-4">';
+    content += '<h4 class="font-medium text-gray-800 mb-2">Pain Management Notes</h4>';
+    if (value >= 7) {
+      content += '<p class="text-sm text-gray-700 mb-2"><strong>Severe Pain Alert:</strong> Consider contacting your healthcare provider if this level persists.</p>';
+    } else if (value >= 4) {
+      content += '<p class="text-sm text-gray-700 mb-2"><strong>Moderate Pain:</strong> May benefit from pain management strategies or medication.</p>';
+    } else if (value >= 1) {
+      content += '<p class="text-sm text-gray-700 mb-2"><strong>Mild Pain:</strong> Monitor for patterns and triggers.</p>';
+    }
+    content += '<p class="text-xs text-gray-600">Track pain patterns over time to identify triggers, effective treatments, and changes that may need medical attention.</p>';
+    content += '</div>';
+    
+    content += '</div>';
     
     content += '</div>';
     content += '</div>';
@@ -159,6 +227,94 @@ export class ModalContentGenerators {
     } else {
       content += '<p class="text-yellow-600 font-medium">Overall: Balanced Day</p>';
     }
+    
+    content += '</div>';
+    
+    // Detailed mood analysis
+    content += '<div class="space-y-4">';
+    
+    // Positive mood states
+    if (positives.length > 0) {
+      content += '<div class="bg-green-50 border border-green-200 rounded-lg p-4">';
+      content += '<h4 class="font-medium text-green-800 mb-2">Positive Emotions Experienced</h4>';
+      
+      const positiveMoodDescriptions = {
+        'calm': 'Feeling peaceful and relaxed, free from stress or anxiety',
+        'happy': 'Experiencing joy, contentment, and positive emotions',
+        'excited': 'Feeling energetic, enthusiastic, and looking forward to things'
+      };
+      
+      positives.forEach(mood => {
+        const description = positiveMoodDescriptions[mood];
+        content += `<div class="mb-2">`;
+        content += `<p class="text-sm text-green-700 font-medium">${mood.charAt(0).toUpperCase() + mood.slice(1)}</p>`;
+        if (description) {
+          content += `<p class="text-xs text-green-600">${description}</p>`;
+        }
+        content += `</div>`;
+      });
+      
+      content += '<p class="text-xs text-green-600 mt-2">Positive emotions contribute to overall wellbeing and can help manage challenging symptoms.</p>';
+      content += '</div>';
+    }
+    
+    // Negative mood states
+    if (negatives.length > 0) {
+      content += '<div class="bg-red-50 border border-red-200 rounded-lg p-4">';
+      content += '<h4 class="font-medium text-red-800 mb-2">Challenging Emotions Experienced</h4>';
+      
+      const negativeMoodDescriptions = {
+        'anxious': 'Feeling worried, nervous, or uneasy about uncertain outcomes',
+        'stressed': 'Experiencing pressure, tension, or feeling overwhelmed',
+        'ashamed': 'Feeling embarrassed, guilty, or disappointed in oneself',
+        'angry': 'Feeling frustrated, irritated, or upset about situations',
+        'irritable': 'Easily annoyed or made angry by minor things',
+        'sad': 'Feeling down, unhappy, or experiencing low mood',
+        'mood_swings': 'Experiencing rapid changes between different emotional states',
+        'worthless': 'Feeling like you have no value or importance',
+        'guilty': 'Feeling responsible for something wrong or feeling regret',
+        'overwhelmed': 'Feeling like there is too much to handle or cope with',
+        'hopeless': 'Feeling like things will not improve or get better',
+        'depressed': 'Experiencing persistent low mood, sadness, or lack of interest'
+      };
+      
+      negatives.forEach(mood => {
+        const description = negativeMoodDescriptions[mood];
+        content += `<div class="mb-2">`;
+        content += `<p class="text-sm text-red-700 font-medium">${mood.charAt(0).toUpperCase() + mood.slice(1).replace('_', ' ')}</p>`;
+        if (description) {
+          content += `<p class="text-xs text-red-600">${description}</p>`;
+        }
+        content += `</div>`;
+      });
+      
+      if (negatives.some(mood => ['depressed', 'hopeless', 'worthless'].includes(mood))) {
+        content += '<p class="text-xs text-red-700 font-medium mt-3">⚠️ If these feelings persist, consider reaching out to a mental health professional or your healthcare provider.</p>';
+      }
+      
+      content += '<p class="text-xs text-red-600 mt-2">Tracking challenging emotions helps identify patterns and triggers that may be related to your health condition.</p>';
+      content += '</div>';
+    }
+    
+    // Mood tracking insights
+    content += '<div class="bg-gray-50 border border-gray-200 rounded-lg p-4">';
+    content += '<h4 class="font-medium text-gray-800 mb-2">Mood Tracking Insights</h4>';
+    content += `<p class="text-sm text-gray-700 mb-2"><strong>Today's Balance:</strong> ${positives.length} positive, ${negatives.length} challenging emotions</p>`;
+    
+    if (balance > 1) {
+      content += '<p class="text-sm text-gray-700">Strong positive day! This emotional state may help with symptom management and overall wellbeing.</p>';
+    } else if (balance === 1) {
+      content += '<p class="text-sm text-gray-700">Mostly positive day with some challenges. This is a normal emotional balance.</p>';
+    } else if (balance === 0) {
+      content += '<p class="text-sm text-gray-700">Balanced emotional day. You experienced both positive and challenging emotions.</p>';
+    } else if (balance >= -1) {
+      content += '<p class="text-sm text-gray-700">Somewhat challenging day emotionally. Consider self-care strategies that have helped before.</p>';
+    } else {
+      content += '<p class="text-sm text-gray-700">Emotionally challenging day. Remember that difficult emotions are temporary and support is available.</p>';
+    }
+    
+    content += '<p class="text-xs text-gray-600 mt-2">Mood patterns often correlate with physical symptoms. Share this information with your healthcare team to get comprehensive care.</p>';
+    content += '</div>';
     
     content += '</div>';
     
@@ -235,27 +391,113 @@ export class ModalContentGenerators {
     });
     
     content += '</div>';
-    content += `<p class="text-gray-600">Total items consumed: ${allDietItems.length}</p>`;
+    content += `<p class="text-gray-600">Total items consumed: ${allDietItems.length}/12</p>`;
     content += '</div>';
+    
+    // Detailed diet analysis
+    content += '<div class="space-y-4">';
     
     const dietLabels = {
       'vegetables': 'Vegetables', 'fruit': 'Fruit', 'potato_rice_bread': 'Carbohydrates',
-      'dairy': 'Dairy Products', 'nuts_tofu_tempe': 'Protein Alternatives', 'eggs': 'Eggs',
+      'dairy_products': 'Dairy Products', 'nuts_tofu_tempe': 'Protein Alternatives', 'egg': 'Eggs',
       'fish': 'Fish', 'meat': 'Meat', 'snacks': 'Snacks', 'soda': 'Soda',
       'water': 'Water', 'coffee': 'Coffee', 'alcohol': 'Alcohol'
     };
     
+    const dietDescriptions = {
+      'vegetables': 'Rich in vitamins, minerals, and fiber. Essential for digestive health and inflammation reduction.',
+      'fruit': 'Natural source of vitamins, antioxidants, and fiber. Supports immune system and provides natural energy.',
+      'potato_rice_bread': 'Complex carbohydrates provide sustained energy. Choose whole grains when possible.',
+      'dairy_products': 'Good source of calcium and protein. May affect inflammation in some individuals.',
+      'nuts_tofu_tempe': 'Plant-based proteins with healthy fats. Anti-inflammatory properties may help with symptoms.',
+      'egg': 'Complete protein source with essential amino acids. Generally well-tolerated by most people.',
+      'fish': 'Omega-3 fatty acids have anti-inflammatory properties. Excellent for overall health.',
+      'meat': 'High-quality protein source. Red meat may increase inflammation in some people.',
+      'snacks': 'Processed foods may contribute to inflammation. Choose healthier alternatives when possible.',
+      'water': 'Essential for hydration and overall health. Helps with symptom management and medication effectiveness.',
+      'coffee': 'Contains antioxidants but caffeine may affect some symptoms. Monitor individual response.',
+      'alcohol': 'May interfere with medications and worsen symptoms. Consider limiting intake.'
+    };
+    
     if (positives.length > 0) {
       content += '<div class="bg-green-50 border border-green-200 rounded-lg p-4">';
-      content += '<h4 class="font-medium text-green-800 mb-2">Healthy Choices:</h4>';
-      content += '<div class="grid grid-cols-2 gap-1">';
+      content += '<h4 class="font-medium text-green-800 mb-3">Beneficial Food Choices</h4>';
+      
       positives.forEach(item => {
         const label = dietLabels[item] || item;
-        content += `<div class="text-sm text-green-700">• ${label}</div>`;
+        const description = dietDescriptions[item];
+        content += `<div class="mb-3">`;
+        content += `<p class="text-sm text-green-700 font-medium">• ${label}</p>`;
+        if (description) {
+          content += `<p class="text-xs text-green-600 ml-3">${description}</p>`;
+        }
+        content += `</div>`;
       });
-      content += '</div>';
+      
+      content += '<p class="text-xs text-green-600 mt-2">These foods support overall health and may help manage symptoms through their nutritional benefits.</p>';
       content += '</div>';
     }
+    
+    if (negatives.length > 0) {
+      content += '<div class="bg-red-50 border border-red-200 rounded-lg p-4">';
+      content += '<h4 class="font-medium text-red-800 mb-3">Foods to Monitor</h4>';
+      
+      negatives.forEach(item => {
+        const label = dietLabels[item] || item;
+        const description = dietDescriptions[item];
+        content += `<div class="mb-3">`;
+        content += `<p class="text-sm text-red-700 font-medium">• ${label}</p>`;
+        if (description) {
+          content += `<p class="text-xs text-red-600 ml-3">${description}</p>`;
+        }
+        content += `</div>`;
+      });
+      
+      content += '<p class="text-xs text-red-600 mt-2">These items may contribute to inflammation or worsen symptoms in some individuals. Consider moderation or alternatives.</p>';
+      content += '</div>';
+    }
+    
+    if (neutrals.length > 0) {
+      content += '<div class="bg-gray-50 border border-gray-200 rounded-lg p-4">';
+      content += '<h4 class="font-medium text-gray-800 mb-3">Neutral Food Choices</h4>';
+      
+      neutrals.forEach(item => {
+        const label = dietLabels[item] || item;
+        const description = dietDescriptions[item];
+        content += `<div class="mb-3">`;
+        content += `<p class="text-sm text-gray-700 font-medium">• ${label}</p>`;
+        if (description) {
+          content += `<p class="text-xs text-gray-600 ml-3">${description}</p>`;
+        }
+        content += `</div>`;
+      });
+      
+      content += '<p class="text-xs text-gray-600 mt-2">These foods have neutral effects on your symptoms but still contribute to overall nutrition.</p>';
+      content += '</div>';
+    }
+    
+    // Diet summary and insights
+    content += '<div class="bg-blue-50 border border-blue-200 rounded-lg p-4">';
+    content += '<h4 class="font-medium text-blue-800 mb-2">Nutritional Analysis</h4>';
+    
+    const totalItems = allDietItems.length;
+    const healthyRatio = positives.length / totalItems;
+    
+    if (healthyRatio >= 0.7) {
+      content += '<p class="text-sm text-blue-700 mb-2"><strong>Excellent nutrition day!</strong> You made predominantly healthy food choices.</p>';
+    } else if (healthyRatio >= 0.5) {
+      content += '<p class="text-sm text-blue-700 mb-2"><strong>Good nutrition balance.</strong> You had a mix of healthy and less optimal choices.</p>';
+    } else if (healthyRatio >= 0.3) {
+      content += '<p class="text-sm text-blue-700 mb-2"><strong>Room for improvement.</strong> Consider increasing healthy food choices tomorrow.</p>';
+    } else {
+      content += '<p class="text-sm text-blue-700 mb-2"><strong>Focus on nutrition.</strong> Try to include more anti-inflammatory foods in your diet.</p>';
+    }
+    
+    content += `<p class="text-sm text-blue-700 mb-2"><strong>Today's breakdown:</strong> ${positives.length} beneficial, ${negatives.length} to monitor, ${neutrals.length} neutral foods</p>`;
+    content += '<p class="text-xs text-blue-600">Diet plays a crucial role in managing symptoms. Anti-inflammatory foods may help reduce symptom severity, while processed foods might worsen them.</p>';
+    content += '</div>';
+    
+    content += '</div>';
     
     if (negatives.length > 0) {
       content += '<div class="bg-red-50 border border-red-200 rounded-lg p-4">';
@@ -364,8 +606,86 @@ export class ModalContentGenerators {
       });
       
       content += '</div>';
+      
+      // Add detailed descriptions for each limitation
+      content += '<div class="mt-4 space-y-2">';
+      content += '<h5 class="font-medium text-red-800 text-sm mb-2">Impact Details:</h5>';
+      
+      const limitationDescriptions = {
+        'used_medication': 'Needed medication to manage symptoms - indicates active symptom management',
+        'missed_work': 'Unable to attend work due to symptoms - significant impact on professional life',
+        'missed_school': 'Could not attend educational activities - academic impact from symptoms',
+        'could_not_sport': 'Physical activities were limited - symptoms affected exercise capacity',
+        'missed_social_activities': 'Social interactions were avoided - symptoms impacted social wellbeing',
+        'missed_leisure_activities': 'Recreational activities were skipped - reduced quality of life',
+        'had_to_sit_more': 'Required more sitting/resting - symptoms affected mobility and energy',
+        'had_to_lie_down': 'Needed to lie down more than usual - significant symptom burden',
+        'had_to_stay_longer_in_bed': 'Extended bed rest required - severe symptom impact',
+        'could_not_do_unpaid_work': 'Household/volunteer work affected - daily functioning impaired',
+        'other': 'Additional limitations not captured above - unique symptom impacts'
+      };
+      
+      limitations.forEach(limitation => {
+        const description = limitationDescriptions[limitation];
+        if (description) {
+          content += `<p class="text-xs text-red-600">• ${description}</p>`;
+        }
+      });
+      
+      content += '<p class="text-xs text-red-600 mt-3 font-medium">Multiple limitations suggest significant symptom burden. Consider discussing management strategies with your healthcare provider.</p>';
+      content += '</div>';
+      content += '</div>';
+    } else {
+      content += '<div class="bg-green-50 border border-green-200 rounded-lg p-4">';
+      content += '<h4 class="font-medium text-green-800 mb-2">No Limitations Reported</h4>';
+      content += '<p class="text-sm text-green-700">Great! Your symptoms did not significantly interfere with your daily activities today.</p>';
+      content += '<p class="text-xs text-green-600 mt-2">Days without limitations are important markers of successful symptom management.</p>';
       content += '</div>';
     }
+    
+    // Daily grade analysis
+    content += '<div class="bg-blue-50 border border-blue-200 rounded-lg p-4">';
+    content += '<h4 class="font-medium text-blue-800 mb-2">Daily Assessment Analysis</h4>';
+    
+    const gradeDescriptions = {
+      10: 'Perfect day - no symptoms interfered with daily activities',
+      9: 'Excellent day - minimal symptom impact, felt very good',
+      8: 'Very good day - slight symptoms but managed well',
+      7: 'Good day - some symptoms but able to function normally',
+      6: 'Decent day - moderate symptoms with some limitations',
+      5: 'Average day - symptoms present but manageable',
+      4: 'Challenging day - symptoms significantly impacted activities',
+      3: 'Difficult day - symptoms made most activities challenging',
+      2: 'Very difficult day - symptoms severely limited activities',
+      1: 'Extremely difficult day - symptoms dominated the day',
+      0: 'No assessment provided'
+    };
+    
+    content += `<p class="text-sm text-blue-700 mb-2"><strong>Your Rating:</strong> ${grade}/10 (${gradeText})</p>`;
+    content += `<p class="text-sm text-blue-700 mb-3">${gradeDescriptions[grade] || gradeDescriptions[Math.min(10, Math.max(0, Math.round(grade)))]}</p>`;
+    
+    // Impact level assessment
+    const impactLevel = limitations.length;
+    if (impactLevel === 0) {
+      content += '<p class="text-sm text-blue-700"><strong>Impact Level:</strong> Minimal - Symptoms had little to no effect on daily functioning.</p>';
+    } else if (impactLevel <= 2) {
+      content += '<p class="text-sm text-blue-700"><strong>Impact Level:</strong> Mild - Some limitations but overall functioning maintained.</p>';
+    } else if (impactLevel <= 4) {
+      content += '<p class="text-sm text-blue-700"><strong>Impact Level:</strong> Moderate - Several areas of life affected by symptoms.</p>';
+    } else if (impactLevel <= 6) {
+      content += '<p class="text-sm text-blue-700"><strong>Impact Level:</strong> Significant - Multiple daily activities were limited.</p>';
+    } else {
+      content += '<p class="text-sm text-blue-700"><strong>Impact Level:</strong> Severe - Symptoms extensively affected daily functioning.</p>';
+    }
+    
+    content += '</div>';
+    
+    // Tracking insights
+    content += '<div class="bg-gray-50 border border-gray-200 rounded-lg p-4">';
+    content += '<h4 class="font-medium text-gray-800 mb-2">Impact Tracking Insights</h4>';
+    content += `<p class="text-sm text-gray-700 mb-2"><strong>Limitations count:</strong> ${impactLevel} out of 11 possible areas affected</p>`;
+    content += '<p class="text-xs text-gray-600">Tracking daily impact helps identify patterns and assess treatment effectiveness. Share this data with your healthcare team for comprehensive care planning.</p>';
+    content += '</div>';
     
     content += '</div>';
     
@@ -396,11 +716,29 @@ export class ModalContentGenerators {
     content += `<p class="text-gray-600">Level: ${energy}/5</p>`;
     content += '</div>';
     
-    // Symptoms
+    // Detailed energy analysis
+    content += '<div class="space-y-4">';
+    
+    // Energy level description
+    content += '<div class="bg-blue-50 border border-blue-200 rounded-lg p-4">';
+    content += '<h4 class="font-medium text-blue-800 mb-2">Energy Assessment</h4>';
+    
+    const energyDescriptions = {
+      1: 'Very Low Energy - Feeling extremely tired, may need to rest frequently and avoid strenuous activities',
+      2: 'Low Energy - Below normal energy levels, some activities may feel challenging or require more effort',
+      3: 'Moderate Energy - Average energy levels, able to perform most daily activities with some limitations',
+      4: 'Good Energy - Above average energy, feeling capable and able to engage in most activities comfortably',
+      5: 'High Energy - Excellent energy levels, feeling vibrant and able to tackle demanding activities'
+    };
+    
+    content += `<p class="text-sm text-blue-700 mb-2"><strong>Current Level:</strong> ${energyLabels[energy]} (${energy}/5)</p>`;
+    content += `<p class="text-sm text-blue-700">${energyDescriptions[energy] || 'Energy level assessment not available'}</p>`;
+    content += '</div>';
+    
+    // Symptoms analysis
     if (symptoms.length > 0) {
-      content += '<div class="bg-orange-50 border border-orange-200 rounded-lg p-4">';
-      content += '<h4 class="font-medium text-orange-800 mb-2">Symptoms:</h4>';
-      content += '<div class="grid grid-cols-2 gap-2">';
+      content += '<div class="bg-red-50 border border-red-200 rounded-lg p-4">';
+      content += '<h4 class="font-medium text-red-800 mb-3">Symptoms Experienced</h4>';
       
       const symptomLabels = {
         'fatigue': 'Fatigue',
@@ -422,18 +760,83 @@ export class ModalContentGenerators {
         'headache_migraine': 'Headache/Migraine'
       };
       
+      const symptomDescriptions = {
+        'fatigue': 'Persistent tiredness that doesn\'t improve with rest, often affecting daily functioning',
+        'headache': 'Head pain that may range from mild discomfort to severe, debilitating pain',
+        'nausea': 'Feeling of sickness with an urge to vomit, may affect appetite and daily activities',
+        'nauseous': 'Feeling queasy or sick to the stomach, potentially affecting food intake',
+        'dizziness': 'Feeling unsteady, lightheaded, or having a spinning sensation',
+        'dizzy': 'Sensation of unsteadiness or feeling faint, may affect balance and coordination',
+        'weakness': 'Reduced physical strength or energy, making normal activities more difficult',
+        'joint_pain': 'Discomfort in joints that may limit movement and affect daily activities',
+        'muscle_pain': 'Aching or soreness in muscles, potentially affecting movement and comfort',
+        'fever': 'Elevated body temperature indicating possible infection or inflammation',
+        'chills': 'Feeling cold and shivering, often accompanying fever or illness',
+        'sweating': 'Excessive perspiration that may be related to hormonal changes or fever',
+        'bloated': 'Feeling of fullness or swelling in the abdomen, may affect comfort and appetite',
+        'painful_sensitive_breasts': 'Breast tenderness that may be hormonal or condition-related',
+        'acne': 'Skin breakouts that may be related to hormonal changes or medications',
+        'muscle_joint_pain': 'Combined muscle and joint discomfort affecting mobility and comfort',
+        'headache_migraine': 'Severe headache that may include sensitivity to light, sound, or nausea'
+      };
+      
       symptoms.forEach(symptom => {
-        const label = symptomLabels[symptom] || symptom;
-        content += `<div class="text-sm text-orange-700">• ${label}</div>`;
+        const label = symptomLabels[symptom] || symptom.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+        const description = symptomDescriptions[symptom];
+        
+        content += `<div class="mb-3">`;
+        content += `<p class="text-sm text-red-700 font-medium">• ${label}</p>`;
+        if (description) {
+          content += `<p class="text-xs text-red-600 ml-3">${description}</p>`;
+        }
+        content += `</div>`;
       });
       
-      content += '</div>';
+      content += '<p class="text-xs text-red-600 mt-3">Multiple symptoms may indicate increased disease activity or treatment side effects. Consider discussing symptom patterns with your healthcare provider.</p>';
       content += '</div>';
     } else {
       content += '<div class="bg-green-50 border border-green-200 rounded-lg p-4">';
-      content += '<p class="text-green-700 text-center">No symptoms reported</p>';
+      content += '<h4 class="font-medium text-green-800 mb-2">No Symptoms Today</h4>';
+      content += '<p class="text-sm text-green-700">Excellent! No additional symptoms reported alongside your energy level.</p>';
+      content += '<p class="text-xs text-green-600 mt-2">Symptom-free days are important markers of good health management and treatment effectiveness.</p>';
       content += '</div>';
     }
+    
+    // Energy-symptom correlation
+    content += '<div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">';
+    content += '<h4 class="font-medium text-yellow-800 mb-2">Energy & Symptom Correlation</h4>';
+    
+    if (energy <= 2 && symptoms.length > 0) {
+      content += '<p class="text-sm text-yellow-700 mb-2"><strong>Low Energy with Symptoms:</strong> Your low energy level combined with symptoms suggests significant health impact today.</p>';
+    } else if (energy >= 4 && symptoms.length > 0) {
+      content += '<p class="text-sm text-yellow-700 mb-2"><strong>Good Energy Despite Symptoms:</strong> Maintaining good energy while experiencing symptoms shows resilience and effective management.</p>';
+    } else if (energy >= 4 && symptoms.length === 0) {
+      content += '<p class="text-sm text-yellow-700 mb-2"><strong>Optimal Day:</strong> High energy with no symptoms indicates excellent health status today.</p>';
+    } else if (energy <= 2 && symptoms.length === 0) {
+      content += '<p class="text-sm text-yellow-700 mb-2"><strong>Low Energy Only:</strong> Low energy without other symptoms may indicate fatigue, sleep issues, or need for rest.</p>';
+    } else {
+      content += '<p class="text-sm text-yellow-700 mb-2"><strong>Moderate Status:</strong> Your energy and symptom levels suggest a manageable health day.</p>';
+    }
+    
+    content += '<p class="text-xs text-yellow-600">Energy levels often correlate with symptom burden. Tracking both helps identify patterns and treatment effectiveness.</p>';
+    content += '</div>';
+    
+    // Health insights
+    content += '<div class="bg-gray-50 border border-gray-200 rounded-lg p-4">';
+    content += '<h4 class="font-medium text-gray-800 mb-2">General Health Insights</h4>';
+    content += `<p class="text-sm text-gray-700 mb-2"><strong>Today\'s Summary:</strong> ${energyLabels[energy]} energy with ${symptoms.length} symptom(s) reported</p>`;
+    
+    if (energy >= 4) {
+      content += '<p class="text-xs text-gray-600">Good energy levels support better symptom management, improved mood, and enhanced quality of life. Maintain healthy habits that contribute to sustained energy.</p>';
+    } else if (energy <= 2) {
+      content += '<p class="text-xs text-gray-600">Low energy can significantly impact daily functioning and symptom management. Consider discussing energy-boosting strategies with your healthcare provider.</p>';
+    } else {
+      content += '<p class="text-xs text-gray-600">Moderate energy levels are manageable but may benefit from lifestyle adjustments or treatment optimization to improve overall wellbeing.</p>';
+    }
+    
+    content += '</div>';
+    
+    content += '</div>';
     
     content += '</div>';
     
@@ -499,9 +902,20 @@ export class ModalContentGenerators {
     // Blood detection details
     if (hasUrineBlood || hasStoolBlood) {
       content += '<div class="bg-red-50 border border-red-200 rounded-lg p-4">';
-      content += '<h4 class="font-medium text-red-800 mb-2">Blood Detection:</h4>';
-      if (hasUrineBlood) content += '<div class="text-sm text-red-700">• Blood in urine</div>';
-      if (hasStoolBlood) content += '<div class="text-sm text-red-700">• Blood in stool</div>';
+      content += '<h4 class="font-medium text-red-800 mb-2">Blood Detection Alert</h4>';
+      if (hasUrineBlood) {
+        content += '<div class="mb-2">';
+        content += '<p class="text-sm text-red-700 font-medium">• Blood in urine</p>';
+        content += '<p class="text-xs text-red-600 ml-3">Blood in urine may indicate urinary tract issues, kidney problems, or other medical conditions requiring attention.</p>';
+        content += '</div>';
+      }
+      if (hasStoolBlood) {
+        content += '<div class="mb-2">';
+        content += '<p class="text-sm text-red-700 font-medium">• Blood in stool</p>';
+        content += '<p class="text-xs text-red-600 ml-3">Blood in stool can indicate digestive tract issues, hemorrhoids, or other gastrointestinal conditions.</p>';
+        content += '</div>';
+      }
+      content += '<p class="text-xs text-red-700 font-medium mt-3">⚠️ Blood detection warrants medical evaluation. Contact your healthcare provider to discuss these findings.</p>';
       content += '</div>';
     }
     
@@ -515,10 +929,41 @@ export class ModalContentGenerators {
         'watery': 'Watery', 'something_else': 'Something Else', 'no_stool': 'No Stool'
       };
       
+      const consistencyDescriptions = {
+        'hard': 'Hard, difficult to pass stools may indicate constipation or dehydration. Consider increasing fiber and water intake.',
+        'normal': 'Normal, well-formed stools indicate healthy digestive function and good hydration.',
+        'soft': 'Soft stools are generally normal but may indicate dietary changes or mild digestive sensitivity.',
+        'watery': 'Watery stools suggest diarrhea, which may be caused by infection, medication, or dietary factors.',
+        'something_else': 'Unusual stool characteristics may warrant further observation or medical consultation.',
+        'no_stool': 'No bowel movement today. Monitor for patterns of constipation or changes in bowel habits.'
+      };
+      
       const label = consistencyLabels[consistency] || consistency;
-      content += `<div class="text-sm text-blue-700">${label}</div>`;
+      const description = consistencyDescriptions[consistency];
+      
+      content += `<p class="text-sm text-blue-700 font-medium mb-2">${label} Stool</p>`;
+      if (description) {
+        content += `<p class="text-xs text-blue-600">${description}</p>`;
+      }
       content += '</div>';
     }
+    
+    // Health insights
+    content += '<div class="bg-gray-50 border border-gray-200 rounded-lg p-4">';
+    content += '<h4 class="font-medium text-gray-800 mb-2">Digestive Health Tracking</h4>';
+    content += '<p class="text-sm text-gray-700 mb-2">Monitoring bowel movements helps identify patterns related to your condition, medications, and dietary choices.</p>';
+    
+    if (hasUrineBlood || hasStoolBlood) {
+      content += '<p class="text-xs text-gray-600"><strong>Important:</strong> Blood detection requires medical attention for proper evaluation and treatment.</p>';
+    } else if (consistency === 'normal') {
+      content += '<p class="text-xs text-gray-600"><strong>Good news:</strong> Normal stool consistency indicates healthy digestive function.</p>';
+    } else if (consistency === 'hard' || consistency === 'no_stool') {
+      content += '<p class="text-xs text-gray-600"><strong>Tip:</strong> Constipation may be managed with increased fiber, water, and physical activity.</p>';
+    } else if (consistency === 'watery') {
+      content += '<p class="text-xs text-gray-600"><strong>Monitor:</strong> Persistent diarrhea may require dietary adjustments or medical evaluation.</p>';
+    }
+    
+    content += '</div>';
     
     content += '</div>';
     
@@ -570,16 +1015,51 @@ export class ModalContentGenerators {
     
     if (issues.length > 0) {
       content += '<div class="bg-red-50 border border-red-200 rounded-lg p-4">';
-      content += '<h4 class="font-medium text-red-800 mb-2">Sleep Issues:</h4>';
+      content += '<h4 class="font-medium text-red-800 mb-3">Sleep Challenges</h4>';
+      
+      const issueDescriptions = {
+        'Trouble falling asleep': 'Difficulty initiating sleep may be caused by stress, pain, caffeine, or irregular sleep schedules.',
+        'Woke up during night': 'Sleep fragmentation can reduce sleep quality and may be related to pain, anxiety, or environmental factors.',
+        'Not well rested': 'Feeling unrefreshed despite adequate sleep time may indicate poor sleep quality or underlying sleep disorders.'
+      };
+      
       issues.forEach(issue => {
-        content += `<div class="text-sm text-red-700">• ${issue}</div>`;
+        content += `<div class="mb-2">`;
+        content += `<p class="text-sm text-red-700 font-medium">• ${issue}</p>`;
+        const description = issueDescriptions[issue];
+        if (description) {
+          content += `<p class="text-xs text-red-600 ml-3">${description}</p>`;
+        }
+        content += `</div>`;
       });
+      
+      content += '<p class="text-xs text-red-600 mt-3">Poor sleep can worsen symptoms and affect overall health. Consider discussing sleep hygiene strategies with your healthcare provider.</p>';
       content += '</div>';
     } else {
       content += '<div class="bg-green-50 border border-green-200 rounded-lg p-4">';
-      content += '<p class="text-green-700 text-center">No sleep issues reported</p>';
+      content += '<h4 class="font-medium text-green-800 mb-2">Good Sleep Quality</h4>';
+      content += '<p class="text-sm text-green-700">No sleep issues reported - excellent for symptom management and overall health.</p>';
+      content += '<p class="text-xs text-green-600 mt-2">Quality sleep supports immune function, pain management, and emotional wellbeing.</p>';
       content += '</div>';
     }
+    
+    // Sleep analysis
+    content += '<div class="bg-blue-50 border border-blue-200 rounded-lg p-4">';
+    content += '<h4 class="font-medium text-blue-800 mb-2">Sleep Analysis</h4>';
+    
+    if (hours >= 7 && hours <= 9) {
+      content += '<p class="text-sm text-blue-700 mb-2"><strong>Optimal Duration:</strong> Your sleep duration falls within the recommended 7-9 hours for adults.</p>';
+    } else if (hours < 6) {
+      content += '<p class="text-sm text-blue-700 mb-2"><strong>Short Sleep:</strong> Less than 6 hours may negatively impact symptom management and recovery.</p>';
+    } else if (hours > 10) {
+      content += '<p class="text-sm text-blue-700 mb-2"><strong>Extended Sleep:</strong> More than 10 hours might indicate increased symptom burden or recovery needs.</p>';
+    } else {
+      content += '<p class="text-sm text-blue-700 mb-2"><strong>Borderline Duration:</strong> Consider aiming for 7-9 hours for optimal health benefits.</p>';
+    }
+    
+    content += `<p class="text-sm text-blue-700 mb-2"><strong>Sleep Quality Score:</strong> ${quality} based on duration and reported issues</p>`;
+    content += '<p class="text-xs text-blue-600">Sleep patterns can significantly impact symptom severity, mood, and treatment effectiveness. Consistent, quality sleep is crucial for managing chronic conditions.</p>';
+    content += '</div>';
     
     content += '</div>';
     
@@ -636,14 +1116,62 @@ export class ModalContentGenerators {
           'precision_exercise': 'Precision Exercise'
         };
         
+        const impactDescriptions = {
+          'high_impact': 'High-impact exercises like running or jumping. Great for cardiovascular health and bone density, but may increase joint stress.',
+          'low_impact': 'Low-impact activities like walking or swimming. Gentle on joints while providing cardiovascular and strength benefits.',
+          'precision_exercise': 'Precision exercises requiring focus and control. Excellent for coordination, balance, and targeted muscle strengthening.'
+        };
+        
         impacts.forEach(impact => {
           const label = impactLabels[impact] || impact;
-          content += `<div class="text-sm text-blue-700">• ${label}</div>`;
+          const description = impactDescriptions[impact];
+          content += `<div class="mb-2">`;
+          content += `<p class="text-sm text-blue-700 font-medium">• ${label}</p>`;
+          if (description) {
+            content += `<p class="text-xs text-blue-600 ml-3">${description}</p>`;
+          }
+          content += `</div>`;
         });
         
         content += '</div>';
       }
+      
+      // Exercise benefits
+      content += '<div class="bg-green-50 border border-green-200 rounded-lg p-4">';
+      content += '<h4 class="font-medium text-green-800 mb-2">Exercise Benefits</h4>';
+      
+      const totalDuration = levels.length;
+      if (levels.includes('greater_sixty')) {
+        content += '<p class="text-sm text-green-700 mb-2"><strong>Extended Activity:</strong> Over 60 minutes of exercise provides excellent cardiovascular and mental health benefits.</p>';
+      } else if (levels.includes('thirty_to_sixty')) {
+        content += '<p class="text-sm text-green-700 mb-2"><strong>Moderate Activity:</strong> 30-60 minutes meets recommended daily exercise guidelines for health benefits.</p>';
+      } else if (levels.includes('less_thirty')) {
+        content += '<p class="text-sm text-green-700 mb-2"><strong>Light Activity:</strong> Even short exercise sessions provide health benefits and can help manage symptoms.</p>';
+      }
+      
+      content += '<p class="text-xs text-green-600">Regular exercise can help reduce inflammation, improve mood, enhance sleep quality, and may help manage chronic condition symptoms.</p>';
+      content += '</div>';
+    } else {
+      content += '<div class="bg-gray-50 border border-gray-200 rounded-lg p-4">';
+      content += '<h4 class="font-medium text-gray-800 mb-2">No Exercise Today</h4>';
+      content += '<p class="text-sm text-gray-700 mb-2">Rest days are important for recovery, especially when managing symptoms.</p>';
+      content += '<p class="text-xs text-gray-600">Consider gentle activities like stretching or short walks when feeling up to it. Always listen to your body and consult your healthcare provider about appropriate exercise levels.</p>';
+      content += '</div>';
     }
+    
+    // Exercise tracking insights
+    content += '<div class="bg-blue-50 border border-blue-200 rounded-lg p-4">';
+    content += '<h4 class="font-medium text-blue-800 mb-2">Activity Tracking Insights</h4>';
+    
+    if (hasExercise) {
+      content += `<p class="text-sm text-blue-700 mb-2"><strong>Activity Summary:</strong> ${levels.length} duration level(s), ${impacts.length} exercise type(s)</p>`;
+      content += '<p class="text-xs text-blue-600">Tracking exercise helps identify which activities you tolerate well and which might trigger symptoms. This information is valuable for creating a personalized exercise plan.</p>';
+    } else {
+      content += '<p class="text-sm text-blue-700 mb-2"><strong>Rest Day:</strong> No exercise recorded today</p>';
+      content += '<p class="text-xs text-blue-600">Both active days and rest days are important data points for understanding your activity tolerance and symptom patterns.</p>';
+    }
+    
+    content += '</div>';
     
     content += '</div>';
     
@@ -695,12 +1223,46 @@ export class ModalContentGenerators {
     
     if (issues.length > 0) {
       content += '<div class="bg-red-50 border border-red-200 rounded-lg p-4">';
-      content += '<h4 class="font-medium text-red-800 mb-2">Issues Reported:</h4>';
+      content += '<h4 class="font-medium text-red-800 mb-3">Health Concerns</h4>';
+      
+      const issueDescriptions = {
+        'pain': 'Pain during sexual activity may indicate underlying conditions that warrant medical evaluation.',
+        'discomfort': 'Discomfort can affect intimacy and may be related to your health condition or treatments.',
+        'bleeding': 'Unusual bleeding during or after sexual activity should be discussed with your healthcare provider.',
+        'dryness': 'Vaginal dryness can be caused by hormonal changes, medications, or medical conditions.',
+        'fatigue': 'Fatigue affecting sexual activity may be related to your overall health condition.'
+      };
+      
       issues.forEach(issue => {
-        content += `<div class="text-sm text-red-700">• ${issue}</div>`;
+        const description = issueDescriptions[issue];
+        content += `<div class="mb-2">`;
+        content += `<p class="text-sm text-red-700 font-medium">• ${issue.charAt(0).toUpperCase() + issue.slice(1)}</p>`;
+        if (description) {
+          content += `<p class="text-xs text-red-600 ml-3">${description}</p>`;
+        }
+        content += `</div>`;
       });
+      
+      content += '<p class="text-xs text-red-600 mt-3">Sexual health concerns can significantly impact quality of life. Consider discussing these issues with your healthcare provider for appropriate support and treatment options.</p>';
       content += '</div>';
     }
+    
+    // Sexual health insights
+    content += '<div class="bg-blue-50 border border-blue-200 rounded-lg p-4">';
+    content += '<h4 class="font-medium text-blue-800 mb-2">Sexual Health & Wellbeing</h4>';
+    
+    if (today && satisfied) {
+      content += '<p class="text-sm text-blue-700 mb-2"><strong>Positive Experience:</strong> Satisfying sexual activity contributes to overall wellbeing and relationship health.</p>';
+    } else if (today && !satisfied) {
+      content += '<p class="text-sm text-blue-700 mb-2"><strong>Activity Noted:</strong> Sexual activity occurred but satisfaction may have been affected by symptoms or other factors.</p>';
+    } else if (avoided) {
+      content += '<p class="text-sm text-blue-700 mb-2"><strong>Activity Avoided:</strong> Avoidance may be related to symptoms, pain, or other health concerns.</p>';
+    } else {
+      content += '<p class="text-sm text-blue-700 mb-2"><strong>No Activity:</strong> Sexual activity patterns can be affected by health conditions, treatments, and overall wellbeing.</p>';
+    }
+    
+    content += '<p class="text-xs text-blue-600">Sexual health is an important component of overall health and quality of life. Tracking patterns helps identify how your condition affects intimacy and can guide discussions with healthcare providers.</p>';
+    content += '</div>';
     
     content += '</div>';
     
@@ -720,14 +1282,80 @@ export class ModalContentGenerators {
     
     if (hasNote && text) {
       content += '<div class="bg-blue-50 border border-blue-200 rounded-lg p-4">';
-      content += '<h4 class="font-medium text-blue-800 mb-2">Your Note:</h4>';
-      content += `<p class="text-blue-700 whitespace-pre-wrap">${text}</p>`;
+      content += '<h4 class="font-medium text-blue-800 mb-3">Your Personal Note</h4>';
+      content += `<div class="bg-white rounded-lg p-3 border border-blue-200">`;
+      content += `<p class="text-gray-800 whitespace-pre-wrap leading-relaxed">${text}</p>`;
+      content += `</div>`;
+      
+      // Note analysis
+      const wordCount = text.trim().split(/\s+/).length;
+      const charCount = text.length;
+      
+      content += '<div class="mt-3 pt-3 border-t border-blue-200">';
+      content += '<h5 class="font-medium text-blue-800 text-sm mb-2">Note Details:</h5>';
+      content += `<p class="text-xs text-blue-600 mb-1"><strong>Length:</strong> ${wordCount} words, ${charCount} characters</p>`;
+      
+      // Analyze note content for key themes
+      const lowerText = text.toLowerCase();
+      const themes = [];
+      
+      if (lowerText.includes('pain') || lowerText.includes('hurt') || lowerText.includes('ache')) {
+        themes.push('Pain mentioned');
+      }
+      if (lowerText.includes('tired') || lowerText.includes('fatigue') || lowerText.includes('exhausted')) {
+        themes.push('Fatigue noted');
+      }
+      if (lowerText.includes('mood') || lowerText.includes('sad') || lowerText.includes('happy') || lowerText.includes('anxious')) {
+        themes.push('Mood discussed');
+      }
+      if (lowerText.includes('medication') || lowerText.includes('medicine') || lowerText.includes('treatment')) {
+        themes.push('Treatment mentioned');
+      }
+      if (lowerText.includes('sleep') || lowerText.includes('rest')) {
+        themes.push('Sleep referenced');
+      }
+      
+      if (themes.length > 0) {
+        content += `<p class="text-xs text-blue-600"><strong>Key themes:</strong> ${themes.join(', ')}</p>`;
+      }
+      
+      content += '</div>';
       content += '</div>';
     } else {
       content += '<div class="bg-gray-50 border border-gray-200 rounded-lg p-4">';
-      content += '<p class="text-gray-600 text-center">No notes recorded for this day</p>';
+      content += '<h4 class="font-medium text-gray-800 mb-2">No Notes Today</h4>';
+      content += '<p class="text-sm text-gray-600 text-center mb-3">No personal notes were recorded for this day.</p>';
+      content += '<div class="bg-white rounded-lg p-3 border border-gray-200">';
+      content += '<p class="text-xs text-gray-500 italic">Personal notes can help you track patterns, record important observations, or note how treatments are working.</p>';
+      content += '</div>';
       content += '</div>';
     }
+    
+    // Notes insights
+    content += '<div class="bg-green-50 border border-green-200 rounded-lg p-4">';
+    content += '<h4 class="font-medium text-green-800 mb-2">The Value of Personal Notes</h4>';
+    
+    if (hasNote && text) {
+      content += '<p class="text-sm text-green-700 mb-2"><strong>Great job!</strong> Recording personal notes helps create a comprehensive health picture.</p>';
+      content += '<p class="text-xs text-green-600">Your notes provide valuable context that numbers alone cannot capture. They help healthcare providers understand your daily experience and can reveal important patterns over time.</p>';
+    } else {
+      content += '<p class="text-sm text-green-700 mb-2"><strong>Consider adding notes:</strong> Personal observations can be incredibly valuable for health tracking.</p>';
+      content += '<p class="text-xs text-green-600">Notes can include how you felt, what helped or worsened symptoms, medication effects, or any other observations. This qualitative data complements your quantitative health metrics.</p>';
+    }
+    
+    content += '</div>';
+    
+    // Usage tips
+    content += '<div class="bg-blue-50 border border-blue-200 rounded-lg p-4">';
+    content += '<h4 class="font-medium text-blue-800 mb-2">Note-Taking Tips</h4>';
+    content += '<div class="space-y-1 text-xs text-blue-600">';
+    content += '<p>• <strong>Be specific:</strong> Note times, triggers, and severity</p>';
+    content += '<p>• <strong>Track treatments:</strong> Record medication effects and side effects</p>';
+    content += '<p>• <strong>Note patterns:</strong> Weather, stress, diet, or activity correlations</p>';
+    content += '<p>• <strong>Include emotions:</strong> How symptoms affect your mood and daily life</p>';
+    content += '<p>• <strong>Be honest:</strong> Accurate notes lead to better care</p>';
+    content += '</div>';
+    content += '</div>';
     
     content += '</div>';
     
