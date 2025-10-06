@@ -1,4 +1,4 @@
-import { getPbacIcon } from './pbac-icon-mapping.js';
+import { getPbacIcon } from '../pbac-icon-mapping.js';
 
 /**
  * Generate dynamic icon source and tooltip based on pillar type and data

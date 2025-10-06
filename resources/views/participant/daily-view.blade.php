@@ -62,7 +62,9 @@
                                     <!-- Severity/Level icons -->
                                     <div class="flex items-center gap-1" x-show="item.severityIcons && item.severityIcons.length > 0">
                                         <template x-for="(icon, index) in item.severityIcons" :key="index">
-                                            <img :src="icon.src" :alt="icon.alt" :class="`w-6 h-6 object-contain ${icon.active ? 'opacity-100' : 'opacity-30'}`">
+                                            <div :class="`p-1 rounded-full ${icon.active ? 'bg-blue-100 border-2 border-blue-500' : ''}`">
+                                                <img :src="icon.src" :alt="icon.alt" :class="`w-6 h-6 object-contain ${icon.active ? 'opacity-100' : 'opacity-30'}`">
+                                            </div>
                                         </template>
                                     </div>
                                     
