@@ -57,6 +57,15 @@ export class CalendarLayout {
       
       const allEvents = dayFrame.querySelectorAll('.fc-daygrid-event');
       const eventCount = allEvents.length;
+      
+      // Remove any existing count classes
+      dayFrame.classList.forEach(className => {
+        if (className.startsWith('pbac-day-count-')) {
+          dayFrame.classList.remove(className);
+        }
+      });
+      
+      // Add the correct count class
       dayFrame.classList.add(`pbac-day-count-${eventCount}`);
       dayFrame.classList.add('pbac-free-flow-events');
       
