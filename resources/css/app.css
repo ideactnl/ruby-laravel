@@ -196,14 +196,6 @@
             opacity: 1 !important;
         }
         
-        /* Better spacing for mobile events */
-        .fc-daygrid-day-events {
-            padding: 1px !important;
-            flex: 1 !important;
-            display: flex !important;
-            justify-content: center !important;
-            align-items: center !important;
-        }
         
         .fc-daygrid-event {
             margin: 0.5px !important;
@@ -221,11 +213,6 @@
             overflow: visible !important;
         }
         
-        /* Force column layout on mobile */
-        .fc-daygrid-day-events.columns-3 {
-            columns: 2 !important;
-            column-gap: 2px !important;
-        }
     }
 }
 
@@ -258,13 +245,6 @@
         grid-row: 1 !important;
     }
     
-    .pbac-day-count-1.pbac-mobile-day .fc-daygrid-day-events {
-        grid-column: 2 !important;
-        grid-row: 1 !important;
-        display: flex !important;
-        justify-content: center !important;
-        align-items: center !important;
-    }
 
     /* 2 icons: Date on top, icons below */
     .pbac-mobile-two-icons {
@@ -309,26 +289,6 @@
         position: relative !important;
     }
     
-    /* Events container spans all grid positions - More specific selectors */
-    .fc-daygrid-day-frame.pbac-day-count-3.pbac-mobile-day .fc-daygrid-day-events,
-    .fc-daygrid-day-frame.pbac-day-count-4.pbac-mobile-day .fc-daygrid-day-events,
-    .fc-daygrid-day-frame.pbac-day-count-5.pbac-mobile-day .fc-daygrid-day-events,
-    .fc-daygrid-day-frame.pbac-day-count-6.pbac-mobile-day .fc-daygrid-day-events,
-    .fc-daygrid-day-frame.pbac-day-count-7.pbac-mobile-day .fc-daygrid-day-events,
-    .fc-daygrid-day-frame.pbac-day-count-8.pbac-mobile-day .fc-daygrid-day-events,
-    .fc-daygrid-day-frame.pbac-day-count-9.pbac-mobile-day .fc-daygrid-day-events,
-    .fc-daygrid-day-frame.pbac-day-count-10.pbac-mobile-day .fc-daygrid-day-events,
-    .fc-daygrid-day-frame.pbac-day-count-11.pbac-mobile-day .fc-daygrid-day-events {
-        grid-column: 1 / -1 !important;
-        grid-row: 1 / -1 !important;
-        display: grid !important;
-        grid-template-columns: 1fr 1fr !important;
-        grid-template-rows: 1fr 1fr !important;
-        align-items: center !important;
-        justify-items: center !important;
-        gap: 1px !important;
-        position: relative !important;
-    }
     
     /* Position individual icons in the 2x2 grid (avoiding top-left where date is) */
     .pbac-mobile-three-icons .fc-daygrid-event:nth-child(1),
