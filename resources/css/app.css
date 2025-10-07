@@ -206,9 +206,10 @@
         }
 
         .fc-daygrid-event {
-            margin: 0.5px !important;
+
             padding: 1px !important;
             min-height: 20px !important;
+            margin-top: 0 !important;
         }
 
         .fc-daygrid-event-harness {
@@ -226,6 +227,11 @@
             columns: 2 !important;
             column-gap: 2px !important;
         }
+        .pbac-day-count-0 {
+  display: flex;
+  align-content: center;
+  justify-content: center;
+}
     }
 }
 
@@ -313,4 +319,18 @@ tr.fc-scrollgrid-section.fc-scrollgrid-section-body .pbac-selected-domains-3 {
     margin: auto;
     display: flex;
     justify-content: center;
+}
+.pbac-day-count-1 .fc-daygrid-event-harness
+ {
+    width: 100%;
+}
+.pbac-day-count-2 .fc-daygrid-event-harness:nth-last-child(2) {
+    justify-content: end;
+}
+.pbac-day-count-2 .fc-daygrid-event-harness {
+    width: 47%;
+}
+
+.pbac-day-count-2 .fc-daygrid-event-harness:nth-last-child(1) {
+    justify-content: flex-start;
 }
