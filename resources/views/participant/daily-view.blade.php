@@ -4,7 +4,41 @@
 
 @section('content')
 <div class="max-w-7xl mx-auto pl-0 pr-0 py-6" x-data="dailyView()" x-init="init()">
-    <div class="grid grid-cols-1 md:grid-cols-3 items-center mb-6 gap-4">
+    <!-- Mobile Layout -->
+    <div class="md:hidden mb-8">
+        <!-- Navigation and Select Date Buttons -->
+        <div class="flex items-center gap-2 mb-4">
+            <!-- Previous Button -->
+            <button @click="prevDay()"
+                    class="inline-flex items-center justify-center gap-2 rounded-md bg-red-900 flex-1 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-red-800 cursor-pointer">
+                <i class="fa-solid fa-chevron-left"></i>
+                Previous
+            </button>
+            
+            <!-- Next Button -->
+            <button @click="nextDay()"
+                    class="inline-flex items-center justify-center gap-2 rounded-md bg-red-900 flex-1 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-red-800 cursor-pointer">
+                Next
+                <i class="fa-solid fa-chevron-right"></i>
+            </button>
+            
+            <!-- Select Date Button -->
+            <button @click="openDate()"
+                    class="inline-flex items-center gap-2 rounded-md bg-red-900 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-red-800 cursor-pointer transition-colors">
+                Select Date
+                <i class="fa-solid fa-chevron-down"></i>
+            </button>
+            <input x-ref="datePick" type="date" x-model="date" @change="fetchData()" class="sr-only" />
+        </div>
+        
+        <!-- Date Display -->
+        <div class="mb-6">
+            <h2 class="text-lg font-semibold text-gray-900 text-center" x-text="heading"></h2>
+        </div>
+    </div>
+
+    <!-- Desktop Layout -->
+    <div class="hidden md:grid grid-cols-1 md:grid-cols-3 items-center mb-6 gap-4">
         <div class="justify-self-start">
             <h2 class="text-[22px] font-semibold text-gray-900" x-text="heading"></h2>
         </div>

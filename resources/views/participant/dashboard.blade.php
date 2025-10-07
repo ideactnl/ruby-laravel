@@ -4,8 +4,21 @@
 
 @section('content')
 <div class="" x-data="filterMenu()" x-init="init()">
-    <div class="mb-3 flex items-center justify-between">
-        <h2 id="cal-month-label" x-cloak class="text-xl sm:text-2xl font-extrabold tracking-tight text-gray-900">&nbsp;</h2>
+    <div class="mb-10 flex items-center justify-between">
+        <!-- Mobile: Horizontal date layout -->
+        <div class="md:hidden">
+            <div class="flex items-center gap-1">
+                <div class="text-xl font-bold text-gray-900 leading-none">{{ now()->format('d') }}</div>
+                <div class="flex flex-col items-center leading-tight">
+                    <div class="text-lg font-semibold text-gray-900 uppercase leading-none">{{ now()->format('M') }}</div>
+                    <div class="w-full h-px bg-gray-300 my-0.5"></div>
+                    <div class="text-lg font-medium text-gray-900 leading-none">{{ now()->format('Y') }}</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Desktop: Month label -->
+        <h2 id="cal-month-label" x-cloak class="hidden md:block text-xl sm:text-2xl font-extrabold tracking-tight text-gray-900">&nbsp;</h2>
         <div class="relative" @click.outside="open=false" x-cloak>
             <button @click="open=!open" class="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-white shadow hover:bg-primary-800 cursor-pointer transition-colors">
                 <span>Domains (<span x-cloak x-text="selected.length"></span>/3)</span>
