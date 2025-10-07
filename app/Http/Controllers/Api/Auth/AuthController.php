@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\Auth\DeleteAccountRequest;
 use App\Http\Requests\Api\Auth\LoginRequest;
 use App\Http\Requests\Api\Auth\MedicalSpecialistAccessRequest;
 use App\Http\Requests\Api\Auth\RegisterRequest;
@@ -289,6 +290,78 @@ class AuthController extends Controller
         return response()->json([
             'success' => true,
             'message' => $request->getMessage(),
+            'data' => null,
+        ]);
+    }
+
+    /**
+     * Delete participant account and all associated data.
+     *
+     * Permanently deletes the authenticated participant's account and all associated data including:
+     * - PBAC records
+     * - Export jobs
+     * - API tokens
+     *
+     * This action is irreversible and requires PIN confirmation.
+     *
+     * **Requires authentication via Bearer token in the Authorization header.**
+     *
+     * @bodyParam pin string required The participant's PIN for verification. Example: 123456
+     * @bodyParam confirmation string required Must be exactly "DELETE_MY_ACCOUNT" to confirm deletion. Example: DELETE_MY_ACCOUNT
+     *
+     * @response 200 {
+     *   "success": true,
+     *   "message": "Account deleted successfully. All data has been permanently removed.",
+     *   "data": null
+     * }
+     * @response 403 {
+     *   "success": false,
+     *   "message": "Invalid PIN. Account deletion cancelled.",
+     *   "data": null
+     * }
+     * @response 422 {
+     *   "message": "The given data was invalid.",
+     *   "errors": {
+     *     "confirmation": [
+     *       "You must type \"DELETE_MY_ACCOUNT\" to confirm account deletion."
+     *     ]
+     *   }
+     * }
+     * @response 401 {
+     *   "success": false,
+     *   "message": "Unauthenticated.",
+     *   "data": null
+     * }
+     *
+     * @responseField success boolean Whether the request was successful
+     * @responseField message string A human-readable message
+     * @responseField data null Always null for this endpoint
+     *
+     * @authenticated
+     */
+    public function deleteAccount(DeleteAccountRequest $request): JsonResponse
+    {
+        $participant = $request->user();
+
+        if (! $request->validatePin()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid PIN. Account deletion cancelled.',
+                'data' => null,
+            ], 403);
+        }
+
+        $participant->pbacs()->delete();
+
+        $participant->exportJobs()->delete();
+
+        $participant->tokens()->delete();
+
+        $participant->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Account deleted successfully. All data has been permanently removed.',
             'data' => null,
         ]);
     }

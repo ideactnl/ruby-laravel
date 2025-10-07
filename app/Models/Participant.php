@@ -61,6 +61,9 @@ class Participant extends Authenticatable
      * @var array<string, string>
      */
     protected $casts = [
+        'enable_data_sharing' => 'boolean',
+        'opt_in_for_research' => 'boolean',
+        'allow_medical_specialist_login' => 'boolean',
         'medical_specialist_temporary_pin_expires_at' => 'datetime',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
@@ -72,5 +75,13 @@ class Participant extends Authenticatable
     public function pbacs(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Pbac::class);
+    }
+
+    /**
+     * Get the export jobs for the participant.
+     */
+    public function exportJobs(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(ExportJob::class);
     }
 }

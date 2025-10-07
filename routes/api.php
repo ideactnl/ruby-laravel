@@ -15,6 +15,7 @@ Route::prefix('v1')->group(function () {
     Route::middleware('auth:sanctum')->group(function () {
         Route::patch('/profile', [AuthController::class, 'updateProfile']);
         Route::post('/logout', [AuthController::class, 'logout']);
+        Route::delete('/account', [AuthController::class, 'deleteAccount']);
         Route::post('/medical-specialist/access', [AuthController::class, 'enableMedicalSpecialistAccess']);
         
         Route::middleware('throttle:60,1')->group(function () {

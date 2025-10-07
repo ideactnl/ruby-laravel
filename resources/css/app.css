@@ -44,10 +44,24 @@
         -moz-osx-font-smoothing: grayscale;
     }
 
-    h1, h2, h3, h4, h5, h6,
-    p, span, div, a, button,
-    input, textarea, select,
-    label, li, td, th {
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    p,
+    span,
+    div,
+    a,
+    button,
+    input,
+    textarea,
+    select,
+    label,
+    li,
+    td,
+    th {
         font-family: var(--font-family-sans);
     }
 
@@ -161,14 +175,6 @@
 
     /* Mobile-specific fixes for icon display */
     @media (max-width: 768px) {
-        /* .fc-daygrid-day-frame {
-            min-height: 50px !important;
-            display: flex !important;
-            flex-direction: column !important;
-            position: relative !important;
-            padding: 2px !important;
-        } */
-
         .pbac-mobile-events .fc-daygrid-day-frame {
             position: relative !important;
         }
@@ -199,8 +205,6 @@
         /* Better spacing for mobile events */
         .fc-daygrid-day-events {
             padding: 1px !important;
-            /* flex: 1 !important;
-            display: flex !important; */
             justify-content: center !important;
             align-items: center !important;
         }
@@ -227,11 +231,12 @@
             columns: 2 !important;
             column-gap: 2px !important;
         }
+
         .pbac-day-count-0 {
-  display: flex;
-  align-content: center;
-  justify-content: center;
-}
+            display: flex;
+            justify-content: center;
+            align-items: baseline;
+        }
     }
 }
 
@@ -239,7 +244,6 @@
     display: none !important;
 }
 
-/* Custom Css for the Calendar */
 .pbac-desktop-single-row {
     display: flex !important;
     justify-content: center !important;
@@ -249,38 +253,53 @@
 
 /* Mobile layouts - Exact design implementation */
 @media (max-width: 767px) {
-tr.fc-scrollgrid-section.fc-scrollgrid-section-body .pbac-selected-domains-3 {
-    display: block !important;
-}
-.fc-daygrid-day-top.justify-center {
-    width: 48%;
-    float: left;
-}
-.fc-daygrid-event-harness {
-    width: 46% !important;
-}
-.fc-scrollgrid-section-body .fc-daygrid-day-number {
-    color: #000 ! IMPORTANT;
-    font-size: 16px !important;
-}
-.pbac-day-count-1 .fc-daygrid-event-harness {
-    width: 100% !important;
+    tr.fc-scrollgrid-section.fc-scrollgrid-section-body .pbac-selected-domains-3 {
+        display: block !important;
+    }
+
+    .fc-daygrid-day-top.justify-center {
+        width: 48%;
+        float: left;
+    }
+
+    .fc-daygrid-event-harness {
+        width: 45% !important;
+    }
+
+    .fc-scrollgrid-section-body .fc-daygrid-day-number {
+        color: #000 ! IMPORTANT;
+        font-size: 16px !important;
+    }
+
+    .pbac-day-count-1 .fc-daygrid-event-harness {
+        width: 100% !important;
+    }
+
+    .pbac-day-count-1 {
+        display: flex;
+        margin: auto;
+        flex-direction: column;
+
+    }
+
+    .pbac-day-count-2 .fc-daygrid-event-harness {
+        padding-top: 8px;
+    }
+
+    .pbac-day-count-1 .fc-daygrid-day-top.justify-center {
+        width: 100%;
+    }
+
+    .pbac-day-count-2 .fc-daygrid-day-top.justify-center {
+        width: 100%;
+    }
+
+    .fc-daygrid-day {
+        height: 80px;
+        padding-top: 20px !important;
+    }
 }
 
-.pbac-day-count-1 {
-    display: flex;
-    margin: auto;
-    flex-direction: column;
-    justify-content: center;
-}
-
-.pbac-day-count-1 .fc-daygrid-day-top.justify-center {
-    width: 100%;
-}
-.pbac-day-count-2 .fc-daygrid-day-top.justify-center {
-    width: 100%;
-}
-}
 .pbac-selected-domains-3 .pbac-event-icon {
     width: 20px !important;
     height: 20px !important;
@@ -313,6 +332,7 @@ tr.fc-scrollgrid-section.fc-scrollgrid-section-body .pbac-selected-domains-3 {
         height: 22px !important;
     }
 }
+
 .fc-daygrid-event-harness {
     width: 30%;
     float: left;
@@ -320,13 +340,16 @@ tr.fc-scrollgrid-section.fc-scrollgrid-section-body .pbac-selected-domains-3 {
     display: flex;
     justify-content: center;
 }
-.pbac-day-count-1 .fc-daygrid-event-harness
- {
+
+.pbac-day-count-1 .fc-daygrid-event-harness {
     width: 100%;
+    padding-top: 8px;
 }
+
 .pbac-day-count-2 .fc-daygrid-event-harness:nth-last-child(2) {
     justify-content: end;
 }
+
 .pbac-day-count-2 .fc-daygrid-event-harness {
     width: 47%;
 }

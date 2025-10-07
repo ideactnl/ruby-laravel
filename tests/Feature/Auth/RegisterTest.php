@@ -59,16 +59,37 @@ describe('Participant Registration', function () {
      * @test
      *
      * @covers AuthController::register
-     * It should fail if opt_in_for_research is false.
+     * It should fail if opt_in_for_research is not a valid boolean.
      */
-    it('fails if opt_in_for_research is false', function () {
+    it('fails if opt_in_for_research is not a valid boolean', function () {
         $payload = [
             'registration_number' => 'testuser3',
+            'pin' => '123456',
+            'opt_in_for_research' => 'invalid_value',
+        ];
+
+        $response = $this->postJson('/api/v1/register', $payload);
+        $response->assertStatus(422);
+    });
+
+    /**
+     * @test
+     *
+     * @covers AuthController::register
+     * It should allow registration with opt_in_for_research as false.
+     */
+    it('allows registration with opt_in_for_research as false', function () {
+        $payload = [
+            'registration_number' => 'testuser4',
             'pin' => '123456',
             'opt_in_for_research' => false,
         ];
 
         $response = $this->postJson('/api/v1/register', $payload);
-        $response->assertStatus(422);
+        $response->assertCreated()
+            ->assertJson([
+                'success' => true,
+                'message' => 'Registration successful',
+            ]);
     });
 });

@@ -18,7 +18,7 @@ class RegisterRequest extends FormRequest
         return [
             'registration_number' => 'required|string|unique:participants,registration_number',
             'pin' => 'required|string|min:6',
-            'opt_in_for_research' => 'required|accepted',
+            'opt_in_for_research' => 'required|boolean',
         ];
     }
 
@@ -49,7 +49,7 @@ class RegisterRequest extends FormRequest
                 'required' => true,
             ],
             'opt_in_for_research' => [
-                'description' => 'Must be true to register.',
+                'description' => 'Whether the participant opts in for research. Accepts true/false or 1/0.',
                 'example' => true,
                 'required' => true,
             ],
