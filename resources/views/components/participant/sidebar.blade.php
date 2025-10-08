@@ -12,7 +12,7 @@
                 <img src="{{ asset('images/logo-light.png') }}" alt="RubyNU logo" class="max-h-20 w-auto object-contain hidden md:block" />
             </a>
             <!-- Close button for mobile -->
-            <button class="md:hidden p-2 text-gray-600 hover:text-gray-800 mr-4" @click="sidebarOpen = false; if('vibrate' in navigator) { try { navigator.vibrate(15); } catch(e) {} }"
+            <button class="md:hidden p-2 text-gray-600 hover:text-gray-800 mr-4" @click="sidebarOpen = false; if('vibrate' in navigator) { try { navigator.vibrate(10); } catch(e) {} }"
                 aria-label="Close sidebar">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                     stroke="currentColor" class="w-6 h-6">
@@ -24,7 +24,7 @@
 
     <div class="p-0 md:pl-3 md:pr-0">
         <nav class="flex-1 flex flex-col justify-between overflow-visible">
-            <ul class="space-y-2 md:pl-1 pr-0 sidebar-list-nav">
+            <ul class="space-y-3 md:space-y-2 md:pl-1 pr-0 sidebar-list-nav">
                 @php
                     $items = [
                         [
@@ -69,7 +69,7 @@
                     @php $isActive = $item['active']; @endphp
                     <li>
                         <a href="{{ $item['href'] }}"
-                            onclick="if('vibrate' in navigator) { try { navigator.vibrate(15); } catch(e) {} }"
+                            onclick="if('vibrate' in navigator) { try { navigator.vibrate(10); } catch(e) {} }"
                             class="group relative flex h-14 items-center gap-3 pl-5 pr-6 text-sm font-medium transition
                               {{ $isActive
                                   ? ' active-nav bg-white text-neutral-900 rounded-l-[26px] rounded-r-[0px] shadow'
@@ -83,10 +83,10 @@
                                     $iconMap = [
                                         'Calendar' => 'fa-calendar-days',
                                         'Daily view' => 'fa-eye',
-                                        'Education' => 'fa-graduation-cap',
-                                        'Selfmanagement' => 'fa-hand-holding-dollar',
+                                        'Education' => 'fa-circle-play',
+                                        'Selfmanagement' => 'fa-lightbulb',
                                         'Links to external websites' => 'fa-external-link-alt',
-                                        'Export' => 'fa-file-export',
+                                        'Export' => 'fa-share-from-square',
                                         'General information' => 'fa-circle-info',
                                     ];
                                     $iconCls = $iconMap[$item['label']] ?? 'fa-circle';
@@ -95,7 +95,8 @@
                             </span>
                             <span class="font-semibold tracking-wide leading-tight">
                                 @if ($item['label'] === 'Links to external websites')
-                                    Links to external<br>websites
+                                    <span class="md:hidden">Links to external websites</span>
+                                    <span class="hidden md:inline">Links to external<br>websites</span>
                                 @else
                                     {{ $item['label'] }}
                                 @endif
@@ -107,13 +108,13 @@
                 <!-- Mobile-only Profile and Log Out in same style as other links -->
                 <li class="md:hidden">
                     <a href="#"
-                        @click.prevent="sidebarOpen = false; window.dispatchEvent(new CustomEvent('profile:open')); if('vibrate' in navigator) { try { navigator.vibrate(15); } catch(e) {} }"
+                        @click.prevent="sidebarOpen = false; window.dispatchEvent(new CustomEvent('profile:open')); if('vibrate' in navigator) { try { navigator.vibrate(10); } catch(e) {} }"
                         class="group relative flex h-14 items-center gap-3 pl-5 pr-6 text-sm font-medium transition
                           text-white rounded-xl">
                         <span
                             class="inline-flex h-9 w-9 shrink-0 items-center justify-center shadow
                           rounded-full bg-transparent text-white">
-                            <i class="fa-solid fa-user text-[18px]"></i>
+                            <i class="fa-solid fa-user-circle text-[18px]"></i>
                         </span>
                         <span class="font-semibold tracking-wide leading-tight">Profile</span>
                     </a>
@@ -121,7 +122,7 @@
 
                 <li class="md:hidden">
                     <a href="#"
-                        @click.prevent="sidebarOpen = false; if('vibrate' in navigator) { try { navigator.vibrate(20); } catch(e) {} }; (async () => {
+                        @click.prevent="sidebarOpen = false; if('vibrate' in navigator) { try { navigator.vibrate(10); } catch(e) {} }; (async () => {
                             try {
                                 await fetch('/sanctum/csrf-cookie', { credentials: 'include' });
                                 const token = decodeURIComponent((document.cookie.split('; ').find(c => c.startsWith('XSRF-TOKEN=')) || '').split('=')[1] || '');
@@ -134,7 +135,7 @@
                         <span
                             class="inline-flex h-9 w-9 shrink-0 items-center justify-center shadow
                           rounded-full bg-transparent text-white">
-                            <i class="fa-solid fa-sign-out-alt text-[18px]"></i>
+                            <i class="fa-solid fa-right-from-bracket text-[18px]"></i>
                         </span>
                         <span class="font-semibold tracking-wide leading-tight">Log Out</span>
                     </a>

@@ -95,6 +95,11 @@ export class CalendarLayout {
       img.addEventListener('click', (e) => {
         const isMobile = window.innerWidth <= 768 || /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         if (isMobile) {
+          if ('vibrate' in navigator) {
+            try {
+              navigator.vibrate(40);
+            } catch (ex) {}
+          }
           CalendarUI.handleIconClick(e, dateStr);
         }
       });
@@ -103,6 +108,11 @@ export class CalendarLayout {
         const isMobile = window.innerWidth <= 768 || /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         if (isMobile) {
           e.preventDefault();
+          if ('vibrate' in navigator) {
+            try {
+              navigator.vibrate(40);
+            } catch (ex) {}
+          }
           CalendarUI.handleIconClick(e, dateStr);
         }
       });
@@ -119,6 +129,11 @@ export class CalendarLayout {
       div.addEventListener('click', (e) => {
         const isMobile = window.innerWidth <= 768 || /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         if (isMobile) {
+          if ('vibrate' in navigator) {
+            try {
+              navigator.vibrate(40);
+            } catch (ex) {}
+          }
           CalendarUI.handleIconClick(e, dateStr);
         }
       });
@@ -127,6 +142,11 @@ export class CalendarLayout {
         const isMobile = window.innerWidth <= 768 || /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         if (isMobile) {
           e.preventDefault();
+          if ('vibrate' in navigator) {
+            try {
+              navigator.vibrate(40);
+            } catch (ex) {}
+          }
           CalendarUI.handleIconClick(e, dateStr);
         }
       });
