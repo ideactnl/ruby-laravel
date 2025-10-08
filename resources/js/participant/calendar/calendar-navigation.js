@@ -18,6 +18,7 @@ export class CalendarNavigation {
       const patterns = {
         light: 10,      // Light tap for swipe
         medium: 25,     // Medium feedback for navigation
+        strong: 40,     // Strong feedback for date navigation
         success: [10, 50, 10]  // Success pattern for completed action
       };
 

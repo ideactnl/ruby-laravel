@@ -12,9 +12,11 @@
             } catch(e) { this.error='Failed to load chart'; } finally { this.loading=false; }
         },
         exportCSV(){
+            if(window.innerWidth <= 768 && 'vibrate' in navigator) { try { navigator.vibrate(25); } catch(e) {} }
             window.dispatchEvent(new CustomEvent('export:start', { detail: { type: 'csv', preset: this.preset, start: this.start, end: this.end } }));
         },
         exportPDF(){
+            if(window.innerWidth <= 768 && 'vibrate' in navigator) { try { navigator.vibrate(25); } catch(e) {} }
             window.dispatchEvent(new CustomEvent('export:start', { detail: { type: 'pdf', preset: this.preset, start: this.start, end: this.end } }));
         }
     }"
@@ -25,7 +27,7 @@
     <div class="mb-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div class="flex flex-wrap items-center gap-3">
             <span class="inline-flex items-center rounded-md border border-primary px-3 py-2 text-sm font-semibold text-primary bg-primary/5">Range</span>
-            <x-form.select name="preset" x-model="preset" @change="refresh()" variant="participant" :enhanced="false">
+            <x-form.select name="preset" x-model="preset" @change="if(window.innerWidth <= 768 && 'vibrate' in navigator) { try { navigator.vibrate(15); } catch(e) {} }; refresh()" variant="participant" :enhanced="false">
                 <option value="month">This Month</option>
                 <option value="quarter">This Quarter</option>
                 <option value="year">This Year</option>
@@ -35,10 +37,10 @@
         </div>
         <div class="flex items-center gap-6" x-show="preset==='custom'">
             <div class="flex items-center gap-2">
-                <x-form.input type="date" name="start_date" x-model="start" @change="refresh()" variant="participant" placeholder="Start Date" />
+                <x-form.input type="date" name="start_date" x-model="start" @change="if(window.innerWidth <= 768 && 'vibrate' in navigator) { try { navigator.vibrate(15); } catch(e) {} }; refresh()" variant="participant" placeholder="Start Date" />
             </div>
             <div class="flex items-center gap-2">
-                <x-form.input type="date" name="end_date" x-model="end" @change="refresh()" variant="participant" placeholder="End Date" />
+                <x-form.input type="date" name="end_date" x-model="end" @change="if(window.innerWidth <= 768 && 'vibrate' in navigator) { try { navigator.vibrate(15); } catch(e) {} }; refresh()" variant="participant" placeholder="End Date" />
             </div>
         </div>
     </div>

@@ -176,6 +176,13 @@ export class CalendarUI {
       return false;
     }
 
+    if (window.innerWidth <= 768 && 'vibrate' in navigator) {
+      try {
+        navigator.vibrate(40);
+      } catch (e) {
+      }
+    }
+
     // Add small delay to ensure touch events have settled
     setTimeout(() => {
       if (!window.isScrolling && !window.touchMoved) {

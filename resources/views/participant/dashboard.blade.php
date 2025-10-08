@@ -45,7 +45,8 @@
                     </div>
 
                     <template x-for="opt in options" :key="opt.value">
-                        <label class="flex cursor-pointer items-center gap-2 rounded px-2 py-2 text-sm hover:bg-gray-50">
+                        <label class="flex cursor-pointer items-center gap-2 rounded px-2 py-2 text-sm hover:bg-gray-50"
+                               @click="if(!selected.includes(opt.value) && selected.length >= 3) { $event.preventDefault(); triggerHaptic('error'); }">
                             <input type="checkbox" class="rounded border-gray-300" :value="opt.value"
                                 :checked="selected.includes(opt.value)" @change="toggle(opt.value)"
                                 :disabled="!selected.includes(opt.value) && selected.length >= 3" />

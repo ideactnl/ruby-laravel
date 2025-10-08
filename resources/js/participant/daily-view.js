@@ -30,7 +30,6 @@ window.dailyView = function dailyView() {
     _modalManager: null,
     _swiperManager: null,
     
-    // Computed properties
     get heading() {
       return this._dateManager ? this._dateManager.getHeading(this.date) : this.date;
     },
@@ -39,27 +38,20 @@ window.dailyView = function dailyView() {
       return this._dateManager ? this._dateManager.getShortDate(this.date) : this.date;
     },
     
-    // Initialization
     init() {
-      // Initialize managers
       this._dateManager = new DateManager(this);
       this._dataManager = new DataManager(this);
       this._modalManager = new ModalManager(this);
       this._swiperManager = new SwiperManager(this);
       
-      // Setup date from URL
       const urlDate = this._dateManager.getDateFromURL();
       if (urlDate) this.date = urlDate;
       
-      // Initialize date picker
       this._dateManager.initDatePicker();
       
-      // Fetch initial data
       this.fetchData();
       
-      // Ensure video swiper is initialized after DOM is ready
       this.$nextTick(() => {
-        // Small delay to ensure DOM is fully rendered
         setTimeout(() => {
           if (this._swiperManager && this.$refs?.vidSwiper) {
             this._swiperManager.initVideosSwiper();
@@ -68,16 +60,30 @@ window.dailyView = function dailyView() {
       });
     },
     
-    // Date navigation methods
     openDate() {
+      if (window.innerWidth <= 768 && 'vibrate' in navigator) {
+        try {
+          navigator.vibrate(15);
+        } catch (e) {}
+      }
       this._dateManager.openDate();
     },
     
     prevDay() {
+      if (window.innerWidth <= 768 && 'vibrate' in navigator) {
+        try {
+          navigator.vibrate(25);
+        } catch (e) {}
+      }
       this._dateManager.prevDay();
     },
     
     nextDay() {
+      if (window.innerWidth <= 768 && 'vibrate' in navigator) {
+        try {
+          navigator.vibrate(25);
+        } catch (e) {}
+      }
       this._dateManager.nextDay();
     },
     
@@ -133,10 +139,20 @@ window.dailyView = function dailyView() {
 
     // Modal methods - delegate to ModalManager
     openDomainModal(item) {
+      if (window.innerWidth <= 768 && 'vibrate' in navigator) {
+        try {
+          navigator.vibrate(15);
+        } catch (e) {}
+      }
       this._modalManager.openDomainModal(item);
     },
 
     closeModal() {
+      if (window.innerWidth <= 768 && 'vibrate' in navigator) {
+        try {
+          navigator.vibrate(10);
+        } catch (e) {}
+      }
       this._modalManager.closeModal();
     },
 

@@ -6,12 +6,13 @@
     <!-- Logo panel with close button for mobile -->
     <div class="logo-panel mb-1 pl-3 pr-0 pt-0">
         <div class="h-28 flex items-center justify-between px-0">
-            <a href="{{ route('participant.dashboard') }}" class="block">
+            <a href="{{ route('participant.dashboard') }}" class="block"
+               onclick="if('vibrate' in navigator) { try { navigator.vibrate(15); } catch(e) {} }">
                 <img src="{{ asset('images/logo.png') }}" alt="RubyNU logo" class="max-h-20 w-auto object-contain md:hidden" />
                 <img src="{{ asset('images/logo-light.png') }}" alt="RubyNU logo" class="max-h-20 w-auto object-contain hidden md:block" />
             </a>
             <!-- Close button for mobile -->
-            <button class="md:hidden p-2 text-gray-600 hover:text-gray-800 mr-4" @click="sidebarOpen = false"
+            <button class="md:hidden p-2 text-gray-600 hover:text-gray-800 mr-4" @click="sidebarOpen = false; if('vibrate' in navigator) { try { navigator.vibrate(15); } catch(e) {} }"
                 aria-label="Close sidebar">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                     stroke="currentColor" class="w-6 h-6">
@@ -68,6 +69,7 @@
                     @php $isActive = $item['active']; @endphp
                     <li>
                         <a href="{{ $item['href'] }}"
+                            onclick="if('vibrate' in navigator) { try { navigator.vibrate(15); } catch(e) {} }"
                             class="group relative flex h-14 items-center gap-3 pl-5 pr-6 text-sm font-medium transition
                               {{ $isActive
                                   ? ' active-nav bg-white text-neutral-900 rounded-l-[26px] rounded-r-[0px] shadow'
@@ -105,7 +107,7 @@
                 <!-- Mobile-only Profile and Log Out in same style as other links -->
                 <li class="md:hidden">
                     <a href="#"
-                        @click.prevent="sidebarOpen = false; window.dispatchEvent(new CustomEvent('profile:open'))"
+                        @click.prevent="sidebarOpen = false; window.dispatchEvent(new CustomEvent('profile:open')); if('vibrate' in navigator) { try { navigator.vibrate(15); } catch(e) {} }"
                         class="group relative flex h-14 items-center gap-3 pl-5 pr-6 text-sm font-medium transition
                           text-white rounded-xl">
                         <span
@@ -119,7 +121,7 @@
 
                 <li class="md:hidden">
                     <a href="#"
-                        @click.prevent="sidebarOpen = false; (async () => {
+                        @click.prevent="sidebarOpen = false; if('vibrate' in navigator) { try { navigator.vibrate(20); } catch(e) {} }; (async () => {
                             try {
                                 await fetch('/sanctum/csrf-cookie', { credentials: 'include' });
                                 const token = decodeURIComponent((document.cookie.split('; ').find(c => c.startsWith('XSRF-TOKEN=')) || '').split('=')[1] || '');
