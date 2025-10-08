@@ -1,12 +1,11 @@
 /**
  * Date Management Module
- * Handles date navigation, formatting, and flatpickr integration
+ * Handles date navigation, formatting, and native date picker integration
  */
 
 export class DateManager {
   constructor(component) {
     this.component = component;
-    this._fp = null;
   }
 
   /**
@@ -20,54 +19,66 @@ export class DateManager {
   }
 
   /**
-   * Initialize flatpickr date picker
+   * Initialize native date picker for all devices
    */
   initDatePicker() {
     try {
-      if (window.flatpickr && this.component.$refs?.datePick) {
-        this._fp = window.flatpickr(this.component.$refs.datePick, {
-          dateFormat: 'Y-m-d',
-          defaultDate: this.component.date,
-          allowInput: false,
-          clickOpens: false,
-          wrap: false,
-          onChange: (sel) => {
-            if (sel && sel[0]) {
-              // Use local date formatting to avoid timezone issues
-              const iso = this.formatDateToISO(sel[0]);
-              
-              if (iso !== this.component.date) {
-                // Use updateDate method but skip flatpickr update to avoid loops
-                this.updateDate(iso, true);
-              }
-            }
-          },
-        });
-      }
-    } catch (_) {}
+      const el = this.component.$refs?.datePick;
+      if (!el) return;
+
+      this.setupNativeDatePicker(el);
+    } catch (e) {
+      // Silent fail
+    }
   }
 
   /**
-   * Open date picker
+   * Setup native HTML5 date picker
+   */
+  setupNativeDatePicker(el) {
+    // Configure as date input
+    el.type = 'date';
+    el.value = this.component.date;
+    
+    // Add change listener
+    const changeHandler = (e) => {
+      if (e.target.value && e.target.value !== this.component.date) {
+        this.updateDate(e.target.value, true);
+      }
+    };
+    
+    // Remove any existing listeners to avoid duplicates
+    el.removeEventListener('change', changeHandler);
+    el.addEventListener('change', changeHandler);
+  }
+
+
+  /**
+   * Open native date picker
    */
   openDate() {
-    if (this._fp && typeof this._fp.open === 'function') {
-      try {
-        this._fp.setDate(this.component.date, false);
-        this._fp.open();
-        return;
-      } catch (_) {}
-    }
-
     const el = this.component.$refs?.datePick;
+    if (!el) return;
+    
     try {
-      if (el && typeof el.showPicker === 'function') {
+      // Set current date
+      el.value = this.component.date;
+      
+      // Try showPicker first (modern browsers)
+      if (typeof el.showPicker === 'function') {
         el.showPicker();
-      } else if (el) {
+      } else {
+        // Fallback for older browsers
+        el.focus();
         el.click();
       }
     } catch (e) {
-      if (el) el.click();
+      // Final fallback
+      try {
+        el.click();
+      } catch (clickError) {
+        // Silent fail
+      }
     }
   }
 
@@ -96,7 +107,7 @@ export class DateManager {
   /**
    * Update date and sync all related components
    */
-  updateDate(newDate, skipFlatpickrUpdate = false) {
+  updateDate(newDate, skipPickerUpdate = false) {
     if (newDate === this.component.date) return;
     
     this.component.date = newDate;
@@ -106,9 +117,12 @@ export class DateManager {
     url.searchParams.set('date', newDate);
     window.history.replaceState({}, '', url);
     
-    // Update flatpickr if it exists and we're not being called from flatpickr
-    if (this._fp && !skipFlatpickrUpdate) {
-      this._fp.setDate(newDate, false);
+    // Update the native date input if not being called from the picker itself
+    if (!skipPickerUpdate) {
+      const el = this.component.$refs?.datePick;
+      if (el) {
+        el.value = newDate;
+      }
     }
     
     // Fetch new data

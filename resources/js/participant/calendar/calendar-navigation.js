@@ -30,8 +30,8 @@ export class CalendarNavigation {
    * Setup all navigation event listeners
    */
   setupNavigation() {
-    const goPrevThrottled = this.throttle(() => this.calendar.prev(), 500);
-    const goNextThrottled = this.throttle(() => this.calendar.next(), 500);
+    const goPrevThrottled = this.throttle(() => this.calendar.prev(), 300);
+    const goNextThrottled = this.throttle(() => this.calendar.next(), 300);
 
     this.setupKeyboardNavigation(goPrevThrottled, goNextThrottled);
     this.setupWheelNavigation(goPrevThrottled, goNextThrottled);
@@ -58,7 +58,7 @@ export class CalendarNavigation {
   }
 
   /**
-   * Setup wheel navigation
+   * Setup wheel navigation (desktop - restore original behavior)
    */
   setupWheelNavigation(goPrevThrottled, goNextThrottled) {
     let wheelAccum = 0;
@@ -114,24 +114,35 @@ export class CalendarNavigation {
   }
 
   /**
-   * Setup touch navigation with scroll detection
+   * Setup mobile-optimized touch navigation (left/right swipes)
    */
   setupTouchNavigation(goPrevThrottled, goNextThrottled) {
     let touchStartY = null;
     let touchStartX = null;
     let touchActive = false;
     let touchMoved = false;
-    const mobileThreshold = 60;
+    let swipeDetected = false;
+    const mobileThreshold = 50;
+    const verticalThreshold = 30;
     
+    // Global state for preventing clicks during gestures
     window.isScrolling = false;
+    window.touchMoved = false;
     let scrollTimeout;
+    let touchTimeout;
     
     this.calendarElement.addEventListener('touchstart', (e) => {
       if (!e.touches || e.touches.length !== 1) return;
+      
       touchActive = true;
       touchMoved = false;
+      swipeDetected = false;
       touchStartY = e.touches[0].clientY;
       touchStartX = e.touches[0].clientX;
+      
+      // Clear any existing timeouts
+      clearTimeout(scrollTimeout);
+      clearTimeout(touchTimeout);
     }, { passive: true });
     
     this.calendarElement.addEventListener('touchmove', (e) => {
@@ -142,49 +153,85 @@ export class CalendarNavigation {
       const diffY = currentY - touchStartY;
       const diffX = currentX - touchStartX;
       
-      if (Math.abs(diffY) > 5 || Math.abs(diffX) > 5) {
-        window.isScrolling = true;
+      // Detect any movement
+      if (Math.abs(diffY) > 3 || Math.abs(diffX) > 3) {
         touchMoved = true;
+        window.touchMoved = true;
+        window.isScrolling = true;
+      }
+      
+      // Check for horizontal swipe (mobile app-like navigation)
+      const isHorizontalSwipe = Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > mobileThreshold;
+      const isVerticalMovement = Math.abs(diffY) > verticalThreshold;
+      
+      if (isHorizontalSwipe && !isVerticalMovement && !swipeDetected) {
+        swipeDetected = true;
+        touchActive = false;
         
+        if (e.cancelable) {
+          e.preventDefault();
+        }
+        e.stopPropagation();
+        
+        // Left swipe = next month, Right swipe = previous month
+        if (diffX < 0) {
+          // Swiped left - go to next month
+          goNextThrottled();
+        } else {
+          // Swiped right - go to previous month  
+          goPrevThrottled();
+        }
+        
+        // Set timeout for swipe gestures
         clearTimeout(scrollTimeout);
         scrollTimeout = setTimeout(() => {
           window.isScrolling = false;
-        }, 300);
-      }
-      
-      if (Math.abs(diffY) > Math.abs(diffX) && Math.abs(diffY) > 20) {
-        if (Math.abs(diffY) > mobileThreshold) {
-          touchActive = false;
-          e.preventDefault();
-          e.stopPropagation();
-          
-          if (diffY < 0) {
-            goNextThrottled();
-          } else {
-            goPrevThrottled();
-          }
-        }
-      } else if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 20) {
+          window.touchMoved = false;
+        }, 250);
+        
+      } else if (isVerticalMovement && Math.abs(diffY) > 20) {
+        // Allow vertical scrolling but prevent calendar navigation
         touchActive = false;
+        
+        // Shorter timeout for vertical scrolling
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(() => {
+          window.isScrolling = false;
+          window.touchMoved = false;
+        }, 150);
       }
     }, { passive: false });
     
     this.calendarElement.addEventListener('touchend', (e) => {
       touchActive = false;
       
-      if (touchMoved) {
+      if (touchMoved && !swipeDetected) {
+        // Regular touch end - shorter timeout
         clearTimeout(scrollTimeout);
         scrollTimeout = setTimeout(() => {
           window.isScrolling = false;
-          touchMoved = false;
-        }, 150);
-      } else {
-        touchMoved = false;
+          window.touchMoved = false;
+        }, 75);
+      } else if (!touchMoved) {
+        // Pure tap - immediate reset
         window.isScrolling = false;
+        window.touchMoved = false;
       }
+      
+      // Reset swipe detection
+      swipeDetected = false;
     }, { passive: true });
-
-    // Expose touchMoved for date click handling
-    window.touchMoved = touchMoved;
+    
+    // Handle touch cancel (when touch is interrupted)
+    this.calendarElement.addEventListener('touchcancel', (e) => {
+      touchActive = false;
+      swipeDetected = false;
+      
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(() => {
+        window.isScrolling = false;
+        window.touchMoved = false;
+      }, 50);
+    }, { passive: true });
   }
 }

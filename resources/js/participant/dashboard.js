@@ -20,6 +20,9 @@ window.addEventListener('DOMContentLoaded', () => {
   if (!el || !window.FullCalendar) return;
   const { Calendar } = window.FullCalendar;
 
+  // Preload common PBAC icons for better performance
+  CalendarLayout.preloadCommonIcons();
+
   // Initialize event handler
   const eventHandler = new CalendarEvents();
 

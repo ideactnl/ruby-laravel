@@ -7,28 +7,31 @@
     <!-- Mobile Layout -->
     <div class="md:hidden mb-8">
         <!-- Navigation and Select Date Buttons -->
-        <div class="flex items-center gap-2 mb-4">
+        <div class="flex items-center gap-1 mb-4">
             <!-- Previous Button -->
             <button @click="prevDay()"
-                    class="inline-flex items-center justify-center gap-2 rounded-md bg-red-900 flex-1 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-red-800 cursor-pointer">
-                <i class="fa-solid fa-chevron-left"></i>
-                Previous
+                    class="inline-flex items-center justify-center gap-1 rounded-md bg-red-900 flex-1 px-2 py-2 text-xs font-semibold text-white shadow hover:bg-red-800 cursor-pointer">
+                <i class="fa-solid fa-chevron-left text-xs"></i>
+                Prev
             </button>
             
             <!-- Next Button -->
             <button @click="nextDay()"
-                    class="inline-flex items-center justify-center gap-2 rounded-md bg-red-900 flex-1 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-red-800 cursor-pointer">
+                    class="inline-flex items-center justify-center gap-1 rounded-md bg-red-900 flex-1 px-2 py-2 text-xs font-semibold text-white shadow hover:bg-red-800 cursor-pointer">
                 Next
-                <i class="fa-solid fa-chevron-right"></i>
+                <i class="fa-solid fa-chevron-right text-xs"></i>
             </button>
             
             <!-- Select Date Button -->
-            <button @click="openDate()"
-                    class="inline-flex items-center gap-2 rounded-md bg-red-900 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-red-800 cursor-pointer transition-colors">
-                Select Date
-                <i class="fa-solid fa-chevron-down"></i>
-            </button>
-            <input x-ref="datePick" type="date" x-model="date" @change="fetchData()" class="sr-only" />
+            <div class="relative flex-1">
+                <button @click="openDate()"
+                        class="inline-flex items-center justify-center gap-1 rounded-md bg-red-900 w-full px-2 py-2 text-xs font-semibold text-white shadow cursor-pointer hover:bg-red-800 transition-colors">
+                    Select
+                    <i class="fa-solid fa-calendar text-xs"></i>
+                </button>
+                <input x-ref="datePick" type="date" x-model="date" @change="fetchData()" 
+                       class="sr-only" />
+            </div>
         </div>
         
         <!-- Date Display -->
@@ -60,9 +63,9 @@
 
         <div class="md:justify-self-end">
             <button @click="openDate()"
-                    class="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-white shadow hover:bg-primary-800 cursor-pointer transition-colors">
+                    class="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-white shadow cursor-pointer hover:bg-primary-800 transition-colors">
                 Select Date
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-4 w-4"><path d="M6 9l6 6 6-6"/></svg>
+                <i class="fa-solid fa-calendar text-sm"></i>
             </button>
             <input x-ref="datePick" type="date" x-model="date" @change="fetchData()" class="sr-only" />
         </div>

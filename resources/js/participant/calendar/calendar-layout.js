@@ -5,13 +5,74 @@
 
 import { getDynamicIconAndTooltip } from './calendar-icons.js';
 
+// Preload common PBAC icons for better performance
+const preloadedIcons = new Set();
+const preloadIcon = (src) => {
+  if (!preloadedIcons.has(src)) {
+    const img = new Image();
+    img.src = src;
+    preloadedIcons.add(src);
+  }
+};
+
 export class CalendarLayout {
   /**
-   * Generate event content with proper icons and tooltips
+   * Preload common PBAC icons for better performance
+   */
+  static preloadCommonIcons() {
+    const commonIcons = [
+      // Grid icons
+      '/images/grid_blood_loss.png',
+      '/images/grid_pain.png',
+      '/images/grid_impact.png',
+      '/images/grid_general_health.png',
+      '/images/grid_mood.png',
+      '/images/grid_urine_stool.png',
+      '/images/grid_sleep.png',
+      '/images/grid_diet.png',
+      '/images/grid_sport.png',
+      '/images/grid_sex.png',
+      '/images/grid_notes.png',
+      
+      // Blood loss icons
+      '/images/spotting.png',
+      '/images/blood_loss_1.png',
+      '/images/blood_loss_2.png',
+      '/images/blood_loss_3.png',
+      '/images/blood_loss_4.png',
+      '/images/blood_loss_5.png',
+      
+      // Pain icons (smile faces)
+      '/images/smile_1.png',
+      '/images/smile_2.png',
+      '/images/smile_3.png',
+      '/images/smile_4.png',
+      '/images/smile_5.png',
+      '/images/smile_6.png',
+      
+      // Common mood icons
+      '/images/mood_1.png',
+      '/images/mood_2.png',
+      '/images/mood_7.png',
+      
+      // General health icons
+      '/images/sleep.png',
+      '/images/general_health_1.png',
+      '/images/general_health_2.png',
+      '/images/general_health_3.png',
+      '/images/general_health_4.png'
+    ];
+    
+    commonIcons.forEach(preloadIcon);
+  }
+
+  /**
+   * Generate event content with proper icons and tooltips (mobile-only clickable icons)
    */
   static createEventContent(arg) {
     const type = arg.event.extendedProps.type;
     const value = arg.event.extendedProps.value;
+    const dateStr = arg.event.startStr;
     
     const { iconSrc, tooltip } = getDynamicIconAndTooltip(type, value);
     
@@ -19,20 +80,67 @@ export class CalendarLayout {
     wrap.className = 'inline-flex items-center gap-1 px-0.5';
     
     if (iconSrc) {
+      // Preload the icon for better performance
+      preloadIcon(iconSrc);
+      
       const img = document.createElement('img');
       img.src = iconSrc;
       img.className = 'w-6 h-6 object-contain pbac-calendar-icon pbac-tooltip';
       img.setAttribute('data-tooltip', tooltip);
+      img.setAttribute('data-date', dateStr);
       img.title = tooltip;
       img.alt = tooltip.split('\n')[0];
-      img.loading = 'lazy';
+      img.loading = 'eager';
+      
+      // Always add click handlers, but check mobile state when clicked
+      img.addEventListener('click', (e) => {
+        const isMobile = window.innerWidth <= 768 || /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        if (isMobile) {
+          import('./calendar-ui.js').then(({ CalendarUI }) => {
+            CalendarUI.handleIconClick(e, dateStr);
+          });
+        }
+      });
+      
+      img.addEventListener('touchend', (e) => {
+        const isMobile = window.innerWidth <= 768 || /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        if (isMobile) {
+          e.preventDefault();
+          import('./calendar-ui.js').then(({ CalendarUI }) => {
+            CalendarUI.handleIconClick(e, dateStr);
+          });
+        }
+      });
+      
       wrap.appendChild(img);
     } else {
       const div = document.createElement('div');
       div.className = 'w-6 h-6 bg-gray-200 flex items-center justify-center text-xs text-gray-600 pbac-tooltip';
       div.setAttribute('data-tooltip', tooltip);
+      div.setAttribute('data-date', dateStr);
       div.title = tooltip;
       div.textContent = type.charAt(0).toUpperCase();
+      
+      // Always add click handlers, but check mobile state when clicked
+      div.addEventListener('click', (e) => {
+        const isMobile = window.innerWidth <= 768 || /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        if (isMobile) {
+          import('./calendar-ui.js').then(({ CalendarUI }) => {
+            CalendarUI.handleIconClick(e, dateStr);
+          });
+        }
+      });
+      
+      div.addEventListener('touchend', (e) => {
+        const isMobile = window.innerWidth <= 768 || /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        if (isMobile) {
+          e.preventDefault();
+          import('./calendar-ui.js').then(({ CalendarUI }) => {
+            CalendarUI.handleIconClick(e, dateStr);
+          });
+        }
+      });
+      
       wrap.appendChild(div);
     }
     
