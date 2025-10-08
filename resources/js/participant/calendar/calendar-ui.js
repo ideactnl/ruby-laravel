@@ -44,24 +44,25 @@ export class CalendarUI {
     const mobileDate = document.getElementById('mobile-date');
     const mobileMonth = document.getElementById('mobile-month');
     const mobileYear = document.getElementById('mobile-year');
-
-    if (mobileDate && mobileMonth && mobileYear) {
+    const mobileContainer = document.getElementById('mobile-date-container');
+    
+    if (mobileDate && mobileMonth && mobileYear && mobileContainer) {
       const updateMobileDate = () => {
         const currentCalendarDate = this.calendar.getDate();
         const today = new Date();
-
+        
         // Check if we're viewing current month
         const isCurrentMonth = currentCalendarDate.getFullYear() === today.getFullYear() &&
           currentCalendarDate.getMonth() === today.getMonth();
 
         if (isCurrentMonth) {
-          // Show today's date when viewing current month
-          mobileDate.textContent = today.getDate();
+          // Show today's date when viewing current month (zero-padded)
+          mobileDate.textContent = today.getDate().toString().padStart(2, '0');
           mobileDate.classList.add('text-primary');
           mobileDate.classList.remove('text-gray-500');
         } else {
-          // Show "1st" when viewing other months, keep primary styling
-          mobileDate.textContent = '1';
+          // Show "01" when viewing other months, keep primary styling
+          mobileDate.textContent = '01';
           mobileDate.classList.add('text-primary');
           mobileDate.classList.remove('text-gray-500');
         }

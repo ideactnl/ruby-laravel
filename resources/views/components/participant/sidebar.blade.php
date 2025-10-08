@@ -7,7 +7,8 @@
     <div class="logo-panel mb-1 pl-3 pr-0 pt-0">
         <div class="h-28 flex items-center justify-between px-0">
             <a href="{{ route('participant.dashboard') }}" class="block">
-                <img src="{{ asset('images/logo.png') }}" alt="RubyNU logo" class="max-h-20 w-auto object-contain" />
+                <img src="{{ asset('images/logo.png') }}" alt="RubyNU logo" class="max-h-20 w-auto object-contain md:hidden" />
+                <img src="{{ asset('images/logo-light.png') }}" alt="RubyNU logo" class="max-h-20 w-auto object-contain hidden md:block" />
             </a>
             <!-- Close button for mobile -->
             <button class="md:hidden p-2 text-gray-600 hover:text-gray-800 mr-4" @click="sidebarOpen = false"

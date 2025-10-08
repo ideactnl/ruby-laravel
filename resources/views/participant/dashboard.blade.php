@@ -5,9 +5,9 @@
 @section('content')
     <div class="" x-data="filterMenu()" x-init="init()">
         <div class="mb-10 flex items-center justify-between">
-            <!-- Mobile: Dynamic date layout -->
             <div class="md:hidden">
-                <div class="flex items-center gap-2">
+                <div id="mobile-date-container" class="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity p-2 -m-2 rounded-lg hover:bg-gray-50" 
+                     title="Tap to go to current month" onclick="goToCurrentMonth()">
                     <div id="mobile-date" class="dashboard-date text-xl font-600 text-primary leading-none">
                         {{ now()->format('d') }}</div>
                     <div class="dashboard-my flex flex-col items-center leading-tight">

@@ -8,7 +8,7 @@
         <header class="w-full border-b border-neutral-200 bg-primary backdrop-blur">
             <div class="mx-auto max-w-7xl w-full px-5 sm:px-8 lg:px-10 h-16 flex items-center justify-between">
                 <a href="/" class="inline-flex items-center gap-3">
-                    <img src="{{ asset('images/logo.png') }}" alt="RubyNU logo" class="h-13 w-auto object-contain" />
+                    <img src="{{ asset('images/logo-light.png') }}" alt="RubyNU logo" class="h-13 w-auto object-contain" />
                     <span class="sr-only">RubyNU</span>
                 </a>
                 <div class="text-sm text-white">Participant Portal</div>

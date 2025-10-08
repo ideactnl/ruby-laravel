@@ -14,6 +14,13 @@ import {
 // Expose filter menu for Alpine.js
 window.filterMenu = createFilterMenu;
 
+// Global function to go to current month (used by mobile date click)
+window.goToCurrentMonth = () => {
+  if (window.participantCalendar) {
+    window.participantCalendar.today();
+  }
+};
+
 
 window.addEventListener('DOMContentLoaded', () => {
   const el = document.getElementById('participantCalendar');
