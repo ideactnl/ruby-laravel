@@ -4,6 +4,7 @@
  */
 
 import { getDynamicIconAndTooltip } from './calendar-icons.js';
+import { CalendarUI } from './calendar-ui.js';
 
 const preloadedIcons = new Set();
 const preloadIcon = (src) => {
@@ -94,9 +95,7 @@ export class CalendarLayout {
       img.addEventListener('click', (e) => {
         const isMobile = window.innerWidth <= 768 || /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         if (isMobile) {
-          import('./calendar-ui.js').then(({ CalendarUI }) => {
-            CalendarUI.handleIconClick(e, dateStr);
-          });
+          CalendarUI.handleIconClick(e, dateStr);
         }
       });
       
@@ -104,9 +103,7 @@ export class CalendarLayout {
         const isMobile = window.innerWidth <= 768 || /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         if (isMobile) {
           e.preventDefault();
-          import('./calendar-ui.js').then(({ CalendarUI }) => {
-            CalendarUI.handleIconClick(e, dateStr);
-          });
+          CalendarUI.handleIconClick(e, dateStr);
         }
       });
       
@@ -122,9 +119,7 @@ export class CalendarLayout {
       div.addEventListener('click', (e) => {
         const isMobile = window.innerWidth <= 768 || /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         if (isMobile) {
-          import('./calendar-ui.js').then(({ CalendarUI }) => {
-            CalendarUI.handleIconClick(e, dateStr);
-          });
+          CalendarUI.handleIconClick(e, dateStr);
         }
       });
       
@@ -132,9 +127,7 @@ export class CalendarLayout {
         const isMobile = window.innerWidth <= 768 || /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         if (isMobile) {
           e.preventDefault();
-          import('./calendar-ui.js').then(({ CalendarUI }) => {
-            CalendarUI.handleIconClick(e, dateStr);
-          });
+          CalendarUI.handleIconClick(e, dateStr);
         }
       });
       

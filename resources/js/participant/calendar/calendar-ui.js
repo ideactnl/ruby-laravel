@@ -110,7 +110,15 @@ export class CalendarUI {
     updateBackButton();
 
     if (btnBackCurrent) {
-      btnBackCurrent.addEventListener('click', () => this.calendar.today());
+      btnBackCurrent.addEventListener('click', () => {
+        if (window.innerWidth <= 768 && 'vibrate' in navigator) {
+          try {
+            navigator.vibrate([10, 30, 10]); 
+          } catch (e) {
+          }
+        }
+        this.calendar.today();
+      });
     }
   }
 

@@ -24,7 +24,7 @@
             <h2 id="cal-month-label" x-cloak
                 class="hidden md:block text-xl sm:text-2xl font-extrabold tracking-tight text-gray-900">&nbsp;</h2>
             <div class="relative" @click.outside="open=false" x-cloak>
-                <button @click="open=!open"
+                <button @click="open=!open; if(window.innerWidth <= 768 && 'vibrate' in navigator) { try { navigator.vibrate(10); } catch(e) {} }"
                     class="inline-flex items-center gap-2 rounded-md bg-primary px-6 py-4 md:px-4 md:py-2 text-sm font-semibold text-white shadow hover:bg-primary-800 cursor-pointer transition-colors">
                     <span>Domains (<span x-cloak x-text="selected.length"></span>/3)</span>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-4 w-4">

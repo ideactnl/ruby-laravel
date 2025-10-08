@@ -14,6 +14,7 @@ import {
 // Expose filter menu for Alpine.js
 window.filterMenu = createFilterMenu;
 
+// Global function to go to current month
 window.goToCurrentMonth = () => {
   if (window.participantCalendar) {
     if (window.innerWidth <= 768 && 'vibrate' in navigator) {

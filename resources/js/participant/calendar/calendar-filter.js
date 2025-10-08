@@ -21,6 +21,20 @@ export function createFilterMenu() {
     ],
     selected: [],
 
+    // Haptic feedback helper
+    triggerHaptic(type = 'light') {
+      if (window.innerWidth <= 768 && 'vibrate' in navigator) {
+        try {
+          const patterns = {
+            light: 10,           
+            medium: 20,         
+            error: [50, 50, 50]  
+          };
+          navigator.vibrate(patterns[type] || patterns.light);
+        } catch (e) {        }
+      }
+    },
+
     init() {
       const saved = localStorage.getItem('calendar_selected_types');
       this.selected = saved ? JSON.parse(saved) : ['blood_loss', 'pain', 'impact'];
@@ -37,21 +51,30 @@ export function createFilterMenu() {
     toggle(val) {
       const idx = this.selected.indexOf(val);
       if (idx >= 0) {
+        // Deselecting - light haptic feedback
         this.selected.splice(idx, 1);
+        this.triggerHaptic('light');
+        this.apply();
       } else {
-        if (this.selected.length >= 3) return;
+        if (this.selected.length >= 3) {
+          this.triggerHaptic('error');
+          return;
+        }
         this.selected.push(val);
+        this.triggerHaptic('light');
+        this.apply();
       }
-      this.apply();
     },
 
     selectAll() {
       this.selected = this.options.map(o => o.value).slice(0, 3);
+      this.triggerHaptic('medium');
       this.apply();
     },
 
     clearAll() {
       this.selected = [];
+      this.triggerHaptic('medium');
       this.apply();
     }
   };
