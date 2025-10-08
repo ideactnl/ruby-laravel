@@ -5,7 +5,6 @@
 
 import { getDynamicIconAndTooltip } from './calendar-icons.js';
 
-// Preload common PBAC icons for better performance
 const preloadedIcons = new Set();
 const preloadIcon = (src) => {
   if (!preloadedIcons.has(src)) {
@@ -21,6 +20,7 @@ export class CalendarLayout {
    */
   static preloadCommonIcons() {
     const commonIcons = [
+
       // Grid icons
       '/images/grid_blood_loss.png',
       '/images/grid_pain.png',
@@ -80,7 +80,6 @@ export class CalendarLayout {
     wrap.className = 'inline-flex items-center gap-1 px-0.5';
     
     if (iconSrc) {
-      // Preload the icon for better performance
       preloadIcon(iconSrc);
       
       const img = document.createElement('img');
@@ -92,7 +91,6 @@ export class CalendarLayout {
       img.alt = tooltip.split('\n')[0];
       img.loading = 'eager';
       
-      // Always add click handlers, but check mobile state when clicked
       img.addEventListener('click', (e) => {
         const isMobile = window.innerWidth <= 768 || /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         if (isMobile) {
@@ -121,7 +119,6 @@ export class CalendarLayout {
       div.title = tooltip;
       div.textContent = type.charAt(0).toUpperCase();
       
-      // Always add click handlers, but check mobile state when clicked
       div.addEventListener('click', (e) => {
         const isMobile = window.innerWidth <= 768 || /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         if (isMobile) {
@@ -166,31 +163,26 @@ export class CalendarLayout {
       const allEvents = dayFrame.querySelectorAll('.fc-daygrid-event');
       const eventCount = allEvents.length;
       
-      // Remove any existing count classes
       dayFrame.classList.forEach(className => {
         if (className.startsWith('pbac-day-count-')) {
           dayFrame.classList.remove(className);
         }
       });
       
-      // Add the correct count class
       dayFrame.classList.add(`pbac-day-count-${eventCount}`);
       dayFrame.classList.add('pbac-free-flow-events');
       
-      setTimeout(() => {
-        const emptyContainer = dayFrame.querySelector('.fc-daygrid-day-events');
-        if (emptyContainer) {
-          emptyContainer.style.display = 'none';
-          emptyContainer.style.visibility = 'hidden';
-          emptyContainer.style.height = '0';
-          emptyContainer.style.overflow = 'hidden';
-        }
-      }, 0);
+      const emptyContainer = dayFrame.querySelector('.fc-daygrid-day-events');
+      if (emptyContainer) {
+        emptyContainer.style.display = 'none';
+        emptyContainer.style.visibility = 'hidden';
+        emptyContainer.style.height = '0';
+        emptyContainer.style.overflow = 'hidden';
+      }
     }
 
-    // Apply event harness styling
     const harness = arg.el.closest('.fc-daygrid-event-harness');
-    if (harness) {
+    if (harness && !harness.classList.contains('relative')) {
       const isMobile = window.innerWidth <= 768;
       if (isMobile) {
         harness.classList.add('relative', 'mb-1', 'mt-1');
@@ -199,10 +191,12 @@ export class CalendarLayout {
       }
     }
 
-    arg.el.classList.add('inline-flex', 'items-center', 'gap-1', 'bg-transparent', 'border-0', 'px-0.5', 'w-auto');
+    if (!arg.el.classList.contains('inline-flex')) {
+      arg.el.classList.add('inline-flex', 'items-center', 'gap-1', 'bg-transparent', 'border-0', 'px-0.5', 'w-auto');
+    }
     
     const icon = arg.el.querySelector('.pbac-calendar-icon');
-    if (icon) {
+    if (icon && icon.style.display !== 'block') {
       icon.style.display = 'block';
       icon.style.visibility = 'visible';
       icon.style.opacity = '1';
@@ -255,20 +249,20 @@ export class CalendarLayout {
     const frame = info.el.querySelector('.fc-daygrid-day-frame') || info.el;
     frame.classList.add('cursor-pointer', 'hover:bg-gray-50');
     
-    setTimeout(() => {
-      const events = frame.querySelectorAll('.fc-daygrid-event');
-      if (events.length === 0) {
-        frame.classList.add('pbac-day-count-0');
-      }
-    }, 100);
+    const events = frame.querySelectorAll('.fc-daygrid-event');
+    if (events.length === 0) {
+      frame.classList.add('pbac-day-count-0');
+    }
   }
 
   /**
    * Apply day top center styling
    */
   static applyDayTopCenter(calendarElement) {
-    calendarElement.querySelectorAll('.fc-daygrid-day-top').forEach(t => 
-      t.classList.add('justify-center')
-    );
+    requestAnimationFrame(() => {
+      calendarElement.querySelectorAll('.fc-daygrid-day-top:not(.justify-center)').forEach(t => {
+        t.classList.add('justify-center');
+      });
+    });
   }
 }
