@@ -33,10 +33,8 @@
 }
 
 @layer base {
-    html {
-        font-family: var(--font-family-sans);
-    }
 
+    html,
     body {
         font-family: var(--font-family-sans);
         font-feature-settings: normal;
@@ -62,7 +60,7 @@
     li,
     td,
     th {
-        font-family: var(--font-family-sans);
+        font-family: inherit;
     }
 
     button,
@@ -77,12 +75,12 @@
     }
 }
 
-@layer utilities {
-    .font-geist {
-        font-family: var(--font-family-sans);
-    }
+[x-cloak] {
+    display: none !important;
+}
 
-    /* PBAC Calendar Icon Enhancements */
+@layer utilities {
+
     .pbac-calendar-icon {
         filter: contrast(1.1) saturate(1.2) brightness(1.05);
         transition: all 0.2s ease-in-out;
@@ -94,7 +92,6 @@
         transform: scale(1.05);
     }
 
-    /* Enhanced Tooltip Styling */
     .pbac-tooltip {
         position: relative;
         z-index: 1000;
@@ -149,7 +146,6 @@
         transform: translateX(-50%) translateY(-3px);
     }
 
-    /* Basic FullCalendar Event Styling */
     .fc-event {
         background: transparent !important;
         border: none !important;
@@ -166,14 +162,12 @@
         margin: 2px !important;
     }
 
-    /* Mobile touch optimizations for calendar */
     #participantCalendar {
         touch-action: pan-y;
         -webkit-overflow-scrolling: touch;
         overscroll-behavior: contain;
     }
 
-    /* Mobile-specific fixes for icon display */
     @media (max-width: 768px) {
         .pbac-mobile-events .fc-daygrid-day-frame {
             position: relative !important;
@@ -191,7 +185,6 @@
             min-height: 16px !important;
         }
 
-        /* Ensure icons are visible on mobile */
         .pbac-calendar-icon {
             width: 18px !important;
             height: 18px !important;
@@ -202,7 +195,6 @@
             opacity: 1 !important;
         }
 
-        /* Better spacing for mobile events */
         .fc-daygrid-day-events {
             padding: 1px !important;
             justify-content: center !important;
@@ -220,13 +212,11 @@
             margin: 1px !important;
         }
 
-        /* Ensure event content is visible */
         .fc-event-main {
             padding: 0 !important;
             overflow: visible !important;
         }
 
-        /* Force column layout on mobile */
         .fc-daygrid-day-events.columns-3 {
             columns: 2 !important;
             column-gap: 2px !important;
@@ -240,10 +230,6 @@
     }
 }
 
-[x-cloak] {
-    display: none !important;
-}
-
 .pbac-desktop-single-row {
     display: flex !important;
     justify-content: center !important;
@@ -251,7 +237,6 @@
     flex-wrap: nowrap !important;
 }
 
-/* Mobile layouts - Exact design implementation */
 @media (max-width: 767px) {
     tr.fc-scrollgrid-section.fc-scrollgrid-section-body .pbac-selected-domains-3 {
         display: block !important;
