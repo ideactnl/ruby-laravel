@@ -217,7 +217,7 @@
         }
 
         .fc-daygrid-event-harness {
-            margin: 1px !important;
+            margin: 0 2px !important;
         }
 
         /* Ensure event content is visible */
@@ -256,6 +256,12 @@
     tr.fc-scrollgrid-section.fc-scrollgrid-section-body .pbac-selected-domains-3 {
         display: block !important;
     }
+    .pbac-day-count-0 .fc-daygrid-day-top.justify-center {
+    width: 100% !important;
+}
+.fc-daygrid-day-events {
+  display: none;
+}
 
     .fc-daygrid-day-top.justify-center {
         width: 48%;
@@ -263,7 +269,7 @@
     }
 
     .fc-daygrid-event-harness {
-        width: 45% !important;
+        width: 41% !important;
     }
 
     .fc-scrollgrid-section-body .fc-daygrid-day-number {
@@ -273,6 +279,7 @@
 
     .pbac-day-count-1 .fc-daygrid-event-harness {
         width: 100% !important;
+           margin: 0 !important;
     }
 
     .pbac-day-count-1 {
@@ -298,6 +305,13 @@
         height: 80px;
         padding-top: 20px !important;
     }
+    .pbac-day-count-2 .fc-daygrid-event-harness:nth-last-child(2) {
+    justify-content: center !important;
+}
+
+.pbac-day-count-2 .fc-daygrid-event-harness:nth-last-child(1) {
+    justify-content: center !important;
+}
 }
 
 .pbac-selected-domains-3 .pbac-event-icon {

@@ -12,7 +12,7 @@
                     </svg>
                 </button>
                 <a href="{{ route('participant.dashboard') }}" class="flex items-center">
-                    <img src="{{ asset('images/logo.png') }}" alt="Ruby logo" class="h-10 w-auto object-contain" />
+                    <img src="{{ asset('images/logo.png') }}" alt="Ruby logo" class="h-13 w-auto object-contain" />
                 </a>
             </div>
 
