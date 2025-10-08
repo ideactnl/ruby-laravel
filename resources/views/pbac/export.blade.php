@@ -12,8 +12,8 @@
                 $dispatch('export:start', {
                     type: document.getElementById('format')?.value || 'csv',
                     preset: preset || document.getElementById('preset')?.value,
-                    start: document.getElementById('start_date')?.value || null,
-                    end: document.getElementById('end_date')?.value || null,
+                    start: (document.getElementById('start_date_mobile')?.value || document.getElementById('start_date')?.value) || null,
+                    end: (document.getElementById('end_date_mobile')?.value || document.getElementById('end_date')?.value) || null,
                 })
             ">
                 @csrf
@@ -48,7 +48,11 @@
 
                     <div x-show="preset === 'custom'" x-transition>
                         <x-form.label name="start_date" required>Start Date</x-form.label>
-                        <x-form.input type="date" id="start_date" name="start_date" value="{{ old('start_date') }}" placeholder="dd/mm/yyyy" variant="participant" />
+                        <!-- Mobile: Native date input -->
+                        <input type="date" id="start_date_mobile" name="start_date" value="{{ old('start_date') }}" 
+                               class="md:hidden w-full px-3.5 py-2.5 border text-sm rounded-lg bg-white/90 text-neutral-700 shadow-sm border-gray-300 focus:border-primary focus:ring-1 focus:outline-0 focus:ring-white" />
+                        <!-- Desktop: Flatpickr -->
+                        <x-form.input type="date" id="start_date" name="start_date" value="{{ old('start_date') }}" placeholder="dd/mm/yyyy" variant="admin" class="hidden md:block" />
                         @error('start_date')
                             <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
                         @enderror
@@ -56,7 +60,11 @@
 
                     <div x-show="preset === 'custom'" x-transition>
                         <x-form.label name="end_date" required>End Date</x-form.label>
-                        <x-form.input type="date" id="end_date" name="end_date" value="{{ old('end_date') }}" placeholder="dd/mm/yyyy" variant="participant" />
+                        <!-- Mobile: Native date input -->
+                        <input type="date" id="end_date_mobile" name="end_date" value="{{ old('end_date') }}" 
+                               class="md:hidden w-full px-3.5 py-2.5 border text-sm rounded-lg bg-white/90 text-neutral-700 shadow-sm border-gray-300 focus:border-primary focus:ring-1 focus:outline-0 focus:ring-white" />
+                        <!-- Desktop: Flatpickr -->
+                        <x-form.input type="date" id="end_date" name="end_date" value="{{ old('end_date') }}" placeholder="dd/mm/yyyy" variant="admin" class="hidden md:block" />
                         @error('end_date')
                             <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
                         @enderror
@@ -68,7 +76,7 @@
                         <i class="fa-solid fa-cloud-arrow-up mr-2"></i>
                         Queue Export
                     </button>
-                    <button type="button" @click="preset=''; document.getElementById('start_date').value=''; document.getElementById('end_date').value='';" class="rounded-md bg-white hover:bg-primary/5 border border-primary/30 text-primary px-4 py-2 text-md font-semibold shadow hover:opacity-90 inline-flex items-center gap-2 transition-colors">Clear</button>
+                    <button type="button" @click="preset=''; document.getElementById('start_date')?.value && (document.getElementById('start_date').value=''); document.getElementById('end_date')?.value && (document.getElementById('end_date').value=''); document.getElementById('start_date_mobile')?.value && (document.getElementById('start_date_mobile').value=''); document.getElementById('end_date_mobile')?.value && (document.getElementById('end_date_mobile').value='');" class="rounded-md bg-white hover:bg-primary/5 border border-primary/30 text-primary px-4 py-2 text-md font-semibold shadow hover:opacity-90 inline-flex items-center gap-2 transition-colors">Clear</button>
                 </div>
             </form>
         </div>

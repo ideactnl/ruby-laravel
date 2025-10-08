@@ -33,34 +33,11 @@
 }
 
 @layer base {
-
     html,
     body {
         font-family: var(--font-family-sans);
-        font-feature-settings: normal;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
-    }
-
-    h1,
-    h2,
-    h3,
-    h4,
-    h5,
-    h6,
-    p,
-    span,
-    div,
-    a,
-    button,
-    input,
-    textarea,
-    select,
-    label,
-    li,
-    td,
-    th {
-        font-family: inherit;
     }
 
     button,
@@ -202,7 +179,6 @@
         }
 
         .fc-daygrid-event {
-
             padding: 1px !important;
             min-height: 20px !important;
             margin-top: 0 !important;
@@ -258,20 +234,19 @@
     }
 
     .fc-scrollgrid-section-body .fc-daygrid-day-number {
-        color: #000 ! IMPORTANT;
+        color: #000 !important;
         font-size: 16px !important;
     }
 
     .pbac-day-count-1 .fc-daygrid-event-harness {
         width: 100% !important;
-           margin: 0 !important;
+        margin: 0 !important;
     }
 
     .pbac-day-count-1 {
         display: flex;
         margin: auto;
         flex-direction: column;
-
     }
 
     .pbac-day-count-2 .fc-daygrid-event-harness {
@@ -291,12 +266,12 @@
         padding-top: 20px !important;
     }
     .pbac-day-count-2 .fc-daygrid-event-harness:nth-last-child(2) {
-    justify-content: center !important;
-}
+        justify-content: center !important;
+    }
 
-.pbac-day-count-2 .fc-daygrid-event-harness:nth-last-child(1) {
-    justify-content: center !important;
-}
+    .pbac-day-count-2 .fc-daygrid-event-harness:nth-last-child(1) {
+        justify-content: center !important;
+    }
 }
 
 .pbac-selected-domains-3 .pbac-event-icon {

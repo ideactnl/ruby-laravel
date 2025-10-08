@@ -78,7 +78,7 @@
                             <!-- Icon (Font Awesome) -->
                             <span
                                 class="inline-flex h-9 w-9 shrink-0 items-center justify-center shadow
-                                {{ $isActive ? 'rounded-lg bg-white text-black' : 'rounded-full bg-transparent text-white' }}">
+                                {{ $isActive ? 'rounded-lg text-black' : 'rounded-full bg-transparent text-white' }}">
                                 @php
                                     $iconMap = [
                                         'Calendar' => 'fa-calendar-days',

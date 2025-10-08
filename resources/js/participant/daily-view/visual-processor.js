@@ -106,7 +106,6 @@ export class VisualProcessor {
         alt: 'Spotting'
       };
       item.context = 'Spotting detected';
-      item.additionalInfo = `Amount: ${amount}ml`;
     } else {
       // Create severity icons
       const severityLevels = ['very_light', 'light', 'moderate', 'heavy', 'very_heavy'];
@@ -116,7 +115,6 @@ export class VisualProcessor {
         active: severity === level
       }));
       item.context = `${severity.replace('_', ' ')} flow`;
-      item.additionalInfo = `${amount}ml recorded`;
     }
   }
 
@@ -140,7 +138,6 @@ export class VisualProcessor {
 
     item.context = `Pain Level: ${value}/10`;
     if (regions.length > 0) {
-      item.additionalInfo = `${regions.length} area${regions.length > 1 ? 's' : ''} affected`;
     }
   }
 
@@ -169,7 +166,6 @@ export class VisualProcessor {
     };
     
     item.context = `${moodText} Day`;
-    item.additionalInfo = `${positives.length} positive, ${negatives.length} negative`;
   }
 
   /**
@@ -185,7 +181,6 @@ export class VisualProcessor {
     };
     item.context = `Grade: ${grade}/10`;
     if (limitations.length > 0) {
-      item.additionalInfo = `${limitations.length} limitation${limitations.length > 1 ? 's' : ''}`;
     }
   }
 
@@ -199,7 +194,6 @@ export class VisualProcessor {
     };
     item.context = `Energy: ${energy}/5`;
     if (symptoms.length > 0) {
-      item.additionalInfo = `${symptoms.length} symptom${symptoms.length > 1 ? 's' : ''}`;
     }
   }
 
@@ -231,7 +225,6 @@ export class VisualProcessor {
       alt: 'Diet'
     };
     item.context = 'Diet tracked';
-    item.additionalInfo = `${positives.length + negatives.length + neutrals.length} items`;
   }
 
   static processExerciseVisuals(item, pillar) {

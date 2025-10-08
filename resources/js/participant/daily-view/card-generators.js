@@ -95,7 +95,7 @@ export class CardGenerators {
     return {
       key: 'blood_loss',
       label: 'Blood Loss',
-      iconSrc: spotting ? '/images/spotting.png' : `/images/blood_loss_${Math.max(1, severityLevels.indexOf(severity) + 1)}.png`,
+      iconSrc: '/images/grid_blood_loss.png',
       context: context,
       statusColor: statusColor,
       statusText: statusText,
@@ -104,7 +104,6 @@ export class CardGenerators {
         src: spotting ? '/images/spotting.png' : `/images/blood_loss_${Math.max(1, severityLevels.indexOf(severity) + 1)}.png`,
         alt: 'Blood Loss'
       },
-      additionalInfo: spotting ? 'Spotting detected' : '',
       tooltip: this.component.getBloodLossTooltip(pillar),
       pillar: pillar
     };
@@ -188,8 +187,8 @@ export class CardGenerators {
     return {
       key: 'pain',
       label: 'Pain',
-      iconSrc: `/images/smile_${currentPainIcon}.png`,
-      context: context, // Use descriptive text instead of numbers
+      iconSrc: '/images/grid_pain.png',
+      context: context, 
       statusColor: statusColor,
       statusText: statusText,
       severityIcons: severityIcons,
@@ -197,7 +196,7 @@ export class CardGenerators {
         src: `/images/smile_${currentPainIcon}.png`,
         alt: 'Pain Level'
       },
-      additionalInfo: formattedRegions || '',
+      // additionalInfo: formattedRegions || '',
       tooltip: this.component.getPainTooltip(pillar),
       pillar: pillar
     };
@@ -282,18 +281,31 @@ export class CardGenerators {
       primaryIcon = '/images/impact_11.png';
     }
 
+    // Create impact limitation icons (11 available)
+    const impactTypes = [
+      'used_medication', 'missed_work', 'missed_school', 'could_not_sport',
+      'missed_social_activities', 'missed_leisure_activities', 'had_to_sit_more',
+      'had_to_lie_down', 'had_to_stay_longer_in_bed', 'could_not_do_unpaid_work', 'other'
+    ];
+    
+    const severityIcons = impactTypes.map((type, index) => ({
+      src: `/images/impact_${index + 1}.png`,
+      alt: type.replace(/_/g, ' '),
+      active: limitations.includes(type)
+    }));
+
     return {
       key: 'impact',
       label: 'Impact',
-      iconSrc: primaryIcon,
-      context: context, // Use descriptive text instead of numbers
+      iconSrc: '/images/grid_impact.png',
+      context: context, 
       statusColor: statusColor,
       statusText: statusText,
+      severityIcons: severityIcons,
       statusIcon: {
         src: primaryIcon,
         alt: 'Daily Impact'
       },
-      additionalInfo: formattedLimitations || '',
       tooltip: this.component.getImpactTooltip(pillar),
       pillar: pillar
     };
@@ -375,8 +387,8 @@ export class CardGenerators {
     return {
       key: 'general_health',
       label: 'General Health',
-      iconSrc: energy === 1 ? '/images/sleep.png' : `/images/general_health_${Math.min(energy - 1, 4)}.png`,
-      context: context, // Use descriptive text instead of numbers
+      iconSrc: '/images/grid_general_health.png',
+      context: context, 
       statusColor: statusColor,
       statusText: statusText,
       severityIcons: severityIcons,
@@ -384,7 +396,7 @@ export class CardGenerators {
         src: energy === 1 ? '/images/sleep.png' : `/images/general_health_${Math.min(energy - 1, 4)}.png`,
         alt: 'Energy Level'
       },
-      additionalInfo: formattedSymptoms || '',
+      // additionalInfo: formattedSymptoms || '',
       tooltip: this.component.getEnergyTooltip(pillar),
       pillar: pillar
     };
@@ -457,7 +469,7 @@ export class CardGenerators {
     return {
       key: 'mood',
       label: 'Mood',
-      iconSrc: `/images/${moodIcon}`,
+      iconSrc: '/images/grid_mood.png',
       context: context,
       statusColor: statusColor,
       statusText: statusText,
@@ -466,7 +478,7 @@ export class CardGenerators {
         src: `/images/${moodIcon}`,
         alt: 'Mood State'
       },
-      additionalInfo: `${positives.length} positive, ${negatives.length} negative`,
+      // additionalInfo: `${positives.length} positive, ${negatives.length} negative`,
       tooltip: this.component.getMoodTooltip(pillar),
       pillar: pillar
     };
@@ -529,7 +541,7 @@ export class CardGenerators {
     return {
       key: 'stool_urine',
       label: 'Stool/Urine',
-      iconSrc: primaryIcon,
+      iconSrc: '/images/grid_urine_stool.png',
       context: context,
       statusColor: statusColor,
       statusText: statusText,
@@ -551,7 +563,7 @@ export class CardGenerators {
     return {
       key: 'sleep',
       label: 'Sleep',
-      iconSrc: '/images/sleep.png',
+      iconSrc: '/images/grid_sleep.png',
       context: `${hours} hours`,
       statusColor: 'bg-indigo-400',
       statusText: 'Sleep tracked',
@@ -615,7 +627,7 @@ export class CardGenerators {
         src: '/images/grid_diet.png',
         alt: 'Diet Quality'
       },
-      additionalInfo: `${positives.length + negatives.length + neutrals.length} items`,
+      // additionalInfo: `${positives.length + negatives.length + neutrals.length} items`,
       tooltip: this.component.getDietTooltip(pillar),
       pillar: pillar
     };
@@ -630,11 +642,11 @@ export class CardGenerators {
     // Duration context
     let context = 'Exercise completed';
     if (levels.includes('greater_sixty')) {
-      context = '>60 minutes';
+      context = '>60 mins';
     } else if (levels.includes('thirty_to_sixty')) {
-      context = '30-60 minutes';
+      context = '30-60 mins';
     } else if (levels.includes('less_thirty')) {
-      context = '<30 minutes';
+      context = '<30 mins';
     }
     
     // Exercise type labels
@@ -658,18 +670,27 @@ export class CardGenerators {
       .map(type => typeLabels[type] || type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()))
       .join(', ');
     
+    // Create exercise duration icons (using available icons)
+    const exerciseLevels = ['less_thirty', 'thirty_to_sixty', 'greater_sixty', 'high_impact'];
+    const severityIcons = exerciseLevels.map((level, index) => ({
+      src: index < 2 ? `/images/exercise_type_${index + 1}.png` : '/images/sport.png',
+      alt: level.replace('_', ' '),
+      active: levels.includes(level) || (level === 'high_impact' && types.includes('high_impact'))
+    }));
+
     return {
       key: 'exercise',
       label: 'Exercise',
-      iconSrc: '/images/sport.png',
+      iconSrc: '/images/grid_sport.png',
       context: context,
       statusColor: 'bg-orange-400',
       statusText: 'Exercise completed',
+      severityIcons: severityIcons,
       statusIcon: {
         src: '/images/sport.png',
         alt: 'Exercise Activity'
       },
-      additionalInfo: formattedTypes || 'Exercise activity',
+      // additionalInfo: formattedTypes || 'Exercise activity',
       tooltip: this.component.getExerciseTooltip(pillar),
       pillar: pillar
     };
@@ -692,7 +713,7 @@ export class CardGenerators {
     return {
       key: 'sex',
       label: 'Sexual Health',
-      iconSrc: '/images/sex.png',
+      iconSrc: '/images/grid_sex.png',
       context: context,
       statusColor: statusColor,
       statusText: context,

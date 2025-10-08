@@ -21,14 +21,20 @@ export class SwiperManager {
       }
       
       this.component._symSwiper = new window.Swiper(this.component.$refs.symSwiper, {
-        slidesPerView: 'auto',
-        spaceBetween: 28,
+        slidesPerView: 1.3,
+        spaceBetween: 16,
         grabCursor: true,
         freeMode: true,
         allowTouchMove: true,
         simulateTouch: true,
         preventClicks: false,
         preventClicksPropagation: false,
+        breakpoints: {
+          768: {
+            slidesPerView: 'auto',
+            spaceBetween: 28,
+          }
+        }
       });
     } catch (error) {
       console.warn('Failed to initialize symptoms swiper:', error);
@@ -48,14 +54,20 @@ export class SwiperManager {
       }
       
       this.component._vidSwiper = new window.Swiper(this.component.$refs.vidSwiper, {
-        slidesPerView: 'auto',
-        spaceBetween: 28,
+        slidesPerView: 1.3,
+        spaceBetween: 16,
         grabCursor: true,
         freeMode: true,
-        allowTouchMove: true,
-        simulateTouch: true,
+        centeredSlides: false,
+        loop: false,
         preventClicks: false,
         preventClicksPropagation: false,
+        breakpoints: {
+          768: {
+            slidesPerView: 'auto',
+            spaceBetween: 28,
+          }
+        }
       });
     } catch (error) {
       console.warn('Failed to initialize videos swiper:', error);
