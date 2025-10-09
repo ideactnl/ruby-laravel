@@ -37,10 +37,18 @@
         </div>
         <div class="flex items-center gap-6" x-show="preset==='custom'">
             <div class="flex items-center gap-2">
-                <x-form.input type="date" name="start_date" x-model="start" @change="if(window.innerWidth <= 768 && 'vibrate' in navigator) { try { navigator.vibrate(15); } catch(e) {} }; refresh()" variant="participant" placeholder="Start Date" />
+                <!-- Mobile: Native date input -->
+                <input type="date" x-model="start" @change="if(window.innerWidth <= 768 && 'vibrate' in navigator) { try { navigator.vibrate(15); } catch(e) {} }; refresh()" 
+                       class="md:hidden rounded-md border border-primary px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary/30" />
+                <!-- Desktop: Flatpickr -->
+                <x-form.input type="date" name="start_date" x-model="start" @change="if(window.innerWidth <= 768 && 'vibrate' in navigator) { try { navigator.vibrate(15); } catch(e) {} }; refresh()" variant="participant" placeholder="dd/mm/yyyy" class="hidden md:block" />
             </div>
             <div class="flex items-center gap-2">
-                <x-form.input type="date" name="end_date" x-model="end" @change="if(window.innerWidth <= 768 && 'vibrate' in navigator) { try { navigator.vibrate(15); } catch(e) {} }; refresh()" variant="participant" placeholder="End Date" />
+                <!-- Mobile: Native date input -->
+                <input type="date" x-model="end" @change="if(window.innerWidth <= 768 && 'vibrate' in navigator) { try { navigator.vibrate(15); } catch(e) {} }; refresh()" 
+                       class="md:hidden rounded-md border border-primary px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary/30" />
+                <!-- Desktop: Flatpickr -->
+                <x-form.input type="date" name="end_date" x-model="end" @change="if(window.innerWidth <= 768 && 'vibrate' in navigator) { try { navigator.vibrate(15); } catch(e) {} }; refresh()" variant="participant" placeholder="dd/mm/yyyy" class="hidden md:block" />
             </div>
         </div>
     </div>

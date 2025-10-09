@@ -81,7 +81,7 @@
                         <template x-for="item in items" :key="item.key">
                             <div class="swiper-slide md:!w-auto">
                                 <div
-                                    class="w-full md:w-[350px] h-[200px] rounded-lg bg-white shadow-sm border border-gray-200 p-4 mx-auto relative hover:shadow-md transition-shadow">
+                                    class="w-full sm:w-[320px] md:w-[350px] h-[200px] rounded-lg bg-white shadow-sm border border-gray-200 p-3 sm:p-4 mx-auto relative hover:shadow-md transition-shadow">
                                     <!-- Header with icon and title -->
                                     <div class="flex items-center justify-between mb-3">
                                         <div class="flex items-center gap-2">
@@ -97,13 +97,13 @@
                                     <!-- Visual representation with icons -->
                                     <div class="mb-4 flex-1 flex items-center justify-center h-20">
                                         <!-- Severity/Level icons -->
-                                        <div class="flex items-center justify-center flex-wrap gap-1"
+                                        <div class="flex items-center justify-center flex-wrap gap-0.5 sm:gap-1"
                                             x-show="item.severityIcons && item.severityIcons.length > 0">
                                             <template x-for="(icon, index) in item.severityIcons" :key="index">
                                                 <div
-                                                    :class="`${icon.active ? 'p-1 bg-blue-100 border-2 border-blue-500 rounded-full' : 'p-1'} flex-shrink-0`">
+                                                    :class="`${icon.active ? 'p-0.5 sm:p-1 bg-blue-100 border-2 border-blue-500 rounded-full' : 'p-0.5 sm:p-1'} flex-shrink-0`">
                                                     <img :src="icon.src" :alt="icon.alt"
-                                                        :class="`object-contain ${icon.active ? 'opacity-100' : 'opacity-30'} w-7 h-7`">
+                                                        :class="`object-contain ${icon.active ? 'opacity-100' : 'opacity-30'} w-6 h-6 sm:w-7 sm:h-7`">
                                                 </div>
                                             </template>
                                         </div>
@@ -112,7 +112,7 @@
                                         <div
                                             x-show="item.statusIcon && (!item.severityIcons || item.severityIcons.length === 0)">
                                             <img :src="item.statusIcon.src" :alt="item.statusIcon.alt"
-                                                class="w-7 h-7 object-contain">
+                                                class="w-6 h-6 sm:w-7 sm:h-7 object-contain">
                                         </div>
                                     </div>
 
