@@ -17,11 +17,38 @@
   let chart = null;
   let resizeObs = null;
 
+  function getOptimalDateFormat(dates, preset, dataCount) {
+    const years = new Set(dates.map(d => d.getFullYear()));
+    const months = new Set(dates.map(d => `${d.getFullYear()}-${d.getMonth()}`));
+    const isMobile = window.innerWidth < 768;
+    
+    const mobileMultiplier = isMobile ? 0.6 : 1;
+    const maxLabels = Math.floor((isMobile ? 8 : 15) * mobileMultiplier);
+    
+    if (preset === 'year' || years.size > 1) {
+      if (dataCount > maxLabels * 2) {
+        return { format: { month:'short', year:'2-digit' }, groupBy: 'quarter' };
+      }
+      return { format: { month:'short', year:'2-digit' }, groupBy: 'month' };
+    } else if (preset === 'quarter' || months.size > 2) {
+      if (dataCount > maxLabels * 1.5) {
+        return { format: { day:'numeric', month:'short' }, groupBy: 'week' };
+      }
+      return { format: { day:'numeric', month:'short' }, groupBy: 'day' };
+    } else {
+      if (dataCount > maxLabels) {
+        return { format: { day:'numeric' }, groupBy: 'day' };
+      }
+      return { format: { day:'numeric', month:'short' }, groupBy: 'day' };
+    }
+  }
+
   function buildDatasets(rows){
     const dates = rows.map(r => new Date(r.reported_date));
-    const years = new Set(dates.map(d => d.getFullYear()));
-    const useYear = years.size > 1 || (window.__rubyPreset === 'year');
-    const labels = dates.map(d => d.toLocaleDateString(undefined, useYear ? { month:'short', day:'2-digit', year:'numeric' } : { month:'short', day:'2-digit' }));
+    const preset = window.__rubyPreset || 'month';
+    
+    const formatConfig = getOptimalDateFormat(dates, preset, rows.length);
+    const labels = dates.map(d => d.toLocaleDateString(undefined, formatConfig.format));
 
     const bloodLossBars = rows.map(r => r.pillars?.blood_loss?.amount ?? 0);
     const painBars = rows.map(r => r.pillars?.pain?.value ?? 0);
@@ -109,12 +136,40 @@
         maintainAspectRatio: false,
         resizeDelay: 100,
         interaction: { mode: 'index', intersect: false },
-        scales: { y: { beginAtZero: true }, x: { ticks: { maxRotation: 0, autoSkip: true } } },
+        scales: { 
+          y: { 
+            beginAtZero: true,
+            ticks: {
+              font: { size: window.innerWidth < 768 ? 11 : 12 }
+            }
+          }, 
+          x: { 
+            ticks: { 
+              maxRotation: 0, 
+              autoSkip: true,
+              autoSkipPadding: 10,
+              maxTicksLimit: window.innerWidth < 768 ? 8 : 15,
+              minRotation: 0,
+              font: { size: window.innerWidth < 768 ? 10 : 12 }
+            } 
+          } 
+        },
         plugins: {
           legend: { display: false },
-          title: { display: rows.length === 0, text: rows.length === 0 ? 'No data in the selected range' : '' }
+          title: { 
+            display: rows.length === 0, 
+            text: rows.length === 0 ? 'No data in the selected range' : '',
+            font: { size: window.innerWidth < 768 ? 14 : 16 }
+          }
         },
-        datasets: { bar: { barPercentage: 0.9, categoryPercentage: 0.9, maxBarThickness: 28 } }
+        datasets: { 
+          bar: { 
+            barPercentage: 0.9, 
+            categoryPercentage: 0.9, 
+            maxBarThickness: window.innerWidth < 768 ? 20 : 28 
+          } 
+        },
+        devicePixelRatio: window.devicePixelRatio || 1
       }
     });
 
@@ -127,6 +182,26 @@
       resizeObs = new ResizeObserver(() => { if (window.__rubyChart) window.__rubyChart.resize(); });
       resizeObs.observe(container);
     } catch (e) {}
+
+    if (window.innerWidth < 768) {
+      const scrollContainer = canvas.parentElement.parentElement;
+      const scrollIndicator = document.getElementById('scrollIndicator');
+      
+      if (scrollContainer && scrollIndicator) {
+        setTimeout(() => {
+          scrollIndicator.style.opacity = '0';
+        }, 3000);
+        
+        let scrollTimeout;
+        scrollContainer.addEventListener('scroll', () => {
+          scrollIndicator.style.opacity = '1';
+          clearTimeout(scrollTimeout);
+          scrollTimeout = setTimeout(() => {
+            scrollIndicator.style.opacity = '0';
+          }, 1500);
+        });
+      }
+    }
   }
 
   async function loadChart(preset, start, end){

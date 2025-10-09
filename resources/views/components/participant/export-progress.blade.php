@@ -79,27 +79,48 @@
                             const originalStyleWidth = canvas.style.width;
                             const originalStyleHeight = canvas.style.height;
                             
-                            const scaleFactor = 3;
-                            canvas.width = Math.max(1200, originalWidth) * scaleFactor;
-                            canvas.height = Math.max(600, originalHeight) * scaleFactor;
-                            canvas.style.width = originalStyleWidth;
-                            canvas.style.height = originalStyleHeight;
+                            const isMobile = window.innerWidth < 768;
+                            const baseWidth = isMobile ? 1400 : Math.max(1200, originalWidth);
+                            const baseHeight = isMobile ? 800 : Math.max(600, originalHeight);
+                            const scaleFactor = isMobile ? 2 : 3;
+                            
+                            canvas.width = baseWidth * scaleFactor;
+                            canvas.height = baseHeight * scaleFactor;
+                            
+                            canvas.style.width = originalStyleWidth || (baseWidth + 'px');
+                            canvas.style.height = originalStyleHeight || (baseHeight + 'px');
+                            
+                            let processingIndicator = null;
+                            if (isMobile) {
+                                processingIndicator = document.createElement('div');
+                                processingIndicator.className = 'fixed inset-0 bg-black/20 flex items-center justify-center z-50';
+                                processingIndicator.innerHTML = '<div class="bg-white rounded-lg p-4 shadow-lg"><div class="flex items-center gap-3"><div class="animate-spin rounded-full h-5 w-5 border-b-2 border-primary"></div><span class="text-sm">Preparing high-quality chart...</span></div></div>';
+                                document.body.appendChild(processingIndicator);
+                            }
                             
                             if (window.__rubyChart) {
+                                window.__rubyChart.options.devicePixelRatio = scaleFactor;
                                 window.__rubyChart.resize();
                                 window.__rubyChart.update('none');
+                                
+                                await new Promise(resolve => setTimeout(resolve, 200));
                             }
                             
                             chartImage = canvas.toDataURL('image/png', 1.0);
                             
-                            // Restore original canvas dimensions
                             canvas.width = originalWidth;
                             canvas.height = originalHeight;
                             canvas.style.width = originalStyleWidth;
                             canvas.style.height = originalStyleHeight;
                             
                             if (window.__rubyChart) {
+                                window.__rubyChart.options.devicePixelRatio = window.devicePixelRatio;
                                 window.__rubyChart.resize();
+                                window.__rubyChart.update('none');
+                            }
+                            
+                            if (processingIndicator) {
+                                document.body.removeChild(processingIndicator);
                             }
                         }
                         res = await fetch(endpoints.pdf, {

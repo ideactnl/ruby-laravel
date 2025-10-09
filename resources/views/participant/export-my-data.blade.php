@@ -2,6 +2,7 @@
 @section('navbar_title', 'VISUALISE SYMPTOMS - EXPORT DATA')
 @section('navbar_subtitle', 'Export Your PBAC Data Based on the Selected Dates')
 
+
 @section('content')
 <div class=""
     x-data="{
@@ -59,8 +60,14 @@
 
     <div class="bg-white rounded-lg border border-gray-100 p-4">
         <div id="exportLegend" class="flex flex-wrap items-center gap-6 px-2 pb-2"></div>
-        <div class="overflow-hidden h-[320px] md:h-[480px] w-full">
-            <canvas id="exportChart"></canvas>
+        <div class="overflow-x-auto overflow-y-hidden h-[320px] md:h-[480px] w-full scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+            <div class="min-w-[800px] h-full relative">
+                <canvas id="exportChart" class="w-full h-full"></canvas>
+                <!-- Scroll indicator for mobile -->
+                <div id="scrollIndicator" class="md:hidden absolute top-2 right-2 bg-black/20 text-white text-xs px-2 py-1 rounded-full pointer-events-none transition-opacity duration-500">
+                    ← Scroll →
+                </div>
+            </div>
         </div>
         <div class="mt-8 flex items-center flex-wrap md:justify-end gap-3">
             <button @click="exportPDF()" :disabled="busy" :class="busy ? 'opacity-60 cursor-not-allowed' : ''" class="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-white shadow hover:opacity-90">
