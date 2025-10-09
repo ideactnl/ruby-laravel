@@ -1,7 +1,32 @@
 <aside
     class="fixed inset-y-0 left-0 z-[99] w-full bg-white text-black transform md:bg-primary md:text-white shadow-none transition-transform duration-300
            md:inset-y-0 md:left-0 md:w-64 md:translate-x-0 flex flex-col overflow-x-hidden"
-    :class="{ '-translate-x-full': !sidebarOpen, 'translate-x-0': sidebarOpen }" aria-label="Admin sidebar">
+    :class="{ '-translate-x-full': !sidebarOpen, 'translate-x-0': sidebarOpen }" x-cloak aria-label="Admin sidebar"
+    x-data="{
+        touchStartX: 0,
+        touchStartY: 0,
+        minSwipeDistance: 50,
+        maxVerticalDistance: 100
+    }"
+    @touchstart.passive="
+        touchStartX = $event.touches[0].clientX;
+        touchStartY = $event.touches[0].clientY;
+    "
+    @touchend.passive="
+        if (window.innerWidth < 768 && sidebarOpen) {
+            const touchEndX = $event.changedTouches[0].clientX;
+            const touchEndY = $event.changedTouches[0].clientY;
+            const deltaX = touchStartX - touchEndX;
+            const deltaY = Math.abs(touchStartY - touchEndY);
+            
+            if (deltaX > minSwipeDistance && deltaY < maxVerticalDistance) {
+                sidebarOpen = false;
+                if('vibrate' in navigator) { 
+                    try { navigator.vibrate(15); } catch(e) {} 
+                }
+            }
+        }
+    "
     <!-- Logo panel with close button for mobile -->
     <div class="logo-panel mb-1 pl-3 pr-0 pt-0">
         <div class="h-28 flex items-center justify-between px-0">
