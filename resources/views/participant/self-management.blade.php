@@ -17,8 +17,9 @@
             </div>
         </div>
 
-        <div class="swiper educationSwiper">
-            <div class="swiper-wrapper pb-3">
+        <div class="swiper educationSwiper cursor-grab">
+            <div class="swiper-loading py-8 text-gray-500">Loading...</div>
+            <div class="swiper-wrapper pb-3" style="display: none;">
 
                 <!-- Slide 1 -->
                 <div class="swiper-slide">
@@ -70,8 +71,9 @@
     <!-- VIDEOS -->
     <section class="mt-12">
         <h2 class="text-2xl font-bold mb-4">VIDEOS</h2>
-        <div class="swiper videoSwiper">
-            <div class="swiper-wrapper pb-3">
+        <div class="swiper videoSwiper cursor-grab">
+            <div class="swiper-loading py-8 text-gray-500">Loading...</div>
+            <div class="swiper-wrapper pb-3" style="display: none;">
                 <!-- Slide 1 -->
                 <div class="swiper-slide">
                     <div class="rounded overflow-hidden shadow-md bg-white">
@@ -124,23 +126,41 @@
 @push('scripts')
     <script>
         window.addEventListener('DOMContentLoaded', () => {
-            new Swiper('.educationSwiper', {
+            const educationSwiper = new Swiper('.educationSwiper', {
                 slidesPerView: 1.3,
                 spaceBetween: 16,
                 breakpoints: {
                     1024: {
                         slidesPerView: 2.9,
                     },
+                },
+                on: {
+                    init: function() {
+                        const container = document.querySelector('.educationSwiper');
+                        const loading = container.querySelector('.swiper-loading');
+                        const wrapper = container.querySelector('.swiper-wrapper');
+                        if (loading) loading.style.display = 'none';
+                        if (wrapper) wrapper.style.display = 'flex';
+                    }
                 }
             });
 
-            new Swiper('.videoSwiper', {
+            const videoSwiper = new Swiper('.videoSwiper', {
                 slidesPerView: 1.3,
                 spaceBetween: 16,
                 breakpoints: {
                     1024: {
                         slidesPerView: 2.9,
                     },
+                },
+                on: {
+                    init: function() {
+                        const container = document.querySelector('.videoSwiper');
+                        const loading = container.querySelector('.swiper-loading');
+                        const wrapper = container.querySelector('.swiper-wrapper');
+                        if (loading) loading.style.display = 'none';
+                        if (wrapper) wrapper.style.display = 'flex';
+                    }
                 }
             });
         });
