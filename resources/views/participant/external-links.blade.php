@@ -4,18 +4,43 @@
 @section('navbar_subtitle', 'Helpful external websites and resources')
 
 @section('content')
-<div class="max-w-4xl mx-auto">
-    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <div class="text-center py-12">
-            <div class="mb-4">
-                <i class="fa-solid fa-external-link-alt text-6xl text-primary opacity-20"></i>
-            </div>
-            <h2 class="text-2xl font-bold text-gray-900 mb-2">Links to External Websites</h2>
-            <p class="text-gray-600 mb-4">Helpful external websites and resources</p>
-            <div class="bg-gray-50 rounded-lg p-4 inline-block">
-                <p class="text-gray-500 font-medium">Content TBA</p>
-            </div>
-        </div>
-    </div>
-</div>
+
+<section class="max-w-7xl mx-auto px-4 py-12">
+      <!-- Heading -->
+      <h2 class="text-[25px] md:text-{25px} font-bold mb-6">WEBSITES LINKS</h2>
+
+      <!-- Image Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Image 1 -->
+        <a href="#" target="_blank" class="block overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300">
+          <img src="{{ asset("images/Aboutus.jpg") }}" alt="Website 1" class="w-full h-64 object-cover transform hover:scale-105 transition duration-500">
+        </a>
+
+        <!-- Image 2 -->
+        <a href="#" target="_blank" class="block overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300">
+          <img src="{{ asset("images/Privacys.png") }}" alt="Website 2" class="w-full h-64 object-cover transform hover:scale-105 transition duration-500">
+        </a>
+
+        <!-- Image 3 -->
+        <a href="#" target="_blank" class="block overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300">
+          <img src="{{ asset("images/Aboutus.jpg") }}" alt="Website 3" class="w-full h-64 object-cover transform hover:scale-105 transition duration-500">
+        </a>
+
+        <!-- Image 4 -->
+        <a href="#" target="_blank" class="block overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300">
+          <img src="{{ asset("images/Privacys.png") }}" alt="Website 4" class="w-full h-64 object-cover transform hover:scale-105 transition duration-500">
+        </a>
+
+        <!-- Image 5 -->
+        <a href="#" target="_blank" class="block overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300">
+          <img src="{{ asset("images/Aboutus.jpg") }}" alt="Website 5" class="w-full h-64 object-cover transform hover:scale-105 transition duration-500">
+        </a>
+
+        <!-- Image 6 -->
+        <a href="#" target="_blank" class="block overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300">
+          <img src="{{ asset("images/Privacys.png") }}" alt="Website 6" class="w-full h-64 object-cover transform hover:scale-105 transition duration-500">
+        </a>
+      </div>
+    </section>
+
 @endsection

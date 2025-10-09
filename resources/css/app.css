@@ -217,6 +217,13 @@
     tr.fc-scrollgrid-section.fc-scrollgrid-section-body .pbac-selected-domains-3 {
         display: block !important;
     }
+    .card-new-dec {
+    height: 206px;
+}
+.card-new-dec h4 {
+    font-size: 15px;
+    font-weight: 400;
+}
     .pbac-day-count-0 .fc-daygrid-day-top.justify-center {
     width: 100% !important;
 }

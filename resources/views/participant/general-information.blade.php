@@ -4,18 +4,232 @@
 @section('navbar_subtitle', 'Important information and guidelines')
 
 @section('content')
-<div class="max-w-4xl mx-auto">
-    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <div class="text-center py-12">
-            <div class="mb-4">
-                <i class="fa-solid fa-circle-info text-6xl text-primary opacity-20"></i>
-            </div>
-            <h2 class="text-2xl font-bold text-gray-900 mb-2">General Information</h2>
-            <p class="text-gray-600 mb-4">Important information and guidelines</p>
-            <div class="bg-gray-50 rounded-lg p-4 inline-block">
-                <p class="text-gray-500 font-medium">Content TBA</p>
-            </div>
+      <!-- WHY THE RUBY APP -->
+      <div class="flex flex-col md:flex-row items-center gap-8 py-[50px]">
+        <div class="md:w-1/3">
+          <img src=" {{ asset("images/app.png") }}" alt="Ruby App" class="rounded-lg w-full object-cover ">
         </div>
-    </div>
-</div>
+        <div class="md:w-2/3">
+          <h2 class="text-2xl font-bold mb-4 text-[#000]">WHY THE RUBY APP</h2>
+          <p class="text-gray-700 leading-relaxed mb-4">
+            Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin
+            literature from 45 BC, making it over 2000 years old.
+          </p>
+
+          <div class="space-y-5">
+          <!-- Myth 1 -->
+          <div class="flex items-start gap-3">
+             <i class="fas fa-check-square  text-[#520606] mt-1 text-[30px]"></i>
+            <div>
+              <p class="text-[#520606] font-semibold">MYTH: MENSTRUATION IS DIRTY OR IMPURE.</p>
+              <p class="text-gray-700">
+                <span class="font-semibold">Fact:</span> Menstrual blood is clean in any biological sense.
+                The body’s process is natural.
+              </p>
+            </div>
+          </div>
+
+          <!-- Myth 2 -->
+          <div class="flex items-start gap-3">
+            <i class="fas fa-check-square  text-[#520606] mt-1 text-[30px]"></i>
+            <div>
+              <p class="text-[#520606] font-semibold">MYTH: WOMEN SHOULDN’T EXERCISE DURING PERIODS.</p>
+              <p class="text-gray-700">
+                <span class="font-semibold">Fact:</span> Light exercise, yoga, or walking can actually reduce
+                cramps and boost mood.
+              </p>
+            </div>
+          </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ABOUT THE APP -->
+      <div class="flex flex-col md:flex-row-reverse items-center gap-8  py-[50px]">
+        <div class="md:w-1/3">
+          <img src="{{ asset("images/Aboutus.jpg") }}" alt="About the App" class="rounded-lg w-full object-cover ">
+        </div>
+        <div class="md:w-2/3">
+          <h2 class="text-2xl font-bold mb-4 text-[#000]">ABOUT THE APP</h2>
+          <p class="text-gray-700 leading-relaxed mb-4">
+            Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin
+            literature from 45 BC, making it over 2000 years old.
+          </p>
+
+
+          <div class="space-y-5">
+          <!-- Myth 1 -->
+          <div class="flex items-start gap-3">
+             <i class="fas fa-check-square  text-[#520606] mt-1 text-[30px]"></i>
+            <div>
+              <p class="text-[#520606] font-semibold">MYTH: MENSTRUATION IS DIRTY OR IMPURE.</p>
+              <p class="text-gray-700">
+                <span class="font-semibold">Fact:</span> Menstrual blood is clean in any biological sense.
+                The body’s process is natural.
+              </p>
+            </div>
+          </div>
+
+          <!-- Myth 2 -->
+          <div class="flex items-start gap-3">
+            <i class="fas fa-check-square  text-[#520606] mt-1 text-[30px]"></i>
+            <div>
+              <p class="text-[#520606] font-semibold">MYTH: WOMEN SHOULDN’T EXERCISE DURING PERIODS.</p>
+              <p class="text-gray-700">
+                <span class="font-semibold">Fact:</span> Light exercise, yoga, or walking can actually reduce
+                cramps and boost mood.
+              </p>
+            </div>
+          </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ABOUT THE RESEARCH -->
+      <div class="flex flex-col md:flex-row items-center gap-8 py-[50px]" >
+        <div class="md:w-1/3">
+          <img src="{{ asset("images/research.png") }}" alt="About the Research" class="rounded-lg w-full object-cover ">
+        </div>
+        <div class="md:w-2/3">
+          <h2 class="text-2xl font-bold mb-4 text-[#000]">ABOUT THE RESEARCH</h2>
+          <p class="text-gray-700 leading-relaxed mb-4">
+            Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin
+            literature from 45 BC, making it over 2000 years old.
+          </p>
+
+
+          <div class="space-y-5">
+          <!-- Myth 1 -->
+          <div class="flex items-start gap-3">
+             <i class="fas fa-check-square  text-[#520606] mt-1 text-[30px]"></i>
+            <div>
+              <p class="text-[#520606] font-semibold">MYTH: MENSTRUATION IS DIRTY OR IMPURE.</p>
+              <p class="text-gray-700">
+                <span class="font-semibold">Fact:</span> Menstrual blood is clean in any biological sense.
+                The body’s process is natural.
+              </p>
+            </div>
+          </div>
+
+          <!-- Myth 2 -->
+          <div class="flex items-start gap-3">
+            <i class="fas fa-check-square  text-[#520606] mt-1 text-[30px]"></i>
+            <div>
+              <p class="text-[#520606] font-semibold">MYTH: WOMEN SHOULDN’T EXERCISE DURING PERIODS.</p>
+              <p class="text-gray-700">
+                <span class="font-semibold">Fact:</span> Light exercise, yoga, or walking can actually reduce
+                cramps and boost mood.
+              </p>
+            </div>
+          </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PRIVACY INFORMATION -->
+      <div class="flex flex-col md:flex-row-reverse items-center gap-8">
+        <div class="md:w-1/3">
+          <img src="{{ asset("images/Privacys.png") }}" alt="Privacy Info" class="rounded-lg w-full object-cover">
+        </div>
+        <div class="md:w-2/3">
+          <h2 class="text-2xl font-bold mb-4 text-[#000]">PRIVACY INFORMATION</h2>
+          <p class="text-gray-700 leading-relaxed mb-4">
+            Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin
+            literature from 45 BC, making it over 2000 years old.
+          </p>
+
+
+          <div class="space-y-5">
+          <!-- Myth 1 -->
+          <div class="flex items-start gap-3">
+             <i class="fas fa-check-square  text-[#520606] mt-1 text-[30px]"></i>
+            <div>
+              <p class="text-[#520606] font-semibold">MYTH: MENSTRUATION IS DIRTY OR IMPURE.</p>
+              <p class="text-gray-700">
+                <span class="font-semibold">Fact:</span> Menstrual blood is clean in any biological sense.
+                The body’s process is natural.
+              </p>
+            </div>
+          </div>
+
+          <!-- Myth 2 -->
+          <div class="flex items-start gap-3">
+            <i class="fas fa-check-square  text-[#520606] mt-1 text-[30px]"></i>
+            <div>
+              <p class="text-[#520606] font-semibold">MYTH: WOMEN SHOULDN’T EXERCISE DURING PERIODS.</p>
+              <p class="text-gray-700">
+                <span class="font-semibold">Fact:</span> Light exercise, yoga, or walking can actually reduce
+                cramps and boost mood.
+              </p>
+            </div>
+          </div>
+          </div>
+        </div>
+      </div>
+      <section class="max-w-6xl mx-auto px-4 py-16">
+      <!-- Heading -->
+      <div class="mb-6">
+        <h2 class="text-2xl md:text-3xl font-bold mb-2">SEND US A MESSAGE</h2>
+        <p class="text-gray-700">Contrary to popular belief, Lorem Ipsum is not simply random text.</p>
+      </div>
+
+      <!-- Flex container -->
+      <div class="flex flex-col md:flex-row items-start gap-10">
+        <!-- Left: Image -->
+        <div class="w-full md:w-1/2">
+          <img
+            src="{{ asset("images/Aboutus.jpg") }}"
+            alt="Handshake"
+            class="rounded-lg w-full h-full object-cover shadow-md"
+          />
+        </div>
+
+        <!-- Right: Form -->
+        <div class="w-full md:w-1/2">
+          <form action="#" method="post" class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <input
+                type="text"
+                placeholder="First Name"
+                class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#7a1831]"
+              />
+              <input
+                type="text"
+                placeholder="Last Name"
+                class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#7a1831]"
+              />
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <input
+                type="email"
+                placeholder="Email Address"
+                class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#7a1831]"
+              />
+              <input
+                type="tel"
+                placeholder="Phone Number"
+                class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#7a1831]"
+              />
+            </div>
+
+            <textarea
+              rows="4"
+              placeholder="Tell us about your requirement*"
+              class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#7a1831]"
+            ></textarea>
+
+           <button
+  type="submit"
+  class="bg-[#7a1831] text-white font-semibold px-8 py-3 rounded-lg cursor-not-allowed opacity-50"
+  disabled
+>
+  Yes I want
+</button>
+
+          </form>
+        </div>
+      </div>
+    </section>
+
 @endsection
