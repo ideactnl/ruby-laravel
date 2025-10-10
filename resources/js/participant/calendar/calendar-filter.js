@@ -21,7 +21,6 @@ export function createFilterMenu() {
     ],
     selected: [],
 
-    // Haptic feedback helper
     triggerHaptic(type = 'light') {
       if (window.innerWidth <= 768 && 'vibrate' in navigator) {
         try {
@@ -51,7 +50,6 @@ export function createFilterMenu() {
     toggle(val) {
       const idx = this.selected.indexOf(val);
       if (idx >= 0) {
-        // Deselecting - light haptic feedback
         this.selected.splice(idx, 1);
         this.triggerHaptic('light');
         this.apply();

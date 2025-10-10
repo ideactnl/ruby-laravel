@@ -15,7 +15,6 @@ export class SwiperManager {
     if (!window.Swiper || !this.component.$refs?.symSwiper) return;
 
     try {
-      // Destroy existing swiper if it exists
       if (this.component._symSwiper) {
         this.component._symSwiper.destroy(true, true);
       }
@@ -48,7 +47,6 @@ export class SwiperManager {
     if (!window.Swiper || !this.component.$refs?.vidSwiper) return;
 
     try {
-      // Destroy existing swiper if it exists
       if (this.component._vidSwiper) {
         this.component._vidSwiper.destroy(true, true);
       }
@@ -78,7 +76,6 @@ export class SwiperManager {
    * Update swipers when data changes
    */
   updateSwipers() {
-    // Delay to ensure DOM is updated
     setTimeout(() => {
       if (this.component._symSwiper) {
         try {
@@ -127,7 +124,6 @@ export class SwiperManager {
   reinitializeSwipers() {
     this.destroySwipers();
     
-    // Delay to ensure cleanup is complete
     setTimeout(() => {
       this.initSymptomsSwiper();
       this.initVideosSwiper();

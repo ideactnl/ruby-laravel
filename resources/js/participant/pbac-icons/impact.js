@@ -40,7 +40,6 @@ export function getImpactIcon(value) {
   
   const { gradeYourDay, limitations } = value;
   
-  // Priority: specific limitations over general grade
   if (limitations && limitations.length > 0) {
     const primaryLimitation = limitations[0];
     const condition = CONDITIONS[primaryLimitation];
@@ -56,7 +55,6 @@ export function getImpactIcon(value) {
     }
   }
   
-  // Fallback to grade-based icon
   const { category, icon } = getGradeCategory(gradeYourDay);
   const tooltip = `Daily Impact: ${gradeYourDay}/10 (${category})`;
   

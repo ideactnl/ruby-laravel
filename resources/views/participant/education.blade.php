@@ -239,17 +239,26 @@
 
             function initFlipCards() {
                 const flipCards = document.querySelectorAll('[data-flip-card]');
+                const isMobile = window.innerWidth <= 768;
+                let isSwipingSlider = false;
+                let swipeStartTime = 0;
 
                 flipCards.forEach(card => {
                     const cardInner = card.querySelector('.card-new-dec');
                     let isFlipped = false;
+                    let touchStartX = 0;
+                    let touchStartY = 0;
+                    let hasMoved = false;
 
-                    const handleFlip = (e) => {
+                    const handleMobileFlip = (e) => {
+                        if (isSwipingSlider || hasMoved) {
+                            return;
+                        }
+
                         e.preventDefault();
                         e.stopPropagation();
 
                         isFlipped = !isFlipped;
-
                         triggerHapticFeedback('flip');
 
                         if (isFlipped) {
@@ -261,16 +270,70 @@
                         }
                     };
 
-                    card.addEventListener('click', handleFlip);
-                    card.addEventListener('touchstart', handleFlip, {
-                        passive: false
-                    });
+                    const handleDesktopHover = () => {
+                        cardInner.style.transform = 'rotateY(180deg)';
+                        card.classList.add('flipped');
+                    };
 
-                    card.addEventListener('touchmove', (e) => {
-                        e.preventDefault();
-                    }, {
-                        passive: false
-                    });
+                    const handleDesktopLeave = () => {
+                        cardInner.style.transform = 'rotateY(0deg)';
+                        card.classList.remove('flipped');
+                    };
+
+                    if (isMobile) {
+                        card.addEventListener('touchstart', (e) => {
+                            const touch = e.touches[0];
+                            touchStartX = touch.clientX;
+                            touchStartY = touch.clientY;
+                            hasMoved = false;
+                            swipeStartTime = Date.now();
+                        }, { passive: true });
+
+                        card.addEventListener('touchmove', (e) => {
+                            if (!e.touches[0]) return;
+                            
+                            const touch = e.touches[0];
+                            const deltaX = Math.abs(touch.clientX - touchStartX);
+                            const deltaY = Math.abs(touch.clientY - touchStartY);
+                            
+                            if (deltaX > 10 || deltaY > 5) {
+                                hasMoved = true;
+                                isSwipingSlider = true;
+                            }
+                        }, { passive: true });
+
+                        card.addEventListener('touchend', (e) => {
+                            setTimeout(() => {
+                                isSwipingSlider = false;
+                                hasMoved = false;
+                            }, 100);
+                        }, { passive: true });
+
+                        card.addEventListener('click', handleMobileFlip);
+                    } else {
+                        card.addEventListener('mouseenter', handleDesktopHover);
+                        card.addEventListener('mouseleave', handleDesktopLeave);
+                        
+                        card.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                        });
+                    }
+                });
+
+                let resizeTimeout;
+                window.addEventListener('resize', () => {
+                    clearTimeout(resizeTimeout);
+                    resizeTimeout = setTimeout(() => {
+                        const newIsMobile = window.innerWidth <= 768;
+                        if (newIsMobile !== isMobile) {
+                            flipCards.forEach(card => {
+                                const newCard = card.cloneNode(true);
+                                card.parentNode.replaceChild(newCard, card);
+                            });
+                            initFlipCards();
+                        }
+                    }, 250);
                 });
             }
 

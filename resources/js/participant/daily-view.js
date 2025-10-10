@@ -24,7 +24,6 @@ window.dailyView = function dailyView() {
     modalData: null,
     modalContent: '',
     
-    // Module instances
     _dateManager: null,
     _dataManager: null,
     _modalManager: null,
@@ -87,12 +86,10 @@ window.dailyView = function dailyView() {
       this._dateManager.nextDay();
     },
     
-    // Data methods
     fetchData() {
       return this._dataManager.fetchData();
     },
 
-    // Tooltip methods - delegate to TooltipGenerators
     getBloodLossTooltip(pillar) {
       return TooltipGenerators.getBloodLossTooltip(pillar);
     },
@@ -137,7 +134,6 @@ window.dailyView = function dailyView() {
       return TooltipGenerators.getNotesTooltip(pillar);
     },
 
-    // Modal methods - delegate to ModalManager
     openDomainModal(item) {
       if (window.innerWidth <= 768 && 'vibrate' in navigator) {
         try {
