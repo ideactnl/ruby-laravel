@@ -1,0 +1,359 @@
+{
+  "bloodLoss": {
+    "title": "Blood Loss Details",
+    "severityTitle": "Blood Loss Severity",
+    "trackingTitle": "Tracking Information",
+    "labels": {
+      "severity": "Severity:",
+      "amountRecorded": "Amount recorded:",
+      "bloodLossRecorded": "Blood loss recorded"
+    },
+    "spotting": {
+      "title": "Spotting Detected",
+      "description": "Light bleeding between periods or at unexpected times. This may be normal but worth tracking for patterns.",
+      "color": "orange"
+    },
+    "severityDescriptions": {
+      "very_light": "Very light flow - minimal bleeding, may only need panty liners",
+      "light": "Light flow - comfortable with regular pads or tampons", 
+      "moderate": "Moderate flow - normal menstrual bleeding, may need to change protection every 3-4 hours",
+      "heavy": "Heavy flow - requires frequent changes of protection, may impact daily activities",
+      "very_heavy": "Very heavy flow - may require super absorbent products, could significantly impact daily life"
+    },
+    "trackingInfo": "Tracking blood loss helps identify patterns and assess overall menstrual health. Share this data with your healthcare provider if you notice significant changes."
+  },
+  "pain": {
+    "title": "Pain Assessment",
+    "levelTitle": "Pain Level",
+    "regionsTitle": "Affected Regions",
+    "regionsWarning": "Multiple pain regions may indicate widespread inflammation or condition progression.",
+    "levelDescriptions": {
+      "1": "Minimal discomfort - barely noticeable",
+      "2": "Mild pain - noticeable but doesn't interfere with activities",
+      "3": "Mild to moderate pain - some interference with daily activities",
+      "4": "Moderate pain - interferes with concentration and daily tasks",
+      "5": "Moderate to severe pain - significantly impacts daily activities",
+      "6": "Severe pain - difficult to ignore, major impact on daily life",
+      "7": "Very severe pain - dominates senses, difficult to think clearly",
+      "8": "Intense pain - physical activity severely limited",
+      "9": "Excruciating pain - unable to converse, crying out",
+      "10": "Unimaginable pain - bedridden, possibly delirious"
+    },
+    "trackingInfo": "Pain tracking helps identify patterns and triggers. This information is valuable for healthcare providers to understand your condition better."
+  },
+  "mood": {
+    "title": "Mood Assessment",
+    "positiveTitle": "Positive Emotions Experienced",
+    "negativeTitle": "Challenging Emotions Experienced", 
+    "balanceTitle": "Mood Balance",
+    "overallLabels": {
+      "positive": "Overall: Positive Day",
+      "challenging": "Overall: Challenging Day",
+      "balanced": "Overall: Balanced Day"
+    },
+    "moodDescriptions": {
+      "calm": "Feeling peaceful and relaxed, free from stress or anxiety",
+      "happy": "Experiencing joy, contentment, and positive emotions",
+      "excited": "Feeling energetic, enthusiastic, and looking forward to activities",
+      "hopes": "Feeling optimistic and looking forward to positive outcomes",
+      "confident": "Feeling self-assured and capable of handling challenges",
+      "grateful": "Feeling thankful and appreciative of positive aspects in life",
+      "anxious": "Feeling worried, uneasy, or apprehensive about situations",
+      "stressed": "Feeling overwhelmed, pressured, or unable to cope effectively",
+      "ashamed": "Feeling embarrassed, guilty, or disappointed in oneself",
+      "angry": "Feeling frustrated, irritated, or upset about circumstances",
+      "irritable": "Feeling easily annoyed, impatient, or quick to anger",
+      "sad": "Feeling down, melancholy, or experiencing low mood",
+      "mood_swings": "Experiencing rapid or unpredictable changes in emotional state",
+      "worthless": "Feeling inadequate, useless, or lacking in value",
+      "guilty": "Feeling regretful, responsible for wrongdoing, or self-blame",
+      "overwhelmed": "Feeling unable to cope with demands or responsibilities",
+      "hopeless": "Feeling without hope, despairing, or pessimistic about the future",
+      "depressed": "Experiencing persistent low mood, sadness, or lack of interest"
+    },
+    "trackingInfo": "Mood tracking helps identify emotional patterns related to your cycle and overall wellbeing.",
+    "positiveMessage": "Positive emotions can help with symptom management and overall wellbeing.",
+    "negativeMessage": "Challenging emotions are normal. Consider self-care strategies and support when needed.",
+    "trackingInsights": {
+      "title": "Mood Tracking Insights",
+      "todaysBalance": "Today's Balance:",
+      "balanceMessages": {
+        "strongPositive": "Strong positive day! This emotional state may help with symptom management and overall wellbeing.",
+        "mostlyPositive": "Mostly positive day with some challenges. This is a normal emotional balance.",
+        "balanced": "Balanced emotional day. You experienced both positive and challenging emotions.",
+        "somewhatChallenging": "Somewhat challenging day emotionally. Consider self-care strategies that have helped before.",
+        "challenging": "Emotionally challenging day. Remember that difficult emotions are temporary and support is available."
+      },
+      "correlationInfo": "Mood patterns often correlate with physical symptoms. Share this information with your healthcare team to get comprehensive care."
+    }
+  },
+  "impact": {
+    "title": "Daily Impact & Limitations",
+    "gradeTitle": "Day Quality Rating",
+    "limitationsTitle": "Daily Limitations:",
+    "noLimitationsTitle": "No Limitations Reported",
+    "analysisTitle": "Daily Assessment Analysis",
+    "impactDetailsTitle": "Impact Details:",
+    "gradeLabels": {
+      "great": "Great Day",
+      "good": "Good Day", 
+      "challenging": "Challenging Day",
+      "difficult": "Difficult Day"
+    },
+    "gradeDescriptions": {
+      "10": "Perfect day - no symptoms interfered with daily activities",
+      "9": "Excellent day - minimal symptom impact, felt very good",
+      "8": "Very good day - slight symptoms but managed well",
+      "7": "Good day - some symptoms but able to function normally",
+      "6": "Decent day - moderate symptoms with some limitations",
+      "5": "Average day - symptoms present but manageable",
+      "4": "Challenging day - symptoms significantly impacted activities",
+      "3": "Difficult day - symptoms made most activities challenging",
+      "2": "Very difficult day - symptoms severely limited activities",
+      "1": "Extremely difficult day - symptoms dominated the day",
+      "0": "No assessment provided"
+    },
+    "limitationDescriptions": {
+      "used_medication": "Needed medication to manage symptoms - indicates active symptom management",
+      "missed_work": "Unable to attend work due to symptoms - significant impact on professional life",
+      "missed_school": "Could not attend educational activities - academic impact from symptoms",
+      "could_not_sport": "Physical activities were limited - symptoms affected exercise capacity",
+      "missed_social_activities": "Social interactions were avoided - symptoms impacted social wellbeing",
+      "missed_leisure_activities": "Recreational activities were skipped - reduced quality of life",
+      "had_to_sit_more": "Required more sitting/resting - symptoms affected mobility and energy",
+      "had_to_lie_down": "Needed to lie down more than usual - significant symptom burden",
+      "had_to_stay_longer_in_bed": "Extended bed rest required - severe symptom impact",
+      "could_not_do_unpaid_work": "Household/volunteer work affected - daily functioning impaired",
+      "other": "Additional limitations not captured above - unique symptom impacts"
+    },
+    "impactLevels": {
+      "minimal": "Minimal - Symptoms had little to no effect on daily functioning.",
+      "mild": "Mild - Some limitations but overall functioning maintained.",
+      "moderate": "Moderate - Several areas of life affected by symptoms.",
+      "significant": "Significant - Multiple daily activities were limited.",
+      "severe": "Severe - Symptoms extensively affected daily functioning."
+    },
+    "noLimitationsMessage": "Great! Your symptoms did not significantly interfere with your daily activities today.",
+    "multipleLimitationsSummary": "Multiple limitations suggest significant symptom burden. Consider discussing management strategies with your healthcare provider.",
+    "trackingInfo": "Impact tracking helps quantify how symptoms affect your daily life and activities."
+  },
+  "generalHealth": {
+    "title": "General Health & Energy",
+    "energyTitle": "Energy Assessment",
+    "symptomsTitle": "Symptoms Experienced",
+    "noSymptomsTitle": "No Symptoms Reported",
+    "correlationTitle": "Energy & Symptom Correlation",
+    "insightsTitle": "General Health Insights",
+    "energyLevels": {
+      "1": "Very Low - Exhausted, barely able to function",
+      "2": "Low - Tired, limited energy for activities", 
+      "3": "Moderate - Average energy, can handle daily tasks",
+      "4": "Good - Above average energy, feeling capable",
+      "5": "High - Excellent energy, feeling vibrant"
+    },
+    "energyDescriptions": {
+      "1": "Very Low Energy - Feeling extremely tired, may need to rest frequently and avoid strenuous activities",
+      "2": "Low Energy - Below normal energy levels, some activities may feel challenging or require more effort",
+      "3": "Moderate Energy - Average energy levels, able to handle daily tasks with normal effort",
+      "4": "Good Energy - Above average energy, feeling capable and able to engage in most activities comfortably", 
+      "5": "High Energy - Excellent energy levels, feeling vibrant and able to tackle demanding activities"
+    },
+    "symptomDescriptions": {
+      "fatigue": "Persistent tiredness that doesn't improve with rest, often affecting daily functioning",
+      "headache": "Head pain that may range from mild discomfort to severe, debilitating pain",
+      "nausea": "Feeling of sickness with an inclination to vomit, may affect appetite and daily activities",
+      "dizziness": "Sensation of unsteadiness or spinning that may affect balance and coordination",
+      "weakness": "Reduced strength or energy affecting physical capabilities and endurance",
+      "joint_pain": "Discomfort or pain in joints that may limit movement and daily activities",
+      "muscle_pain": "Aching or soreness in muscles that may affect mobility and comfort",
+      "fever": "Elevated body temperature indicating possible infection or inflammation",
+      "chills": "Feeling cold or shivering, often accompanying fever or illness",
+      "sweating": "Excessive perspiration that may indicate hormonal changes or illness",
+      "bloated": "Feeling of fullness or swelling in the abdomen, often related to digestive issues",
+      "painful_sensitive_breasts": "Breast tenderness or pain, often related to hormonal changes",
+      "acne": "Skin breakouts that may be related to hormonal fluctuations or stress",
+      "muscle_joint_pain": "Combined muscle and joint discomfort affecting mobility and comfort",
+      "headache_migraine": "Severe headache that may include sensitivity to light, sound, or nausea"
+    },
+    "correlationMessages": {
+      "lowEnergyWithSymptoms": "Your low energy level combined with symptoms suggests significant health impact today.",
+      "goodEnergyWithSymptoms": "Despite symptoms, your good energy level shows resilience and effective coping.",
+      "lowEnergyNoSymptoms": "Low energy without other symptoms may indicate need for rest or lifestyle adjustments.",
+      "goodEnergyNoSymptoms": "Excellent! High energy with no symptoms indicates optimal health management.",
+      "moderate": "Your energy and symptom levels suggest a manageable health day."
+    },
+    "insightMessages": {
+      "goodEnergy": "Good energy levels support better symptom management, improved mood, and enhanced quality of life.",
+      "lowEnergy": "Low energy may indicate increased disease activity or treatment side effects.",
+      "moderate": "Moderate energy levels are manageable but may benefit from lifestyle adjustments."
+    },
+    "noSymptomsMessage": "Great! No symptoms reported today indicates good health management.",
+    "noSymptomsSummary": "Symptom-free days are important markers of good health management and treatment effectiveness.",
+    "multipleSymptomsWarning": "Multiple symptoms may indicate increased disease activity or treatment side effects.",
+    "trackingInfo": "Energy levels often correlate with symptom burden. Tracking both helps identify patterns and treatment effectiveness."
+  },
+  "diet": {
+    "title": "Diet Items",
+    "totalItemsLabel": "Total items consumed:",
+    "beneficialTitle": "Beneficial Food Choices",
+    "negativeTitle": "Foods to Monitor",
+    "neutralTitle": "Neutral Food Choices",
+    "beneficialSummary": "These foods support overall health and may help manage symptoms through their nutritional benefits.",
+    "negativeSummary": "These items may contribute to inflammation or worsen symptoms in some individuals. Consider moderation or alternatives.",
+    "neutralSummary": "These foods have neutral effects on your symptoms but still contribute to overall nutrition.",
+    "descriptions": {
+      "vegetables": "Rich in vitamins, minerals, and fiber. Essential for digestive health and inflammation reduction.",
+      "fruit": "Natural source of vitamins, antioxidants, and fiber. Supports immune system and provides natural energy.",
+      "potato_rice_bread": "Complex carbohydrates provide sustained energy. Choose whole grains when possible.",
+      "dairy_products": "Good source of calcium and protein. May affect inflammation in some individuals.",
+      "nuts_tofu_tempe": "Plant-based proteins with healthy fats. Anti-inflammatory properties may help with symptoms.",
+      "egg": "Complete protein source with essential amino acids. Generally well-tolerated by most people.",
+      "fish": "Omega-3 fatty acids have anti-inflammatory properties. Excellent for overall health.",
+      "meat": "High-quality protein source. Red meat may increase inflammation in some people.",
+      "snacks": "Processed foods may contribute to inflammation. Choose healthier alternatives when possible.",
+      "water": "Essential for hydration and overall health. Helps with symptom management and medication effectiveness.",
+      "coffee": "Contains antioxidants but caffeine may affect some symptoms. Monitor individual response.",
+      "alcohol": "May interfere with medications and worsen symptoms. Consider limiting intake."
+    },
+    "trackingInfo": "Diet tracking helps identify foods that may influence your symptoms and overall wellbeing."
+  },
+  "stoolUrine": {
+    "title": "Stool & Urine Conditions",
+    "bloodDetectionTitle": "Blood Detection",
+    "consistencyTitle": "Stool Consistency",
+    "trackingTitle": "Digestive Health Tracking",
+    "bloodMessages": {
+      "urine": "Blood detected in urine may indicate urinary tract issues or other conditions requiring medical evaluation.",
+      "stool": "Blood in stool can indicate digestive tract issues and should be evaluated by a healthcare provider.",
+      "both": "Blood detected in both urine and stool requires prompt medical attention for proper evaluation."
+    },
+    "consistencyDescriptions": {
+      "hard": "Hard, difficult to pass stools may indicate constipation or dehydration. Consider increasing fiber and water intake.",
+      "normal": "Normal, well-formed stools indicate healthy digestive function and good hydration.",
+      "soft": "Soft stools are generally normal but monitor for changes that might indicate digestive issues.",
+      "watery": "Watery stools may indicate diarrhea, which can lead to dehydration if persistent.",
+      "something_else": "Unusual stool characteristics may warrant further observation or medical consultation.",
+      "no_stool": "No bowel movement today. Monitor for patterns of constipation or changes in bowel habits."
+    },
+    "bloodWarning": "Blood detection warrants medical evaluation. Contact your healthcare provider to discuss these findings.",
+    "normalMessage": "Normal digestive function supports overall health and medication absorption.",
+    "trackingInfo": "Digestive health tracking helps identify patterns that may be related to your condition or treatments."
+  },
+  "sleep": {
+    "title": "Sleep Quality",
+    "scheduleTitle": "Sleep Schedule",
+    "issuesTitle": "Sleep Challenges",
+    "analysisTitle": "Sleep Analysis",
+    "noIssuesTitle": "Quality Sleep",
+    "qualityLabels": {
+      "good": "Good Sleep",
+      "okay": "Okay Sleep", 
+      "poor": "Poor Sleep"
+    },
+    "issueDescriptions": {
+      "trouble_asleep": "Difficulty initiating sleep may be caused by stress, pain, caffeine, or irregular sleep schedules.",
+      "wake_up_during_night": "Sleep fragmentation can reduce sleep quality and may be related to pain, anxiety, or environmental factors.",
+      "not_tired_rested": "Feeling unrefreshed despite sleep may indicate poor sleep quality or underlying sleep disorders."
+    },
+    "durationMessages": {
+      "optimal": "Your sleep duration falls within the recommended 7-9 hours for adults.",
+      "short": "Less than 6 hours may not provide adequate rest for optimal health and symptom management.",
+      "long": "More than 10 hours may indicate underlying health issues or medication effects.",
+      "borderline": "Consider aiming for 7-9 hours for optimal health benefits."
+    },
+    "qualityMessage": "Quality sleep supports immune function, pain management, and emotional wellbeing.",
+    "poorSleepWarning": "Poor sleep can worsen symptoms and affect overall health. Consider discussing sleep hygiene strategies with your healthcare provider.",
+    "trackingInfo": "Sleep patterns can significantly impact symptom severity, mood, and treatment effectiveness. Consistent, quality sleep is crucial for managing chronic conditions."
+  },
+  "exercise": {
+    "title": "Exercise Activity",
+    "durationTitle": "Duration",
+    "typesTitle": "Activity Types",
+    "benefitsTitle": "Exercise Benefits",
+    "insightsTitle": "Activity Tracking Insights",
+    "noExerciseTitle": "Rest Day",
+    "durationDescriptions": {
+      "less_thirty": "Less than 30 minutes of activity",
+      "thirty_to_sixty": "30-60 minutes of moderate activity", 
+      "greater_sixty": "More than 60 minutes of activity"
+    },
+    "typeDescriptions": {
+      "high_impact": "High-impact exercises like running or jumping. Great for cardiovascular health and bone density, but may increase joint stress.",
+      "low_impact": "Low-impact activities like walking or swimming. Gentle on joints while providing cardiovascular and strength benefits.",
+      "precision_exercise": "Controlled, precise movements that focus on form and technique. Excellent for rehabilitation and targeted strengthening."
+    },
+    "benefitMessages": {
+      "extended": "Over 60 minutes of exercise provides excellent cardiovascular and mental health benefits.",
+      "moderate": "30-60 minutes provides substantial health benefits and is ideal for most fitness goals.",
+      "light": "Even short exercise sessions provide health benefits and can help manage symptoms."
+    },
+    "noExerciseMessage": "Rest days are important for recovery and preventing overexertion.",
+    "noExerciseAdvice": "Consider gentle activities like stretching or short walks when feeling up to it. Always listen to your body and consult your healthcare provider about appropriate exercise levels.",
+    "exerciseBenefits": "Regular exercise can help reduce inflammation, improve mood, enhance sleep quality, and may help manage chronic condition symptoms.",
+    "trackingBenefits": "Tracking exercise helps identify which activities you tolerate well and which might trigger symptoms. This information is valuable for creating a personalized exercise plan.",
+    "restDayBenefits": "Both active days and rest days are important data points for understanding your activity tolerance and symptom patterns."
+  },
+  "sexualHealth": {
+    "title": "Sexual Health",
+    "activityTitle": "Activity Details",
+    "avoidanceTitle": "Avoidance",
+    "issuesTitle": "Health Concerns",
+    "insightsTitle": "Sexual Health & Wellbeing",
+    "statusMessages": {
+      "satisfied": "Satisfying Experience",
+      "unsatisfied": "Unsatisfying Experience",
+      "avoided": "Activity Avoided",
+      "noActivity": "No Activity"
+    },
+    "issueDescriptions": {
+      "pain": "Pain during sexual activity may indicate underlying conditions that warrant medical evaluation.",
+      "discomfort": "Discomfort can affect intimacy and may be related to your health condition or treatments.",
+      "bleeding": "Bleeding during or after sexual activity should be evaluated by a healthcare provider.",
+      "dryness": "Vaginal dryness can be caused by hormonal changes, medications, or medical conditions.",
+      "fatigue": "Fatigue affecting sexual activity may be related to your overall health condition."
+    },
+    "experienceMessages": {
+      "positive": "Satisfying sexual activity contributes to overall wellbeing and relationship health.",
+      "negative": "Unsatisfying experiences may be related to physical symptoms, medications, or emotional factors.",
+      "avoided": "Avoidance may be due to physical discomfort, fatigue, or concern about symptoms.",
+      "noActivity": "Sexual activity patterns can be affected by health conditions, treatments, and overall wellbeing."
+    },
+    "avoidanceMessage": "Sexual activity was avoided today, which may be related to symptoms or health concerns.",
+    "issuesWarning": "Sexual health concerns can significantly impact quality of life. Consider discussing these issues with your healthcare provider for appropriate support and treatment options.",
+    "trackingInfo": "Sexual health is an important component of overall health and quality of life. Tracking patterns helps identify how your condition affects intimacy and can guide discussions with healthcare providers."
+  },
+  "notes": {
+    "title": "Personal Notes",
+    "contentTitle": "Your Personal Note",
+    "detailsTitle": "Note Details",
+    "valueTitle": "The Value of Personal Notes",
+    "tipsTitle": "Note-Taking Tips",
+    "noNoteTitle": "No Notes Today",
+    "analysisLabels": {
+      "length": "Length",
+      "themes": "Key themes"
+    },
+    "themeKeywords": {
+      "pain": "Pain mentioned",
+      "mood": "Mood referenced", 
+      "energy": "Energy discussed",
+      "medication": "Medication noted",
+      "sleep": "Sleep referenced"
+    },
+    "valueMessages": {
+      "withNote": "Recording personal notes helps create a comprehensive health picture.",
+      "withoutNote": "Consider adding notes: Personal observations can be incredibly valuable for health tracking."
+    },
+    "benefitMessages": {
+      "withNote": "Your notes provide valuable context that numbers alone cannot capture. They help healthcare providers understand your daily experience and can reveal important patterns over time.",
+      "withoutNote": "Notes can include how you felt, what helped or worsened symptoms, medication effects, or any other observations. This qualitative data complements your quantitative health metrics."
+    },
+    "tips": [
+      "Record specific symptoms and their severity",
+      "Note what helped or worsened your condition", 
+      "Include medication effects or side effects",
+      "Mention environmental factors (weather, stress, etc.)",
+      "Be honest: Accurate notes lead to better care"
+    ]
+  }
+}

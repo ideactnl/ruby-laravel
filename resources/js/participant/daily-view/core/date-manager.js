@@ -28,7 +28,6 @@ export class DateManager {
 
       this.setupNativeDatePicker(el);
     } catch (e) {
-      // Silent fail
     }
   }
 
@@ -36,18 +35,15 @@ export class DateManager {
    * Setup native HTML5 date picker
    */
   setupNativeDatePicker(el) {
-    // Configure as date input
     el.type = 'date';
     el.value = this.component.date;
     
-    // Add change listener
     const changeHandler = (e) => {
       if (e.target.value && e.target.value !== this.component.date) {
         this.updateDate(e.target.value, true);
       }
     };
     
-    // Remove any existing listeners to avoid duplicates
     el.removeEventListener('change', changeHandler);
     el.addEventListener('change', changeHandler);
   }
@@ -61,23 +57,18 @@ export class DateManager {
     if (!el) return;
     
     try {
-      // Set current date
       el.value = this.component.date;
       
-      // Try showPicker first (modern browsers)
       if (typeof el.showPicker === 'function') {
         el.showPicker();
       } else {
-        // Fallback for older browsers
         el.focus();
         el.click();
       }
     } catch (e) {
-      // Final fallback
       try {
         el.click();
       } catch (clickError) {
-        // Silent fail
       }
     }
   }
@@ -112,12 +103,10 @@ export class DateManager {
     
     this.component.date = newDate;
     
-    // Update URL
     const url = new URL(window.location);
     url.searchParams.set('date', newDate);
     window.history.replaceState({}, '', url);
     
-    // Update the native date input if not being called from the picker itself
     if (!skipPickerUpdate) {
       const el = this.component.$refs?.datePick;
       if (el) {
@@ -125,7 +114,6 @@ export class DateManager {
       }
     }
     
-    // Fetch new data
     this.component.fetchData();
   }
 

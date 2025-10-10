@@ -22,7 +22,6 @@ export class CalendarUI {
    * Setup month label display for both desktop and mobile
    */
   setupMonthDisplay() {
-    // Desktop month label
     const monthEl = document.getElementById('cal-month-label');
     if (monthEl) {
       const fmt = new Intl.DateTimeFormat(undefined, { month: 'long', year: 'numeric' });
@@ -33,7 +32,6 @@ export class CalendarUI {
       this.calendar.on('datesSet', setMonth);
     }
 
-    // Mobile date display
     this.setupMobileDateDisplay();
   }
 
@@ -51,28 +49,23 @@ export class CalendarUI {
         const currentCalendarDate = this.calendar.getDate();
         const today = new Date();
         
-        // Check if we're viewing current month
         const isCurrentMonth = currentCalendarDate.getFullYear() === today.getFullYear() &&
           currentCalendarDate.getMonth() === today.getMonth();
 
         if (isCurrentMonth) {
-          // Show today's date when viewing current month (zero-padded)
           mobileDate.textContent = today.getDate().toString().padStart(2, '0');
           mobileDate.classList.add('text-primary');
           mobileDate.classList.remove('text-gray-500');
         } else {
-          // Show "01" when viewing other months, keep primary styling
           mobileDate.textContent = '01';
           mobileDate.classList.add('text-primary');
           mobileDate.classList.remove('text-gray-500');
         }
 
-        // Always show the calendar's current month/year
         mobileMonth.textContent = currentCalendarDate.toLocaleDateString('en-US', { month: 'short' }).toUpperCase();
         mobileYear.textContent = currentCalendarDate.getFullYear();
       };
 
-      // Update on calendar navigation
       updateMobileDate();
       this.calendar.on('datesSet', updateMobileDate);
     }
@@ -132,7 +125,6 @@ export class CalendarUI {
           window.participantCalendar.updateSize();
         }
 
-        // Update icon cursor styles based on current screen size
         this.updateIconCursorStyles();
       }, 100);
     };
@@ -171,7 +163,6 @@ export class CalendarUI {
    * Handle date click navigation with improved mobile support
    */
   static handleDateClick(info) {
-    // Prevent navigation during scrolling or swiping
     if (window.isScrolling || window.touchMoved) {
       return false;
     }
@@ -183,21 +174,19 @@ export class CalendarUI {
       }
     }
 
-    // Add small delay to ensure touch events have settled
     setTimeout(() => {
       if (!window.isScrolling && !window.touchMoved) {
         window.location.href = `/participant/daily-view?date=${info.dateStr}`;
       }
     }, 50);
 
-    return false; // Prevent immediate navigation
+    return false; 
   }
 
   /**
    * Handle icon click navigation to daily view
    */
   static handleIconClick(event, dateStr) {
-    // Prevent event bubbling
     event.preventDefault();
     event.stopPropagation();
 
@@ -205,7 +194,6 @@ export class CalendarUI {
       return false;
     }
 
-    // Navigate to daily view for this specific date
     setTimeout(() => {
       if (!window.isScrolling && !window.touchMoved) {
         window.location.href = `/participant/daily-view?date=${dateStr}`;

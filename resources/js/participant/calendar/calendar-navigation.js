@@ -16,10 +16,10 @@ export class CalendarNavigation {
   triggerHapticFeedback(type = 'light') {
     if ('vibrate' in navigator) {
       const patterns = {
-        light: 10,      // Light tap for swipe
-        medium: 25,     // Medium feedback for navigation
-        strong: 40,     // Strong feedback for date navigation
-        success: [10, 50, 10]  // Success pattern for completed action
+        light: 10,      
+        medium: 25,     
+        strong: 40,     
+        success: [10, 50, 10]  
       };
 
       try {
@@ -144,7 +144,6 @@ export class CalendarNavigation {
     const mobileThreshold = 50;
     const verticalThreshold = 30;
 
-    // Global state for preventing clicks during gestures
     window.isScrolling = false;
     window.touchMoved = false;
     let scrollTimeout;
@@ -159,7 +158,6 @@ export class CalendarNavigation {
       touchStartY = e.touches[0].clientY;
       touchStartX = e.touches[0].clientX;
 
-      // Clear any existing timeouts
       clearTimeout(scrollTimeout);
       clearTimeout(touchTimeout);
     }, { passive: true });
@@ -172,14 +170,12 @@ export class CalendarNavigation {
       const diffY = currentY - touchStartY;
       const diffX = currentX - touchStartX;
 
-      // Detect any movement
       if (Math.abs(diffY) > 3 || Math.abs(diffX) > 3) {
         touchMoved = true;
         window.touchMoved = true;
         window.isScrolling = true;
       }
 
-      // Check for horizontal swipe (mobile app-like navigation)
       const isHorizontalSwipe = Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > mobileThreshold;
       const isVerticalMovement = Math.abs(diffY) > verticalThreshold;
 
@@ -192,18 +188,14 @@ export class CalendarNavigation {
         }
         e.stopPropagation();
 
-        // Left swipe = next month, Right swipe = previous month
         if (diffX < 0) {
-          // Swiped left - go to next month
           this.triggerHapticFeedback('light');
           goNextThrottled();
         } else {
-          // Swiped right - go to previous month  
           this.triggerHapticFeedback('light');
           goPrevThrottled();
         }
 
-        // Set timeout for swipe gestures
         clearTimeout(scrollTimeout);
         scrollTimeout = setTimeout(() => {
           window.isScrolling = false;
@@ -211,10 +203,8 @@ export class CalendarNavigation {
         }, 250);
 
       } else if (isVerticalMovement && Math.abs(diffY) > 20) {
-        // Allow vertical scrolling but prevent calendar navigation
         touchActive = false;
 
-        // Shorter timeout for vertical scrolling
         clearTimeout(scrollTimeout);
         scrollTimeout = setTimeout(() => {
           window.isScrolling = false;
@@ -227,23 +217,19 @@ export class CalendarNavigation {
       touchActive = false;
 
       if (touchMoved && !swipeDetected) {
-        // Regular touch end - shorter timeout
         clearTimeout(scrollTimeout);
         scrollTimeout = setTimeout(() => {
           window.isScrolling = false;
           window.touchMoved = false;
         }, 75);
       } else if (!touchMoved) {
-        // Pure tap - immediate reset
         window.isScrolling = false;
         window.touchMoved = false;
       }
 
-      // Reset swipe detection
       swipeDetected = false;
     }, { passive: true });
 
-    // Handle touch cancel (when touch is interrupted)
     this.calendarElement.addEventListener('touchcancel', (e) => {
       touchActive = false;
       swipeDetected = false;

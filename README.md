@@ -1,6 +1,6 @@
-# Ruby-Laravel API Project
+# Ruby
 
-A comprehensive Laravel API application for medical data management with automated deployment workflows and comprehensive testing.
+A comprehensive Laravel API application for medical data management with automated deployment workflows and testing.
 
 ## 🚀 Features
 

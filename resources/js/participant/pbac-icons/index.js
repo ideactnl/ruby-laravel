@@ -41,14 +41,12 @@ export function getPbacIcon(type, value) {
     return mapper(value);
   }
   
-  // Fallback
   return {
     src: `${ICON_BASE_PATH}${type}.png`,
     label: `${type}: ${JSON.stringify(value)}`
   };
 }
 
-// Export individual mappers for direct use if needed
 export {
   getBloodLossIcon,
   getPainIcon,

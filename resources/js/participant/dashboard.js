@@ -11,10 +11,8 @@ import {
   CalendarUI
 } from './calendar/index.js';
 
-// Expose filter menu for Alpine.js
 window.filterMenu = createFilterMenu;
 
-// Global function to go to current month
 window.goToCurrentMonth = () => {
   if (window.participantCalendar) {
     if (window.innerWidth <= 768 && 'vibrate' in navigator) {
@@ -33,10 +31,8 @@ window.addEventListener('DOMContentLoaded', () => {
   if (!el || !window.FullCalendar) return;
   const { Calendar } = window.FullCalendar;
 
-  // Preload common PBAC icons for better performance
   CalendarLayout.preloadCommonIcons();
 
-  // Initialize event handler
   const eventHandler = new CalendarEvents();
 
   const calendar = new Calendar(el, {
@@ -56,16 +52,12 @@ window.addEventListener('DOMContentLoaded', () => {
   window.participantCalendar = calendar;
   calendar.render();
 
-  // Initialize UI components
   const calendarUI = new CalendarUI(calendar);
   
-  // Initialize navigation
   const navigation = new CalendarNavigation(calendar, el);
 
-  // Apply day styling
   CalendarLayout.applyDayTopCenter(el);
   calendar.on('datesSet', () => CalendarLayout.applyDayTopCenter(el));
 
-  // Prefetch previous months data
   eventHandler.prefetchPreviousMonths();
 });
