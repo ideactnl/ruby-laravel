@@ -1,0 +1,109 @@
+{
+  "bloodLoss": {
+    "noData": "No data",
+    "spottingDetected": "Spotting detected",
+    "veryHeavy": "Very heavy",
+    "heavy": "Heavy", 
+    "moderate": "Moderate",
+    "light": "Light",
+    "contexts": {
+      "spotting": "Spotting",
+      "veryHeavy": "Very Heavy",
+      "heavy": "Heavy",
+      "moderate": "Moderate", 
+      "light": "Light"
+    }
+  },
+  "pain": {
+    "noPain": "No pain",
+    "severePain": "Severe pain",
+    "moderatePain": "Moderate pain", 
+    "mildPain": "Mild pain",
+    "lightPain": "Light pain",
+    "contexts": {
+      "severe": "Severe",
+      "moderate": "Moderate",
+      "mild": "Mild",
+      "light": "Light"
+    }
+  },
+  "impact": {
+    "noImpact": "No impact",
+    "greatDay": "Great day",
+    "goodDay": "Good day",
+    "challengingDay": "Challenging day",
+    "difficultDay": "Difficult day",
+    "contexts": {
+      "great": "Great",
+      "good": "Good", 
+      "challenging": "Challenging",
+      "difficult": "Difficult"
+    }
+  },
+  "generalHealth": {
+    "noEnergyData": "No energy data",
+    "highEnergyWithSymptoms": "High energy with symptoms",
+    "highEnergy": "High energy",
+    "goodEnergyWithSymptoms": "Good energy with symptoms", 
+    "goodEnergy": "Good energy",
+    "moderateEnergy": "Moderate energy",
+    "lowEnergy": "Low energy",
+    "veryLowEnergy": "Very low energy",
+    "energyLevels": {
+      "1": "Very Low",
+      "2": "Low",
+      "3": "Moderate", 
+      "4": "Good",
+      "5": "High"
+    },
+    "unknown": "Unknown"
+  },
+  "mood": {
+    "balanced": "Balanced",
+    "positiveDay": "Positive day",
+    "challengingDay": "Challenging day",
+    "contexts": {
+      "balanced": "Balanced",
+      "positive": "Positive",
+      "challenging": "Challenging"
+    }
+  },
+  "stoolUrine": {
+    "noData": "No data",
+    "bloodDetected": "Blood detected",
+    "recorded": "Recorded",
+    "contexts": {
+      "bloodInUrineAndStool": "Blood in urine & stool",
+      "bloodInUrine": "Blood in urine", 
+      "bloodInStool": "Blood in stool"
+    }
+  },
+  "sleep": {
+    "sleepTracked": "Sleep tracked",
+    "hoursTemplate": "{hours} hours"
+  },
+  "diet": {
+    "itemsRecorded": "Items recorded",
+    "dietTracked": "Diet tracked"
+  },
+  "exercise": {
+    "exerciseCompleted": "Exercise completed",
+    "contexts": {
+      "moreThan60": ">60 mins",
+      "thirtyTo60": "30-60 mins",
+      "lessThan30": "<30 mins"
+    }
+  },
+  "sex": {
+    "activityRecorded": "Activity recorded",
+    "avoided": "Avoided",
+    "satisfied": "Satisfied"
+  },
+  "notes": {
+    "noteAvailable": "Note available",
+    "noteRecorded": "Note recorded"
+  },
+  "common": {
+    "unknown": "Unknown"
+  }
+}

@@ -3,7 +3,7 @@
  * Handles API data fetching and processing
  */
 
-import { CardGenerators } from './card-generators.js';
+import { CardGenerators } from '../cards/card-generators.js';
 
 export class DataManager {
   constructor(component) {
