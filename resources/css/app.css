@@ -224,8 +224,12 @@
     font-size: 15px;
     font-weight: 400;
 }
+.category-btn {
+    width: 100%;
+    justify-content: end;
+}
 .card-new-dec .text-sm.font-medium {
-    font-size: 13px;
+    font-size: 12px;
 }
     .pbac-day-count-0 .fc-daygrid-day-top.justify-center {
     width: 100% !important;
