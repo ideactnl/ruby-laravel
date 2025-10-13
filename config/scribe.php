@@ -11,7 +11,7 @@ use function Knuckles\Scribe\Config\removeStrategies;
 
 return [
     // The HTML <title> for the generated documentation.
-    'title' => config('app.name').' API Documentation',
+    'title' => config('app.name') . ' API Documentation',
 
     // A short description of your API. Will be included in the docs webpage, Postman collection and OpenAPI spec.
     'description' => 'Welcome to the RubyNU API documentation. This API provides a comprehensive set of endpoints for managing users, authentication, and application resources. All endpoints requiring authentication are secured with Bearer Tokens, which you can obtain via the registration or login endpoints. Explore the available routes for detailed information on request parameters, response formats, and error handling. For further assistance or questions, please contact the development team.',
@@ -47,10 +47,10 @@ return [
     // - "static" will generate a static HTMl page in the /public/docs folder,
     // - "laravel" will generate the documentation as a Blade view, so you can add routing and authentication.
     // - "external_static" and "external_laravel" do the same as above, but pass the OpenAPI spec as a URL to an external UI template
-    'type' => 'default',
+    'type' => 'external_laravel',
 
     // See https://scribe.knuckles.wtf/laravel/reference/config#theme for supported options
-    'theme' => 'elements',
+    'theme' => 'scalar',
 
     'static' => [
         // HTML documentation, assets and Postman collection will be generated to this folder.
