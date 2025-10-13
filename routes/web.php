@@ -25,7 +25,7 @@ Route::middleware(['web'])->prefix('participant')->group(function () {
 
     Route::middleware('auth.participant')->group(function () {
         Route::get('/dashboard', [\App\Http\Controllers\Api\Participant\ParticipantWebApiController::class, 'dashboardPage'])->name('participant.dashboard');
-        Route::get('/pbac', [\App\Http\Controllers\Api\Participant\ParticipantWebApiController::class, 'pbacPage'])->name('participant.pbac');
+        Route::get('/export', [\App\Http\Controllers\Api\Participant\ParticipantWebApiController::class, 'exportPage'])->name('participant.export');
         Route::get('/daily-view', [\App\Http\Controllers\Api\Participant\ParticipantWebApiController::class, 'dailyViewPage'])->name('participant.daily-view');
         Route::get('/education', [\App\Http\Controllers\Api\Participant\ParticipantWebApiController::class, 'education'])->name('participant.education');
         Route::get('/self-management', [\App\Http\Controllers\Api\Participant\ParticipantWebApiController::class, 'selfManagement'])->name('participant.self-management');
