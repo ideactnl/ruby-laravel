@@ -90,7 +90,7 @@ class Participant extends Authenticatable
      */
     public function isMedicalSpecialistPinExpired(): bool
     {
-        if (!$this->medical_specialist_temporary_pin_expires_at) {
+        if (! $this->medical_specialist_temporary_pin_expires_at) {
             return false;
         }
 
