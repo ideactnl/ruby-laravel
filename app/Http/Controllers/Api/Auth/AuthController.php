@@ -95,7 +95,7 @@ class AuthController extends Controller
     public function login(LoginRequest $request): JsonResponse
     {
         $participant = $request->attemptLogin();
-        if (! $participant) {
+        if (!$participant) {
             return response()->json([
                 'success' => false,
                 'message' => 'Invalid credentials',
@@ -164,8 +164,8 @@ class AuthController extends Controller
             $participant->opt_in_for_research = $data['opt_in_for_research'];
             $updated = true;
         }
-        if (! empty($data['password'])) {
-            if (! Hash::check($data['pin'], $participant->pin)) {
+        if (!empty($data['password'])) {
+            if (!Hash::check($data['pin'], $participant->pin)) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Invalid pin',
@@ -224,7 +224,7 @@ class AuthController extends Controller
     /**
      * Enable or disable medical specialist access and set PIN.
      *
-     * Allows a participant to enable specialist access by setting a numeric PIN (4-6 digits, valid for 7 days),
+     * Allows a participant to enable specialist access by setting a numeric PIN (4-6 digits, valid for 24 hours),
      * or disable access and remove the PIN.
      *
      * **Requires authentication via Bearer token in the Authorization header.**
@@ -343,7 +343,7 @@ class AuthController extends Controller
     {
         $participant = $request->user();
 
-        if (! $request->validatePin()) {
+        if (!$request->validatePin()) {
             return response()->json([
                 'success' => false,
                 'message' => 'Invalid PIN. Account deletion cancelled.',
