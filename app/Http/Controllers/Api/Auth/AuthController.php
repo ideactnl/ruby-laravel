@@ -95,7 +95,7 @@ class AuthController extends Controller
     public function login(LoginRequest $request): JsonResponse
     {
         $participant = $request->attemptLogin();
-        if (!$participant) {
+        if (! $participant) {
             return response()->json([
                 'success' => false,
                 'message' => 'Invalid credentials',
@@ -164,8 +164,8 @@ class AuthController extends Controller
             $participant->opt_in_for_research = $data['opt_in_for_research'];
             $updated = true;
         }
-        if (!empty($data['password'])) {
-            if (!Hash::check($data['pin'], $participant->pin)) {
+        if (! empty($data['password'])) {
+            if (! Hash::check($data['pin'], $participant->pin)) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Invalid pin',
@@ -343,7 +343,7 @@ class AuthController extends Controller
     {
         $participant = $request->user();
 
-        if (!$request->validatePin()) {
+        if (! $request->validatePin()) {
             return response()->json([
                 'success' => false,
                 'message' => 'Invalid PIN. Account deletion cancelled.',
