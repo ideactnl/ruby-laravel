@@ -11,7 +11,7 @@ use function Knuckles\Scribe\Config\removeStrategies;
 
 return [
     // The HTML <title> for the generated documentation.
-    'title' => config('app.name') . ' API Documentation',
+    'title' => config('app.name').' API Documentation',
 
     // A short description of your API. Will be included in the docs webpage, Postman collection and OpenAPI spec.
     'description' => 'Welcome to the RubyNU API documentation. This API provides a comprehensive set of endpoints for managing users, authentication, and application resources. All endpoints requiring authentication are secured with Bearer Tokens, which you can obtain via the registration or login endpoints. Explore the available routes for detailed information on request parameters, response formats, and error handling. For further assistance or questions, please contact the development team.',
