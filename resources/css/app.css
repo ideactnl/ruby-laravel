@@ -2,19 +2,22 @@
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 
 @font-face {
-    font-family: 'Geist';
+    font-family: "Geist";
     font-style: normal;
     font-weight: 100 900;
     font-display: swap;
-    src: url('../fonts/Geist/Geist-VariableFont_wght.ttf') format('truetype-variations');
+    src: url("../fonts/Geist/Geist-VariableFont_wght.ttf")
+        format("truetype-variations");
 }
 
 @theme {
-    --font-family-sans: 'Geist', ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    --font-family-sans: "Geist", ui-sans-serif, system-ui, sans-serif,
+        "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+        "Noto Color Emoji";
 
     /* Primary Color System */
     --color-primary-800: #991b1b;
-    --color-primary: #5E0F0F;
+    --color-primary: #5e0f0f;
 
     /* Essential Neutral Colors */
     --color-neutral-200: #e2e8f0;
@@ -41,13 +44,13 @@
     }
 
     button,
-    [type='button'],
-    [type='reset'],
-    [type='submit'],
-    [type='date'],
+    [type="button"],
+    [type="reset"],
+    [type="submit"],
+    [type="date"],
     a,
     select,
-    [role='button'] {
+    [role="button"] {
         cursor: pointer;
     }
 }
@@ -57,7 +60,6 @@
 }
 
 @layer utilities {
-
     .pbac-calendar-icon {
         filter: contrast(1.1) saturate(1.2) brightness(1.05);
         transition: all 0.2s ease-in-out;
@@ -100,7 +102,7 @@
     }
 
     .pbac-tooltip::before {
-        content: '';
+        content: "";
         position: absolute;
         bottom: 100%;
         left: 50%;
@@ -214,25 +216,26 @@
 }
 
 @media (max-width: 767px) {
-    tr.fc-scrollgrid-section.fc-scrollgrid-section-body .pbac-selected-domains-3 {
+    tr.fc-scrollgrid-section.fc-scrollgrid-section-body
+        .pbac-selected-domains-3 {
         display: block !important;
     }
     .card-new-dec {
-    height: 206px;
-}
-.card-new-dec h4 {
-    font-size: 15px;
-    font-weight: 400;
-}
-.card-new-dec .text-sm.font-medium {
-    font-size: 13px;
-}
+        height: 206px;
+    }
+    .card-new-dec h4 {
+        font-size: 15px;
+        font-weight: 400;
+    }
+    .card-new-dec .text-sm.font-medium {
+        font-size: 13px;
+    }
     .pbac-day-count-0 .fc-daygrid-day-top.justify-center {
-    width: 100% !important;
-}
-.fc-daygrid-day-events {
-  display: none;
-}
+        width: 100% !important;
+    }
+    .fc-daygrid-day-events {
+        display: none;
+    }
 
     .fc-daygrid-day-top.justify-center {
         width: 48%;
@@ -375,27 +378,46 @@
     }
 }
 @media (max-width: 430px) {
-        .card-new-dec {
+    .card-new-dec {
         height: 240px;
     }
 }
 @media (max-width: 414px) {
-        .card-new-dec {
+    .card-new-dec {
         height: 234px;
     }
 }
 @media (max-width: 390px) {
-        .card-new-dec {
+    .card-new-dec {
         height: 223px;
     }
 }
 @media (max-width: 375px) {
-        .card-new-dec {
+    .card-new-dec {
         height: 215px;
     }
 }
 @media (max-width: 360px) {
-        .card-new-dec {
+    .card-new-dec {
         height: 210px;
     }
+}
+
+@keyframes shake {
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+    20%,
+    60% {
+        transform: translateX(-4px);
+    }
+    40%,
+    80% {
+        transform: translateX(4px);
+    }
+}
+
+.shake {
+    animation: shake 0.4s ease-in-out;
 }
