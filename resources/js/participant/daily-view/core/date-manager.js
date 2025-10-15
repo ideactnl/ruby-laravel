@@ -127,7 +127,6 @@ export class DateManager {
         day: '2-digit',
         month: 'long',
         year: 'numeric',
-        weekday: 'long'
       });
     } catch (e) {
       return date;
