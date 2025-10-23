@@ -51,7 +51,7 @@
 
                             <!-- Back -->
                             <div
-                                class="absolute inset-0 rounded-lg bg-primary text-white text-center p-6 [transform:rotateY(180deg)] [backface-visibility:hidden] flex flex-col justify-center items-center cursor-pointer select-none">
+                                class="absolute inset-0 rounded-lg bg-primary text-white text-center p-4 [transform:rotateY(180deg)] [backface-visibility:hidden] flex flex-col justify-center items-center cursor-pointer select-none">
                                 <div class="text-sm font-medium">
                                     You don't have to stop taking the pill every 21 days. You can also take the pill
                                     continuously, and that's totally fine. After 2 or 3
@@ -86,7 +86,8 @@
 
                             <!-- Front -->
                             <div
-                                class="absolute inset-0 bg-[#FC9490] text-white text-center rounded-lg shadow-md [backface-visibility:hidden] flex flex-col justify-center items-center cursor-pointer select-none">
+                                class="absolute inset-0 bg-[#FC9490] text-white text-center rounded-lg shadow-md [backface-visibility:hidden] flex flex-col justify-center items-center cursor-pointer select-none flip-
+                                ">
                                 <div class="p-4 text-sm font-medium">
                                     <div class="text-[23px] font-bold mb-2">MYTH</div>
                                     <h4 class="text-[20px]">You can't exercise when you're on your period</h4>
@@ -98,7 +99,7 @@
 
                             <!-- Back -->
                             <div
-                                class="absolute inset-0 rounded-lg bg-primary text-white text-center p-6 [transform:rotateY(180deg)] [backface-visibility:hidden] flex flex-col justify-center items-center cursor-pointer select-none">
+                                class="absolute inset-0 rounded-lg bg-primary text-white text-center p-4 [transform:rotateY(180deg)] [backface-visibility:hidden] flex flex-col justify-center items-center cursor-pointer select-none">
                                 <div class="text-sm font-medium">
                                     Exercising can actually help with period symptoms! It can reduce cramps, and your
                                     body releases feel-good chemicals that can improve your mood.
@@ -289,11 +290,11 @@
 
                         card.addEventListener('touchmove', (e) => {
                             if (!e.touches[0]) return;
-                            
+
                             const touch = e.touches[0];
                             const deltaX = Math.abs(touch.clientX - touchStartX);
                             const deltaY = Math.abs(touch.clientY - touchStartY);
-                            
+
                             if (deltaX > 10 || deltaY > 5) {
                                 hasMoved = true;
                                 isSwipingSlider = true;
@@ -311,7 +312,7 @@
                     } else {
                         card.addEventListener('mouseenter', handleDesktopHover);
                         card.addEventListener('mouseleave', handleDesktopLeave);
-                        
+
                         card.addEventListener('click', (e) => {
                             e.preventDefault();
                             e.stopPropagation();

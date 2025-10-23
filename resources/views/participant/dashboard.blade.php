@@ -9,9 +9,9 @@
             <div class="md:hidden flex items-center gap-2 flex-1 min-w-0">
                 <!-- Previous Month Button -->
                 <button id="btn-prev-month"
-                    class="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors flex-shrink-0"
+                    class="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors flex-shrink-0"
                     title="Previous month" aria-label="Previous month">
-                    <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-3 h-3 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                     </svg>
                 </button>
@@ -21,7 +21,7 @@
                     class="flex items-center gap-1 sm:gap-2 cursor-pointer hover:opacity-80 transition-opacity p-1 -m-1 sm:p-2 sm:-m-2 rounded-lg hover:bg-gray-50 flex-shrink-0"
                     title="Tap to go to current month" onclick="goToCurrentMonth()">
                     <div id="mobile-date"
-                        class="dashboard-date text-xl sm:text-2xl md:text-3xl font-bold text-primary leading-none">
+                        class="dashboard-date text-xl sm:text-1xl md:text-1xl font-bold text-primary leading-none">
                         {{ now()->format('d') }}
                     </div>
                     <div class="dashboard-my flex flex-col items-center leading-tight">
@@ -39,9 +39,9 @@
 
                 <!-- Next Month Button -->
                 <button id="btn-next-month"
-                    class="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors flex-shrink-0"
+                    class="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors flex-shrink-0"
                     title="Next month" aria-label="Next month">
-                    <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-3 h-3 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                     </svg>
                 </button>
