@@ -3,7 +3,7 @@
 @section('navbar_subtitle', 'Daily Overview Showing Selected Domains For The Chosen Date')
 
 @section('content')
-    <div class="max-w-7xl mx-auto pl-0 pr-0 py-6" x-data="dailyView()" x-init="init()">
+    <div class="max-w-7xl mx-auto pl-0 pr-0 py-0" x-data="dailyView()" x-init="init()">
         <!-- Mobile Layout -->
         <div class="md:hidden mb-8">
             <!-- Navigation and Select Date Buttons -->

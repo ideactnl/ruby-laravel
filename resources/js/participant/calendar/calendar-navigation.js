@@ -56,6 +56,7 @@ export class CalendarNavigation {
     this.setupWheelNavigation(goPrevThrottled, goNextThrottled);
     this.setupMouseNavigation(goPrevThrottled, goNextThrottled);
     this.setupTouchNavigation(goPrevThrottled, goNextThrottled);
+    this.setupButtonNavigation(goPrevThrottled, goNextThrottled);
   }
 
   /**
@@ -240,5 +241,56 @@ export class CalendarNavigation {
         window.touchMoved = false;
       }, 50);
     }, { passive: true });
+  }
+
+  /**
+   * Setup button navigation (previous/next month buttons)
+   */
+  setupButtonNavigation(goPrevThrottled, goNextThrottled) {
+    const btnPrevMobile = document.getElementById('btn-prev-month');
+    const btnNextMobile = document.getElementById('btn-next-month');
+    
+    const btnPrevDesktop = document.getElementById('btn-prev-month-desktop');
+    const btnNextDesktop = document.getElementById('btn-next-month-desktop');
+    
+    const btnBackCurrent = document.getElementById('btn-back-current');
+
+    if (btnPrevMobile) {
+      btnPrevMobile.addEventListener('click', (e) => {
+        e.preventDefault();
+        this.triggerHapticFeedback('light');
+        goPrevThrottled();
+      });
+    }
+
+    if (btnNextMobile) {
+      btnNextMobile.addEventListener('click', (e) => {
+        e.preventDefault();
+        this.triggerHapticFeedback('light');
+        goNextThrottled();
+      });
+    }
+
+    if (btnPrevDesktop) {
+      btnPrevDesktop.addEventListener('click', (e) => {
+        e.preventDefault();
+        goPrevThrottled();
+      });
+    }
+
+    if (btnNextDesktop) {
+      btnNextDesktop.addEventListener('click', (e) => {
+        e.preventDefault();
+        goNextThrottled();
+      });
+    }
+
+    if (btnBackCurrent) {
+      btnBackCurrent.addEventListener('click', (e) => {
+        e.preventDefault();
+        this.triggerHapticFeedback('success');
+        this.calendar.today();
+      });
+    }
   }
 }

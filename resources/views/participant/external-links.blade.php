@@ -5,7 +5,7 @@
 
 @section('content')
 
-<section class="max-w-7xl mx-auto px-4 py-12">
+<section class="max-w-7xl mx-auto px-4 py-0">
       <!-- Heading -->
       <h2 class="text-[25px] md:text-{25px} font-bold mb-6">WEBSITES LINKS</h2>
 

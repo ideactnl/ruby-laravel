@@ -146,6 +146,9 @@
         -webkit-overflow-scrolling: touch;
         overscroll-behavior: contain;
     }
+.card-new-dec {
+    height: 36.8vh;
+}
 
     @media (max-width: 768px) {
         .pbac-mobile-events .fc-daygrid-day-frame {

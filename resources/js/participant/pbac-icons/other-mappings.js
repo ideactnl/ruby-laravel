@@ -93,11 +93,11 @@ export function getDietIcon(value) {
   
   let tooltip;
   if (negatives?.length === 0 && positives?.length > 0) {
-    tooltip = `Diet: Healthy (${total} items)`;
+    tooltip = `Diet: (${total} items)`;
   } else if ((negatives?.length || 0) <= (positives?.length || 0)) {
-    tooltip = `Diet: Mixed (${total} items)`;
+    tooltip = `Diet: (${total} items)`;
   } else {
-    tooltip = `Diet: Concerning (${total} items)`;
+    tooltip = `Diet: (${total} items)`;
   }
   
   // Add consumed items to tooltip
