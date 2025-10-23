@@ -6,7 +6,6 @@
 @section('content')
     <section>
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-            <h2 class="text-2xl font-bold">EDUCATION VIDEOS</h2>
             <div class="flex gap-2">
                 <select class="border border-gray-300 rounded px-3 py-1 text-sm text-white bg-[#7B1C1C]">
                     <option>Category</option>
@@ -130,7 +129,6 @@
 
     <!-- VIDEOS -->
     <section class="mt-12">
-        <h2 class="text-2xl font-bold mb-4">VIDEOS</h2>
         <div class="swiper videoSwiper cursor-grab">
             <div class="swiper-loading py-8 text-gray-500">Loading...</div>
             <div class="swiper-wrapper pb-3" style="display: none;">
