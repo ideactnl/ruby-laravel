@@ -10,7 +10,7 @@
                 <select class="border border-gray-300 rounded px-3 py-1 text-sm text-white bg-[#7B1C1C]">
                     <option>Category</option>
                 </select>
-                <select class="border border-gray-300 rounded px-3 py-1 text-sm text-white bg-[#7B1C1C]">
+                <select class="border border-gray-300 rounded px-3 py-3 text-sm text-white bg-[#7B1C1C]">
                     <option>Recommended</option>
                 </select>
             </div>
