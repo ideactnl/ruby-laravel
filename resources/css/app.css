@@ -147,7 +147,7 @@
         overscroll-behavior: contain;
     }
 .card-new-dec {
-    height: 36.8vh;
+    height: 38vh;
 }
 
     @media (max-width: 768px) {
