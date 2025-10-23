@@ -4,7 +4,7 @@
 
 @section('content')
     <div x-data="filterMenu()" x-init="init()">
-        <div class="mb-10 flex items-center justify-between">
+        <div class="mb-10 flex items-center justify-between main-hed">
             <!-- Mobile: Date with Navigation -->
             <div class="md:hidden flex items-center gap-2 flex-1 min-w-0">
                 <!-- Previous Month Button -->
