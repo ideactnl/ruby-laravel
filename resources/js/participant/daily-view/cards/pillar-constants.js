@@ -133,8 +133,8 @@ export const DIET_KEYS = ['vegetables', 'fruit', 'potato_rice_bread', 'dairy_pro
 // Exercise Constants
 export const EXERCISE_TYPE_LABELS = {
   'high_impact': 'High Impact',
-  'precision_exercise': 'Precision Exercise',
   'low_impact': 'Low Impact',
+  'relaxation_exercise': 'Relaxation Exercise',
   'cardio': 'Cardio',
   'strength': 'Strength Training',
   'flexibility': 'Flexibility',
@@ -145,7 +145,7 @@ export const EXERCISE_TYPE_LABELS = {
   'cycling': 'Cycling'
 };
 
-export const EXERCISE_LEVELS = ['less_thirty', 'thirty_to_sixty', 'greater_sixty', 'high_impact'];
+export const EXERCISE_LEVELS = ['less_thirty', 'thirty_to_sixty', 'greater_sixty'];
 
 export const EXERCISE_DURATION_LABELS = {
   'less_thirty': 'Less than 30 minutes',

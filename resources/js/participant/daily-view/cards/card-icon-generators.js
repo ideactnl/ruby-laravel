@@ -4,7 +4,7 @@
  * Each pillar type returns: { severityIcons: [...], statusIcon: {...} }
  */
 
-import { 
+import {
   BLOOD_LOSS_SEVERITY_LEVELS,
   IMPACT_LIMITATION_TYPES,
   MOOD_ICON_MAP,
@@ -15,24 +15,24 @@ import {
 } from './pillar-constants.js';
 
 export class CardIconGenerators {
-  
+
   /**
    * Blood Loss Icons - Spotting + 5 severity levels
    */
   static getBloodLossIcons(pillar) {
     if (!pillar) return { severityIcons: [], statusIcon: null };
-    
+
     const severity = pillar.severity || 'none';
     const spotting = pillar.flags?.spotting;
-    
+
     const severityIcons = [];
-    
+
     severityIcons.push({
       src: '/images/spotting.png',
       alt: 'spotting',
       active: spotting
     });
-    
+
     BLOOD_LOSS_SEVERITY_LEVELS.forEach((level, index) => {
       severityIcons.push({
         src: `/images/blood_loss_${index + 1}.png`,
@@ -54,9 +54,9 @@ export class CardIconGenerators {
    */
   static getPainIcons(pillar) {
     if (!pillar) return { severityIcons: [], statusIcon: null };
-    
+
     const value = pillar.value ?? 0;
-    
+
     let currentPainIcon = 1;
     if (value >= 9) currentPainIcon = 6;
     else if (value >= 7) currentPainIcon = 5;
@@ -64,7 +64,7 @@ export class CardIconGenerators {
     else if (value >= 3) currentPainIcon = 3;
     else if (value >= 2) currentPainIcon = 2;
     else currentPainIcon = 1;
-    
+
     const severityIcons = [];
     for (let i = 1; i <= 6; i++) {
       severityIcons.push({
@@ -87,9 +87,9 @@ export class CardIconGenerators {
    */
   static getImpactIcons(pillar) {
     if (!pillar) return { severityIcons: [], statusIcon: null };
-    
+
     const limitations = pillar.limitations || [];
-    
+
     const severityIcons = IMPACT_LIMITATION_TYPES.map((type, index) => ({
       src: `/images/impact_${index + 1}.png`,
       alt: type.replace(/_/g, ' '),
@@ -134,9 +134,9 @@ export class CardIconGenerators {
    */
   static getGeneralHealthIcons(pillar) {
     if (!pillar) return { severityIcons: [], statusIcon: null };
-    
+
     const energy = pillar.energyLevel ?? 0;
-    
+
     const severityIcons = [];
     for (let i = 1; i <= 5; i++) {
       const iconSrc = i === 1 ? '/images/sleep.png' : `/images/general_health_${i - 1}.png`;
@@ -160,17 +160,17 @@ export class CardIconGenerators {
    */
   static getMoodIcons(pillar) {
     if (!pillar) return { severityIcons: [], statusIcon: null };
-    
+
     const positives = pillar.positives || [];
     const negatives = pillar.negatives || [];
     const allMoods = [...positives, ...negatives];
-    
+
     const severityIcons = MOOD_KEYS.map(moodKey => {
-      const isActive = allMoods.includes(moodKey) || 
-                      (moodKey === 'anxious' && (allMoods.includes('anxious') || allMoods.includes('stressed'))) ||
-                      (moodKey === 'angry' && (allMoods.includes('angry') || allMoods.includes('irritable'))) ||
-                      (moodKey === 'worthless' && (allMoods.includes('worthless') || allMoods.includes('guilty')));
-      
+      const isActive = allMoods.includes(moodKey) ||
+        (moodKey === 'anxious' && (allMoods.includes('anxious') || allMoods.includes('stressed'))) ||
+        (moodKey === 'angry' && (allMoods.includes('angry') || allMoods.includes('irritable'))) ||
+        (moodKey === 'worthless' && (allMoods.includes('worthless') || allMoods.includes('guilty')));
+
       return {
         src: `/images/${MOOD_ICON_MAP[moodKey]}`,
         alt: moodKey,
@@ -179,9 +179,9 @@ export class CardIconGenerators {
     });
 
     const balance = positives.length - negatives.length;
-    let moodIcon = 'mood_1.png'; 
+    let moodIcon = 'mood_1.png';
     if (balance > 1) {
-      moodIcon = 'mood_2.png'; 
+      moodIcon = 'mood_2.png';
     } else if (balance < -1) {
       moodIcon = 'mood_7.png';
     }
@@ -199,11 +199,11 @@ export class CardIconGenerators {
    */
   static getStoolUrineIcons(pillar) {
     if (!pillar) return { severityIcons: [], statusIcon: null };
-    
+
     const hasUrineBlood = pillar.urine?.blood ?? false;
     const hasStoolBlood = pillar.stool?.blood ?? false;
     const consistency = pillar.stool?.consistency;
-    
+
     const severityIcons = [
       { src: '/images/urine_stool.png', alt: 'Blood in stool/urine', active: hasUrineBlood || hasStoolBlood },
       { src: '/images/urine_stool_1.png', alt: 'Hard', active: consistency === 'hard' },
@@ -243,7 +243,7 @@ export class CardIconGenerators {
    */
   static getSleepIcons(pillar) {
     if (!pillar) return { severityIcons: [], statusIcon: null };
-    
+
     const statusIcon = {
       src: '/images/sleep.png',
       alt: 'Sleep Quality'
@@ -257,12 +257,12 @@ export class CardIconGenerators {
    */
   static getDietIcons(pillar) {
     if (!pillar) return { severityIcons: [], statusIcon: null };
-    
+
     const positives = pillar.positives || [];
     const negatives = pillar.negatives || [];
     const neutrals = pillar.neutrals || [];
     const allDietItems = [...positives, ...negatives, ...neutrals];
-    
+
     const severityIcons = DIET_KEYS.map(dietKey => ({
       src: `/images/${DIET_ICON_MAP[dietKey]}`,
       alt: dietKey,
@@ -282,15 +282,26 @@ export class CardIconGenerators {
    */
   static getExerciseIcons(pillar) {
     if (!pillar) return { severityIcons: [], statusIcon: null };
+
+    const hasDuration = pillar.levels && pillar.levels.length > 0;
+    const hasImpact = pillar.impacts && (pillar.impacts.includes('high_impact') || pillar.impacts.includes('low_impact'));
+    const isType1Active = hasDuration || hasImpact;
     
-    const levels = pillar.levels || [];
-    const types = pillar.types || [];
-    
-    const severityIcons = EXERCISE_LEVELS.map((level, index) => ({
-      src: index < 2 ? `/images/exercise_type_${index + 1}.png` : '/images/sport.png',
-      alt: level.replace('_', ' '),
-      active: levels.includes(level) || (level === 'high_impact' && types.includes('high_impact'))
-    }));
+    const hasPrecisionExercise = pillar.impacts && pillar.impacts.includes('relaxation_exercise');
+    const isType2Active = hasPrecisionExercise;
+
+    const severityIcons = [
+      {
+        src: '/images/exercise_type_1.png',
+        alt: 'Exercise Type 1 (High Impact / General)',
+        active: isType1Active
+      },
+      {
+        src: '/images/exercise_type_2.png',
+        alt: 'Exercise Type 2 (Relaxation / Precision)',
+        active: isType2Active
+      }
+    ];
 
     const statusIcon = {
       src: '/images/sport.png',
@@ -300,12 +311,13 @@ export class CardIconGenerators {
     return { severityIcons, statusIcon };
   }
 
+
   /**
    * Sex Icons - Simple sex icon (no severity range)
    */
   static getSexIcons(pillar) {
     if (!pillar) return { severityIcons: [], statusIcon: null };
-    
+
     const statusIcon = {
       src: '/images/sex.png',
       alt: 'Sexual Health'
@@ -319,7 +331,7 @@ export class CardIconGenerators {
    */
   static getNotesIcons(pillar) {
     if (!pillar) return { severityIcons: [], statusIcon: null };
-    
+
     const statusIcon = {
       src: '/images/grid_notes.png',
       alt: 'Notes'

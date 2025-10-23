@@ -40,18 +40,15 @@
         </div>
 
         <!-- Desktop Layout -->
-        <div class="hidden md:grid grid-cols-1 md:grid-cols-3 items-center mb-6 gap-4">
+        <div class="hidden md:grid grid-cols-3 items-center mb-6 gap-4">
             <div class="justify-self-start">
-                <h2 class="text-[22px] font-semibold text-gray-900" x-text="heading"></h2>
-            </div>
-
-            <div class="md:justify-self-center">
-                <div class="inline-flex items-center gap-3">
+                <div class="flex items-center gap-3">
                     <button @click="prevDay()"
                         class="inline-flex items-center justify-center gap-2 rounded-md bg-primary w-[120px] px-4 py-2 text-sm font-semibold text-white shadow hover:opacity-90 cursor-pointer">
                         <i class="fa-solid fa-angles-left"></i>
                         Previous
                     </button>
+                    <h2 class="text-[22px] font-semibold text-gray-900 min-w-[220px] text-center" x-text="heading"></h2>
                     <button @click="nextDay()"
                         class="inline-flex items-center justify-center gap-2 rounded-md bg-primary w-[120px] px-4 py-2 text-sm font-semibold text-white shadow hover:opacity-90 cursor-pointer">
                         Next
@@ -59,6 +56,8 @@
                     </button>
                 </div>
             </div>
+
+            <div></div>
 
             <div class="md:justify-self-end">
                 <button @click="openDate()"
@@ -90,8 +89,7 @@
                                             <h3 class="text-sm font-semibold text-gray-900 uppercase tracking-wide truncate md:overflow-visible md:whitespace-normal"
                                                 x-text="item.label"></h3>
                                         </div>
-                                        <div :class="`w-3 h-3 rounded-full ${item.statusColor}`" :title="item.statusText">
-                                        </div>
+                                        <!-- Removed color marker -->
                                     </div>
 
                                     <!-- Visual representation with icons -->

@@ -425,7 +425,7 @@ class ParticipantWebApiController extends Controller
      *
      * @authenticated
      *
-     * @response 200 {"profile":{"registration_number":"participant123","enable_data_sharing":true,"opt_in_for_research":false,"medical_specialist_temporary_pin_expires_at":"2025-09-17T12:00:00.000000Z","created_at":"2025-09-17T11:00:00.000000Z"}}
+     * @response 200 {"profile":{"registration_number":"participant123","enable_data_sharing":true,"opt_in_for_research":false,"medical_specialist_temporary_pin_expires_at":"2025-09-17T12:00:00.000000Z","medical_specialist_pin_expired":false,"created_at":"2025-09-17T11:00:00.000000Z"}}
      * @response 401 {"error":"Unauthenticated"}
      */
     public function profile(Request $request)
@@ -441,6 +441,7 @@ class ParticipantWebApiController extends Controller
                 'enable_data_sharing' => (bool) $participant->enable_data_sharing,
                 'opt_in_for_research' => (bool) $participant->opt_in_for_research,
                 'medical_specialist_temporary_pin_expires_at' => $participant->medical_specialist_temporary_pin_expires_at,
+                'medical_specialist_pin_expired' => $participant->isMedicalSpecialistPinExpired(),
                 'created_at' => $participant->created_at,
             ],
         ]);
@@ -457,7 +458,7 @@ class ParticipantWebApiController extends Controller
     /**
      * Show PBAC export web page
      */
-    public function pbacPage()
+    public function exportPage()
     {
         return view('participant.export-my-data');
     }

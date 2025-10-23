@@ -84,4 +84,16 @@ class Participant extends Authenticatable
     {
         return $this->hasMany(ExportJob::class);
     }
+
+    /**
+     * Check if the medical specialist temporary PIN has expired.
+     */
+    public function isMedicalSpecialistPinExpired(): bool
+    {
+        if (! $this->medical_specialist_temporary_pin_expires_at) {
+            return false;
+        }
+
+        return $this->medical_specialist_temporary_pin_expires_at->isPast();
+    }
 }

@@ -86,8 +86,11 @@ export class PillarDataValidators {
    * Exercise - Show if exercise was recorded
    */
   static hasExerciseData(pillar) {
-    if (!pillar) return false;
-    return pillar.any === true;
+    return pillar && (
+      pillar.any === true ||
+      pillar.levels?.length > 0 ||
+      (pillar.impacts && pillar.impacts.some(type => ['high_impact', 'low_impact', 'relaxation_exercise'].includes(type)))
+    );
   }
 
   /**

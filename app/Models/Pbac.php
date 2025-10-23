@@ -954,7 +954,7 @@ class Pbac extends Model
             $impacts[] = 'low_impact';
         }
         if ($this->is_exercise_precision) {
-            $impacts[] = 'precision_exercise';
+            $impacts[] = 'relaxation_exercise';
         }
         $any = ! empty($levels) || ! empty($impacts);
 

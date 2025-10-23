@@ -20,6 +20,7 @@ export function createFilterMenu() {
       { value: 'notes', label: 'Notes', color: '#64748B', iconSrc: '/images/grid_notes.png' },
     ],
     selected: [],
+    shakeTarget: null,
 
     triggerHaptic(type = 'light') {
       if (window.innerWidth <= 768 && 'vibrate' in navigator) {

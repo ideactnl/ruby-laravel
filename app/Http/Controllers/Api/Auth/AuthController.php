@@ -224,7 +224,7 @@ class AuthController extends Controller
     /**
      * Enable or disable medical specialist access and set PIN.
      *
-     * Allows a participant to enable specialist access by setting a numeric PIN (4-6 digits, valid for 7 days),
+     * Allows a participant to enable specialist access by setting a numeric PIN (4-6 digits, valid for 24 hours),
      * or disable access and remove the PIN.
      *
      * **Requires authentication via Bearer token in the Authorization header.**

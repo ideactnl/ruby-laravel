@@ -81,8 +81,8 @@
                         ],
                         [
                             'label' => 'Export',
-                            'href' => route('participant.pbac'),
-                            'active' => request()->routeIs('participant.pbac'),
+                            'href' => route('participant.export'),
+                            'active' => request()->routeIs('participant.export'),
                         ],
                         [
                             'label' => 'General information',
