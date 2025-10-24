@@ -159,14 +159,16 @@ export class ModalContentGenerators {
     });
     content += '</div>';
 
-    const balance = positives.length - negatives.length;
+    const selectedPositives = positives.filter(p => p.value === 1);
+    const selectedNegatives = negatives.filter(n => n.value === 1);
+    const balance = selectedPositives.length - selectedNegatives.length;
     content += '<div class="text-center mb-4">';
     if (balance > 0) {
-      content += ModalHelpers.createStatusIndicator('Overall Mood', data.overallLabels.positive, 'success');
+      content += ModalHelpers.createStatusIndicator('Overall', data.overallLabels.positive, 'success');
     } else if (balance < 0) {
-      content += ModalHelpers.createStatusIndicator('Overall Mood', data.overallLabels.negative, 'warning');
+      content += ModalHelpers.createStatusIndicator('Overall', data.overallLabels.negative, 'warning');
     } else {
-      content += ModalHelpers.createStatusIndicator('Overall Mood', data.overallLabels.balanced, 'info');
+      content += ModalHelpers.createStatusIndicator('Overall', data.overallLabels.balanced, 'info');
     }
     content += '</div>';
 
@@ -699,7 +701,7 @@ export class ModalContentGenerators {
     const hasDuration = levels && levels.length > 0;
     const hasImpact = impacts && (impacts.includes('high_impact') || impacts.includes('low_impact'));
     const isType1Active = hasDuration || hasImpact;
-    
+
     const hasPrecisionExercise = impacts && impacts.includes('relaxation_exercise');
     const isType2Active = hasPrecisionExercise;
 
