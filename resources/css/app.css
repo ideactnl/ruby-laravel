@@ -208,6 +208,16 @@
             justify-content: center;
             align-items: baseline;
         }
+        /* Override when 3-event is present */
+        .pbac-day-count-0.three-present {
+            justify-content: left;
+            align-items: baseline;
+            margin-left: 4px;
+        }
+
+        .pbac-day-count-0.three-present .fc-daygrid-day-top.justify-center {
+            width: auto !important;
+        }
     }
 }
 

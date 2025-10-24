@@ -34,7 +34,7 @@ export class CalendarLayout {
       '/images/grid_sport.png',
       '/images/grid_sex.png',
       '/images/grid_notes.png',
-      
+
       // Blood loss icons
       '/images/spotting.png',
       '/images/blood_loss_1.png',
@@ -42,7 +42,7 @@ export class CalendarLayout {
       '/images/blood_loss_3.png',
       '/images/blood_loss_4.png',
       '/images/blood_loss_5.png',
-      
+
       // Pain icons (smile faces)
       '/images/smile_1.png',
       '/images/smile_2.png',
@@ -50,12 +50,12 @@ export class CalendarLayout {
       '/images/smile_4.png',
       '/images/smile_5.png',
       '/images/smile_6.png',
-      
+
       // Common mood icons
       '/images/mood_1.png',
       '/images/mood_2.png',
       '/images/mood_7.png',
-      
+
       // General health icons
       '/images/sleep.png',
       '/images/general_health_1.png',
@@ -63,7 +63,7 @@ export class CalendarLayout {
       '/images/general_health_3.png',
       '/images/general_health_4.png'
     ];
-    
+
     commonIcons.forEach(preloadIcon);
   }
 
@@ -74,15 +74,15 @@ export class CalendarLayout {
     const type = arg.event.extendedProps.type;
     const value = arg.event.extendedProps.value;
     const dateStr = arg.event.startStr;
-    
+
     const { iconSrc, tooltip } = getDynamicIconAndTooltip(type, value);
-    
+
     const wrap = document.createElement('span');
     wrap.className = 'inline-flex items-center gap-1 px-0.5';
-    
+
     if (iconSrc) {
       preloadIcon(iconSrc);
-      
+
       const img = document.createElement('img');
       img.src = iconSrc;
       img.className = 'w-6 h-6 object-contain pbac-calendar-icon pbac-tooltip';
@@ -91,19 +91,19 @@ export class CalendarLayout {
       img.title = tooltip;
       img.alt = tooltip.split('\n')[0];
       img.loading = 'eager';
-      
+
       img.addEventListener('click', (e) => {
         const isMobile = window.innerWidth <= 768 || /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         if (isMobile) {
           if ('vibrate' in navigator) {
             try {
               navigator.vibrate(40);
-            } catch (ex) {}
+            } catch (ex) { }
           }
           CalendarUI.handleIconClick(e, dateStr);
         }
       });
-      
+
       img.addEventListener('touchend', (e) => {
         const isMobile = window.innerWidth <= 768 || /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         if (isMobile) {
@@ -111,12 +111,12 @@ export class CalendarLayout {
           if ('vibrate' in navigator) {
             try {
               navigator.vibrate(40);
-            } catch (ex) {}
+            } catch (ex) { }
           }
           CalendarUI.handleIconClick(e, dateStr);
         }
       });
-      
+
       wrap.appendChild(img);
     } else {
       const div = document.createElement('div');
@@ -125,19 +125,19 @@ export class CalendarLayout {
       div.setAttribute('data-date', dateStr);
       div.title = tooltip;
       div.textContent = type.charAt(0).toUpperCase();
-      
+
       div.addEventListener('click', (e) => {
         const isMobile = window.innerWidth <= 768 || /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         if (isMobile) {
           if ('vibrate' in navigator) {
             try {
               navigator.vibrate(40);
-            } catch (ex) {}
+            } catch (ex) { }
           }
           CalendarUI.handleIconClick(e, dateStr);
         }
       });
-      
+
       div.addEventListener('touchend', (e) => {
         const isMobile = window.innerWidth <= 768 || /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         if (isMobile) {
@@ -145,15 +145,15 @@ export class CalendarLayout {
           if ('vibrate' in navigator) {
             try {
               navigator.vibrate(40);
-            } catch (ex) {}
+            } catch (ex) { }
           }
           CalendarUI.handleIconClick(e, dateStr);
         }
       });
-      
+
       wrap.appendChild(div);
     }
-    
+
     return { domNodes: [wrap] };
   }
 
@@ -163,28 +163,28 @@ export class CalendarLayout {
   static handleEventMount(arg) {
     const container = arg.el.closest('.fc-daygrid-day-events');
     const dayFrame = arg.el.closest('.fc-daygrid-day-frame');
-    
+
     if (container && dayFrame) {
       const eventElement = arg.el.closest('.fc-daygrid-event-harness') || arg.el;
-      
+
       if (eventElement.parentNode) {
         eventElement.parentNode.removeChild(eventElement);
       }
-      
+
       dayFrame.appendChild(eventElement);
-      
+
       const allEvents = dayFrame.querySelectorAll('.fc-daygrid-event');
       const eventCount = allEvents.length;
-      
+
       dayFrame.classList.forEach(className => {
         if (className.startsWith('pbac-day-count-')) {
           dayFrame.classList.remove(className);
         }
       });
-      
+
       dayFrame.classList.add(`pbac-day-count-${eventCount}`);
       dayFrame.classList.add('pbac-free-flow-events');
-      
+
       const emptyContainer = dayFrame.querySelector('.fc-daygrid-day-events');
       if (emptyContainer) {
         emptyContainer.style.display = 'none';
@@ -207,13 +207,16 @@ export class CalendarLayout {
     if (!arg.el.classList.contains('inline-flex')) {
       arg.el.classList.add('inline-flex', 'items-center', 'gap-1', 'bg-transparent', 'border-0', 'px-0.5', 'w-auto');
     }
-    
+
     const icon = arg.el.querySelector('.pbac-calendar-icon');
     if (icon && icon.style.display !== 'block') {
       icon.style.display = 'block';
       icon.style.visibility = 'visible';
       icon.style.opacity = '1';
     }
+
+    CalendarLayout.updateZeroDayClassForMobile();
+    window.addEventListener('resize', CalendarLayout.updateZeroDayClassForMobile);
   }
 
   /**
@@ -224,10 +227,10 @@ export class CalendarLayout {
     if (dayFrame) {
       dayFrame.classList.add('pbac-mobile-day');
     }
-    
+
     if (eventCount <= 3) {
       container.classList.add('pbac-mobile-single-row');
-      
+
       if (eventCount === 1) {
         container.classList.add('pbac-mobile-one-icon');
       } else if (eventCount === 2) {
@@ -245,7 +248,7 @@ export class CalendarLayout {
    */
   static applyDesktopLayout(container, eventCount) {
     container.classList.add('pbac-desktop-events');
-    
+
     if (eventCount <= 3) {
       container.classList.add('pbac-desktop-single-row');
     } else if (eventCount <= 6) {
@@ -261,7 +264,7 @@ export class CalendarLayout {
   static handleDayCellMount(info) {
     const frame = info.el.querySelector('.fc-daygrid-day-frame') || info.el;
     frame.classList.add('cursor-pointer', 'hover:bg-gray-50');
-    
+
     const events = frame.querySelectorAll('.fc-daygrid-event');
     if (events.length === 0) {
       frame.classList.add('pbac-day-count-0');
@@ -278,4 +281,23 @@ export class CalendarLayout {
       });
     });
   }
+
+  /**
+   * Update zero event day class for mobile layout
+   */
+  static updateZeroDayClassForMobile() {
+    const isMobile = window.innerWidth <= 768;
+    if (!isMobile) return;
+
+    const hasThree = document.querySelector('.pbac-day-count-3') !== null;
+
+    document.querySelectorAll('.pbac-day-count-0').forEach(el => {
+      if (hasThree) {
+        el.classList.add('three-present');
+      } else {
+        el.classList.remove('three-present');
+      }
+    });
+  }
+
 }
