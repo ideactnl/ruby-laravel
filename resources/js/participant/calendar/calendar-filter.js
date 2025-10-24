@@ -26,12 +26,12 @@ export function createFilterMenu() {
       if (window.innerWidth <= 768 && 'vibrate' in navigator) {
         try {
           const patterns = {
-            light: 10,           
-            medium: 20,         
-            error: [50, 50, 50]  
+            light: 10,
+            medium: 20,
+            error: [50, 50, 50]
           };
           navigator.vibrate(patterns[type] || patterns.light);
-        } catch (e) {        }
+        } catch (e) { }
       }
     },
 
@@ -45,7 +45,10 @@ export function createFilterMenu() {
     apply() {
       window.selectedCalendarTypes = new Set(this.selected);
       localStorage.setItem('calendar_selected_types', JSON.stringify(this.selected));
-      if (window.participantCalendar) window.participantCalendar.refetchEvents();
+      if (window.participantCalendar) {
+        window.participantCalendar.refetchEvents();
+        CalendarLayout.updateZeroDayClassForMobile();
+      }
     },
 
     toggle(val) {
