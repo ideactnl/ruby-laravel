@@ -10,6 +10,31 @@
         format("truetype-variations");
 }
 
+/* Hide scrollbar but keep scroll functionality */
+
+/* For Chrome, Safari, Edge */
+::-webkit-scrollbar {
+  width: 0px;
+  height: 0px;
+}
+
+/* For Firefox */
+html {
+  scrollbar-width: none;
+}
+
+/* For IE, Edge Legacy */
+html, body {
+  -ms-overflow-style: none;
+}
+
+/* Make sure scroll still works */
+body {
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+
 @theme {
     --font-family-sans: "Geist", ui-sans-serif, system-ui, sans-serif,
         "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
