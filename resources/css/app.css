@@ -182,7 +182,7 @@ body {
 
         .fc-daygrid-day-number {
             padding: 1px !important;
-            font-size: 16px !important;
+            font-size: 16px;
             font-weight: 500 !important;
             text-align: center !important;
             line-height: 1 !important;
@@ -193,10 +193,10 @@ body {
         }
 
         .pbac-calendar-icon {
-            width: 18px !important;
-            height: 18px !important;
-            min-width: 18px !important;
-            min-height: 18px !important;
+            width: 18px ;
+            height: 18px;
+            min-width: 18px;
+            min-height: 18px;
             display: block !important;
             visibility: visible !important;
             opacity: 1 !important;
@@ -209,7 +209,6 @@ body {
         }
 
         .fc-daygrid-event {
-            padding: 1px !important;
             min-height: 20px !important;
             margin-top: 0 !important;
         }
@@ -233,16 +232,6 @@ body {
             justify-content: center;
             align-items: baseline;
         }
-        /* Override when 3-event is present
-        .pbac-day-count-0.three-present {
-            justify-content: left;
-            align-items: baseline;
-            margin-left: 4px;
-        }
-
-        .pbac-day-count-0.three-present .fc-daygrid-day-top.justify-center {
-            width: auto !important;
-        } */
     }
 }
 
@@ -312,14 +301,14 @@ body {
     }
     .three-present .fc-daygrid-day-top.justify-center {
         justify-content: flex-end;
-        padding-left: 4px;
+        padding-left: 2px;
     }
 
     .pbac-day-count-1 .fc-daygrid-day-top.justify-center {
         width: 100%;
     }
     .three-present.pbac-day-count-1 .fc-daygrid-day-top.justify-center {
-        width: 42%;
+        width: 48%;
         float: left;
     }
 
@@ -328,7 +317,7 @@ body {
     }
 
     .three-present.pbac-day-count-2 .fc-daygrid-day-top.justify-center {
-        width: 42%;
+        width: 48%;
     }
 
     .fc-daygrid-day {
@@ -464,7 +453,18 @@ body {
         height: 210px;
     }
 }
-
+@media (max-width: 354px) {
+body .fc-scroller-harness .pbac-calendar-icon {
+    min-width: 14px !important;
+    min-height: 14px !important;
+}
+body .fc-scroller-harness .fc-daygrid-day-number{
+    font-size: 14px !important;
+}
+    .three-present .fc-daygrid-day-top.justify-center {
+        padding-left: 2px;
+    }
+}
 @keyframes shake {
     0%,
     100% {
