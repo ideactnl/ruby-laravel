@@ -47,7 +47,7 @@ export function createFilterMenu() {
       localStorage.setItem('calendar_selected_types', JSON.stringify(this.selected));
       if (window.participantCalendar) {
         window.participantCalendar.refetchEvents();
-        CalendarLayout.updateZeroDayClassForMobile();
+        CalendarLayout.addNewClassForMobile();
       }
     },
 
