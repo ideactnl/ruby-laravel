@@ -326,10 +326,15 @@ body {
     }
     .pbac-day-count-2 .fc-daygrid-event-harness:nth-last-child(2) {
         justify-content: center !important;
-    }
+        padding-top: 10px;
 
+    }
+.three-present .fc-daygrid-event-harness {
+    padding: 0 !important;
+}
     .pbac-day-count-2 .fc-daygrid-event-harness:nth-last-child(1) {
         justify-content: center !important;
+        padding-top: 10px;
     }
 }
 
@@ -453,11 +458,14 @@ body {
         height: 210px;
     }
 }
-@media (max-width: 354px) {
-body .fc-scroller-harness .pbac-calendar-icon {
-    min-width: 14px !important;
-    min-height: 14px !important;
-}
+@media (min-width: 350px) and (max-width: 360px) {
+    body .fc-scroller-harness .pbac-calendar-icon {
+        min-width: 14px !important;
+        min-height: 14px !important;
+        margin-top: -4px;
+        width: 15px;
+        height: 15px;
+    }
 body .fc-scroller-harness .fc-daygrid-day-number{
     font-size: 14px !important;
 }
@@ -465,6 +473,7 @@ body .fc-scroller-harness .fc-daygrid-day-number{
         padding-left: 2px;
     }
 }
+
 @keyframes shake {
     0%,
     100% {
