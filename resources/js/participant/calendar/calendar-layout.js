@@ -215,8 +215,8 @@ export class CalendarLayout {
       icon.style.opacity = '1';
     }
 
-    CalendarLayout.updateZeroDayClassForMobile();
-    window.addEventListener('resize', CalendarLayout.updateZeroDayClassForMobile);
+    CalendarLayout.addNewClassForMobile();
+    window.addEventListener('resize', CalendarLayout.addNewClassForMobile);
   }
 
   /**
@@ -285,21 +285,17 @@ export class CalendarLayout {
   /**
    * Update zero event day class for mobile layout
    */
-  static updateZeroDayClassForMobile() {
+  static addNewClassForMobile() {
     const isMobile = window.innerWidth <= 768;
     if (!isMobile) return;
 
     const filterHasThree = window.selectedCalendarTypes && window.selectedCalendarTypes.size === 3;
 
     document.querySelectorAll('.fc-daygrid-day-frame').forEach(frame => {
-      const zeroDay = frame.classList.contains('pbac-day-count-0');
-
-      if (zeroDay) {
-        if (filterHasThree) {
-          frame.classList.add('three-present');
-        } else {
-          frame.classList.remove('three-present');
-        }
+      if (filterHasThree) {
+        frame.classList.add('three-present');
+      } else {
+        frame.classList.remove('three-present');
       }
     });
   }
