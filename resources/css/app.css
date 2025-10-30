@@ -14,26 +14,26 @@
 
 /* For Chrome, Safari, Edge */
 ::-webkit-scrollbar {
-  width: 0px;
-  height: 0px;
+    width: 0px;
+    height: 0px;
 }
 
 /* For Firefox */
 html {
-  scrollbar-width: none;
+    scrollbar-width: none;
 }
 
 /* For IE, Edge Legacy */
-html, body {
-  -ms-overflow-style: none;
+html,
+body {
+    -ms-overflow-style: none;
 }
 
 /* Make sure scroll still works */
 body {
-  overflow-y: scroll;
-  overflow-x: hidden;
+    overflow-y: scroll;
+    overflow-x: hidden;
 }
-
 
 @theme {
     --font-family-sans: "Geist", ui-sans-serif, system-ui, sans-serif,
@@ -171,9 +171,9 @@ body {
         -webkit-overflow-scrolling: touch;
         overscroll-behavior: contain;
     }
-.card-new-dec {
-    height: 38vh;
-}
+    .card-new-dec {
+        height: 38vh;
+    }
 
     @media (max-width: 768px) {
         .pbac-mobile-events .fc-daygrid-day-frame {
@@ -233,7 +233,7 @@ body {
             justify-content: center;
             align-items: baseline;
         }
-        /* Override when 3-event is present */
+        /* Override when 3-event is present
         .pbac-day-count-0.three-present {
             justify-content: left;
             align-items: baseline;
@@ -242,7 +242,7 @@ body {
 
         .pbac-day-count-0.three-present .fc-daygrid-day-top.justify-center {
             width: auto !important;
-        }
+        } */
     }
 }
 
@@ -262,8 +262,8 @@ body {
         height: 206px;
     }
     .pbac-day-count-1 .fc-daygrid-event-harness {
-    padding-top: 10px !important;
-}
+        padding-top: 10px !important;
+    }
 
     .card-new-dec h4 {
         font-size: 15px;
@@ -303,17 +303,32 @@ body {
         margin: auto;
         flex-direction: column;
     }
+    .three-present.pbac-day-count-1 {
+        display: block;
+    }
 
-    .pbac-day-count-2 .fc-daygrid-event-harness {
-        padding-top: 10px;
+    .three-present.pbac-day-count-2 .fc-daygrid-event-harness {
+        padding-top: 0px;
+    }
+    .three-present .fc-daygrid-day-top.justify-center {
+        justify-content: flex-end;
+        padding-left: 4px;
     }
 
     .pbac-day-count-1 .fc-daygrid-day-top.justify-center {
         width: 100%;
     }
+    .three-present.pbac-day-count-1 .fc-daygrid-day-top.justify-center {
+        width: 42%;
+        float: left;
+    }
 
     .pbac-day-count-2 .fc-daygrid-day-top.justify-center {
         width: 100%;
+    }
+
+    .three-present.pbac-day-count-2 .fc-daygrid-day-top.justify-center {
+        width: 42%;
     }
 
     .fc-daygrid-day {
@@ -375,6 +390,11 @@ body {
     padding-top: 0px;
 }
 
+.three-present.pbac-day-count-1 .fc-daygrid-event-harness {
+    width: 42% !important;
+    padding-top: 0px !important;
+    float: right;
+}
 .pbac-day-count-2 .fc-daygrid-event-harness:nth-last-child(2) {
     justify-content: end;
 }
@@ -464,15 +484,12 @@ body {
     animation: shake 0.4s ease-in-out;
 }
 
-@media only screen
-  and (min-width: 768px)
-  and (max-width: 1024px)
-  and (orientation: portrait) {
-  .main-hed {
-    flex-direction: column-reverse;
-    gap: 20px;
-    display: flex;
-}
+@media only screen and (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
+    .main-hed {
+        flex-direction: column-reverse;
+        gap: 20px;
+        display: flex;
+    }
     .pbac-day-count-3 .fc-daygrid-event-harness {
         width: 42%;
         float: left;
@@ -483,23 +500,24 @@ body {
         width: 42%;
         float: left;
     }
-       .fc-daygrid-day {
+    .fc-daygrid-day {
         padding-top: 10px !important;
         padding-bottom: 10px !important;
     }
-    .pbac-day-count-2 .fc-daygrid-day-top.justify-center,.pbac-day-count-1 .fc-daygrid-day-top.justify-center {
-    width: 100%;
-}
-.pbac-day-count-2 .fc-daygrid-event-harness {
-    width: 43%;
-}
-.pbac-day-count-0 .fc-daygrid-day-top.justify-center {
+    .pbac-day-count-2 .fc-daygrid-day-top.justify-center,
+    .pbac-day-count-1 .fc-daygrid-day-top.justify-center {
+        width: 100%;
+    }
+    .pbac-day-count-2 .fc-daygrid-event-harness {
+        width: 43%;
+    }
+    .pbac-day-count-0 .fc-daygrid-day-top.justify-center {
         width: 100% !important;
     }
     .card-new-dec {
-    height: 265px;
+        height: 265px;
+    }
+    .msg-send {
+        grid-template-columns: 1fr;
+    }
 }
-.msg-send {
-    grid-template-columns: 1fr;
-}
-  }
