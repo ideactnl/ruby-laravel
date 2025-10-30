@@ -58,7 +58,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
   CalendarLayout.applyDayTopCenter(el);
   calendar.on('datesSet', () => CalendarLayout.applyDayTopCenter(el));
-  CalendarLayout.updateZeroDayClassForMobile();
+  CalendarLayout.addNewClassForMobile();
 
   eventHandler.prefetchPreviousMonths();
 });

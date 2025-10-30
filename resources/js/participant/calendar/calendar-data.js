@@ -63,14 +63,7 @@ export function buildEventsFromRows(rows, selected) {
     if (pillars.sex?.today ?? false)
       pushIf(date, true, 'sex', { ...pillars.sex });
   }
-
-  for (const date of datesSeen) {
-    for (const type of selected) {
-      const hasEvent = evts.some(e => e.start === date && e.extendedProps.type === type);
-      if (!hasEvent) pushIf(date, false, type, {}, true);
-    }
-  }
-
+  
   const selectedOrder = Array.from(selected);
 
   evts.sort((a, b) => {
