@@ -23,37 +23,29 @@ const REGION_LABELS = {
 };
 
 function mapPainValueToIcon(painValue) {
-  if (painValue === 0 || painValue === 1) {
-    return { iconNumber: 1, label: 'No/Minimal Pain' };
-  } else if (painValue === 2) {
-    return { iconNumber: 2, label: 'Very Light Pain' };
-  } else if (painValue === 3 || painValue === 4) {
-    return { iconNumber: 3, label: 'Light-Mild Pain' };
-  } else if (painValue === 5 || painValue === 6) {
-    return { iconNumber: 4, label: 'Moderate Pain' };
-  } else if (painValue === 7 || painValue === 8) {
-    return { iconNumber: 5, label: 'Severe Pain' };
-  } else {
-    return { iconNumber: 6, label: 'Extreme Pain' };
-  }
+  if (painValue === 0 || painValue === 1) return 1;
+  if (painValue === 2) return 2;
+  if (painValue === 3 || painValue === 4) return 3;
+  if (painValue === 5 || painValue === 6) return 4;
+  if (painValue === 7 || painValue === 8) return 5;
+  return 6; // 9–10
 }
 
 export function getPainIcon(value) {
   if (typeof value !== 'object') {
     return createIconResult('pain.png', 'Pain');
   }
-  
+
   const painValue = value.value || 0;
   const regions = value.regions || [];
-  
-  const { iconNumber, label } = mapPainValueToIcon(painValue);
-  
-  let tooltip = `Pain Level: ${painValue}/10 (${label})`;
+  const iconNumber = mapPainValueToIcon(painValue);
+
+  let tooltip = `Pain Level: ${painValue}/10`;
   if (regions.length > 0) {
     const regionText = regions.length === 1 ? 'Area' : 'Areas';
-    const friendlyRegions = regions.map(region => REGION_LABELS[region] || region);
+    const friendlyRegions = regions.map(r => REGION_LABELS[r] || r);
     tooltip += `\nAffected ${regionText}: ${friendlyRegions.join(', ')}`;
   }
-  
+
   return createIconResult(`smile_${iconNumber}.png`, tooltip);
 }

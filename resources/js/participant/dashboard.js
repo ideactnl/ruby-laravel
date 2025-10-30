@@ -3,7 +3,7 @@
  * Orchestrates all calendar functionality
  */
 
-import { 
+import {
   createFilterMenu,
   CalendarEvents,
   CalendarLayout,
@@ -53,11 +53,12 @@ window.addEventListener('DOMContentLoaded', () => {
   calendar.render();
 
   const calendarUI = new CalendarUI(calendar);
-  
+
   const navigation = new CalendarNavigation(calendar, el);
 
   CalendarLayout.applyDayTopCenter(el);
   calendar.on('datesSet', () => CalendarLayout.applyDayTopCenter(el));
+  CalendarLayout.updateZeroDayClassForMobile();
 
   eventHandler.prefetchPreviousMonths();
 });

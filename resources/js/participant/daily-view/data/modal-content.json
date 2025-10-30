@@ -47,9 +47,9 @@
     "negativeTitle": "Challenging Emotions Experienced", 
     "balanceTitle": "Mood Balance",
     "overallLabels": {
-      "positive": "Overall: Positive Day",
-      "challenging": "Overall: Challenging Day",
-      "balanced": "Overall: Balanced Day"
+      "positive": "Positive Day",
+      "challenging": "Challenging Day",
+      "balanced": "Balanced Day"
     },
     "moodDescriptions": {
       "calm": "Feeling peaceful and relaxed, free from stress or anxiety",
