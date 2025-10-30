@@ -187,7 +187,7 @@
         <!-- Right: Form -->
         <div class="w-full md:w-1/2">
           <form action="#" method="post" class="space-y-4">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 msg-send">
               <input
                 type="text"
                 placeholder="First Name"
@@ -200,7 +200,7 @@
               />
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 msg-send">
               <input
                 type="email"
                 placeholder="Email Address"

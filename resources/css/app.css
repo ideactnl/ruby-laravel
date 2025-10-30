@@ -436,5 +436,35 @@
   .main-hed {
     flex-direction: column-reverse;
     gap: 20px;
+    display: flex;
+}
+    .pbac-day-count-3 .fc-daygrid-event-harness {
+        width: 42%;
+        float: left;
+        display: flex;
+        align-items: center;
+    }
+    .fc-daygrid-day-top.justify-center {
+        width: 42%;
+        float: left;
+    }
+       .fc-daygrid-day {
+        padding-top: 10px !important;
+        padding-bottom: 10px !important;
+    }
+    .pbac-day-count-2 .fc-daygrid-day-top.justify-center,.pbac-day-count-1 .fc-daygrid-day-top.justify-center {
+    width: 100%;
+}
+.pbac-day-count-2 .fc-daygrid-event-harness {
+    width: 43%;
+}
+.pbac-day-count-0 .fc-daygrid-day-top.justify-center {
+        width: 100% !important;
+    }
+    .card-new-dec {
+    height: 265px;
+}
+.msg-send {
+    grid-template-columns: 1fr;
 }
   }

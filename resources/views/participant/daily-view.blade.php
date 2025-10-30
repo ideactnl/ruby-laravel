@@ -40,7 +40,7 @@
         </div>
 
         <!-- Desktop Layout -->
-        <div class="hidden md:grid grid-cols-3 items-center mb-6 gap-4">
+        <div class="hidden md:grid grid-cols-3 items-center mb-6 gap-4 main-hed">
             <div class="justify-self-start">
                 <div class="flex items-center gap-3">
                     <button @click="prevDay()"
