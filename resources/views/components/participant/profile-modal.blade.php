@@ -151,6 +151,30 @@
                                 </div>
                             </div>
 
+                            <!-- Mobile-only Language Settings -->
+                            <div class="md:hidden bg-white rounded-2xl p-4 border border-[var(--color-neutral-200)]">
+                                <h4 class="text-sm font-semibold text-[var(--color-neutral-900)] mb-3 flex items-center gap-2">
+                                    <i class="fas fa-language text-sm"></i> {{ __('participant.language') }}
+                                </h4>
+                                <div class="space-y-2">
+                                    @foreach(config('app.available_locales') as $localeCode => $localeName)
+                                        <form method="POST" action="{{ route('switch-language') }}" class="inline-block w-full">
+                                            @csrf
+                                            <input type="hidden" name="locale" value="{{ $localeCode }}">
+                                            <button type="submit" 
+                                                class="w-full text-left px-3 py-2 text-sm rounded-lg transition-colors border {{ app()->getLocale() === $localeCode ? 'bg-[var(--color-primary)]/10 text-[var(--color-primary)] border-[var(--color-primary)]/20 font-medium' : 'text-[var(--color-neutral-700)] hover:bg-[var(--color-neutral-100)] border-[var(--color-neutral-200)]' }}">
+                                                <span class="flex items-center justify-between">
+                                                    {{ __('participant.' . strtolower($localeName)) }}
+                                                    @if(app()->getLocale() === $localeCode)
+                                                        <i class="fas fa-check text-[var(--color-primary)] text-xs"></i>
+                                                    @endif
+                                                </span>
+                                            </button>
+                                        </form>
+                                    @endforeach
+                                </div>
+                            </div>
+
                             <!-- Info Note -->
                             <div class="bg-[var(--color-neutral-200)]/50 rounded-2xl border border-[var(--color-neutral-200)]/20 mt-4" x-data="{ expanded: false }">
                                 <button @click="expanded = !expanded" class="w-full p-4 flex items-center justify-between text-left hover:bg-[var(--color-neutral-200)]/70 transition-colors rounded-2xl">

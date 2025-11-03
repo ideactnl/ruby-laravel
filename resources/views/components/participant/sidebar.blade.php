@@ -150,9 +150,10 @@
                           rounded-full bg-transparent text-white">
                             <i class="fa-solid fa-user-circle text-[18px]"></i>
                         </span>
-                        <span class="font-semibold tracking-wide leading-tight">{{ __('participant.profile') }}</span>
+                        <span class="font-semibold tracking-wide leading-tight">{{ __('participant.Profile') }}</span>
                     </a>
                 </li>
+
 
                 <li class="md:hidden">
                     <a href="#"
@@ -171,7 +172,7 @@
                           rounded-full bg-transparent text-white">
                             <i class="fa-solid fa-right-from-bracket text-[18px]"></i>
                         </span>
-                        <span class="font-semibold tracking-wide leading-tight">{{ __('participant.logout') }}</span>
+                        <span class="font-semibold tracking-wide leading-tight">{{ __('participant.Logout') }}</span>
                     </a>
                 </li>
 

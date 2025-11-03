@@ -59,26 +59,28 @@
                                 @click="open=false; window.dispatchEvent(new CustomEvent('profile:open'))"
                                 class="block w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 cursor-pointer">{{ __('participant.profile') }}</button>
                             
-                            <!-- Language Switcher -->
-                            <div class="border-t border-gray-100 my-1"></div>
-                            <div class="px-3 py-1">
-                                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ __('participant.language') }}</span>
+                            <!-- Desktop-only Language Switcher -->
+                            <div class="hidden md:block">
+                                <div class="border-t border-gray-100 my-1"></div>
+                                <div class="px-3 py-1">
+                                    <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ __('participant.language') }}</span>
+                                </div>
+                                @foreach(config('app.available_locales') as $localeCode => $localeName)
+                                    <form method="POST" action="{{ route('switch-language') }}" class="inline-block w-full">
+                                        @csrf
+                                        <input type="hidden" name="locale" value="{{ $localeCode }}">
+                                        <button type="submit" 
+                                            class="block w-full text-left px-3 py-2 text-sm hover:bg-gray-50 cursor-pointer {{ app()->getLocale() === $localeCode ? 'text-primary font-medium' : 'text-gray-700' }}">
+                                            <span class="flex items-center justify-between">
+                                                {{ __('participant.' . strtolower($localeName)) }}
+                                                @if(app()->getLocale() === $localeCode)
+                                                    <i class="fa-solid fa-check text-primary text-xs"></i>
+                                                @endif
+                                            </span>
+                                        </button>
+                                    </form>
+                                @endforeach
                             </div>
-                            @foreach(config('app.available_locales') as $localeCode => $localeName)
-                                <form method="POST" action="{{ route('switch-language') }}" class="inline-block w-full">
-                                    @csrf
-                                    <input type="hidden" name="locale" value="{{ $localeCode }}">
-                                    <button type="submit" 
-                                        class="block w-full text-left px-3 py-2 text-sm hover:bg-gray-50 cursor-pointer {{ app()->getLocale() === $localeCode ? 'text-primary font-medium' : 'text-gray-700' }}">
-                                        <span class="flex items-center justify-between">
-                                            {{ __('participant.' . strtolower($localeName)) }}
-                                            @if(app()->getLocale() === $localeCode)
-                                                <i class="fa-solid fa-check text-primary text-xs"></i>
-                                            @endif
-                                        </span>
-                                    </button>
-                                </form>
-                            @endforeach
                             
                             <div class="border-t border-gray-100 my-1"></div>
                             <button @click="logout()"

@@ -17,33 +17,55 @@ class LanguageController extends Controller
         $defaultLocale = config('app.locale', 'en');
 
         if (! in_array($locale, $availableLocales)) {
-            return redirect()->back();
+            return redirect()->back()->withCookie(cookie('locale', $defaultLocale, 525600));
         }
 
         session(['locale' => $locale]);
 
-        $currentRoute = Route::current();
-        $routeName = $currentRoute ? $currentRoute->getName() : null;
-        $parameters = $currentRoute ? $currentRoute->parameters() : [];
+        $referer = $request->header('referer');
 
-        unset($parameters['locale']);
-
-        if ($routeName) {
-            $baseRouteName = preg_replace('/^[a-z]{2}\./', '', $routeName);
-
-            $newRouteName = $locale !== $defaultLocale ? "{$locale}.{$baseRouteName}" : $baseRouteName;
-
-            if ($locale !== $defaultLocale) {
-                $parameters = array_merge(['locale' => $locale], $parameters);
-            }
-
+        if ($referer) {
             try {
-                return redirect()->route($newRouteName, $parameters)
-                    ->withCookie(cookie('locale', $locale, 525600));
+                $refererPath = parse_url($referer, PHP_URL_PATH);
+
+                // Remove any existing locale prefix (e.g., /nl/, /en/)
+                // Only remove actual locale prefixes, not just any 2-letter combination
+                $cleanPath = preg_replace('/^\/nl\//', '/', $refererPath); // Remove /nl/ prefix
+                $cleanPath = preg_replace('/^\/en\//', '/', $cleanPath);   // Remove /en/ prefix if it exists
+
+                // Ensure clean path starts with /
+                if (! str_starts_with($cleanPath, '/')) {
+                    $cleanPath = '/'.$cleanPath;
+                }
+
+                // Add locale prefix only for non-default locales
+                // Debug: let's see what's happening
+                if ($locale === 'en' && $defaultLocale === 'en') {
+                    // English is default, no prefix
+                    $newPath = $cleanPath;
+                } elseif ($locale === 'nl') {
+                    // Dutch needs prefix
+                    $newPath = '/nl'.$cleanPath;
+                } else {
+                    // Fallback
+                    $newPath = $cleanPath;
+                }
+
+                return redirect($newPath)->withCookie(cookie('locale', $locale, 525600));
+
             } catch (\Exception $e) {
+                // If URL parsing fails, fall back to route-based redirect
             }
         }
 
-        return redirect()->back()->withCookie(cookie('locale', $locale, 525600));
+        // Fallback: redirect to dashboard with proper locale
+        try {
+            $dashboardRoute = $locale !== $defaultLocale ? "{$locale}.participant.dashboard" : 'participant.dashboard';
+
+            return redirect()->route($dashboardRoute)->withCookie(cookie('locale', $locale, 525600));
+        } catch (\Exception $e) {
+            // Final fallback
+            return redirect('/')->withCookie(cookie('locale', $locale, 525600));
+        }
     }
 }

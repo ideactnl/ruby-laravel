@@ -44,8 +44,10 @@ return [
     'sunday' => 'zondag',
 
     // User interface
-    'profile' => 'profiel',
-    'logout' => 'uitloggen',
+    'profile' => 'Profiel',
+    'logout' => 'Uitloggen',
+    'Profile' => 'Profiel',
+    'Logout' => 'Uitloggen',
 
     // Months
     'january' => 'januari',
