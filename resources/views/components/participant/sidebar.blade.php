@@ -1,3 +1,8 @@
+@php
+    $currentLocale = app()->getLocale();
+    $routePrefix = $currentLocale !== config('app.locale') ? $currentLocale . '.' : '';
+@endphp
+
 <aside
     class="fixed inset-y-0 left-0 z-[99] w-full bg-white text-black transform md:bg-primary md:text-white shadow-none transition-transform duration-300
            md:inset-y-0 md:left-0 md:w-64 md:translate-x-0 flex flex-col overflow-x-hidden"
@@ -30,7 +35,7 @@
     <!-- Logo panel with close button for mobile -->
     <div class="logo-panel mb-1 pl-3 pr-0 pt-0">
         <div class="h-28 flex items-center justify-between px-0">
-            <a href="{{ route('participant.dashboard') }}" class="block"
+            <a href="{{ route($routePrefix . 'participant.dashboard') }}" class="block"
                 onclick="if('vibrate' in navigator) { try { navigator.vibrate(15); } catch(e) {} }">
                 <img src="{{ asset('images/logo.png') }}" alt="RubyNU logo"
                     class="max-h-20 w-auto object-contain md:hidden" />
@@ -55,39 +60,53 @@
                 @php
                     $items = [
                         [
-                            'label' => 'Calendar',
-                            'href' => route('participant.dashboard'),
-                            'active' => request()->routeIs('participant.dashboard'),
+                            'key' => 'calendar',
+                            'label' => __('participant.calendar'),
+                            'href' => route($routePrefix . 'participant.dashboard'),
+                            'active' => request()->routeIs('*participant.dashboard'),
+                            'icon' => 'fa-calendar-days',
                         ],
                         [
-                            'label' => 'Daily view',
-                            'href' => route('participant.daily-view', ['date' => now()->toDateString()]),
-                            'active' => request()->routeIs('participant.daily-view'),
+                            'key' => 'daily_view',
+                            'label' => __('participant.daily_view'),
+                            'href' => route($routePrefix . 'participant.daily-view', ['date' => now()->toDateString()]),
+                            'active' => request()->routeIs('*participant.daily-view'),
+                            'icon' => 'fa-eye',
                         ],
                         [
-                            'label' => 'Education',
-                            'href' => route('participant.education'),
-                            'active' => request()->routeIs('participant.education'),
+                            'key' => 'education',
+                            'label' => __('participant.education'),
+                            'href' => route($routePrefix . 'participant.education'),
+                            'active' => request()->routeIs('*participant.education'),
+                            'icon' => 'fa-circle-play',
                         ],
                         [
-                            'label' => 'Selfmanagement',
-                            'href' => route('participant.self-management'),
-                            'active' => request()->routeIs('participant.self-management'),
+                            'key' => 'selfmanagement',
+                            'label' => __('participant.selfmanagement'),
+                            'href' => route($routePrefix . 'participant.self-management'),
+                            'active' => request()->routeIs('*participant.self-management'),
+                            'icon' => 'fa-lightbulb',
                         ],
                         [
-                            'label' => 'Links to external websites',
-                            'href' => route('participant.external-links'),
-                            'active' => request()->routeIs('participant.external-links'),
+                            'key' => 'links_external_websites',
+                            'label' => __('participant.links_external_websites'),
+                            'href' => route($routePrefix . 'participant.external-links'),
+                            'active' => request()->routeIs('*participant.external-links'),
+                            'icon' => 'fa-external-link-alt',
                         ],
                         [
-                            'label' => 'Export',
-                            'href' => route('participant.export'),
-                            'active' => request()->routeIs('participant.export'),
+                            'key' => 'export',
+                            'label' => __('participant.export'),
+                            'href' => route($routePrefix . 'participant.export'),
+                            'active' => request()->routeIs('*participant.export'),
+                            'icon' => 'fa-share-from-square',
                         ],
                         [
-                            'label' => 'General information',
-                            'href' => route('participant.general-information'),
-                            'active' => request()->routeIs('participant.general-information'),
+                            'key' => 'general_information',
+                            'label' => __('participant.general_information'),
+                            'href' => route($routePrefix . 'participant.general-information'),
+                            'active' => request()->routeIs('*participant.general-information'),
+                            'icon' => 'fa-circle-info',
                         ],
                     ];
                 @endphp
@@ -106,24 +125,12 @@
                             <span
                                 class="inline-flex h-9 w-9 shrink-0 items-center justify-center shadow
                                 {{ $isActive ? 'rounded-lg text-black' : 'rounded-full bg-transparent text-white' }}">
-                                @php
-                                    $iconMap = [
-                                        'Calendar' => 'fa-calendar-days',
-                                        'Daily view' => 'fa-eye',
-                                        'Education' => 'fa-circle-play',
-                                        'Selfmanagement' => 'fa-lightbulb',
-                                        'Links to external websites' => 'fa-external-link-alt',
-                                        'Export' => 'fa-share-from-square',
-                                        'General information' => 'fa-circle-info',
-                                    ];
-                                    $iconCls = $iconMap[$item['label']] ?? 'fa-circle';
-                                @endphp
-                                <i class="fa-solid {{ $iconCls }} text-[18px]"></i>
+                                <i class="fa-solid {{ $item['icon'] }} text-[18px]"></i>
                             </span>
                             <span class="font-semibold tracking-wide leading-tight">
-                                @if ($item['label'] === 'Links to external websites')
-                                    <span class="md:hidden">Links to external websites</span>
-                                    <span class="hidden md:inline">Links to external<br>websites</span>
+                                @if ($item['key'] === 'links_external_websites')
+                                    <span class="md:hidden">{{ $item['label'] }}</span>
+                                    <span class="hidden md:inline">{!! str_replace(' websites', '<br>websites', $item['label']) !!}</span>
                                 @else
                                     {{ $item['label'] }}
                                 @endif
@@ -143,7 +150,7 @@
                           rounded-full bg-transparent text-white">
                             <i class="fa-solid fa-user-circle text-[18px]"></i>
                         </span>
-                        <span class="font-semibold tracking-wide leading-tight">Profile</span>
+                        <span class="font-semibold tracking-wide leading-tight">{{ __('participant.profile') }}</span>
                     </a>
                 </li>
 
@@ -164,7 +171,7 @@
                           rounded-full bg-transparent text-white">
                             <i class="fa-solid fa-right-from-bracket text-[18px]"></i>
                         </span>
-                        <span class="font-semibold tracking-wide leading-tight">Log Out</span>
+                        <span class="font-semibold tracking-wide leading-tight">{{ __('participant.logout') }}</span>
                     </a>
                 </li>
 

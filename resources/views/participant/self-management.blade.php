@@ -1,7 +1,7 @@
 @extends('layouts.participant.app')
 
-@section('navbar_title', 'SELF MANAGEMENT')
-@section('navbar_subtitle', 'Tools and resources for managing your health')
+@section('navbar_title', __('participant.selfmanagement'))
+@section('navbar_subtitle', __('participant.tools_resources_managing_health'))
 
 @section('content')
     <section>

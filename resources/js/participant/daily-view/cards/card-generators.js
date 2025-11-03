@@ -30,7 +30,7 @@ export class CardGenerators {
       this.createBloodLossCard(pillars.blood_loss),
       this.createPainCard(pillars.pain),
       this.createImpactCard(pillars.impact),
-      this.createEnergyCard(pillars.general_health),
+      this.createGeneralHealthCard(pillars.general_health),
       this.createMoodCard(pillars.mood),
       this.createStoolCard(pillars.stool_urine),
       this.createSleepCard(pillars.sleep),
@@ -50,10 +50,11 @@ export class CardGenerators {
 
     const statusInfo = CardStatusGenerators.getBloodLossStatus(pillar);
     const iconData = CardIconGenerators.getBloodLossIcons(pillar);
+    const translations = window.healthDomainTranslations || {};
 
     return {
       key: 'blood_loss',
-      label: 'Blood Loss',
+      label: translations.blood_loss || 'Blood Loss',
       iconSrc: '/images/grid_blood_loss.png',
       context: statusInfo.context,
       statusColor: statusInfo.statusColor,
@@ -74,12 +75,13 @@ export class CardGenerators {
     
     const statusInfo = CardStatusGenerators.getPainStatus(pillar);
     const iconData = CardIconGenerators.getPainIcons(pillar);
+    const translations = window.healthDomainTranslations || {};
 
     const formattedRegions = regions.map(region => PAIN_REGION_LABELS[region] || region).join(', ');
     
     return {
       key: 'pain',
-      label: 'Pain',
+      label: translations.pain || 'Pain',
       iconSrc: '/images/grid_pain.png',
       context: statusInfo.context, 
       statusColor: statusInfo.statusColor,
@@ -100,6 +102,7 @@ export class CardGenerators {
     
     const statusInfo = CardStatusGenerators.getImpactStatus(pillar);
     const iconData = CardIconGenerators.getImpactIcons(pillar);
+    const translations = window.healthDomainTranslations || {};
 
     const formattedLimitations = limitations
       .filter(limitation => limitation && limitation !== '_' && limitation.trim() !== '')
@@ -109,7 +112,7 @@ export class CardGenerators {
 
     return {
       key: 'impact',
-      label: 'Impact',
+      label: translations.impact || 'Impact',
       iconSrc: '/images/grid_impact.png',
       context: statusInfo.context, 
       statusColor: statusInfo.statusColor,
@@ -121,24 +124,24 @@ export class CardGenerators {
     };
   }
 
-  createEnergyCard(pillar) {
+  createGeneralHealthCard(pillar) {
     if (!PillarDataValidators.hasGeneralHealthData(pillar)) {
       return null;
     }
 
-    const symptoms = pillar.symptoms || [];
-    
     const statusInfo = CardStatusGenerators.getGeneralHealthStatus(pillar);
     const iconData = CardIconGenerators.getGeneralHealthIcons(pillar);
-
-    const formattedSymptoms = symptoms
+    const translations = window.healthDomainTranslations || {};
+    
+    const symptoms = pillar?.symptoms || [];
+    const symptomsText = symptoms
       .filter(symptom => symptom && symptom !== '_' && symptom.trim() !== '')
       .map(symptom => SYMPTOM_LABELS[symptom] || symptom.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()))
       .join(', ');
     
     return {
       key: 'general_health',
-      label: 'General Health',
+      label: translations.general_health || 'General Health',
       iconSrc: '/images/grid_general_health.png',
       context: statusInfo.context, 
       statusColor: statusInfo.statusColor,
@@ -157,10 +160,11 @@ export class CardGenerators {
 
     const statusInfo = CardStatusGenerators.getMoodStatus(pillar);
     const iconData = CardIconGenerators.getMoodIcons(pillar);
+    const translations = window.healthDomainTranslations || {};
 
     return {
       key: 'mood',
-      label: 'Mood',
+      label: translations.mood || 'Mood',
       iconSrc: '/images/grid_mood.png',
       context: statusInfo.context,
       statusColor: statusInfo.statusColor,
@@ -173,14 +177,17 @@ export class CardGenerators {
   }
 
   createStoolCard(pillar) {
-    if (!PillarDataValidators.hasStoolUrineData(pillar)) return null;
-    
+    if (!PillarDataValidators.hasStoolUrineData(pillar)) {
+      return null;
+    }
+
     const statusInfo = CardStatusGenerators.getStoolUrineStatus(pillar);
     const iconData = CardIconGenerators.getStoolUrineIcons(pillar);
+    const translations = window.healthDomainTranslations || {};
     
     return {
       key: 'stool_urine',
-      label: 'Stool/Urine',
+      label: translations.stool_urine || 'Stool/Urine',
       iconSrc: '/images/grid_urine_stool.png',
       context: statusInfo.context,
       statusColor: statusInfo.statusColor,
@@ -193,14 +200,17 @@ export class CardGenerators {
   }
 
   createSleepCard(pillar) {
-    if (!PillarDataValidators.hasSleepData(pillar)) return null;
-    
+    if (!PillarDataValidators.hasSleepData(pillar)) {
+      return null;
+    }
+
     const statusInfo = CardStatusGenerators.getSleepStatus(pillar);
     const iconData = CardIconGenerators.getSleepIcons(pillar);
+    const translations = window.healthDomainTranslations || {};
     
     return {
       key: 'sleep',
-      label: 'Sleep',
+      label: translations.sleep || 'Sleep',
       iconSrc: '/images/grid_sleep.png',
       context: statusInfo.context,
       statusColor: statusInfo.statusColor,
@@ -219,10 +229,11 @@ export class CardGenerators {
 
     const statusInfo = CardStatusGenerators.getDietStatus(pillar);
     const iconData = CardIconGenerators.getDietIcons(pillar);
+    const translations = window.healthDomainTranslations || {};
     
     return {
       key: 'diet',
-      label: 'Diet',
+      label: translations.diet || 'Diet',
       iconSrc: '/images/grid_diet.png',
       context: statusInfo.context,
       statusColor: statusInfo.statusColor,
@@ -235,8 +246,10 @@ export class CardGenerators {
   }
 
   createExerciseCard(pillar) {
-    if (!PillarDataValidators.hasExerciseData(pillar)) return null;
-    
+    if (!PillarDataValidators.hasExerciseData(pillar)) {
+      return null;
+    }
+
     const types = pillar.types || [];
     
     const formattedTypes = types
@@ -246,10 +259,11 @@ export class CardGenerators {
     
     const statusInfo = CardStatusGenerators.getExerciseStatus(pillar);
     const iconData = CardIconGenerators.getExerciseIcons(pillar);
+    const translations = window.healthDomainTranslations || {};
 
     return {
       key: 'exercise',
-      label: 'Exercise',
+      label: translations.exercise || 'Exercise',
       iconSrc: '/images/grid_sport.png',
       context: statusInfo.context,
       statusColor: statusInfo.statusColor,
@@ -262,14 +276,17 @@ export class CardGenerators {
   }
 
   createSexCard(pillar) {
-    if (!PillarDataValidators.hasSexData(pillar)) return null;
-    
+    if (!PillarDataValidators.hasSexData(pillar)) {
+      return null;
+    }
+
     const statusInfo = CardStatusGenerators.getSexStatus(pillar);
     const iconData = CardIconGenerators.getSexIcons(pillar);
+    const translations = window.healthDomainTranslations || {};
     
     return {
       key: 'sex',
-      label: 'Sexual Health',
+      label: translations.sex || 'Sexual Health',
       iconSrc: '/images/grid_sex.png',
       context: statusInfo.context,
       statusColor: statusInfo.statusColor,
@@ -282,14 +299,17 @@ export class CardGenerators {
   }
 
   createNotesCard(pillar) {
-    if (!PillarDataValidators.hasNotesData(pillar)) return null;
-    
+    if (!PillarDataValidators.hasNotesData(pillar)) {
+      return null;
+    }
+
     const statusInfo = CardStatusGenerators.getNotesStatus(pillar);
     const iconData = CardIconGenerators.getNotesIcons(pillar);
+    const translations = window.healthDomainTranslations || {};
     
     return {
       key: 'notes',
-      label: 'Notes',
+      label: translations.notes || 'Notes',
       iconSrc: '/images/grid_notes.png',
       context: statusInfo.context,
       statusColor: statusInfo.statusColor,

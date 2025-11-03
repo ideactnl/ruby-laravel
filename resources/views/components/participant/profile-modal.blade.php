@@ -53,8 +53,8 @@
                                     <i class="fas fa-user text-white text-lg"></i>
                                 </div>
                                 <div>
-                                    <h3 class="text-lg font-semibold text-white">My Profile</h3>
-                                    <p class="text-white/80 text-sm">Account information & settings</p>
+                                    <h3 class="text-lg font-semibold text-white">{{ __('participant.my_profile') }}</h3>
+                                    <p class="text-white/80 text-sm">{{ __('participant.account_information_settings') }}</p>
                                 </div>
                             </div>
                             <button @click="open=false"
@@ -75,7 +75,7 @@
                                 <div class="absolute inset-2 w-8 h-8 bg-[var(--color-primary)]/10 rounded-full animate-pulse"></div>
                             </div>
                             <div class="mt-4 text-center">
-                                <p class="text-[var(--color-neutral-700)] text-sm font-medium">Loading profile...</p>
+                                <p class="text-[var(--color-neutral-700)] text-sm font-medium">{{ __('participant.loading') }}</p>
                                 <p class="text-[var(--color-neutral-700)]/60 text-xs mt-1">Please wait a moment</p>
                             </div>
                         </div>
@@ -86,16 +86,16 @@
                             <!-- Registration -->
                             <div class="bg-[var(--color-neutral-100)] rounded-2xl p-4 border border-[var(--color-neutral-200)]/20">
                                 <h4 class="text-sm font-semibold text-[var(--color-neutral-900)] mb-3 flex items-center gap-2">
-                                    <i class="fas fa-id-card text-sm"></i> Registration Details
+                                    <i class="fas fa-id-card text-sm"></i> {{ __('participant.registration_details') }}
                                 </h4>
                                 <div class="space-y-3">
                                     <div class="flex justify-between items-center">
-                                        <span class="text-sm text-[var(--color-neutral-700)]">Registration Number</span>
+                                        <span class="text-sm text-[var(--color-neutral-700)]">{{ __('participant.registration_number') }}</span>
                                         <span class="font-semibold text-sm text-[var(--color-neutral-900)] bg-white px-3 py-1 rounded-lg"
                                             x-text="profile?.registration_number"></span>
                                     </div>
                                     <div class="flex justify-between items-center">
-                                        <span class="text-sm text-[var(--color-neutral-700)]">Registered On</span>
+                                        <span class="text-sm text-[var(--color-neutral-700)]">{{ __('participant.registered_on') }}</span>
                                         <span class="font-medium text-sm text-[var(--color-neutral-900)]"
                                             x-text="profile?.created_at ? new Date(profile.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : ''"></span>
                                     </div>
@@ -105,24 +105,24 @@
                             <!-- Settings -->
                             <div class="bg-white rounded-2xl p-4 border border-[var(--color-neutral-200)]">
                                 <h4 class="text-sm font-semibold text-[var(--color-neutral-900)] mb-3 flex items-center gap-2">
-                                    <i class="fas fa-user-shield text-sm"></i> Privacy Settings
+                                    <i class="fas fa-user-shield text-sm"></i> {{ __('participant.privacy_settings') }}
                                 </h4>
                                 <div class="space-y-3">
                                     <div class="flex justify-between items-center">
-                                        <span class="text-sm text-[var(--color-neutral-700)]">Data Sharing</span>
+                                        <span class="text-sm text-[var(--color-neutral-700)]">{{ __('participant.data_sharing') }}</span>
                                         <span class="px-3 py-1.5 text-xs font-medium rounded-xl"
                                             :class="profile?.enable_data_sharing ?
                                                 'bg-[var(--color-success-50)] text-[var(--color-success)] border border-[var(--color-success)]/20' :
                                                 'bg-[var(--color-neutral-200)] text-[var(--color-neutral-700)] border border-[var(--color-neutral-200)]'"
-                                            x-text="profile?.enable_data_sharing ? 'Enabled' : 'Disabled'"></span>
+                                            x-text="profile?.enable_data_sharing ? '{{ __('participant.enabled') }}' : 'Disabled'"></span>
                                     </div>
                                     <div class="flex justify-between items-center">
-                                        <span class="text-sm text-[var(--color-neutral-700)]">Research Participation</span>
+                                        <span class="text-sm text-[var(--color-neutral-700)]">{{ __('participant.research_participation') }}</span>
                                         <span class="px-3 py-1.5 text-xs font-medium rounded-xl"
                                             :class="profile?.opt_in_for_research ?
                                                 'bg-[var(--color-success-50)] text-[var(--color-success)] border border-[var(--color-success)]/20' :
                                                 'bg-[var(--color-neutral-200)] text-[var(--color-neutral-700)] border border-[var(--color-neutral-200)]'"
-                                            x-text="profile?.opt_in_for_research ? 'Opted In' : 'Opted Out'"></span>
+                                            x-text="profile?.opt_in_for_research ? '{{ __('participant.opted_in') }}' : 'Opted Out'"></span>
                                     </div>
                                 </div>
                             </div>
@@ -130,13 +130,13 @@
                             <!-- Medical Access -->
                             <div class="bg-white rounded-2xl p-4 border border-[var(--color-neutral-200)]">
                                 <h4 class="text-sm font-semibold text-[var(--color-neutral-900)] mb-3 flex items-center gap-2">
-                                    <i class="fas fa-user-md text-sm"></i> Medical Specialist Access
+                                    <i class="fas fa-user-md text-sm"></i> {{ __('participant.medical_specialist_access') }}
                                 </h4>
                                 <div class="flex justify-between items-start">
                                     <div class="flex-1">
-                                        <span class="text-sm text-[var(--color-neutral-700)]">PIN Expires</span>
+                                        <span class="text-sm text-[var(--color-neutral-700)]">{{ __('participant.pin_expires') }}</span>
                                         <p class="font-medium text-sm text-[var(--color-neutral-900)] mt-1"
-                                            x-text="profile?.medical_specialist_temporary_pin_expires_at ? new Date(profile.medical_specialist_temporary_pin_expires_at).toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Not set'"></p>
+                                            x-text="profile?.medical_specialist_temporary_pin_expires_at ? new Date(profile.medical_specialist_temporary_pin_expires_at).toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '{{ __('participant.not_set') }}'"></p>
                                     </div>
                                     <div class="flex items-center gap-2">
                                         <span x-show="profile?.medical_specialist_pin_expired"
@@ -156,7 +156,7 @@
                                 <button @click="expanded = !expanded" class="w-full p-4 flex items-center justify-between text-left hover:bg-[var(--color-neutral-200)]/70 transition-colors rounded-2xl">
                                     <div class="flex items-center gap-3">
                                         <i class="fas fa-mobile-alt text-[var(--color-neutral-900)] text-sm"></i>
-                                        <span class="font-medium text-[var(--color-neutral-900)] text-sm">Want to change these settings?</span>
+                                        <span class="font-medium text-[var(--color-neutral-900)] text-sm">{{ __('participant.want_to_change_settings') }}</span>
                                     </div>
                                     <i class="fas fa-chevron-down text-[var(--color-neutral-900)] text-xs transition-transform duration-200" :class="{ 'rotate-180': expanded }"></i>
                                 </button>
@@ -174,7 +174,7 @@
                     <div class="px-6 py-4 bg-[var(--color-neutral-200)]/30 rounded-b-3xl border-t border-[var(--color-neutral-200)]/50 flex-shrink-0">
                         <div class="flex justify-end">
                             <button type="button" class="px-6 py-2.5 bg-white hover:bg-[var(--color-neutral-200)]/50 border border-[var(--color-neutral-200)] text-[var(--color-neutral-700)] hover:text-[var(--color-neutral-900)] text-sm font-medium rounded-xl transition-all duration-200 shadow-sm hover:shadow-md" @click="open=false">
-                                Close
+                                {{ __('participant.close') }}
                             </button>
                         </div>
                     </div>

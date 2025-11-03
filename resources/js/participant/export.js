@@ -63,18 +63,20 @@
     const notesBars = rows.map(r => r.pillars?.notes?.hasNote ? 1 : 0);
     const lineSeries = bloodLossBars;
 
+    const translations = window.healthDomainTranslations || {};
+    
     const datasets = [
-      { type: 'bar', label: 'Blood Loss', data: bloodLossBars, backgroundColor: COLORS.blood_loss },
-      { type: 'bar', label: 'Pain', data: painBars, backgroundColor: COLORS.pain },
-      { type: 'bar', label: 'Impact', data: impactBars, backgroundColor: COLORS.impact },
-      { type: 'bar', label: 'General Health', data: generalHealthBars, backgroundColor: COLORS.general_health },
-      { type: 'bar', label: 'Mood', data: moodBars, backgroundColor: COLORS.mood },
-      { type: 'bar', label: 'Stool/Urine', data: stoolUrineBars, backgroundColor: COLORS.stool_urine },
-      { type: 'bar', label: 'Sleep', data: sleepBars, backgroundColor: COLORS.sleep },
-      { type: 'bar', label: 'Diet', data: dietBars, backgroundColor: COLORS.diet },
-      { type: 'bar', label: 'Exercise', data: exerciseBars, backgroundColor: COLORS.exercise },
-      { type: 'bar', label: 'Sex', data: sexBars, backgroundColor: COLORS.sex },
-      { type: 'bar', label: 'Notes', data: notesBars, backgroundColor: COLORS.notes },
+      { type: 'bar', label: translations.blood_loss || 'Blood Loss', data: bloodLossBars, backgroundColor: COLORS.blood_loss },
+      { type: 'bar', label: translations.pain || 'Pain', data: painBars, backgroundColor: COLORS.pain },
+      { type: 'bar', label: translations.impact || 'Impact', data: impactBars, backgroundColor: COLORS.impact },
+      { type: 'bar', label: translations.general_health || 'General Health', data: generalHealthBars, backgroundColor: COLORS.general_health },
+      { type: 'bar', label: translations.mood || 'Mood', data: moodBars, backgroundColor: COLORS.mood },
+      { type: 'bar', label: translations.stool_urine || 'Stool/Urine', data: stoolUrineBars, backgroundColor: COLORS.stool_urine },
+      { type: 'bar', label: translations.sleep || 'Sleep', data: sleepBars, backgroundColor: COLORS.sleep },
+      { type: 'bar', label: translations.diet || 'Diet', data: dietBars, backgroundColor: COLORS.diet },
+      { type: 'bar', label: translations.exercise || 'Exercise', data: exerciseBars, backgroundColor: COLORS.exercise },
+      { type: 'bar', label: translations.sex || 'Sexual Health', data: sexBars, backgroundColor: COLORS.sex },
+      { type: 'bar', label: translations.notes || 'Notes', data: notesBars, backgroundColor: COLORS.notes },
       { type: 'line', label: 'Trend', data: lineSeries, borderColor: COLORS.line, backgroundColor: COLORS.line, tension: 0.35, yAxisID: 'y' }
     ];
     return { labels, datasets };

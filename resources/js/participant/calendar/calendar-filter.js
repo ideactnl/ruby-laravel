@@ -4,20 +4,23 @@
  */
 
 export function createFilterMenu() {
+  // Get translations from window object (set by Laravel)
+  const translations = window.healthDomainTranslations || {};
+  
   return {
     open: false,
     options: [
-      { value: 'blood_loss', label: 'Blood Loss', color: '#DC2626', iconSrc: '/images/grid_blood_loss.png' },
-      { value: 'pain', label: 'Pain', color: '#F59E0B', iconSrc: '/images/grid_pain.png' },
-      { value: 'impact', label: 'Impact', color: '#22C55E', iconSrc: '/images/grid_impact.png' },
-      { value: 'general_health', label: 'General Health', color: '#10B981', iconSrc: '/images/grid_general_health.png' },
-      { value: 'mood', label: 'Mood', color: '#8B5CF6', iconSrc: '/images/grid_mood.png' },
-      { value: 'stool_urine', label: 'Stool/Urine', color: '#0EA5E9', iconSrc: '/images/grid_urine_stool.png' },
-      { value: 'sleep', label: 'Sleep', color: '#6366F1', iconSrc: '/images/grid_sleep.png' },
-      { value: 'diet', label: 'Diet', color: '#EAB308', iconSrc: '/images/grid_diet.png' },
-      { value: 'exercise', label: 'Exercise', color: '#FB923C', iconSrc: '/images/grid_sport.png' },
-      { value: 'sex', label: 'Sexual Health', color: '#F472B6', iconSrc: '/images/grid_sex.png' },
-      { value: 'notes', label: 'Notes', color: '#64748B', iconSrc: '/images/grid_notes.png' },
+      { value: 'blood_loss', label: translations.blood_loss || 'Blood Loss', color: '#DC2626', iconSrc: '/images/grid_blood_loss.png' },
+      { value: 'pain', label: translations.pain || 'Pain', color: '#F59E0B', iconSrc: '/images/grid_pain.png' },
+      { value: 'impact', label: translations.impact || 'Impact', color: '#22C55E', iconSrc: '/images/grid_impact.png' },
+      { value: 'general_health', label: translations.general_health || 'General Health', color: '#10B981', iconSrc: '/images/grid_general_health.png' },
+      { value: 'mood', label: translations.mood || 'Mood', color: '#8B5CF6', iconSrc: '/images/grid_mood.png' },
+      { value: 'stool_urine', label: translations.stool_urine || 'Stool/Urine', color: '#0EA5E9', iconSrc: '/images/grid_urine_stool.png' },
+      { value: 'sleep', label: translations.sleep || 'Sleep', color: '#6366F1', iconSrc: '/images/grid_sleep.png' },
+      { value: 'diet', label: translations.diet || 'Diet', color: '#EAB308', iconSrc: '/images/grid_diet.png' },
+      { value: 'exercise', label: translations.exercise || 'Exercise', color: '#FB923C', iconSrc: '/images/grid_sport.png' },
+      { value: 'sex', label: translations.sex || 'Sexual Health', color: '#F472B6', iconSrc: '/images/grid_sex.png' },
+      { value: 'notes', label: translations.notes || 'Notes', color: '#64748B', iconSrc: '/images/grid_notes.png' },
     ],
     selected: [],
     shakeTarget: null,

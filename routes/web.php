@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\MedicalSpecialist\MedicalSpecialistController;
+use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\PbacExportController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -9,32 +10,54 @@ Route::get("/", function () {
     return view('index');
 });
 
+Route::post('/switch-language', [LanguageController::class, 'switch'])->name('switch-language');
+
+/*
+|--------------------------------------------------------------------------
+| Localized Routes Helper Function
+|--------------------------------------------------------------------------
+*/
+$registerParticipantRoutes = function ($locale = null) {
+    $prefix = $locale ? "{$locale}/participant" : 'participant';
+    
+    Route::middleware(['web'])->prefix($prefix)->group(function () use ($locale) {
+        Route::get('/web-login', function () use ($locale) {
+            if (Auth::guard('participant-web')->check()) {
+                $dashboardRoute = $locale ? "/{$locale}/participant/dashboard" : '/participant/dashboard';
+                return redirect($dashboardRoute);
+            }
+            return view('participant.web_login');
+        })->name($locale ? "{$locale}.participant.web.login" : 'participant.web.login');
+
+        Route::middleware('auth.participant')->group(function () use ($locale) {
+            $namePrefix = $locale ? "{$locale}." : '';
+            
+            Route::get('/dashboard', [\App\Http\Controllers\Api\Participant\ParticipantWebApiController::class, 'dashboardPage'])->name($namePrefix . 'participant.dashboard');
+            Route::get('/export', [\App\Http\Controllers\Api\Participant\ParticipantWebApiController::class, 'exportPage'])->name($namePrefix . 'participant.export');
+            Route::get('/daily-view', [\App\Http\Controllers\Api\Participant\ParticipantWebApiController::class, 'dailyViewPage'])->name($namePrefix . 'participant.daily-view');
+            Route::get('/education', [\App\Http\Controllers\Api\Participant\ParticipantWebApiController::class, 'education'])->name($namePrefix . 'participant.education');
+            Route::get('/self-management', [\App\Http\Controllers\Api\Participant\ParticipantWebApiController::class, 'selfManagement'])->name($namePrefix . 'participant.self-management');
+            Route::get('/external-links', [\App\Http\Controllers\Api\Participant\ParticipantWebApiController::class, 'externalLinks'])->name($namePrefix . 'participant.external-links');
+            Route::get('/general-information', [\App\Http\Controllers\Api\Participant\ParticipantWebApiController::class, 'generalInformation'])->name($namePrefix . 'participant.general-information');
+            Route::get('/api/v1/participant/profile', [\App\Http\Controllers\Api\Participant\ParticipantWebApiController::class, 'profile'])->name($namePrefix . 'participant.api.profile');
+        });
+    });
+};
 
 /*
 |--------------------------------------------------------------------------
 | Sanctum Web Auth Routes (For Participant)
 |--------------------------------------------------------------------------
 */
-Route::middleware(['web'])->prefix('participant')->group(function () {
-    Route::get('/web-login', function () {
-        if (Auth::guard('participant-web')->check()) {
-            return redirect('/participant/dashboard');
-        }
-        return view('participant.web_login');
-    })->name('participant.web.login');
+// Default routes (English)
+$registerParticipantRoutes();
 
-    Route::middleware('auth.participant')->group(function () {
-        Route::get('/dashboard', [\App\Http\Controllers\Api\Participant\ParticipantWebApiController::class, 'dashboardPage'])->name('participant.dashboard');
-        Route::get('/export', [\App\Http\Controllers\Api\Participant\ParticipantWebApiController::class, 'exportPage'])->name('participant.export');
-        Route::get('/daily-view', [\App\Http\Controllers\Api\Participant\ParticipantWebApiController::class, 'dailyViewPage'])->name('participant.daily-view');
-        Route::get('/education', [\App\Http\Controllers\Api\Participant\ParticipantWebApiController::class, 'education'])->name('participant.education');
-        Route::get('/self-management', [\App\Http\Controllers\Api\Participant\ParticipantWebApiController::class, 'selfManagement'])->name('participant.self-management');
-        Route::get('/external-links', [\App\Http\Controllers\Api\Participant\ParticipantWebApiController::class, 'externalLinks'])->name('participant.external-links');
-        Route::get('/general-information', [\App\Http\Controllers\Api\Participant\ParticipantWebApiController::class, 'generalInformation'])->name('participant.general-information');
-        Route::get('/api/v1/participant/profile', [\App\Http\Controllers\Api\Participant\ParticipantWebApiController::class, 'profile'])->name('participant.api.profile');
-    });
-
-});
+// Localized routes
+foreach (array_keys(config('app.available_locales', [])) as $locale) {
+    if ($locale !== config('app.locale')) {
+        $registerParticipantRoutes($locale);
+    }
+}
 
 /*
 |--------------------------------------------------------------------------

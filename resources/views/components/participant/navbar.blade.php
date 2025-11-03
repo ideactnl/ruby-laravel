@@ -1,3 +1,8 @@
+@php
+    $currentLocale = app()->getLocale();
+    $routePrefix = $currentLocale !== config('app.locale') ? $currentLocale . '.' : '';
+@endphp
+
 <nav class="sticky top-0 z-50 bg-white/95 backdrop-blur border-t-0 border-white md:ml-64">
     <div class="mx-auto w-full px-5 md:px-8 border-b border-neutral-200">
         <div class="flex h-20 items-center justify-between border-b border-gray-100/70">
@@ -11,7 +16,7 @@
                             d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
                     </svg>
                 </button>
-                <a href="{{ route('participant.dashboard') }}" class="flex items-center" 
+                <a href="{{ route($routePrefix . 'participant.dashboard') }}" class="flex items-center" 
                    onclick="if('vibrate' in navigator) { try { navigator.vibrate(15); } catch(e) {} }">
                     <img src="{{ asset('images/logo.png') }}" alt="Ruby logo" class="h-10 w-auto object-contain" />
                 </a>
@@ -52,9 +57,32 @@
                             style="display:none">
                             <button type="button"
                                 @click="open=false; window.dispatchEvent(new CustomEvent('profile:open'))"
-                                class="block w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 cursor-pointer">Profile</button>
+                                class="block w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 cursor-pointer">{{ __('participant.profile') }}</button>
+                            
+                            <!-- Language Switcher -->
+                            <div class="border-t border-gray-100 my-1"></div>
+                            <div class="px-3 py-1">
+                                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ __('participant.language') }}</span>
+                            </div>
+                            @foreach(config('app.available_locales') as $localeCode => $localeName)
+                                <form method="POST" action="{{ route('switch-language') }}" class="inline-block w-full">
+                                    @csrf
+                                    <input type="hidden" name="locale" value="{{ $localeCode }}">
+                                    <button type="submit" 
+                                        class="block w-full text-left px-3 py-2 text-sm hover:bg-gray-50 cursor-pointer {{ app()->getLocale() === $localeCode ? 'text-primary font-medium' : 'text-gray-700' }}">
+                                        <span class="flex items-center justify-between">
+                                            {{ __('participant.' . strtolower($localeName)) }}
+                                            @if(app()->getLocale() === $localeCode)
+                                                <i class="fa-solid fa-check text-primary text-xs"></i>
+                                            @endif
+                                        </span>
+                                    </button>
+                                </form>
+                            @endforeach
+                            
+                            <div class="border-t border-gray-100 my-1"></div>
                             <button @click="logout()"
-                                class="block w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-gray-50 cursor-pointer">Logout</button>
+                                class="block w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-gray-50 cursor-pointer">{{ __('participant.logout') }}</button>
                         </div>
                     </div>
                 @endauth

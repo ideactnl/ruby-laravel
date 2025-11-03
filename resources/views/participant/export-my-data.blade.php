@@ -1,6 +1,6 @@
 @extends('layouts.participant.app')
-@section('navbar_title', 'VISUALISE SYMPTOMS - EXPORT DATA')
-@section('navbar_subtitle', 'Export Your PBAC Data Based on the Selected Dates')
+@section('navbar_title', __('participant.visualise_symptoms_export_data'))
+@section('navbar_subtitle', __('participant.export_pbac_data_selected_dates'))
 
 
 @section('content')
@@ -27,14 +27,14 @@
 >
     <div class="mb-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div class="flex flex-wrap items-center gap-3">
-            <span class="inline-flex items-center rounded-md border border-primary px-3 py-2 text-sm font-semibold text-primary bg-primary/5">Range</span>
+            <span class="inline-flex items-center rounded-md border border-primary px-3 py-2 text-sm font-semibold text-primary bg-primary/5">{{ __('participant.range') }}</span>
             <x-form.select name="preset" x-model="preset" @change="if(window.innerWidth <= 768 && 'vibrate' in navigator) { try { navigator.vibrate(15); } catch(e) {} }; refresh()" variant="participant" :enhanced="false">
-                <option value="month">This Month</option>
-                <option value="quarter">This Quarter</option>
-                <option value="year">This Year</option>
-                <option value="custom">Custom Range</option>
+                <option value="month">{{ __('participant.this_month') }}</option>
+                <option value="quarter">{{ __('participant.this_quarter') }}</option>
+                <option value="year">{{ __('participant.this_year') }}</option>
+                <option value="custom">{{ __('participant.custom_range') }}</option>
             </x-form.select>
-            <span class="ml-1 text-gray-500 text-sm" x-show="loading">Loading chart...</span>
+            <span class="ml-1 text-gray-500 text-sm" x-show="loading">{{ __('participant.loading_chart') }}</span>
         </div>
         <div class="flex items-center gap-6" x-show="preset==='custom'">
             <div class="flex items-center gap-2">
@@ -65,17 +65,17 @@
                 <canvas id="exportChart" class="w-full h-full"></canvas>
                 <!-- Scroll indicator for mobile -->
                 <div id="scrollIndicator" class="md:hidden absolute top-2 right-2 bg-black/20 text-white text-xs px-2 py-1 rounded-full pointer-events-none transition-opacity duration-500">
-                    ← Scroll →
+                    {{ __('participant.scroll_indicator') }}
                 </div>
             </div>
         </div>
         <div class="mt-8 flex items-center flex-wrap md:justify-end gap-3">
             <button @click="exportPDF()" :disabled="busy" :class="busy ? 'opacity-60 cursor-not-allowed' : ''" class="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-white shadow hover:opacity-90">
-                Export as PDF
+                {{ __('participant.export_as_pdf') }}
                 <i class="fa-solid fa-file-pdf"></i>
             </button>
             <button @click="exportCSV()" :disabled="busy" :class="busy ? 'opacity-60 cursor-not-allowed' : ''" class="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-white shadow hover:opacity-90">
-                Export as CSV
+                {{ __('participant.export_as_csv') }}
                 <i class="fa-solid fa-file-csv"></i>
             </button>
         </div>
@@ -86,3 +86,21 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+window.healthDomainTranslations = {
+    'blood_loss': '{{ __('participant.blood_loss') }}',
+    'pain': '{{ __('participant.pain') }}',
+    'impact': '{{ __('participant.impact') }}',
+    'general_health': '{{ __('participant.general_health') }}',
+    'mood': '{{ __('participant.mood') }}',
+    'stool_urine': '{{ __('participant.stool_urine') }}',
+    'sleep': '{{ __('participant.sleep') }}',
+    'diet': '{{ __('participant.diet') }}',
+    'exercise': '{{ __('participant.exercise') }}',
+    'sex': '{{ __('participant.sexual_health') }}',
+    'notes': '{{ __('participant.notes') }}'
+};
+</script>
+@endpush

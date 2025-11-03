@@ -1,13 +1,13 @@
 @extends('layouts.participant.app')
 
-@section('navbar_title', 'EXTERNAL LINKS')
-@section('navbar_subtitle', 'Helpful external websites and resources')
+@section('navbar_title', __('participant.links_external_websites'))
+@section('navbar_subtitle', __('participant.helpful_external_websites_resources'))
 
 @section('content')
 
 <section class="max-w-7xl mx-auto px-0 py-0">
       <!-- Heading -->
-      <h2 class="text-[25px] md:text-{25px} font-bold mb-6">WEBSITES LINKS</h2>
+      <h2 class="text-[25px] md:text-{25px} font-bold mb-6">{{ __('participant.websites_links') }}</h2>
 
       <!-- Image Grid -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">

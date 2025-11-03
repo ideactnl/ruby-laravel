@@ -1,7 +1,7 @@
 @extends('layouts.participant.app')
 
-@section('navbar_title', 'GENERAL INFORMATION')
-@section('navbar_subtitle', 'Important information and guidelines')
+@section('navbar_title', __('participant.general_information'))
+@section('navbar_subtitle', __('participant.important_information_guidelines'))
 
 @section('content')
       <!-- WHY THE RUBY APP -->
@@ -10,7 +10,7 @@
           <img src=" {{ asset("images/app.png") }}" alt="Ruby App" class="rounded-lg w-full object-cover ">
         </div>
         <div class="md:w-2/3">
-          <h2 class="text-2xl font-bold mb-4 text-[#000]">WHY THE RUBY APP</h2>
+          <h2 class="text-2xl font-bold mb-4 text-[#000]">{{ __('participant.why_the_ruby_app') }}</h2>
           <p class="text-gray-700 leading-relaxed mb-4">
             Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin
             literature from 45 BC, making it over 2000 years old.
@@ -50,7 +50,7 @@
           <img src="{{ asset("images/Aboutus.jpg") }}" alt="About the App" class="rounded-lg w-full object-cover ">
         </div>
         <div class="md:w-2/3">
-          <h2 class="text-2xl font-bold mb-4 text-[#000]">ABOUT THE APP</h2>
+          <h2 class="text-2xl font-bold mb-4 text-[#000]">{{ __('participant.about_the_app') }}</h2>
           <p class="text-gray-700 leading-relaxed mb-4">
             Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin
             literature from 45 BC, making it over 2000 years old.
@@ -91,7 +91,7 @@
           <img src="{{ asset("images/research.png") }}" alt="About the Research" class="rounded-lg w-full object-cover ">
         </div>
         <div class="md:w-2/3">
-          <h2 class="text-2xl font-bold mb-4 text-[#000]">ABOUT THE RESEARCH</h2>
+          <h2 class="text-2xl font-bold mb-4 text-[#000]">{{ __('participant.about_the_research') }}</h2>
           <p class="text-gray-700 leading-relaxed mb-4">
             Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin
             literature from 45 BC, making it over 2000 years old.
@@ -132,7 +132,7 @@
           <img src="{{ asset("images/Privacys.png") }}" alt="Privacy Info" class="rounded-lg w-full object-cover">
         </div>
         <div class="md:w-2/3">
-          <h2 class="text-2xl font-bold mb-4 text-[#000]">PRIVACY INFORMATION</h2>
+          <h2 class="text-2xl font-bold mb-4 text-[#000]">{{ __('participant.privacy_information') }}</h2>
           <p class="text-gray-700 leading-relaxed mb-4">
             Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin
             literature from 45 BC, making it over 2000 years old.
@@ -169,7 +169,7 @@
       <section class="max-w-6xl mx-auto px-4 py-16">
       <!-- Heading -->
       <div class="mb-6">
-        <h2 class="text-2xl md:text-3xl font-bold mb-2">SEND US A MESSAGE</h2>
+        <h2 class="text-2xl md:text-3xl font-bold mb-2">{{ __('participant.send_us_message') }}</h2>
         <p class="text-gray-700">Contrary to popular belief, Lorem Ipsum is not simply random text.</p>
       </div>
 

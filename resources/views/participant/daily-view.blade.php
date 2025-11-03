@@ -1,6 +1,6 @@
 @extends('layouts.participant.app')
-@section('navbar_title', 'VISUALISE SYMPTOMS - DAILY VIEW')
-@section('navbar_subtitle', 'Daily Overview Showing Selected Domains For The Chosen Date')
+@section('navbar_title', __('participant.visualise_symptoms_daily_view'))
+@section('navbar_subtitle', __('participant.daily_overview_showing_selected_domains'))
 
 @section('content')
     <div class="max-w-7xl mx-auto pl-0 pr-0 py-0" x-data="dailyView()" x-init="init()">
@@ -12,13 +12,13 @@
                 <button @click="prevDay()"
                     class="inline-flex items-center justify-center gap-1 rounded-md bg-red-900 flex-1 px-2 py-2 text-xs font-semibold text-white shadow hover:bg-red-800 cursor-pointer">
                     <i class="fa-solid fa-chevron-left text-xs"></i>
-                    Prev
+                    {{ __('participant.prev') }}
                 </button>
 
                 <!-- Next Button -->
                 <button @click="nextDay()"
                     class="inline-flex items-center justify-center gap-1 rounded-md bg-red-900 flex-1 px-2 py-2 text-xs font-semibold text-white shadow hover:bg-red-800 cursor-pointer">
-                    Next
+                    {{ __('participant.next') }}
                     <i class="fa-solid fa-chevron-right text-xs"></i>
                 </button>
 
@@ -26,7 +26,7 @@
                 <div class="relative flex-1">
                     <button @click="openDate()"
                         class="inline-flex items-center justify-center gap-1 rounded-md bg-red-900 w-full px-2 py-2 text-xs font-semibold text-white shadow cursor-pointer hover:bg-red-800 transition-colors">
-                        Select
+                        {{ __('participant.select') }}
                         <i class="fa-solid fa-calendar text-xs"></i>
                     </button>
                     <input x-ref="datePick" type="date" x-model="date" @change="fetchData()" class="sr-only" />
@@ -46,12 +46,12 @@
                     <button @click="prevDay()"
                         class="inline-flex items-center justify-center gap-2 rounded-md bg-primary w-[120px] px-4 py-2 text-sm font-semibold text-white shadow hover:opacity-90 cursor-pointer">
                         <i class="fa-solid fa-angles-left"></i>
-                        Previous
+                        {{ __('participant.previous') }}
                     </button>
                     <h2 class="text-[22px] font-semibold text-gray-900 min-w-[220px] text-center" x-text="heading"></h2>
                     <button @click="nextDay()"
                         class="inline-flex items-center justify-center gap-2 rounded-md bg-primary w-[120px] px-4 py-2 text-sm font-semibold text-white shadow hover:opacity-90 cursor-pointer">
-                        Next
+                        {{ __('participant.next') }}
                         <i class="fa-solid fa-angles-right"></i>
                     </button>
                 </div>
@@ -62,7 +62,7 @@
             <div class="md:justify-self-end">
                 <button @click="openDate()"
                     class="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-white shadow cursor-pointer hover:bg-primary-800 transition-colors">
-                    Select Date
+                    {{ __('participant.select_date') }}
                     <i class="fa-solid fa-calendar text-sm"></i>
                 </button>
                 <input x-ref="datePick" type="date" x-model="date" @change="fetchData()" class="sr-only" />
@@ -70,7 +70,7 @@
         </div>
 
         <template x-if="loading">
-            <div class="text-gray-600">Loading...</div>
+            <div class="text-gray-600">{{ __('participant.loading') }}</div>
         </template>
         <!-- Domain Cards Section -->
         <template x-if="!loading && items.length > 0">
@@ -126,7 +126,7 @@
                                     <div class="absolute bottom-3 right-3">
                                         <button @click="openDomainModal(item)"
                                             class="bg-primary text-white text-xs px-3 py-1 rounded-full hover:bg-primary-600 transition-colors">
-                                            More
+                                            {{ __('participant.more') }}
                                         </button>
                                     </div>
                                 </div>
@@ -140,7 +140,7 @@
         <!-- No Data Message -->
         <template x-if="!loading && items.length === 0">
             <div class="mb-8">
-                <p class="text-sm text-gray-500 text-center py-8">No symptom data recorded for this date.</p>
+                <p class="text-sm text-gray-500 text-center py-8">{{ __('participant.no_symptom_data_recorded') }}</p>
             </div>
         </template>
 
@@ -172,7 +172,7 @@
                                     </div>
                                 </a>
                                 <div class="mt-2 text-sm font-medium text-gray-800 w-full md:w-[500px] mx-auto" x-cloak
-                                    x-text="vid.title || 'Video'"></div>
+                                    x-text="vid.title || '{{ __('participant.video') }}'"></div>
                             </div>
                         </template>
                     </div>
@@ -213,3 +213,21 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+<script>
+window.healthDomainTranslations = {
+    'blood_loss': '{{ __('participant.blood_loss') }}',
+    'pain': '{{ __('participant.pain') }}',
+    'impact': '{{ __('participant.impact') }}',
+    'general_health': '{{ __('participant.general_health') }}',
+    'mood': '{{ __('participant.mood') }}',
+    'stool_urine': '{{ __('participant.stool_urine') }}',
+    'sleep': '{{ __('participant.sleep') }}',
+    'diet': '{{ __('participant.diet') }}',
+    'exercise': '{{ __('participant.exercise') }}',
+    'sex': '{{ __('participant.sexual_health') }}',
+    'notes': '{{ __('participant.notes') }}'
+};
+</script>
+@endpush

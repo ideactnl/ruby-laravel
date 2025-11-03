@@ -1,6 +1,6 @@
 @extends('layouts.participant.app')
-@section('navbar_title', 'VISUALISE SYMPTOMS - MONTHLY OVERVIEW')
-@section('navbar_subtitle', 'Monthly Overview Showing The Relationship Between Selected Domains')
+@section('navbar_title', __('participant.visualise_symptoms_monthly_overview'))
+@section('navbar_subtitle', __('participant.monthly_overview_showing_relationship'))
 
 @section('content')
     <div x-data="filterMenu()" x-init="init()">
@@ -10,7 +10,7 @@
                 <!-- Previous Month Button -->
                 <button id="btn-prev-month"
                     class="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors flex-shrink-0"
-                    title="Previous month" aria-label="Previous month">
+                    title="{{ __('participant.previous_month') }}" aria-label="{{ __('participant.previous_month') }}">
                     <svg class="w-3 h-3 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                     </svg>
@@ -19,7 +19,7 @@
                 <!-- Date Display -->
                 <div id="mobile-date-container"
                     class="flex items-center gap-1 sm:gap-2 cursor-pointer hover:opacity-80 transition-opacity p-1 -m-1 sm:p-2 sm:-m-2 rounded-lg hover:bg-gray-50 flex-shrink-0"
-                    title="Tap to go to current month" onclick="goToCurrentMonth()">
+                    title="{{ __('participant.tap_to_go_current_month') }}" onclick="goToCurrentMonth()">
                     <div id="mobile-date"
                         class="dashboard-date text-xl sm:text-1xl md:text-1xl font-bold text-primary leading-none">
                         {{ now()->format('d') }}
@@ -40,7 +40,7 @@
                 <!-- Next Month Button -->
                 <button id="btn-next-month"
                     class="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors flex-shrink-0"
-                    title="Next month" aria-label="Next month">
+                    title="{{ __('participant.next_month') }}" aria-label="{{ __('participant.next_month') }}">
                     <svg class="w-3 h-3 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                     </svg>
@@ -56,13 +56,13 @@
             <div class="hidden md:flex items-center gap-2">
                 <button id="btn-prev-month-desktop"
                     class="w-40 px-4 py-2 bg-primary text-white text-sm font-medium rounded hover:bg-primary-800 transition-colors whitespace-nowrap"
-                    title="Previous month" aria-label="Previous month">
-                    <i class="fa-solid fa-angles-left"></i> Previous Month
+                    title="{{ __('participant.previous_month') }}" aria-label="{{ __('participant.previous_month') }}">
+                    <i class="fa-solid fa-angles-left"></i> {{ __('participant.previous_month_btn') }}
                 </button>
                 <button id="btn-next-month-desktop"
                     class="w-40 px-4 py-2 bg-primary text-white text-sm font-medium rounded hover:bg-primary-800 transition-colors whitespace-nowrap"
-                    title="Next month" aria-label="Next month">
-                    Next Month <i class="fa-solid fa-angles-right"></i>
+                    title="{{ __('participant.next_month') }}" aria-label="{{ __('participant.next_month') }}">
+                    {{ __('participant.next_month_btn') }} <i class="fa-solid fa-angles-right"></i>
                 </button>
             </div>
 
@@ -71,7 +71,7 @@
                 <button
                     @click="open=!open; if(window.innerWidth <= 768 && 'vibrate' in navigator) { try { navigator.vibrate(10); } catch(e) {} }"
                     class="inline-flex items-center gap-2 rounded-md bg-primary px-6 py-4 md:px-4 md:py-2 text-sm font-semibold text-white shadow hover:bg-primary-800 cursor-pointer transition-colors">
-                    <span>Domains (<span x-cloak x-text="selected.length"></span>/3)</span>
+                    <span>{{ __('participant.domains') }} (<span x-cloak x-text="selected.length"></span>/3)</span>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-4 w-4">
                         <path d="M6 9l6 6 6-6" />
                     </svg>
@@ -83,13 +83,13 @@
 
                     <div class="flex items-center justify-between px-2 pb-2 border-b border-gray-100">
                         <button class="text-xs font-medium text-gray-700 hover:text-gray-900"
-                            @click="selectAll()">Reset</button>
+                            @click="selectAll()">{{ __('participant.reset') }}</button>
                         <button class="text-xs font-medium text-red-600 hover:text-red-700"
-                            @click="clearAll()">Clear</button>
+                            @click="clearAll()">{{ __('participant.clear') }}</button>
                     </div>
 
                     <div class="px-2 pt-2 text-[11px] text-gray-600">
-                        You can select up to <span class="font-semibold">3</span> domains.
+                        {{ __('participant.you_can_select_up_to_3_domains') }}
                     </div>
 
                     <template x-for="opt in options" :key="opt.value">
@@ -164,11 +164,29 @@
 
         <!-- Back to current month button -->
         <div class="mt-4 flex justify-end">
-            <button id="btn-back-current" title="Back to current month" aria-label="Back to current month" x-cloak
+            <button id="btn-back-current" title="{{ __('participant.back_to_current_month') }}" aria-label="{{ __('participant.back_to_current_month') }}" x-cloak
                 class="hidden inline-flex items-center gap-2 rounded-full bg-primary text-white shadow-lg hover:bg-primary-800 px-4 py-3 cursor-pointer transition-colors">
                 <i class="fa-solid fa-clock-rotate-left text-lg"></i>
-                <span class="text-sm font-medium">Back to current month</span>
+                <span class="text-sm font-medium">{{ __('participant.back_to_current_month') }}</span>
             </button>
         </div>
     </div>
 @endsection
+
+@push('scripts')
+<script>
+window.healthDomainTranslations = {
+    'blood_loss': '{{ __('participant.blood_loss') }}',
+    'pain': '{{ __('participant.pain') }}',
+    'impact': '{{ __('participant.impact') }}',
+    'general_health': '{{ __('participant.general_health') }}',
+    'mood': '{{ __('participant.mood') }}',
+    'stool_urine': '{{ __('participant.stool_urine') }}',
+    'sleep': '{{ __('participant.sleep') }}',
+    'diet': '{{ __('participant.diet') }}',
+    'exercise': '{{ __('participant.exercise') }}',
+    'sex': '{{ __('participant.sexual_health') }}',
+    'notes': '{{ __('participant.notes') }}'
+};
+</script>
+@endpush

@@ -13,19 +13,19 @@
                 <div class="bg-white rounded-full p-4 mb-6">
                     <img src="/images/ruby-new-logo.png" alt="Logo" class="w-16 h-16 md:w-20 md:h-20">
                 </div>
-                <h2 class="text-xl font-semibold md:text-2xl">Ruby app</h2>
-                <h3 class="text-2xl font-bold mt-2 md:text-3xl">Welcome back!</h3>
+                <h2 class="text-xl font-semibold md:text-2xl">{{ __('participant.ruby_app') }}</h2>
+                <h3 class="text-2xl font-bold mt-2 md:text-3xl">{{ __('participant.welcome_back') }}</h3>
                 <p class="mt-4 text-sm md:text-base leading-relaxed">
-                    Empowering Women to improve their menstrual health.
+                    {{ __('participant.empowering_women_menstrual_health') }}
                 </p>
             </div>
         </div>
 
         <!-- Right Section -->
         <div class="w-full md:w-1/2 p-8 md:p-10 flex flex-col justify-center" x-data="loginForm()">
-            <h2 class="text-2xl font-bold mb-0 text-left uppercase md:text-3xl">Participant Login</h2>
+            <h2 class="text-2xl font-bold mb-0 text-left uppercase md:text-3xl">{{ __('participant.participant_login') }}</h2>
             <p class="mt-2 text-sm mb-6 leading-relaxed md:text-base">
-                Log in here with your account.
+                {{ __('participant.log_in_with_account') }}
             </p>
 
             <template x-if="error">
@@ -34,12 +34,12 @@
 
             <form @submit.prevent="submit" method="POST" class="space-y-4">
                 <x-form.group name="registration_number">
-                    <x-form.label name="registration_number" required>Registration Number</x-form.label>
+                    <x-form.label name="registration_number" required>{{ __('participant.registration_number') }}</x-form.label>
                     <x-form.input name="registration_number" x-model="registration_number" type="text" required autofocus />
                 </x-form.group>
 
                 <x-form.group name="password">
-                    <x-form.label name="password" required>Password</x-form.label>
+                    <x-form.label name="password" required>{{ __('participant.password') }}</x-form.label>
                     <x-form.input name="password" x-model="password" type="password" required />
                 </x-form.group>
 
@@ -47,8 +47,8 @@
                     <button type="submit"
                         class="w-full bg-primary hover:bg-primary text-white font-semibold py-2 px-4 rounded transition disabled:opacity-50"
                         x-bind:disabled="loading">
-                        <span x-show="!loading">Login</span>
-                        <span x-show="loading">Logging in...</span>
+                        <span x-show="!loading">{{ __('participant.login') }}</span>
+                        <span x-show="loading">{{ __('participant.logging_in') }}</span>
                     </button>
                 </div>
             </form>
@@ -88,12 +88,12 @@ function loginForm() {
                 const data = await res.json();
 
                 if (!res.ok || !data.success) {
-                    this.error = data.message || 'Login failed. Check your credentials.';
+                    this.error = data.message || '{{ __('participant.login_failed_check_credentials') }}';
                 } else {
                     window.location.href = '/participant/dashboard';
                 }
             } catch (e) {
-                this.error = 'An unexpected error occurred: ' + (e.message || e);
+                this.error = '{{ __('participant.unexpected_error_occurred') }}' + (e.message || e);
                 console.error(e);
             }
             this.loading = false;

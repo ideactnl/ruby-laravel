@@ -1,23 +1,23 @@
 @extends('layouts.participant.app')
 
-@section('navbar_title', 'EDUCATION')
-@section('navbar_subtitle', 'Educational resources and learning materials')
+@section('navbar_title', __('participant.education'))
+@section('navbar_subtitle', __('participant.educational_resources_learning_materials'))
 
 @section('content')
     <section>
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
             <div class="flex gap-2">
                 <select class="border border-gray-300 rounded px-3 py-1 text-sm text-white bg-[#7B1C1C]">
-                    <option>Category</option>
+                    <option>{{ __('participant.category') }}</option>
                 </select>
                 <select class="border border-gray-300 rounded px-3 py-3 text-sm text-white bg-[#7B1C1C]">
-                    <option>Recommended</option>
+                    <option>{{ __('participant.recommended') }}</option>
                 </select>
             </div>
         </div>
 
         <div class="swiper educationSwiper cursor-grab">
-            <div class="swiper-loading py-8 text-gray-500">Loading...</div>
+            <div class="swiper-loading py-8 text-gray-500">{{ __('participant.loading') }}</div>
             <div class="swiper-wrapper pb-3" style="display: none;">
 
                 <!-- Slide 1 - YouTube Video -->
@@ -27,7 +27,7 @@
                             <iframe class="w-full h-full" src="https://www.youtube.com/embed/tgbNymZ7vqY"
                                 allowfullscreen></iframe>
                         </div>
-                        <div class="p-4 text-sm">Learn more about the subject in this video.</div>
+                        <div class="p-4 text-sm">{{ __('participant.learn_more_about_subject') }}</div>
                     </div>
                 </div>
 
@@ -42,7 +42,7 @@
                                 class="absolute inset-0 bg-[#FC9490] text-white text-center rounded-lg shadow-md [backface-visibility:hidden] flex flex-col justify-center items-center cursor-pointer select-none">
                                 <div class="p-4 text-sm font-medium">
                                     <div class="text-[23px] font-bold mb-2">MYTH</div>
-                                    <h4 class="text-[20px]">Taking the anticonception pill without a break is bad</h4>
+                                    <h4 class="text-[20px]">{{ __('participant.taking_pill_without_break_bad') }}</h4>
                                 </div>
                                 <div class="absolute top-3 right-3">
                                     <i class="fas fa-sync-alt text-white opacity-70"></i>
@@ -53,10 +53,7 @@
                             <div
                                 class="absolute inset-0 rounded-lg bg-primary text-white text-center p-4 [transform:rotateY(180deg)] [backface-visibility:hidden] flex flex-col justify-center items-center cursor-pointer select-none">
                                 <div class="text-sm font-medium">
-                                    You don't have to stop taking the pill every 21 days. You can also take the pill
-                                    continuously, and that's totally fine. After 2 or 3
-                                    months, you might get some breakthrough bleeding. In that case, it can be helpful to
-                                    include a seven day pill break.
+                                    {{ __('participant.pill_continuous_explanation') }}
                                 </div>
                                 <div class="absolute top-3 right-3">
                                     <i class="fas fa-sync-alt text-white opacity-70"></i>
@@ -90,7 +87,7 @@
                                 ">
                                 <div class="p-4 text-sm font-medium">
                                     <div class="text-[23px] font-bold mb-2">MYTH</div>
-                                    <h4 class="text-[20px]">You can't exercise when you're on your period</h4>
+                                    <h4 class="text-[20px]">{{ __('participant.cant_exercise_during_period') }}</h4>
                                 </div>
                                 <div class="absolute top-3 right-3">
                                     <i class="fas fa-sync-alt text-white opacity-70"></i>
@@ -101,8 +98,7 @@
                             <div
                                 class="absolute inset-0 rounded-lg bg-primary text-white text-center p-4 [transform:rotateY(180deg)] [backface-visibility:hidden] flex flex-col justify-center items-center cursor-pointer select-none">
                                 <div class="text-sm font-medium">
-                                    Exercising can actually help with period symptoms! It can reduce cramps, and your
-                                    body releases feel-good chemicals that can improve your mood.
+                                    {{ __('participant.exercise_helps_period_symptoms') }}
                                 </div>
                                 <div class="absolute top-3 right-3">
                                     <i class="fas fa-sync-alt text-white opacity-70"></i>
@@ -131,7 +127,7 @@
     <!-- VIDEOS -->
     <section class="mt-12">
         <div class="swiper videoSwiper cursor-grab">
-            <div class="swiper-loading py-8 text-gray-500">Loading...</div>
+            <div class="swiper-loading py-8 text-gray-500">{{ __('participant.loading') }}</div>
             <div class="swiper-wrapper pb-3" style="display: none;">
                 <!-- Slide 1 -->
                 <div class="swiper-slide">
@@ -140,7 +136,7 @@
                             <iframe class="w-full h-full" src="https://www.youtube.com/embed/tgbNymZ7vqY"
                                 allowfullscreen></iframe>
                         </div>
-                        <div class="p-4 text-sm">Learn more about the subject in this video.</div>
+                        <div class="p-4 text-sm">{{ __('participant.learn_more_about_subject') }}</div>
                     </div>
                 </div>
 
@@ -162,7 +158,7 @@
                             <iframe class="w-full h-full" src="https://www.youtube.com/embed/tgbNymZ7vqY"
                                 allowfullscreen></iframe>
                         </div>
-                        <div class="p-4 text-sm">Learn more about the subject in this video.</div>
+                        <div class="p-4 text-sm">{{ __('participant.learn_more_about_subject') }}</div>
                     </div>
                 </div>
                 <!-- Slide 4 -->
@@ -172,7 +168,7 @@
                             <iframe class="w-full h-full" src="https://www.youtube.com/embed/tgbNymZ7vqY"
                                 allowfullscreen></iframe>
                         </div>
-                        <div class="p-4 text-sm">Learn more about the subject in this video.</div>
+                        <div class="p-4 text-sm">{{ __('participant.learn_more_about_subject') }}</div>
                     </div>
                 </div>
             </div>
