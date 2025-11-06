@@ -27,7 +27,8 @@ export class ModalContentGenerators {
     }
 
     const severity = pillar?.severity || 'none';
-    const spotting = pillar?.flags?.spotting;
+    const flags = pillar?.flags || {};
+    const spotting = flags.spotting;
 
     let content = '<div class="space-y-6">';
     
@@ -62,6 +63,24 @@ export class ModalContentGenerators {
       content += ModalHelpers.createSection('blue', 'blue', severityContent);
     }
 
+    // Display blood loss flags/indicators
+    const activeFlags = [];
+    if (flags.bloodClots) activeFlags.push(getModalTranslation('modal_blood_loss_blood_clots') || 'Blood clots');
+    if (flags.doubleProtection) activeFlags.push(getModalTranslation('modal_blood_loss_double_protection') || 'Double protection');
+    if (flags.leakedClothes) activeFlags.push(getModalTranslation('modal_blood_loss_leaked_clothes') || 'Leaked through clothes');
+    if (flags.changedProducts) activeFlags.push(getModalTranslation('modal_blood_loss_changed_products') || 'Changed products frequently');
+    if (flags.wokeUpAtNight) activeFlags.push(getModalTranslation('modal_blood_loss_woke_up_night') || 'Woke up at night');
+
+    if (activeFlags.length > 0) {
+      let flagsContent = ModalHelpers.createSectionHeader(getModalTranslation('modal_blood_loss_indicators') || 'Because of your blood loss, you…', 'red-800');
+      flagsContent += '<ul class="list-disc list-inside space-y-1 text-sm text-red-700">';
+      activeFlags.forEach(flag => {
+        flagsContent += `<li>${flag}</li>`;
+      });
+      flagsContent += '</ul>';
+      content += ModalHelpers.createSection('red', 'red', flagsContent);
+    }
+
     content += '</div>';
     return content;
   }
@@ -76,6 +95,7 @@ export class ModalContentGenerators {
 
     const value = pillar?.value ?? 0;
     const regions = pillar?.regions || [];
+    const during = pillar?.during || [];
 
     let content = '<div class="space-y-6">';
     
@@ -101,14 +121,26 @@ export class ModalContentGenerators {
       content += ModalHelpers.createSection('blue', 'blue', painContent);
     }
 
+    if (during.length > 0) {
+      let duringContent = ModalHelpers.createSectionHeader(getModalTranslation('modal_pain_during_title') || 'Pain experienced during', 'purple-800');
+      duringContent += '<ul class="list-disc list-inside space-y-1 text-sm text-purple-700">';
+      during.forEach(activity => {
+        const labelKey = `pain_during_${activity}`;
+        const label = PAIN_REGION_LABELS[labelKey] ? PAIN_REGION_LABELS[labelKey]() : activity;
+        duringContent += `<li>${label}</li>`;
+      });
+      duringContent += '</ul>';
+      content += ModalHelpers.createSection('purple', 'purple', duringContent);
+    }
+
     if (regions.length > 0) {
       let regionsContent = ModalHelpers.createSectionHeader(getModalTranslation('modal_pain_regions_title') || 'Affected Regions', 'red-800');
-      regionsContent += '<div class="grid grid-cols-1 gap-2">';
+      regionsContent += '<ul class="list-disc list-inside space-y-1 text-sm text-red-700">';
       regions.forEach(region => {
         const label = PAIN_REGION_LABELS[region] ? PAIN_REGION_LABELS[region]() : region;
-        regionsContent += `<div class="text-sm text-red-700">• ${label}</div>`;
+        regionsContent += `<li>${label}</li>`;
       });
-      regionsContent += '</div>';
+      regionsContent += '</ul>';
       content += ModalHelpers.createSection('red', 'red', regionsContent);
     }
 
@@ -233,59 +265,93 @@ export class ModalContentGenerators {
     }
 
     const grade = pillar?.gradeYourDay ?? 0;
+    const complaints = pillar?.complaints ?? 0;
     const limitations = pillar?.limitations || [];
+    const medications = pillar?.medications || {};
+    const medList = medications.list || [];
+    const medEffective = medications.effective;
 
     let content = '<div class="space-y-6">';
     
     content += ModalHelpers.createCenteredHeader(getModalTranslation('modal_impact_title') || 'Daily impact & limitations');
 
-    content += '<div class="text-center mb-6">';
-    content += `<h3 class="text-lg font-semibold mb-3">${getModalTranslation('modal_impact_grade_title') || 'Because of your complaints you'}</h3>`;
-    content += '<div class="flex flex-wrap justify-center items-center gap-2 mb-4 max-w-md mx-auto">';
-
-    IMPACT_LIMITATION_TYPES.forEach((limitationType, index) => {
-      const isActive = limitations.includes(limitationType);
-      const iconFile = `impact_${index + 1}.png`;
-      const label = IMPACT_LIMITATION_LABELS[limitationType] ? IMPACT_LIMITATION_LABELS[limitationType]() : limitationType;
-      const classes = isActive ? 'opacity-100 bg-red-100 border-2 border-red-500 rounded-full p-2' : 'opacity-30';
-      content += `<div class="${classes}"><img src="/images/${iconFile}" alt="${label}" class="w-10 h-10 object-contain"></div>`;
-    });
-    content += '</div>';
-    content += '</div>';
-    let gradeText = getModalTranslation('modal_impact_great_day') || 'Horrible day';
+    // Day Grade Section
+    let gradeText = getModalTranslation('modal_impact_horrible_day') || 'Horrible day';
     let gradeColor = 'text-red-600';
     if (grade >= 8) {
-      gradeText = getModalTranslation('modal_impact_challenging_day') || 'Perfect day';
+      gradeText = getModalTranslation('modal_impact_perfect_day') || 'Perfect day';
       gradeColor = 'text-green-600';
-    } else if (grade >= 6) {
-      gradeText = getModalTranslation('modal_impact_good_day') || 'Normal day';
+    } else if (grade >= 5) {
+      gradeText = getModalTranslation('modal_impact_normal_day') || 'Normal day';
       gradeColor = 'text-yellow-600';
-    } else if (grade >= 4) {
-      gradeText = getModalTranslation('modal_impact_difficult_day') || 'Difficult Day';
-      gradeColor = 'text-orange-600';
     }
 
     content += '<div class="text-center mb-4">';
+    content += `<h3 class="text-lg font-semibold mb-2">${getModalTranslation('modal_impact_your_day') || 'Your day was:'}</h3>`;
     content += `<p class="text-lg font-medium mb-2 ${gradeColor}">${gradeText}</p>`;
     if (grade > 0) {
       content += ModalHelpers.createGradeDisplay(grade, 10, getModalTranslation('modal_daily_grade') || 'Daily Grade');
     }
     content += '</div>';
+
+    // Complaints Section
+    if (complaints > 0) {
+      let complaintsText = getModalTranslation('modal_impact_complaints_nothing') || 'couldn\'t do anything';
+      let complaintsColor = 'text-red-600';
+      if (complaints >= 7) {
+        complaintsText = getModalTranslation('modal_impact_complaints_usual') || 'could do as much as usual';
+        complaintsColor = 'text-green-600';
+      } else if (complaints >= 4) {
+        complaintsText = getModalTranslation('modal_impact_complaints_half') || 'could do about half';
+        complaintsColor = 'text-yellow-600';
+      }
+
+      content += '<div class="text-center mb-4">';
+      content += `<h3 class="text-lg font-semibold mb-2">${getModalTranslation('modal_impact_complaints_title') || 'Because of your complaints you…'}</h3>`;
+      content += `<p class="text-lg font-medium mb-2 ${complaintsColor}">${complaintsText}</p>`;
+      content += ModalHelpers.createGradeDisplay(complaints, 10, getModalTranslation('modal_level') || 'Level');
+      content += '</div>';
+    }
+
+    // Medications Section
+    if (medList.length > 0) {
+      let medContent = ModalHelpers.createSectionHeader(getModalTranslation('modal_impact_medications_title') || 'Medications taken', 'blue-800');
+      medContent += '<ul class="list-disc list-inside space-y-1 text-sm text-blue-700">';
+      medList.forEach(med => {
+        const label = getModalTranslation(`modal_impact_med_${med}`) || med;
+        medContent += `<li>${label}</li>`;
+      });
+      medContent += '</ul>';
+      
+      if (medEffective !== null && medEffective !== undefined) {
+        let effectiveText = getModalTranslation('modal_impact_med_not_effective') || 'Not effective at all';
+        if (medEffective >= 7) {
+          effectiveText = getModalTranslation('modal_impact_med_very_effective') || 'Very effective';
+        } else if (medEffective >= 4) {
+          effectiveText = getModalTranslation('modal_impact_med_effective') || 'Effective';
+        }
+        medContent += `<p class="text-sm text-blue-700 mt-3"><strong>${getModalTranslation('modal_impact_med_effectiveness') || 'Effectiveness'}:</strong> ${effectiveText}</p>`;
+      }
+      
+      content += ModalHelpers.createSection('blue', 'blue', medContent);
+    }
+
+    // Limitations Section
     if (limitations.length > 0) {
       let limitationsContent = ModalHelpers.createSectionHeader(getModalTranslation('modal_impact_limitations_title') || 'Daily Limitations:', 'red-800');
-      limitationsContent += '<div class="grid grid-cols-1 gap-2">';
-
+      limitationsContent += '<div class="space-y-2">';
       limitations.forEach(limitation => {
         const label = IMPACT_LIMITATION_LABELS[limitation] ? IMPACT_LIMITATION_LABELS[limitation]() : limitation;
         const iconIndex = IMPACT_LIMITATION_TYPES.indexOf(limitation) + 1;
-        limitationsContent += ModalHelpers.createListItem(`impact_${iconIndex}.png`, label, null, 'red-700');
+        limitationsContent += `
+          <div class="flex items-center gap-2">
+            <img src="/images/impact_${iconIndex}.png" alt="${label}" class="w-6 h-6 object-contain flex-shrink-0">
+            <span class="text-sm text-red-700">${label}</span>
+          </div>
+        `;
       });
-
       limitationsContent += '</div>';
       content += ModalHelpers.createSection('red', 'red', limitationsContent);
-    } else {
-      let noLimitationsContent = ModalHelpers.createSectionHeader(getModalTranslation('modal_impact_no_limitations_title') || 'No Limitations Reported', 'green-800');
-      content += ModalHelpers.createSection('green', 'green', noLimitationsContent);
     }
 
     content += '</div>';
@@ -355,6 +421,7 @@ export class ModalContentGenerators {
     const hasUrineBlood = pillar?.urine?.blood ?? false;
     const hasStoolBlood = pillar?.stool?.blood ?? false;
     const consistency = pillar?.stool?.consistency;
+    const somethingElseText = pillar?.stool?.somethingElseText;
 
     let content = '<div class="space-y-6">';
     
@@ -412,6 +479,12 @@ export class ModalContentGenerators {
       if (consistencyData) {
         consistencyContent += ModalHelpers.createListItem(consistencyData.icon.replace('/images/', ''), label, null, 'blue-700');
       }
+      
+      // Show "something else" text if provided
+      if (consistency === 'something_else' && somethingElseText) {
+        consistencyContent += `<p class="text-sm text-blue-700 mt-2 italic">"${somethingElseText}"</p>`;
+      }
+      
       content += ModalHelpers.createSection('blue', 'blue', consistencyContent);
     }
 
@@ -433,6 +506,8 @@ export class ModalContentGenerators {
     const troubleAsleep = pillar?.troubleAsleep ?? false;
     const wakeUpDuringNight = pillar?.wakeUpDuringNight ?? false;
     const tiredRested = pillar?.tiredRested ?? false;
+    const isWorkSchoolDay = pillar?.isWorkSchoolDay ?? false;
+    const isFreeDay = pillar?.isFreeDay ?? false;
 
     let content = '<div class="space-y-6">';
     
@@ -453,6 +528,13 @@ export class ModalContentGenerators {
     content += '<div class="text-center mb-4">';
     content += `<p class="${qualityColor} font-medium mb-2">${quality}</p>`;
     content += `<p class="text-gray-600">${hours.toFixed(1)} ${getModalTranslation('modal_sleep_hours') || 'hours'}</p>`;
+    
+    if (isWorkSchoolDay || isFreeDay) {
+      const dayType = isWorkSchoolDay ? 
+        (getModalTranslation('modal_sleep_work_school_day') || 'Work/School day') :
+        (getModalTranslation('modal_sleep_free_day') || 'Free day');
+      content += `<p class="text-sm text-gray-500 mt-2">${dayType}</p>`;
+    }
     content += '</div>';
 
     if (fellAsleep && wokeUp) {

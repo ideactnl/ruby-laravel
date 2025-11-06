@@ -125,10 +125,12 @@ export const MOOD_ICON_MAP = {
   'guilty': 'mood_9.png',
   'overwhelmed': 'mood_10.png',
   'hopeless': 'mood_11.png',
-  'depressed': 'mood_12.png'
+  'depressed': 'mood_12.png',
+  'hopes': 'mood_2.png',
+  'mood_hopes': 'mood_2.png'
 };
 
-export const MOOD_KEYS = ['calm', 'happy', 'excited', 'anxious', 'ashamed', 'angry', 'sad', 'mood_swings', 'worthless', 'overwhelmed', 'hopeless', 'depressed'];
+export const MOOD_KEYS = ['calm', 'happy', 'excited', 'anxious', 'ashamed', 'angry', 'sad', 'mood_swings', 'worthless', 'overwhelmed', 'hopeless', 'depressed', 'hopes', 'mood_hopes'];
 
 export const MOOD_LABELS = {
   'calm': () => getTooltipTranslation('mood_calm'),
@@ -150,7 +152,9 @@ export const MOOD_LABELS = {
   'anxious_stressed': () => getTooltipTranslation('mood_anxious'),
   'angry_irritable': () => getTooltipTranslation('mood_angry'),
   'worthless_guilty': () => getTooltipTranslation('mood_worthless'),
-  'hopes': () => getTooltipTranslation('mood_hopes')
+  'hopes': () => getTooltipTranslation('tooltip_mood_hopes'),
+  'mood_hopes': () => getTooltipTranslation('tooltip_mood_hopes'),
+  'depressed_sad_down': () => getTooltipTranslation('mood_depressed')
 };
 
 export const STOOL_CONSISTENCY_MAP = {
@@ -181,13 +185,14 @@ export const DIET_ICON_MAP = {
   'egg': 'diet_6.png',
   'fish': 'diet_7.png',
   'meat': 'diet_8.png',
-  'snacks': 'diet_9.png',
+  'snacks': 'diet.png',
   'water': 'diet_10.png',
   'coffee': 'diet_11.png',
+  'soda': 'diet_9.png',
   'alcohol': 'diet_12.png'
 };
 
-export const DIET_KEYS = ['vegetables', 'fruit', 'potato_rice_bread', 'dairy_products', 'nuts_tofu_tempe', 'egg', 'fish', 'meat', 'snacks', 'water', 'coffee', 'alcohol'];
+export const DIET_KEYS = ['vegetables', 'fruit', 'potato_rice_bread', 'dairy_products', 'nuts_tofu_tempe', 'egg', 'fish', 'meat', 'snacks', 'water', 'coffee', 'soda', 'alcohol'];
 
 export const DIET_LABELS = {
   'vegetables': () => getTooltipTranslation('diet_vegetables'),
@@ -201,6 +206,7 @@ export const DIET_LABELS = {
   'snacks': () => getTooltipTranslation('diet_snacks'),
   'water': () => getTooltipTranslation('diet_water'),
   'coffee': () => getTooltipTranslation('diet_coffee'),
+  'soda': () => getTooltipTranslation('diet_soda'),
   'alcohol': () => getTooltipTranslation('diet_alcohol')
 };
 

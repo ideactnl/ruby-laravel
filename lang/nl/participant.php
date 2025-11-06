@@ -321,9 +321,10 @@ return [
     'diet_egg' => 'Eieren',
     'diet_fish' => 'Vis',
     'diet_meat' => 'Vlees',
-    'diet_snacks' => 'Frisdrank',
+    'diet_snacks' => 'Snacks',
     'diet_water' => 'Water',
     'diet_coffee' => 'Koffie',
+    'diet_soda' => 'Frisdrank',
     'diet_alcohol' => 'Alcohol',
 
     // Exercise Modal
@@ -518,6 +519,46 @@ return [
 
     // Profile modal
     'profile_privacy_message' => 'Bezoek de <strong>Ruby</strong> mobiele app om uw privacyvoorkeuren, opties voor het delen van gegevens en toegangsinstellingen voor medisch specialisten bij te werken.',
+
+    // Blood loss modal
+    'modal_blood_loss_indicators' => 'Door je bloedverlies…',
+
+    // Pain modal
+    'modal_pain_during_title' => 'Pijn ervaren tijdens',
+
+    // Sleep modal
+    'modal_sleep_work_school_day' => 'Werk/Schooldag',
+    'modal_sleep_free_day' => 'Vrije dag',
+
+    // Impact modal
+    'modal_impact_your_day' => 'Je dag was:',
+    'modal_impact_horrible_day' => 'Vreselijke dag',
+    'modal_impact_normal_day' => 'Normale dag',
+    'modal_impact_perfect_day' => 'Perfecte dag',
+    'modal_impact_complaints_title' => 'Vanwege mijn klachten kon je…',
+    'modal_impact_complaints_nothing' => 'Niets doen',
+    'modal_impact_complaints_half' => 'Ongeveer de helft doen',
+    'modal_impact_complaints_usual' => 'Net zoveel doen als normaal',
+    'modal_impact_medications_title' => 'Medicijnen ingenomen',
+    'modal_impact_med_paracetamol' => 'Paracetamol',
+    'modal_impact_med_diclofenac' => 'Diclofenac',
+    'modal_impact_med_naproxen' => 'Naproxen',
+    'modal_impact_med_iron_pills' => 'IJzerpillen',
+    'modal_impact_med_tramodol' => 'Tramodol',
+    'modal_impact_med_oxynorm' => 'Oxynorm',
+    'modal_impact_med_anticonception_pill' => 'Anticonceptiepil',
+    'modal_impact_med_other_hormones' => 'Andere hormonen',
+    'modal_impact_med_tranexamine_zuur' => 'Tranexaminezuur',
+    'modal_impact_med_other' => 'Andere',
+    'modal_impact_med_effectiveness' => 'Was het medicijn effectief?',
+    'modal_impact_med_not_effective' => 'Helemaal niet effectief',
+    'modal_impact_med_effective' => 'Effectief',
+    'modal_impact_med_very_effective' => 'Zeer effectief',
+    'modal_blood_loss_blood_clots' => 'Bloedklonters in je menstruatiebloed',
+    'modal_blood_loss_double_protection' => 'Dubbele bescherming gebruikt',
+    'modal_blood_loss_leaked_clothes' => 'Doorgelekt',
+    'modal_blood_loss_changed_products' => 'Elke 2 uur of vaker van product gewisseld',
+    'modal_blood_loss_woke_up_night' => '\'S nachts wakker geworden om van product te wisselen',
 
     // General messages
     'modal_no_data_recorded' => 'Geen gegevens geregistreerd.',

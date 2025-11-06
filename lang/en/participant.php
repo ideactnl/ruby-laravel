@@ -321,9 +321,10 @@ return [
     'diet_egg' => 'Eggs',
     'diet_fish' => 'Fish',
     'diet_meat' => 'Meat',
-    'diet_snacks' => 'Soda',
+    'diet_snacks' => 'Snacks',
     'diet_water' => 'Water',
     'diet_coffee' => 'Coffee',
+    'diet_soda' => 'Soda',
     'diet_alcohol' => 'Alcohol',
 
     // Exercise Modal
@@ -396,9 +397,9 @@ return [
     'tooltip_region_left_back_leg' => 'Left Back Leg',
     'tooltip_region_right_back_leg' => 'Right Back Leg',
     'tooltip_region_headache_migraine' => 'Headache/Migraine',
-    'tooltip_region_pain_during_peeing' => 'Pain During Urination',
-    'tooltip_region_pain_during_pooping' => 'Pain During Defecation',
-    'tooltip_region_pain_during_sex' => 'Pain During Sex',
+    'tooltip_region_pain_during_peeing' => 'Urination',
+    'tooltip_region_pain_during_pooping' => 'Defecation',
+    'tooltip_region_pain_during_sex' => 'Sex',
 
     // Tooltip Limitation Labels
     'tooltip_limitation_used_medication' => 'Used Medication',
@@ -518,6 +519,46 @@ return [
 
     // Profile modal
     'profile_privacy_message' => 'Visit the <strong>Ruby</strong> mobile app to update your privacy preferences, data sharing options, and medical specialist access settings.',
+
+    // Blood loss modal
+    'modal_blood_loss_indicators' => 'Because of your blood loss, you…',
+
+    // Pain modal
+    'modal_pain_during_title' => 'Pain experienced during',
+
+    // Sleep modal
+    'modal_sleep_work_school_day' => 'Work/School day',
+    'modal_sleep_free_day' => 'Free day',
+
+    // Impact modal
+    'modal_impact_your_day' => 'Your day was:',
+    'modal_impact_horrible_day' => 'Horrible day',
+    'modal_impact_normal_day' => 'Normal day',
+    'modal_impact_perfect_day' => 'Perfect day',
+    'modal_impact_complaints_title' => 'Because of your complaints you…',
+    'modal_impact_complaints_nothing' => 'couldn\'t do anything',
+    'modal_impact_complaints_half' => 'could do about half',
+    'modal_impact_complaints_usual' => 'could do as much as usual',
+    'modal_impact_medications_title' => 'Medications taken',
+    'modal_impact_med_paracetamol' => 'Paracetamol',
+    'modal_impact_med_diclofenac' => 'Diclofenac',
+    'modal_impact_med_naproxen' => 'Naproxen',
+    'modal_impact_med_iron_pills' => 'Iron pills',
+    'modal_impact_med_tramodol' => 'Tramodol',
+    'modal_impact_med_oxynorm' => 'Oxynorm',
+    'modal_impact_med_anticonception_pill' => 'Anticonception pill',
+    'modal_impact_med_other_hormones' => 'Other hormones',
+    'modal_impact_med_tranexamine_zuur' => 'Tranexamine zuur',
+    'modal_impact_med_other' => 'Other',
+    'modal_impact_med_effectiveness' => 'Was the medicine effective?',
+    'modal_impact_med_not_effective' => 'Not effective at all',
+    'modal_impact_med_effective' => 'Effective',
+    'modal_impact_med_very_effective' => 'Very effective',
+    'modal_blood_loss_blood_clots' => 'Had clumps of blood in your menstrual blood',
+    'modal_blood_loss_double_protection' => 'Had to use double protection',
+    'modal_blood_loss_leaked_clothes' => 'Leaked through your clothes',
+    'modal_blood_loss_changed_products' => 'Had to change products every 2 hours or more',
+    'modal_blood_loss_woke_up_night' => 'Woke up during the night to change products',
 
     // General messages
     'modal_no_data_recorded' => 'No data recorded.',
