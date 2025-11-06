@@ -130,22 +130,39 @@ export class CardIconGenerators {
   }
 
   /**
-   * General Health Icons - 5 energy levels
+   * General Health Icons - Show symptom icons
    */
   static getGeneralHealthIcons(pillar) {
     if (!pillar) return { severityIcons: [], statusIcon: null };
 
+    const symptoms = pillar.symptoms || [];
     const energy = pillar.energyLevel ?? 0;
 
+    const SYMPTOM_KEYS = [
+      'dizzy', 'nauseous', 'headache_migraine', 'bloated', 
+      'painful_sensitive_breasts', 'acne', 'muscle_joint_pain'
+    ];
+    
+    const SYMPTOM_ICON_MAP = {
+      'dizzy': 'general_health_3.png',
+      'nauseous': 'general_health_2.png',
+      'headache_migraine': 'headache_migraine.png',
+      'bloated': 'general_health_7.png',
+      'painful_sensitive_breasts': 'general_health_6.png',
+      'acne': 'general_health_7.png',
+      'muscle_joint_pain': 'general_health_4.png'
+    };
+
     const severityIcons = [];
-    for (let i = 1; i <= 5; i++) {
-      const iconSrc = i === 1 ? '/images/sleep.png' : `/images/general_health_${i - 1}.png`;
+    SYMPTOM_KEYS.slice(0, 5).forEach(symptomKey => {
+      const isActive = symptoms.includes(symptomKey);
+      const iconSrc = `/images/${SYMPTOM_ICON_MAP[symptomKey] || 'general_health.png'}`;
       severityIcons.push({
         src: iconSrc,
-        alt: `Energy level ${i}`,
-        active: i === energy
+        alt: symptomKey,
+        active: isActive
       });
-    }
+    });
 
     const statusIcon = {
       src: energy === 1 ? '/images/sleep.png' : `/images/general_health_${Math.min(energy - 1, 4)}.png`,

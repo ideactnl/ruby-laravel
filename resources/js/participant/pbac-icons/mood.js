@@ -3,7 +3,7 @@
  * Maps specific mood states to corresponding icons
  */
 
-import { createIconResult } from './config.js';
+import { createIconResult, getTranslatedTooltip } from './config.js';
 
 const MOOD_STATES = {
   'calm': { icon: 'mood_1.png' },
@@ -22,7 +22,7 @@ const MOOD_STATES = {
 
 export function getMoodIcon(value) {
   if (typeof value !== 'object') {
-    return createIconResult('mood.png', 'Mood');
+    return createIconResult('mood.png', getTranslatedTooltip('tooltip_mood'));
   }
 
   if (Array.isArray(value.positives) && value.positives.length > 0) {
@@ -30,7 +30,7 @@ export function getMoodIcon(value) {
     if (firstPositive) {
       const stateKey = firstPositive.key;
       const moodData = MOOD_STATES[stateKey] || MOOD_STATES['calm'];
-      return createIconResult(moodData.icon, `Mood: ${stateKey}`);
+      return createIconResult(moodData.icon, `${getTranslatedTooltip('tooltip_mood')}: ${stateKey}`);
     }
   }
 
@@ -39,7 +39,7 @@ export function getMoodIcon(value) {
     if (firstNegative) {
       const stateKey = firstNegative.key;
       const moodData = MOOD_STATES[stateKey] || MOOD_STATES['calm'];
-      return createIconResult(moodData.icon, `Mood: ${stateKey}`);
+      return createIconResult(moodData.icon, `${getTranslatedTooltip('tooltip_mood')}: ${stateKey}`);
     }
   }
 
@@ -52,5 +52,5 @@ export function getMoodIcon(value) {
   else primaryMood = 'depressed_sad_down';
 
   const moodData = MOOD_STATES[primaryMood] || MOOD_STATES['calm'];
-  return createIconResult(moodData.icon, `Mood: ${primaryMood}`);
+  return createIconResult(moodData.icon, `${getTranslatedTooltip('tooltip_mood')}: ${primaryMood}`);
 }

@@ -24,7 +24,8 @@ export class CalendarUI {
   setupMonthDisplay() {
     const monthEl = document.getElementById('cal-month-label');
     if (monthEl) {
-      const fmt = new Intl.DateTimeFormat(undefined, { month: 'long', year: 'numeric' });
+      const locale = window.appLocale === 'nl' ? 'nl-NL' : 'en-US';
+      const fmt = new Intl.DateTimeFormat(locale, { month: 'long', year: 'numeric' });
       const setMonth = () => {
         monthEl.textContent = fmt.format(this.calendar.getDate());
       };
@@ -62,7 +63,8 @@ export class CalendarUI {
           mobileDate.classList.remove('text-gray-500');
         }
 
-        mobileMonth.textContent = currentCalendarDate.toLocaleDateString('en-US', { month: 'short' }).toUpperCase();
+        const locale = window.appLocale === 'nl' ? 'nl-NL' : 'en-US';
+        mobileMonth.textContent = currentCalendarDate.toLocaleDateString(locale, { month: 'short' }).toUpperCase();
         mobileYear.textContent = currentCalendarDate.getFullYear();
       };
 

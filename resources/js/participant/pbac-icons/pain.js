@@ -3,23 +3,23 @@
  * Maps 0-10 pain scale to 6 smile/face icons
  */
 
-import { createIconResult } from './config.js';
+import { createIconResult, getTranslatedTooltip } from './config.js';
 
 const REGION_LABELS = {
-  'umbilical': 'Umbilical',
-  'left_umbilical': 'Left Umbilical',
-  'right_umbilical': 'Right Umbilical',
-  'bladder': 'Bladder',
-  'left_groin': 'Left Groin',
-  'right_groin': 'Right Groin',
-  'left_leg': 'Left Leg',
-  'right_leg': 'Right Leg',
-  'upper_back': 'Upper Back',
-  'back': 'Back',
-  'left_buttock': 'Left Buttock',
-  'right_buttock': 'Right Buttock',
-  'left_back_leg': 'Left Back Leg',
-  'right_back_leg': 'Right Back Leg'
+  'umbilical': () => getTranslatedTooltip('tooltip_region_umbilical'),
+  'left_umbilical': () => getTranslatedTooltip('tooltip_region_left_umbilical'),
+  'right_umbilical': () => getTranslatedTooltip('tooltip_region_right_umbilical'),
+  'bladder': () => getTranslatedTooltip('tooltip_region_bladder'),
+  'left_groin': () => getTranslatedTooltip('tooltip_region_left_groin'),
+  'right_groin': () => getTranslatedTooltip('tooltip_region_right_groin'),
+  'left_leg': () => getTranslatedTooltip('tooltip_region_left_leg'),
+  'right_leg': () => getTranslatedTooltip('tooltip_region_right_leg'),
+  'upper_back': () => getTranslatedTooltip('tooltip_region_upper_back'),
+  'back': () => getTranslatedTooltip('tooltip_region_back'),
+  'left_buttock': () => getTranslatedTooltip('tooltip_region_left_buttock'),
+  'right_buttock': () => getTranslatedTooltip('tooltip_region_right_buttock'),
+  'left_back_leg': () => getTranslatedTooltip('tooltip_region_left_back_leg'),
+  'right_back_leg': () => getTranslatedTooltip('tooltip_region_right_back_leg')
 };
 
 function mapPainValueToIcon(painValue) {
@@ -33,18 +33,17 @@ function mapPainValueToIcon(painValue) {
 
 export function getPainIcon(value) {
   if (typeof value !== 'object') {
-    return createIconResult('pain.png', 'Pain');
+    return createIconResult('pain.png', getTranslatedTooltip('tooltip_pain'));
   }
 
   const painValue = value.value || 0;
   const regions = value.regions || [];
   const iconNumber = mapPainValueToIcon(painValue);
 
-  let tooltip = `Pain Level: ${painValue}/10`;
+  let tooltip = `${getTranslatedTooltip('tooltip_pain_level')}: ${painValue}/10`;
   if (regions.length > 0) {
-    const regionText = regions.length === 1 ? 'Area' : 'Areas';
-    const friendlyRegions = regions.map(r => REGION_LABELS[r] || r);
-    tooltip += `\nAffected ${regionText}: ${friendlyRegions.join(', ')}`;
+    const friendlyRegions = regions.map(r => REGION_LABELS[r] ? REGION_LABELS[r]() : r);
+    tooltip += `\n${getTranslatedTooltip('tooltip_regions')}: ${friendlyRegions.join(', ')}`;
   }
 
   return createIconResult(`smile_${iconNumber}.png`, tooltip);

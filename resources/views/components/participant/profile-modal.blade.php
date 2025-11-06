@@ -186,7 +186,7 @@
                                 </button>
                                 <div x-show="expanded" x-transition.opacity.duration.200ms class="px-4 pb-4">
                                     <p class="text-sm text-[var(--color-neutral-700)] leading-relaxed">
-                                        Visit the <strong>Ruby</strong> mobile app to update your privacy preferences, data sharing options, and medical specialist access settings.
+                                        {!! __('participant.profile_privacy_message') !!}
                                     </p>
                                 </div>
                             </div>

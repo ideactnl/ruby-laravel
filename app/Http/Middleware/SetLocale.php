@@ -26,8 +26,6 @@ class SetLocale
         if (in_array($locale, $availableLocales)) {
             App::setLocale($locale);
             Session::put('locale', $locale);
-
-            // Queue persistent cookie for 1 year
             Cookie::queue('locale', $locale, 525600);
 
             return $next($request);

@@ -5,7 +5,7 @@
  */
 
 import { STOOL_CONSISTENCY_MAP } from './pillar-constants.js';
-import { cardStatusText } from '../data/index.js';
+import { getCardStatusTranslation } from '../../utils/translations.js';
 
 export class CardStatusGenerators {
   
@@ -18,30 +18,30 @@ export class CardStatusGenerators {
     const spotting = pillar?.flags?.spotting;
     
     let statusColor = 'bg-gray-300';
-    let statusText = cardStatusText.bloodLoss.noData;
+    let statusText = getCardStatusTranslation('card_blood_loss_no_data');
     let context = '';
     
     if (amount > 0) {
       if (spotting) {
         statusColor = 'bg-orange-400';
-        statusText = cardStatusText.bloodLoss.spottingDetected;
-        context = cardStatusText.bloodLoss.contexts.spotting;
+        statusText = getCardStatusTranslation('card_blood_loss_spotting_detected');
+        context = getCardStatusTranslation('card_blood_loss_spotting');
       } else if (severity === 'very_heavy') {
         statusColor = 'bg-red-600';
-        statusText = cardStatusText.bloodLoss.veryHeavy;
-        context = cardStatusText.bloodLoss.contexts.veryHeavy;
+        statusText = getCardStatusTranslation('card_blood_loss_very_heavy');
+        context = getCardStatusTranslation('card_blood_loss_very_heavy');
       } else if (severity === 'heavy') {
         statusColor = 'bg-red-500';
-        statusText = cardStatusText.bloodLoss.heavy;
-        context = cardStatusText.bloodLoss.contexts.heavy;
+        statusText = getCardStatusTranslation('card_blood_loss_heavy');
+        context = getCardStatusTranslation('card_blood_loss_heavy');
       } else if (severity === 'moderate') {
         statusColor = 'bg-yellow-500';
-        statusText = cardStatusText.bloodLoss.moderate;
-        context = cardStatusText.bloodLoss.contexts.moderate;
+        statusText = getCardStatusTranslation('card_blood_loss_moderate');
+        context = getCardStatusTranslation('card_blood_loss_moderate');
       } else {
         statusColor = 'bg-green-400';
-        statusText = cardStatusText.bloodLoss.light;
-        context = cardStatusText.bloodLoss.contexts.light;
+        statusText = getCardStatusTranslation('card_blood_loss_light');
+        context = getCardStatusTranslation('card_blood_loss_light');
       }
     }
     
@@ -55,30 +55,30 @@ export class CardStatusGenerators {
     const value = pillar?.value ?? 0;
     
     let statusColor = 'bg-gray-300';
-    let statusText = cardStatusText.pain.noPain;
+    let statusText = getCardStatusTranslation('card_pain_no_pain');
     let context = '';
     let progressColor = 'bg-gray-400';
     
     if (value > 0) {
       if (value >= 8) {
         statusColor = 'bg-red-600';
-        statusText = cardStatusText.pain.severePain;
-        context = cardStatusText.pain.contexts.severe;
+        statusText = getCardStatusTranslation('card_pain_severe_pain');
+        context = getCardStatusTranslation('card_pain_severe');
         progressColor = 'bg-red-500';
       } else if (value >= 6) {
         statusColor = 'bg-orange-500';
-        statusText = cardStatusText.pain.moderatePain;
-        context = cardStatusText.pain.contexts.moderate;
+        statusText = getCardStatusTranslation('card_pain_moderate_pain');
+        context = getCardStatusTranslation('card_pain_moderate');
         progressColor = 'bg-orange-400';
       } else if (value >= 4) {
         statusColor = 'bg-yellow-500';
-        statusText = cardStatusText.pain.mildPain;
-        context = cardStatusText.pain.contexts.mild;
+        statusText = getCardStatusTranslation('card_pain_mild_pain');
+        context = getCardStatusTranslation('card_pain_mild');
         progressColor = 'bg-yellow-400';
       } else {
         statusColor = 'bg-green-400';
-        statusText = cardStatusText.pain.lightPain;
-        context = cardStatusText.pain.contexts.light;
+        statusText = getCardStatusTranslation('card_pain_light_pain');
+        context = getCardStatusTranslation('card_pain_light');
         progressColor = 'bg-green-300';
       }
     }
@@ -93,26 +93,26 @@ export class CardStatusGenerators {
     const grade = pillar?.gradeYourDay ?? null;
     
     let statusColor = 'bg-gray-300';
-    let statusText = cardStatusText.impact.noImpact;
+    let statusText = getCardStatusTranslation('card_impact_no_impact');
     let context = '';
     
     if (grade !== null) {
       if (grade >= 8) {
         statusColor = 'bg-green-500';
-        statusText = cardStatusText.impact.greatDay;
-        context = cardStatusText.impact.contexts.great;
+        statusText = getCardStatusTranslation('card_impact_great_day');
+        context = getCardStatusTranslation('card_impact_great');
       } else if (grade >= 6) {
         statusColor = 'bg-yellow-400';
-        statusText = cardStatusText.impact.goodDay;
-        context = cardStatusText.impact.contexts.good;
+        statusText = getCardStatusTranslation('card_impact_good_day');
+        context = getCardStatusTranslation('card_impact_good');
       } else if (grade >= 4) {
         statusColor = 'bg-orange-400';
-        statusText = cardStatusText.impact.challengingDay;
-        context = cardStatusText.impact.contexts.challenging;
+        statusText = getCardStatusTranslation('card_impact_challenging_day');
+        context = getCardStatusTranslation('card_impact_challenging');
       } else {
         statusColor = 'bg-red-500';
-        statusText = cardStatusText.impact.difficultDay;
-        context = cardStatusText.impact.contexts.difficult;
+        statusText = getCardStatusTranslation('card_impact_difficult_day');
+        context = getCardStatusTranslation('card_impact_difficult');
       }
     }
     
@@ -127,27 +127,34 @@ export class CardStatusGenerators {
     const symptoms = pillar?.symptoms || [];
     
     let statusColor = 'bg-gray-300';
-    let statusText = cardStatusText.generalHealth.noEnergyData;
+    let statusText = getCardStatusTranslation('card_general_health_no_energy_data');
     let context = '';
     
     if (energy > 0) {
-      context = cardStatusText.generalHealth.energyLevels[energy] || cardStatusText.generalHealth.unknown;
+      const energyLevelMap = {
+        1: 'card_general_health_energy_very_low',
+        2: 'card_general_health_energy_low', 
+        3: 'card_general_health_energy_moderate',
+        4: 'card_general_health_energy_good',
+        5: 'card_general_health_energy_high'
+      };
+      context = getCardStatusTranslation(energyLevelMap[energy] || 'card_general_health_unknown');
       
       if (energy >= 5) {
         statusColor = symptoms.length > 0 ? 'bg-yellow-500' : 'bg-green-500';
-        statusText = symptoms.length > 0 ? cardStatusText.generalHealth.highEnergyWithSymptoms : cardStatusText.generalHealth.highEnergy;
+        statusText = symptoms.length > 0 ? getCardStatusTranslation('card_general_health_high_energy_with_symptoms') : getCardStatusTranslation('card_general_health_high_energy');
       } else if (energy >= 4) {
         statusColor = symptoms.length > 0 ? 'bg-yellow-500' : 'bg-green-500';
-        statusText = symptoms.length > 0 ? cardStatusText.generalHealth.goodEnergyWithSymptoms : cardStatusText.generalHealth.goodEnergy;
+        statusText = symptoms.length > 0 ? getCardStatusTranslation('card_general_health_good_energy_with_symptoms') : getCardStatusTranslation('card_general_health_good_energy');
       } else if (energy >= 3) {
         statusColor = 'bg-yellow-400';
-        statusText = cardStatusText.generalHealth.moderateEnergy;
+        statusText = getCardStatusTranslation('card_general_health_moderate_energy');
       } else if (energy >= 2) {
         statusColor = 'bg-orange-400';
-        statusText = cardStatusText.generalHealth.lowEnergy;
+        statusText = getCardStatusTranslation('card_general_health_low_energy');
       } else {
         statusColor = 'bg-red-400';
-        statusText = cardStatusText.generalHealth.veryLowEnergy;
+        statusText = getCardStatusTranslation('card_general_health_very_low_energy');
       }
     }
     
@@ -163,17 +170,17 @@ export class CardStatusGenerators {
     
     const balance = positives.length - negatives.length;
     let statusColor = 'bg-gray-300';
-    let statusText = cardStatusText.mood.balanced;
-    let context = cardStatusText.mood.contexts.balanced;
+    let statusText = getCardStatusTranslation('card_mood_balanced');
+    let context = getCardStatusTranslation('card_mood_balanced');
     
     if (balance > 1) {
       statusColor = 'bg-green-500';
-      statusText = cardStatusText.mood.positiveDay;
-      context = cardStatusText.mood.contexts.positive;
+      statusText = getCardStatusTranslation('card_mood_positive_day');
+      context = getCardStatusTranslation('card_mood_positive');
     } else if (balance < -1) {
       statusColor = 'bg-red-400';
-      statusText = cardStatusText.mood.challengingDay;
-      context = cardStatusText.mood.contexts.challenging;
+      statusText = getCardStatusTranslation('card_mood_challenging_day');
+      context = getCardStatusTranslation('card_mood_challenging');
     }
     
     return { statusColor, statusText, context };
@@ -189,18 +196,18 @@ export class CardStatusGenerators {
     const consistency = pillar?.stool?.consistency;
     
     let statusColor = 'bg-gray-300';
-    let statusText = cardStatusText.stoolUrine.noData;
-    let context = cardStatusText.stoolUrine.recorded;
+    let statusText = getCardStatusTranslation('card_stool_urine_no_data');
+    let context = getCardStatusTranslation('card_stool_urine_recorded');
     
     if (bloodInStool) {
       statusColor = 'bg-red-500';
-      statusText = cardStatusText.stoolUrine.bloodDetected;
+      statusText = getCardStatusTranslation('card_stool_urine_blood_detected');
       if (hasUrineBlood && hasStoolBlood) {
-        context = cardStatusText.stoolUrine.contexts.bloodInUrineAndStool;
+        context = getCardStatusTranslation('card_stool_urine_blood_in_urine_and_stool');
       } else if (hasUrineBlood) {
-        context = cardStatusText.stoolUrine.contexts.bloodInUrine;
+        context = getCardStatusTranslation('card_stool_urine_blood_in_urine');
       } else {
-        context = cardStatusText.stoolUrine.contexts.bloodInStool;
+        context = getCardStatusTranslation('card_stool_urine_blood_in_stool');
       }
     } else if (consistency && STOOL_CONSISTENCY_MAP[consistency]) {
       statusColor = STOOL_CONSISTENCY_MAP[consistency].color;
@@ -219,8 +226,8 @@ export class CardStatusGenerators {
     
     return {
       statusColor: 'bg-indigo-400',
-      statusText: cardStatusText.sleep.sleepTracked,
-      context: cardStatusText.sleep.hoursTemplate.replace('{hours}', hours)
+      statusText: getCardStatusTranslation('card_sleep_sleep_tracked'),
+      context: getCardStatusTranslation('card_sleep_hours_template').replace('{hours}', hours)
     };
   }
 
@@ -230,8 +237,8 @@ export class CardStatusGenerators {
   static getDietStatus(pillar) {
     return {
       statusColor: 'bg-green-400',
-      statusText: cardStatusText.diet.itemsRecorded,
-      context: cardStatusText.diet.dietTracked
+      statusText: getCardStatusTranslation('card_diet_items_recorded'),
+      context: getCardStatusTranslation('card_diet_diet_tracked')
     };
   }
 
@@ -241,18 +248,18 @@ export class CardStatusGenerators {
   static getExerciseStatus(pillar) {
     const levels = pillar?.levels || [];
     
-    let context = cardStatusText.exercise.exerciseCompleted;
+    let context = getCardStatusTranslation('card_exercise_exercise_completed');
     if (levels.includes('greater_sixty')) {
-      context = cardStatusText.exercise.contexts.moreThan60;
+      context = getCardStatusTranslation('card_exercise_more_than_60');
     } else if (levels.includes('thirty_to_sixty')) {
-      context = cardStatusText.exercise.contexts.thirtyTo60;
+      context = getCardStatusTranslation('card_exercise_thirty_to_60');
     } else if (levels.includes('less_thirty')) {
-      context = cardStatusText.exercise.contexts.lessThan30;
+      context = getCardStatusTranslation('card_exercise_less_than_30');
     }
     
     return {
       statusColor: 'bg-orange-400',
-      statusText: cardStatusText.exercise.exerciseCompleted,
+      statusText: getCardStatusTranslation('card_exercise_exercise_completed'),
       context: context
     };
   }
@@ -261,14 +268,14 @@ export class CardStatusGenerators {
    * Sex Status - Based on activity and satisfaction
    */
   static getSexStatus(pillar) {
-    let context = cardStatusText.sex.activityRecorded;
+    let context = getCardStatusTranslation('card_sex_activity_recorded');
     let statusColor = 'bg-pink-400';
     
     if (pillar?.avoided) {
-      context = cardStatusText.sex.avoided;
+      context = getCardStatusTranslation('card_sex_avoided');
       statusColor = 'bg-gray-400';
     } else if (pillar?.satisfied) {
-      context = cardStatusText.sex.satisfied;
+      context = getCardStatusTranslation('card_sex_satisfied');
       statusColor = 'bg-green-400';
     }
     
@@ -285,8 +292,8 @@ export class CardStatusGenerators {
   static getNotesStatus(pillar) {
     return {
       statusColor: 'bg-gray-500',
-      statusText: cardStatusText.notes.noteAvailable,
-      context: cardStatusText.notes.noteRecorded
+      statusText: getCardStatusTranslation('card_notes_note_available'),
+      context: getCardStatusTranslation('card_notes_note_recorded')
     };
   }
 
@@ -306,7 +313,7 @@ export class CardStatusGenerators {
       case 'exercise': return this.getExerciseStatus(pillar);
       case 'sex': return this.getSexStatus(pillar);
       case 'notes': return this.getNotesStatus(pillar);
-      default: return { statusColor: 'bg-gray-300', statusText: 'Unknown', context: '' };
+      default: return { statusColor: 'bg-gray-300', statusText: getCardStatusTranslation('card_common_unknown'), context: '' };
     }
   }
 }

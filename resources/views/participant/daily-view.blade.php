@@ -214,20 +214,5 @@
     </div>
 @endsection
 
-@push('scripts')
-<script>
-window.healthDomainTranslations = {
-    'blood_loss': '{{ __('participant.blood_loss') }}',
-    'pain': '{{ __('participant.pain') }}',
-    'impact': '{{ __('participant.impact') }}',
-    'general_health': '{{ __('participant.general_health') }}',
-    'mood': '{{ __('participant.mood') }}',
-    'stool_urine': '{{ __('participant.stool_urine') }}',
-    'sleep': '{{ __('participant.sleep') }}',
-    'diet': '{{ __('participant.diet') }}',
-    'exercise': '{{ __('participant.exercise') }}',
-    'sex': '{{ __('participant.sexual_health') }}',
-    'notes': '{{ __('participant.notes') }}'
-};
-</script>
-@endpush
+@include('participant.partials.daily-view-translations')
+

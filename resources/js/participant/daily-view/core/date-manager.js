@@ -123,7 +123,8 @@ export class DateManager {
   getHeading(date) {
     try {
       const d = new Date(date);
-      return d.toLocaleDateString(undefined, {
+      const locale = window.appLocale === 'nl' ? 'nl-NL' : 'en-US';
+      return d.toLocaleDateString(locale, {
         day: '2-digit',
         month: 'long',
         year: 'numeric',

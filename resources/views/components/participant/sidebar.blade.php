@@ -127,13 +127,8 @@
                                 {{ $isActive ? 'rounded-lg text-black' : 'rounded-full bg-transparent text-white' }}">
                                 <i class="fa-solid {{ $item['icon'] }} text-[18px]"></i>
                             </span>
-                            <span class="font-semibold tracking-wide leading-tight">
-                                @if ($item['key'] === 'links_external_websites')
-                                    <span class="md:hidden">{{ $item['label'] }}</span>
-                                    <span class="hidden md:inline">{!! str_replace(' websites', '<br>websites', $item['label']) !!}</span>
-                                @else
-                                    {{ $item['label'] }}
-                                @endif
+                            <span class="font-semibold tracking-wide leading-tight break-words">
+                                {{ $item['label'] }}
                             </span>
                         </a>
                     </li>

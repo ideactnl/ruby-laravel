@@ -1,9 +1,11 @@
 <?php
 
 use App\Http\Controllers\Api\MedicalSpecialist\MedicalSpecialistController;
+use App\Http\Controllers\Api\Participant\ParticipantWebApiController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\PbacExportController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
 Route::get("/", function () {
@@ -32,14 +34,14 @@ $registerParticipantRoutes = function ($locale = null) {
         Route::middleware('auth.participant')->group(function () use ($locale) {
             $namePrefix = $locale ? "{$locale}." : '';
             
-            Route::get('/dashboard', [\App\Http\Controllers\Api\Participant\ParticipantWebApiController::class, 'dashboardPage'])->name($namePrefix . 'participant.dashboard');
-            Route::get('/export', [\App\Http\Controllers\Api\Participant\ParticipantWebApiController::class, 'exportPage'])->name($namePrefix . 'participant.export');
-            Route::get('/daily-view', [\App\Http\Controllers\Api\Participant\ParticipantWebApiController::class, 'dailyViewPage'])->name($namePrefix . 'participant.daily-view');
-            Route::get('/education', [\App\Http\Controllers\Api\Participant\ParticipantWebApiController::class, 'education'])->name($namePrefix . 'participant.education');
-            Route::get('/self-management', [\App\Http\Controllers\Api\Participant\ParticipantWebApiController::class, 'selfManagement'])->name($namePrefix . 'participant.self-management');
-            Route::get('/external-links', [\App\Http\Controllers\Api\Participant\ParticipantWebApiController::class, 'externalLinks'])->name($namePrefix . 'participant.external-links');
-            Route::get('/general-information', [\App\Http\Controllers\Api\Participant\ParticipantWebApiController::class, 'generalInformation'])->name($namePrefix . 'participant.general-information');
-            Route::get('/api/v1/participant/profile', [\App\Http\Controllers\Api\Participant\ParticipantWebApiController::class, 'profile'])->name($namePrefix . 'participant.api.profile');
+            Route::get('/dashboard', [ParticipantWebApiController::class, 'dashboardPage'])->name($namePrefix . 'participant.dashboard');
+            Route::get('/export', [ParticipantWebApiController::class, 'exportPage'])->name($namePrefix . 'participant.export');
+            Route::get('/daily-view', [ParticipantWebApiController::class, 'dailyViewPage'])->name($namePrefix . 'participant.daily-view');
+            Route::get('/education', [ParticipantWebApiController::class, 'education'])->name($namePrefix . 'participant.education');
+            Route::get('/self-management', [ParticipantWebApiController::class, 'selfManagement'])->name($namePrefix . 'participant.self-management');
+            Route::get('/external-links', [ParticipantWebApiController::class, 'externalLinks'])->name($namePrefix . 'participant.external-links');
+            Route::get('/general-information', [ParticipantWebApiController::class, 'generalInformation'])->name($namePrefix . 'participant.general-information');
+            Route::get('/api/v1/participant/profile', [ParticipantWebApiController::class, 'profile'])->name($namePrefix . 'participant.api.profile');
         });
     });
 };
@@ -52,7 +54,6 @@ $registerParticipantRoutes = function ($locale = null) {
 // Default routes (English)
 $registerParticipantRoutes();
 
-// Localized routes
 foreach (array_keys(config('app.available_locales', [])) as $locale) {
     if ($locale !== config('app.locale')) {
         $registerParticipantRoutes($locale);
@@ -88,7 +89,7 @@ Route::prefix('medical-specialist')->name('medical-specialist.')->group(function
 Route::get('/admin', fn() => redirect()->to('/login'));
 Auth::routes(['register' => false]);
 Route::middleware(['auth'])->group(function () {
-    Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
     Route::post('/profile', [UserController::class, 'updateSelf'])->name('profile.update');
 });
 

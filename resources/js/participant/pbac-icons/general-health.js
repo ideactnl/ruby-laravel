@@ -3,16 +3,16 @@
  * Maps energy levels 1-5 to specific icons
  */
 
-import { createIconResult } from './config.js';
+import { createIconResult, getTranslatedTooltip } from './config.js';
 
 const SYMPTOM_LABELS = {
-  'dizzy': 'Dizzy',
-  'nauseous': 'Nauseous',
-  'headache_migraine': 'Headache/Migraine',
-  'bloated': 'Bloated',
-  'painful_sensitive_breasts': 'Painful/Sensitive Breasts',
-  'acne': 'Acne',
-  'muscle_joint_pain': 'Muscle/Joint Pain'
+  'dizzy': () => getTranslatedTooltip('tooltip_symptom_dizzy'),
+  'nauseous': () => getTranslatedTooltip('tooltip_symptom_nauseous'),
+  'headache_migraine': () => getTranslatedTooltip('tooltip_symptom_headache_migraine'),
+  'bloated': () => getTranslatedTooltip('tooltip_symptom_bloated'),
+  'painful_sensitive_breasts': () => getTranslatedTooltip('tooltip_symptom_painful_sensitive_breasts'),
+  'acne': () => getTranslatedTooltip('tooltip_symptom_acne'),
+  'muscle_joint_pain': () => getTranslatedTooltip('tooltip_symptom_muscle_joint_pain')
 };
 
 const ENERGY_MAP = {
@@ -25,7 +25,7 @@ const ENERGY_MAP = {
 
 export function getGeneralHealthIcon(value) {
   if (typeof value !== 'object') {
-    return createIconResult('general_health.png', 'General Health');
+    return createIconResult('general_health.png', getTranslatedTooltip('tooltip_general_health'));
   }
 
   const energyLevel = value.energyLevel || 1;
@@ -33,15 +33,15 @@ export function getGeneralHealthIcon(value) {
 
   const mapping = ENERGY_MAP[energyLevel] || ENERGY_MAP[1];
 
-  let tooltip = `Energy Level: ${energyLevel}/5`;
+  let tooltip = `${getTranslatedTooltip('tooltip_energy_level')}: ${energyLevel}/5`;
 
   if (symptoms.length > 0) {
     const friendlySymptoms = symptoms.map(symptom =>
-      SYMPTOM_LABELS[symptom] || symptom
+      SYMPTOM_LABELS[symptom] ? SYMPTOM_LABELS[symptom]() : symptom
     );
-    tooltip += `\nSymptoms: ${friendlySymptoms.join(', ')}`;
+    tooltip += `\n${getTranslatedTooltip('tooltip_symptoms')}: ${friendlySymptoms.join(', ')}`;
   } else {
-    tooltip += `\nNo symptoms reported`;
+    tooltip += `\n${getTranslatedTooltip('tooltip_no_symptoms')}`;
   }
 
   return createIconResult(mapping.icon, tooltip);

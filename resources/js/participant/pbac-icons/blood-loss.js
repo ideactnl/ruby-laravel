@@ -1,4 +1,4 @@
-import { ICON_BASE_PATH, createIconResult } from './config.js';
+import { ICON_BASE_PATH, createIconResult, getTranslatedTooltip } from './config.js';
 
 const SEVERITY_MAP = {
   'very_light': { icon: 'blood_loss_1.png' },
@@ -11,18 +11,18 @@ const SEVERITY_MAP = {
 
 export function getBloodLossIcon(value) {
   if (typeof value !== 'object') {
-    return createIconResult('blood_loss.png', 'Blood Loss');
+    return createIconResult('blood_loss.png', getTranslatedTooltip('tooltip_blood_loss'));
   }
 
   const { severity, spotting, amount } = value;
 
   if (spotting) {
-    const tooltip = `Blood Loss Amount: ${amount || 0}\nSpotting Detected`;
+    const tooltip = `${getTranslatedTooltip('tooltip_amount')}: ${amount || 0}\n${getTranslatedTooltip('tooltip_spotting_detected')}`;
     return createIconResult('spotting.png', tooltip);
   }
 
   const mapping = SEVERITY_MAP[severity] || SEVERITY_MAP['none'];
-  const tooltip = `Blood Loss Amount: ${amount || 0}`;
+  const tooltip = `${getTranslatedTooltip('tooltip_amount')}: ${amount || 0}`;
 
   return createIconResult(mapping.icon, tooltip);
 }

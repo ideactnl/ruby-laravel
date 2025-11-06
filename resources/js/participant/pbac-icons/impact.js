@@ -3,7 +3,7 @@
  * Maps boolean impact conditions to specific icons
  */
 
-import { createIconResult } from './config.js';
+import { createIconResult, getTranslatedTooltip } from './config.js';
 
 const CONDITIONS = {
   'used_medication': { icon: 'impact_1.png' },
@@ -35,7 +35,7 @@ function getGradeCategory(grade) {
 
 export function getImpactIcon(value) {
   if (typeof value !== 'object') {
-    return createIconResult('impact.png', `Daily Impact`);
+    return createIconResult('impact.png', getTranslatedTooltip('tooltip_impact'));
   }
 
   const { gradeYourDay, limitations } = value;
@@ -44,13 +44,13 @@ export function getImpactIcon(value) {
     const primaryLimitation = limitations[0];
     const condition = CONDITIONS[primaryLimitation];
     if (condition) {
-      const tooltip = `Daily Impact: ${gradeYourDay}/10`;
+      const tooltip = `${getTranslatedTooltip('tooltip_grade_your_day')}: ${gradeYourDay}/10`;
       return createIconResult(condition.icon, tooltip);
     }
   }
 
   const { icon } = getGradeCategory(gradeYourDay);
-  const tooltip = `Daily Impact: ${gradeYourDay}/10`;
+  const tooltip = `${getTranslatedTooltip('tooltip_grade_your_day')}: ${gradeYourDay}/10`;
 
   return createIconResult(icon, tooltip);
 }

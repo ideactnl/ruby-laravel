@@ -2,6 +2,8 @@
  * PBAC Icons Base Configuration
  */
 
+import { getTooltipTranslation } from '../utils/translations.js';
+
 // Base path for all PBAC icons
 export const ICON_BASE_PATH = '/images/';
 
@@ -13,4 +15,11 @@ export function createIconResult(iconFile, label) {
     src: `${ICON_BASE_PATH}${iconFile}`,
     label
   };
+}
+
+/**
+ * Get translated tooltip
+ */
+export function getTranslatedTooltip(key) {
+  return getTooltipTranslation(key);
 }

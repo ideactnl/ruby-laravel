@@ -6,6 +6,8 @@
 <!-- FullCalendar -->
 <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js" defer></script>
+<!-- FullCalendar Dutch Locale -->
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/locales/nl.global.min.js" defer></script>
 <!-- Flatpickr (styled date picker) -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/themes/material_red.css">

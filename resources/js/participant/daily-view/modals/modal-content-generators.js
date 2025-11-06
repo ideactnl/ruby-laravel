@@ -1,16 +1,16 @@
 /**
- * Refactored Modal Content Generators
- * Clean architecture using constants, validators, JSON data, and helper utilities
+ * Refactored Modal Content Generators - Refactored for multilingual support
+ * Clean architecture using constants, validators, and helper utilities
  */
 
-import { modalContentData } from '../data/index.js';
 import { PillarDataValidators } from '../cards/pillar-data-validators.js';
 import { ModalHelpers } from './modal-helpers.js';
+import { getModalTranslation } from '../../utils/translations.js';
 import {
   BLOOD_LOSS_SEVERITY_LEVELS, BLOOD_LOSS_SEVERITY_LABELS,
-  PAIN_REGION_LABELS, MOOD_ICON_MAP, MOOD_KEYS,
-  DIET_ICON_MAP, DIET_KEYS, IMPACT_LIMITATION_TYPES, IMPACT_LIMITATION_LABELS,
-  ENERGY_LEVEL_LABELS, SYMPTOM_LABELS, STOOL_CONSISTENCY_MAP,
+  PAIN_REGION_LABELS, MOOD_ICON_MAP, MOOD_KEYS, MOOD_LABELS,
+  DIET_ICON_MAP, DIET_KEYS, DIET_LABELS, IMPACT_LIMITATION_TYPES, IMPACT_LIMITATION_LABELS,
+  ENERGY_LEVEL_LABELS, SYMPTOM_LABELS, SYMPTOM_ICON_MAP, SYMPTOM_KEYS, STOOL_CONSISTENCY_MAP, STOOL_URINE_LABELS,
   EXERCISE_DURATION_LABELS, EXERCISE_TYPE_LABELS,
   SLEEP_QUALITY_LABELS, SLEEP_ISSUE_LABELS,
   SEX_ISSUE_LABELS, SEX_STATUS_LABELS
@@ -23,53 +23,44 @@ export class ModalContentGenerators {
    */
   static generateBloodLossModal(pillar) {
     if (!PillarDataValidators.hasBloodLossData(pillar)) {
-      return '<p class="text-gray-500">No blood loss data recorded.</p>';
+      return `<p class="text-gray-500">${getModalTranslation('modal_no_data_recorded') || 'No blood loss data recorded.'}</p>`;
     }
 
-    const amount = pillar?.amount ?? 0;
     const severity = pillar?.severity || 'none';
     const spotting = pillar?.flags?.spotting;
-    const data = modalContentData.bloodLoss;
 
     let content = '<div class="space-y-6">';
+    
+    content += ModalHelpers.createCenteredHeader(getModalTranslation('modal_blood_loss_title') || 'Blood Loss Details');
 
     content += '<div class="text-center mb-6">';
-    content += `<h3 class="text-lg font-semibold mb-3">${data.severityTitle}</h3>`;
+    content += `<h3 class="text-lg font-semibold mb-3">${getModalTranslation('modal_blood_loss_severity_title') || 'Blood Loss Severity'}</h3>`;
     content += '<div class="flex justify-center items-center gap-1 mb-4">';
 
     const spottingActive = spotting;
     const spottingClasses = spottingActive ? 'opacity-100 bg-orange-100 border-2 border-orange-500 rounded-full p-1' : 'opacity-30';
-    content += `<div class="${spottingClasses}"><img src="/images/spotting.png" alt="Spotting" class="w-8 h-8 object-contain"></div>`;
+    content += `<div class="${spottingClasses}"><img src="/images/spotting.png" alt="${getModalTranslation('modal_spotting_title') || 'Spotting'}" class="w-8 h-8 object-contain"></div>`;
 
     BLOOD_LOSS_SEVERITY_LEVELS.forEach((level, index) => {
       const isActive = severity === level && !spotting;
       const classes = isActive ? 'opacity-100 bg-blue-100 border-2 border-blue-500 rounded-full p-1' : 'opacity-30';
-      content += `<div class="${classes}"><img src="/images/blood_loss_${index + 1}.png" alt="${BLOOD_LOSS_SEVERITY_LABELS[level]}" class="w-8 h-8 object-contain"></div>`;
+      const label = BLOOD_LOSS_SEVERITY_LABELS[level] ? BLOOD_LOSS_SEVERITY_LABELS[level]() : level;
+      content += `<div class="${classes}"><img src="/images/blood_loss_${index + 1}.png" alt="${label}" class="w-8 h-8 object-contain"></div>`;
     });
 
     content += '</div>';
     content += '</div>';
 
     if (spotting) {
-      const spottingContent =
-        ModalHelpers.createSectionHeader(data.spotting.title, 'orange-800') +
-        ModalHelpers.createDescription(data.spotting.description, 'orange-700', 'sm');
+      const spottingContent = ModalHelpers.createSectionHeader(getModalTranslation('modal_spotting_title') || 'Spotting Detected', 'orange-800');
       content += ModalHelpers.createSection('orange', 'orange', spottingContent);
     } else if (severity && severity !== 'none') {
-      const severityContent =
-        ModalHelpers.createSectionHeader(data.title || 'Blood Loss Details', 'blue-800') +
-        ModalHelpers.createLabelValue(data.labels.severity, BLOOD_LOSS_SEVERITY_LABELS[severity], 'blue-700') +
-        ModalHelpers.createDescription(data.severityDescriptions[severity] || 'Blood loss recorded', 'blue-700', 'sm');
+      const severityLabel = BLOOD_LOSS_SEVERITY_LABELS[severity] ? BLOOD_LOSS_SEVERITY_LABELS[severity]() : severity;
+      const severityContent = 
+        ModalHelpers.createSectionHeader(getModalTranslation('modal_blood_loss_severity_title') || 'Blood Loss Severity', 'blue-800') +
+        ModalHelpers.createLabelValue(getModalTranslation('modal_blood_loss_severity') || 'Severity:', severityLabel, 'blue-700');
       content += ModalHelpers.createSection('blue', 'blue', severityContent);
     }
-
-    /*
-    const trackingContent = 
-      ModalHelpers.createSectionHeader(data.trackingTitle || 'Tracking Information') +
-      ModalHelpers.createLabelValue(data.labels.amountRecorded, `${amount} ml`) +
-      ModalHelpers.createDescription(data.trackingInfo);
-    content += ModalHelpers.createSection('gray', 'gray', trackingContent);
-    */
 
     content += '</div>';
     return content;
@@ -80,52 +71,46 @@ export class ModalContentGenerators {
    */
   static generatePainModal(pillar) {
     if (!PillarDataValidators.hasPainData(pillar)) {
-      return '<p class="text-gray-500">No pain data recorded.</p>';
+      return `<p class="text-gray-500">${getModalTranslation('modal_no_data_recorded') || 'No pain data recorded.'}</p>`;
     }
 
     const value = pillar?.value ?? 0;
     const regions = pillar?.regions || [];
-    const data = modalContentData.pain;
 
     let content = '<div class="space-y-6">';
+    
+    content += ModalHelpers.createCenteredHeader(getModalTranslation('modal_pain_title') || 'Pain Assessment');
 
-    content += ModalHelpers.createCenteredHeader(data.title);
-    content += ModalHelpers.createIconGrid();
+    content += '<div class="text-center mb-6">';
+    content += `<h3 class="text-lg font-semibold mb-3">${getModalTranslation('modal_pain_level_title') || 'Pain Level'}</h3>`;
+    content += '<div class="flex justify-center items-center gap-1 mb-4">';
 
     let currentPainIcon = Math.min(6, Math.max(1, Math.ceil(value / 2) || 1));
     for (let i = 1; i <= 6; i++) {
       const isActive = i === currentPainIcon;
-      content += ModalHelpers.createIcon(`smile_${i}.png`, `Pain Level ${i}`, isActive);
+      const classes = isActive ? 'opacity-100 bg-blue-100 border-2 border-blue-500 rounded-full p-1' : 'opacity-30';
+      content += `<div class="${classes}"><img src="/images/smile_${i}.png" alt="Pain Level ${i}" class="w-8 h-8 object-contain"></div>`;
     }
+    content += '</div>';
     content += '</div>';
 
     if (value > 0) {
       const painContent =
-        ModalHelpers.createSectionHeader(data.levelTitle, 'blue-800') +
-        ModalHelpers.createLabelValue('Pain Level:', `${value}/10`, 'blue-700');
+        ModalHelpers.createSectionHeader(getModalTranslation('modal_pain_level_title') || 'Pain Level', 'blue-800') +
+        ModalHelpers.createLabelValue(getModalTranslation('modal_pain_level') || 'Pain Level:', `${value}/10`, 'blue-700');
       content += ModalHelpers.createSection('blue', 'blue', painContent);
     }
 
     if (regions.length > 0) {
-      let regionsContent = ModalHelpers.createSectionHeader(data.regionsTitle, 'red-800');
-      regionsContent += ModalHelpers.createTwoColumnGrid('');
+      let regionsContent = ModalHelpers.createSectionHeader(getModalTranslation('modal_pain_regions_title') || 'Affected Regions', 'red-800');
+      regionsContent += '<div class="grid grid-cols-1 gap-2">';
       regions.forEach(region => {
-        let label = PAIN_REGION_LABELS[region];
-        if (!label) {
-          label = region.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-        }
+        const label = PAIN_REGION_LABELS[region] ? PAIN_REGION_LABELS[region]() : region;
         regionsContent += `<div class="text-sm text-red-700">• ${label}</div>`;
       });
       regionsContent += '</div>';
       content += ModalHelpers.createSection('red', 'red', regionsContent);
     }
-
-    /*
-    const trackingContent = 
-      ModalHelpers.createSectionHeader('Pain Tracking') +
-      ModalHelpers.createDescription(data.trackingInfo);
-    content += ModalHelpers.createSection('gray', 'gray', trackingContent);
-    */
 
     content += '</div>';
     return content;
@@ -136,17 +121,18 @@ export class ModalContentGenerators {
    */
   static generateMoodModal(pillar) {
     if (!PillarDataValidators.hasMoodData(pillar)) {
-      return '<p class="text-gray-500">No mood data recorded.</p>';
+      return `<p class="text-gray-500">${getModalTranslation('modal_no_data_recorded') || 'No mood data recorded.'}</p>`;
     }
 
     const positives = pillar?.positives || [];
     const negatives = pillar?.negatives || [];
-    const data = modalContentData.mood;
 
     let content = '<div class="space-y-6">';
+    
+    content += ModalHelpers.createCenteredHeader(getModalTranslation('modal_mood_title') || 'Mood Assessment');
 
-    content += ModalHelpers.createCenteredHeader(data.title);
-    content += ModalHelpers.createIconGrid();
+    content += '<div class="text-center mb-6">';
+    content += '<div class="flex flex-wrap justify-center items-center gap-2 mb-4 max-w-md mx-auto">';
 
     const allMoods = [...positives, ...negatives];
     MOOD_KEYS.forEach(moodKey => {
@@ -155,80 +141,45 @@ export class ModalContentGenerators {
         (moodKey === 'angry' && (allMoods.includes('angry') || allMoods.includes('irritable'))) ||
         (moodKey === 'worthless' && (allMoods.includes('worthless') || allMoods.includes('guilty')));
 
-      content += ModalHelpers.createIcon(MOOD_ICON_MAP[moodKey], moodKey, isActive);
+      const classes = isActive ? 'opacity-100 bg-blue-100 border-2 border-blue-500 rounded-full p-2' : 'opacity-30';
+      const label = MOOD_LABELS[moodKey] ? MOOD_LABELS[moodKey]() : moodKey;
+      content += `<div class="${classes}"><img src="/images/${MOOD_ICON_MAP[moodKey]}" alt="${label}" class="w-10 h-10 object-contain"></div>`;
     });
     content += '</div>';
+    content += '</div>';
 
-    const selectedPositives = positives.filter(p => p.value === 1);
-    const selectedNegatives = negatives.filter(n => n.value === 1);
-    const balance = selectedPositives.length - selectedNegatives.length;
+    const balance = positives.length - negatives.length;
     content += '<div class="text-center mb-4">';
     if (balance > 0) {
-      content += ModalHelpers.createStatusIndicator('Overall', data.overallLabels.positive, 'success');
+      content += ModalHelpers.createStatusIndicator(getModalTranslation('modal_overall') || 'Overall', getModalTranslation('modal_mood_positive_day') || 'Positive Day', 'success');
     } else if (balance < 0) {
-      content += ModalHelpers.createStatusIndicator('Overall', data.overallLabels.negative, 'warning');
+      content += ModalHelpers.createStatusIndicator(getModalTranslation('modal_overall') || 'Overall', getModalTranslation('modal_mood_challenging_day') || 'Challenging Day', 'warning');
     } else {
-      content += ModalHelpers.createStatusIndicator('Overall', data.overallLabels.balanced, 'info');
+      content += ModalHelpers.createStatusIndicator(getModalTranslation('modal_overall') || 'Overall', getModalTranslation('modal_mood_balanced_day') || 'Balanced Day', 'info');
     }
     content += '</div>';
 
     if (positives.length > 0) {
-      let positiveContent = ModalHelpers.createSectionHeader(data.positiveTitle, 'green-800');
+      let positiveContent = ModalHelpers.createSectionHeader(getModalTranslation('modal_mood_positive_title') || 'Positive Emotions Experienced', 'green-800');
       positiveContent += '<ul class="list-disc list-inside text-green-700 text-sm">';
       positives.forEach(mood => {
-        let label = data.labels?.[mood];
-        if (!label) {
-          label = mood.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-        }
+        const label = MOOD_LABELS[mood] ? MOOD_LABELS[mood]() : mood;
         positiveContent += `<li>${label}</li>`;
       });
       positiveContent += '</ul>';
-      positiveContent += `<div class="mt-4">${ModalHelpers.createDescription(data.positiveMessage, 'green-600', 'xs')}</div>`;
       content += ModalHelpers.createSection('green', 'green', positiveContent);
     }
 
     if (negatives.length > 0) {
-      let negativeContent = ModalHelpers.createSectionHeader(data.negativeTitle, 'red-800');
+      let negativeContent = ModalHelpers.createSectionHeader(getModalTranslation('modal_mood_negative_title') || 'Challenging Emotions Experienced', 'red-800');
       negativeContent += '<ul class="list-disc list-inside text-red-700 text-sm">';
       negatives.forEach(mood => {
-        let label = data.labels?.[mood];
-        if (!label) {
-          label = mood.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-        }
+        const label = MOOD_LABELS[mood] ? MOOD_LABELS[mood]() : mood;
         negativeContent += `<li>${label}</li>`;
       });
       negativeContent += '</ul>';
-      negativeContent += `<div class="mt-4">${ModalHelpers.createDescription(data.negativeMessage, 'red-600', 'xs')}</div>`;
-      if (negatives.some(mood => ['depressed', 'hopeless', 'worthless'].includes(mood))) {
-        negativeContent += ModalHelpers.createWarning('If these feelings persist, consider reaching out to a mental health professional or your healthcare provider.', 'danger');
-      }
       content += ModalHelpers.createSection('red', 'red', negativeContent);
     }
-
-    /*
-    let insightsContent = ModalHelpers.createSectionHeader(data.trackingInsights.title);
-    insightsContent += ModalHelpers.createLabelValue(
-      data.trackingInsights.todaysBalance,
-      `${positives.length} positive, ${negatives.length} challenging`
-    );
-
-    let balanceMessage;
-    if (balance > 1) {
-      balanceMessage = data.trackingInsights.balanceMessages.strongPositive;
-    } else if (balance === 1) {
-      balanceMessage = data.trackingInsights.balanceMessages.mostlyPositive;
-    } else if (balance === 0) {
-      balanceMessage = data.trackingInsights.balanceMessages.balanced;
-    } else if (balance === -1) {
-      balanceMessage = data.trackingInsights.balanceMessages.somewhatChallenging;
-    } else {
-      balanceMessage = data.trackingInsights.balanceMessages.challenging;
-    }
-
-    insightsContent += ModalHelpers.createDescription(balanceMessage, 'gray-700', 'sm');
-    insightsContent += ModalHelpers.createDescription(data.trackingInsights.correlationInfo, 'gray-600', 'xs');
-    content += ModalHelpers.createSection('gray', 'gray', insightsContent);
-    */
 
     content += '</div>';
     return content;
@@ -239,84 +190,35 @@ export class ModalContentGenerators {
    */
   static generateDietModal(pillar) {
     if (!PillarDataValidators.hasDietData(pillar)) {
-      return '<p class="text-gray-500">No diet data recorded.</p>';
+      return `<p class="text-gray-500">${getModalTranslation('modal_no_data_recorded') || 'No diet data recorded.'}</p>`;
     }
 
     const positives = pillar?.positives || [];
     const negatives = pillar?.negatives || [];
     const neutrals = pillar?.neutrals || [];
-    const data = modalContentData.diet;
 
     let content = '<div class="space-y-6">';
-    content += ModalHelpers.createCenteredHeader(data.title);
+    
+    content += ModalHelpers.createCenteredHeader(getModalTranslation('modal_diet_title') || 'Diet Items');
 
-    content += '<div class="flex flex-wrap justify-center items-center gap-4 mb-2">';
+    content += '<div class="grid grid-cols-4 gap-4 justify-items-center mb-6 max-w-2xl mx-auto">';
     const allDietItems = [...positives, ...negatives, ...neutrals];
     DIET_KEYS.forEach(dietKey => {
       const isActive = allDietItems.includes(dietKey);
-      let label = data.labels?.[dietKey];
-      if (!label) {
-        label = dietKey.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-      }
+      const label = DIET_LABELS[dietKey] ? DIET_LABELS[dietKey]() : dietKey;
+      const containerClasses = isActive 
+        ? 'bg-red-100 border-2 border-red-500 rounded-full p-3 opacity-100' 
+        : 'opacity-30';
       content += `
         <div class="flex flex-col items-center">
-          ${ModalHelpers.createIcon(DIET_ICON_MAP[dietKey], label, isActive)}
-          <span class="text-xs text-gray-700 mt-1">${label}</span>
+          <div class="${containerClasses}">
+            <img src="/images/${DIET_ICON_MAP[dietKey]}" alt="${label}" class="w-12 h-12 object-contain">
+          </div>
+          <span class="text-xs text-gray-700 text-center mt-2 max-w-20">${label}</span>
         </div>
       `;
     });
     content += '</div>';
-    content += `<p class="text-center text-gray-600 mb-4 mt-4">${data.totalItemsLabel || 'Items tracked:'} ${allDietItems.length}/12</p>`;
-
-    /*
-    if (positives.length > 0) {
-      let beneficialContent = ModalHelpers.createSectionHeader(data.beneficialTitle, 'green-800');
-      positives.forEach(item => {
-        const label = item.charAt(0).toUpperCase() + item.slice(1).replace('_', ' ');
-        beneficialContent += ModalHelpers.createListItem(null, label, null, 'green-700');
-      });
-      beneficialContent += ModalHelpers.createDescription(data.beneficialSummary, 'green-600', 'xs');
-      content += ModalHelpers.createSection('green', 'green', beneficialContent);
-    }
-
-    if (negatives.length > 0) {
-      let negativeContent = ModalHelpers.createSectionHeader(data.negativeTitle, 'red-800');
-      negatives.forEach(item => {
-        const label = item.charAt(0).toUpperCase() + item.slice(1).replace('_', ' ');
-        negativeContent += ModalHelpers.createListItem(null, label, null, 'red-700');
-      });
-      negativeContent += ModalHelpers.createDescription(data.negativeSummary, 'red-600', 'xs');
-      content += ModalHelpers.createSection('red', 'red', negativeContent);
-    }
-
-    if (neutrals.length > 0) {
-      let neutralContent = ModalHelpers.createSectionHeader(data.neutralTitle, 'gray-800');
-      neutrals.forEach(item => {
-        const label = item.charAt(0).toUpperCase() + item.slice(1).replace('_', ' ');
-        neutralContent += ModalHelpers.createListItem(null, label, null, 'gray-700');
-      });
-      neutralContent += ModalHelpers.createDescription(data.neutralSummary, 'gray-600', 'xs');
-      content += ModalHelpers.createSection('gray', 'gray', neutralContent);
-    }
-    */
-
-    /*
-    const totalItems = allDietItems.length;
-    const healthyRatio = positives.length / totalItems;
-    let analysisContent = ModalHelpers.createSectionHeader('Nutritional Analysis', 'blue-800');
-    if (healthyRatio >= 0.7) {
-      analysisContent += ModalHelpers.createDescription('Excellent nutrition day! You made predominantly healthy food choices.', 'blue-700', 'sm');
-    } else if (healthyRatio >= 0.5) {
-      analysisContent += ModalHelpers.createDescription('Good nutrition balance. Consider increasing beneficial foods slightly.', 'blue-700', 'sm');
-    } else if (healthyRatio >= 0.3) {
-      analysisContent += ModalHelpers.createDescription('Room for improvement. Consider increasing healthy food choices tomorrow.', 'blue-700', 'sm');
-    } else {
-      analysisContent += ModalHelpers.createDescription('Focus on nutrition. Try to include more anti-inflammatory foods in your diet.', 'blue-700', 'sm');
-    }
-    analysisContent += ModalHelpers.createLabelValue('Today\'s breakdown:', `${positives.length} beneficial, ${negatives.length} to monitor, ${neutrals.length} neutral foods`, 'blue-700');
-    analysisContent += ModalHelpers.createDescription('Diet plays a crucial role in managing symptoms. Anti-inflammatory foods may help reduce symptom severity, while processed foods might worsen them.', 'blue-600', 'xs');
-    content += ModalHelpers.createSection('blue', 'blue', analysisContent);
-    */
 
     content += '</div>';
     return content;
@@ -327,52 +229,54 @@ export class ModalContentGenerators {
    */
   static generateImpactModal(pillar) {
     if (!PillarDataValidators.hasImpactData(pillar)) {
-      return '<p class="text-gray-500">No impact data recorded.</p>';
+      return `<p class="text-gray-500">${getModalTranslation('modal_no_data_recorded') || 'No impact data recorded.'}</p>`;
     }
 
     const grade = pillar?.gradeYourDay ?? 0;
     const limitations = pillar?.limitations || [];
-    const data = modalContentData.impact;
 
     let content = '<div class="space-y-6">';
+    
+    content += ModalHelpers.createCenteredHeader(getModalTranslation('modal_impact_title') || 'Daily impact & limitations');
 
-    content += ModalHelpers.createCenteredHeader(data.title);
-    content += ModalHelpers.createIconGrid();
+    content += '<div class="text-center mb-6">';
+    content += `<h3 class="text-lg font-semibold mb-3">${getModalTranslation('modal_impact_grade_title') || 'Because of your complaints you'}</h3>`;
+    content += '<div class="flex flex-wrap justify-center items-center gap-2 mb-4 max-w-md mx-auto">';
 
     IMPACT_LIMITATION_TYPES.forEach((limitationType, index) => {
       const isActive = limitations.includes(limitationType);
       const iconFile = `impact_${index + 1}.png`;
-      const label = IMPACT_LIMITATION_LABELS[limitationType];
-      content += ModalHelpers.createIcon(iconFile, label, isActive);
+      const label = IMPACT_LIMITATION_LABELS[limitationType] ? IMPACT_LIMITATION_LABELS[limitationType]() : limitationType;
+      const classes = isActive ? 'opacity-100 bg-red-100 border-2 border-red-500 rounded-full p-2' : 'opacity-30';
+      content += `<div class="${classes}"><img src="/images/${iconFile}" alt="${label}" class="w-10 h-10 object-contain"></div>`;
     });
     content += '</div>';
-
-    let gradeText = data.gradeLabels.difficult;
+    content += '</div>';
+    let gradeText = getModalTranslation('modal_impact_great_day') || 'Horrible day';
     let gradeColor = 'text-red-600';
     if (grade >= 8) {
-      gradeText = data.gradeLabels.great;
+      gradeText = getModalTranslation('modal_impact_challenging_day') || 'Perfect day';
       gradeColor = 'text-green-600';
     } else if (grade >= 6) {
-      gradeText = data.gradeLabels.good;
+      gradeText = getModalTranslation('modal_impact_good_day') || 'Normal day';
       gradeColor = 'text-yellow-600';
     } else if (grade >= 4) {
-      gradeText = data.gradeLabels.challenging;
+      gradeText = getModalTranslation('modal_impact_difficult_day') || 'Difficult Day';
       gradeColor = 'text-orange-600';
     }
 
     content += '<div class="text-center mb-4">';
     content += `<p class="text-lg font-medium mb-2 ${gradeColor}">${gradeText}</p>`;
     if (grade > 0) {
-      content += ModalHelpers.createGradeDisplay(grade, 10, 'Daily Grade');
+      content += ModalHelpers.createGradeDisplay(grade, 10, getModalTranslation('modal_daily_grade') || 'Daily Grade');
     }
     content += '</div>';
-
     if (limitations.length > 0) {
-      let limitationsContent = ModalHelpers.createSectionHeader(data.limitationsTitle, 'red-800');
-      limitationsContent += ModalHelpers.createSingleColumnLayout('');
+      let limitationsContent = ModalHelpers.createSectionHeader(getModalTranslation('modal_impact_limitations_title') || 'Daily Limitations:', 'red-800');
+      limitationsContent += '<div class="grid grid-cols-1 gap-2">';
 
       limitations.forEach(limitation => {
-        const label = IMPACT_LIMITATION_LABELS[limitation] || limitation;
+        const label = IMPACT_LIMITATION_LABELS[limitation] ? IMPACT_LIMITATION_LABELS[limitation]() : limitation;
         const iconIndex = IMPACT_LIMITATION_TYPES.indexOf(limitation) + 1;
         limitationsContent += ModalHelpers.createListItem(`impact_${iconIndex}.png`, label, null, 'red-700');
       });
@@ -380,41 +284,9 @@ export class ModalContentGenerators {
       limitationsContent += '</div>';
       content += ModalHelpers.createSection('red', 'red', limitationsContent);
     } else {
-      let noLimitationsContent = ModalHelpers.createSectionHeader(data.noLimitationsTitle, 'green-800');
-      noLimitationsContent += ModalHelpers.createDescription(data.noLimitationsMessage, 'green-700', 'sm');
-      noLimitationsContent += ModalHelpers.createDescription(data.noLimitationsSummary, 'green-600', 'xs');
+      let noLimitationsContent = ModalHelpers.createSectionHeader(getModalTranslation('modal_impact_no_limitations_title') || 'No Limitations Reported', 'green-800');
       content += ModalHelpers.createSection('green', 'green', noLimitationsContent);
     }
-
-    /*
-    let analysisContent = ModalHelpers.createSectionHeader(data.analysisTitle, 'blue-800');
-    analysisContent += ModalHelpers.createLabelValue('Your Rating:', `${grade}/10 (${gradeText})`, 'blue-700');
-    const gradeDescription = data.gradeDescriptions[grade.toString()] || data.gradeDescriptions[Math.min(10, Math.max(0, Math.round(grade))).toString()];
-    if (gradeDescription) {
-      analysisContent += ModalHelpers.createDescription(gradeDescription, 'blue-700', 'sm');
-    }
-    const impactLevel = limitations.length;
-    let impactLevelText;
-    if (impactLevel === 0) {
-      impactLevelText = data.impactLevels.minimal;
-    } else if (impactLevel <= 2) {
-      impactLevelText = data.impactLevels.mild;
-    } else if (impactLevel <= 4) {
-      impactLevelText = data.impactLevels.moderate;
-    } else if (impactLevel <= 6) {
-      impactLevelText = data.impactLevels.significant;
-    } else {
-      impactLevelText = data.impactLevels.severe;
-    }
-    analysisContent += ModalHelpers.createLabelValue('Impact Level:', impactLevelText, 'blue-700');
-    content += ModalHelpers.createSection('blue', 'blue', analysisContent);
-    */
-    /*
-    let trackingContent = ModalHelpers.createSectionHeader('Impact Tracking Insights');
-    trackingContent += ModalHelpers.createLabelValue('Limitations count:', `${impactLevel} out of 11 possible areas affected`, 'gray-700');
-    trackingContent += ModalHelpers.createDescription(data.trackingInfo, 'gray-600', 'xs');
-    content += ModalHelpers.createSection('gray', 'gray', trackingContent);
-    */
 
     content += '</div>';
     return content;
@@ -425,76 +297,48 @@ export class ModalContentGenerators {
    */
   static generateEnergyModal(pillar) {
     if (!PillarDataValidators.hasGeneralHealthData(pillar)) {
-      return '<p class="text-gray-500">No energy/health data recorded.</p>';
+      return `<p class="text-gray-500">${getModalTranslation('modal_no_data_recorded') || 'No energy/health data recorded.'}</p>`;
     }
 
     const energy = pillar?.energyLevel ?? 0;
     const symptoms = pillar?.symptoms || [];
-    const data = modalContentData.generalHealth;
 
     let content = '<div class="space-y-6">';
+    
+    content += ModalHelpers.createCenteredHeader(getModalTranslation('modal_general_health_title') || 'General Health & Energy');
 
-    content += ModalHelpers.createCenteredHeader(data.title);
-
-    const energyLabel = ENERGY_LEVEL_LABELS[energy] || 'Unknown';
+    const energyLabel = ENERGY_LEVEL_LABELS[energy] ? ENERGY_LEVEL_LABELS[energy]() : getModalTranslation('card_general_health_unknown') || 'Unknown';
     content += `<div class="text-center mb-4">`;
-    content += `<p class="text-lg font-medium mb-2">${energyLabel} Energy</p>`;
-    content += ModalHelpers.createGradeDisplay(energy, 5, 'Level');
+    content += `<p class="text-lg font-medium mb-2">${energyLabel}</p>`;
+    content += ModalHelpers.createGradeDisplay(energy, 5, getModalTranslation('modal_level') || 'Level');
     content += '</div>';
 
-    let energyContent = ModalHelpers.createSectionHeader(data.energyTitle, 'blue-800');
-    energyContent += ModalHelpers.createLabelValue('Current Level:', `${energyLabel} (${energy}/5)`, 'blue-700');
-    const energyDescription = data.energyDescriptions[energy.toString()];
-    if (energyDescription) {
-      energyContent += ModalHelpers.createDescription(energyDescription, 'blue-700', 'sm');
-    }
+    content += ModalHelpers.createSectionHeader(getModalTranslation('modal_general_health_symptoms_title') || 'Symptoms Experienced', 'gray-800');
+    content += '<div class="grid grid-cols-4 gap-4 justify-items-center mb-6 max-w-2xl mx-auto">';
+    
+    SYMPTOM_KEYS.forEach(symptomKey => {
+      const isActive = symptoms.includes(symptomKey);
+      const label = SYMPTOM_LABELS[symptomKey] ? SYMPTOM_LABELS[symptomKey]() : symptomKey;
+      const icon = SYMPTOM_ICON_MAP[symptomKey] || 'general_health.png';
+      const containerClasses = isActive 
+        ? 'bg-red-100 border-2 border-red-500 rounded-full p-3 opacity-100' 
+        : 'opacity-30';
+      
+      content += `
+        <div class="flex flex-col items-center">
+          <div class="${containerClasses}">
+            <img src="/images/${icon}" alt="${label}" class="w-12 h-12 object-contain">
+          </div>
+          <span class="text-xs text-gray-700 text-center mt-2 max-w-20">${label}</span>
+        </div>
+      `;
+    });
+    
+    content += '</div>';
+
+    let energyContent = ModalHelpers.createSectionHeader(getModalTranslation('modal_general_health_energy_title') || 'Energy Assessment', 'blue-800');
+    energyContent += ModalHelpers.createLabelValue(getModalTranslation('modal_general_health_current_level') || 'Current level:', `${energyLabel} (${energy}/5)`, 'blue-700');
     content += ModalHelpers.createSection('blue', 'blue', energyContent);
-
-    if (symptoms.length > 0) {
-      let symptomsContent = ModalHelpers.createSectionHeader(data.symptomsTitle, 'red-800');
-      symptoms.forEach(symptom => {
-        const label = SYMPTOM_LABELS[symptom] || symptom.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-        symptomsContent += ModalHelpers.createListItem(null, label, null, 'red-700');
-      });
-      symptomsContent += ModalHelpers.createDescription(data.multipleSymptomsWarning, 'red-600', 'xs');
-      content += ModalHelpers.createSection('red', 'red', symptomsContent);
-    } else {
-      let noSymptomsContent = ModalHelpers.createSectionHeader(data.noSymptomsTitle, 'green-800');
-      noSymptomsContent += ModalHelpers.createDescription(data.noSymptomsMessage, 'green-700', 'sm');
-      noSymptomsContent += ModalHelpers.createDescription(data.noSymptomsSummary, 'green-600', 'xs');
-      content += ModalHelpers.createSection('green', 'green', noSymptomsContent);
-    }
-
-    /*
-    let correlationContent = ModalHelpers.createSectionHeader(data.correlationTitle, 'yellow-800');
-    let correlationMessage;
-    if (energy <= 2 && symptoms.length > 0) {
-      correlationMessage = data.correlationMessages.lowEnergyWithSymptoms;
-    } else if (energy >= 4 && symptoms.length > 0) {
-      correlationMessage = data.correlationMessages.goodEnergyWithSymptoms;
-    } else if (energy <= 2 && symptoms.length === 0) {
-      correlationMessage = data.correlationMessages.lowEnergyNoSymptoms;
-    } else if (energy >= 4 && symptoms.length === 0) {
-      correlationMessage = data.correlationMessages.goodEnergyNoSymptoms;
-    } else {
-      correlationMessage = data.correlationMessages.moderate;
-    }
-    correlationContent += ModalHelpers.createDescription(correlationMessage, 'yellow-700', 'sm');
-    correlationContent += ModalHelpers.createDescription(data.trackingInfo, 'yellow-600', 'xs');
-    content += ModalHelpers.createSection('yellow', 'yellow', correlationContent);
-
-    let insightsContent = ModalHelpers.createSectionHeader(data.insightsTitle, 'gray-800');
-    let insightMessage;
-    if (energy >= 4) {
-      insightMessage = data.insightMessages.goodEnergy;
-    } else if (energy <= 2) {
-      insightMessage = data.insightMessages.lowEnergy;
-    } else {
-      insightMessage = data.insightMessages.moderate;
-    }
-    insightsContent += ModalHelpers.createDescription(insightMessage, 'gray-600', 'xs');
-    content += ModalHelpers.createSection('gray', 'gray', insightsContent);
-    */
 
     content += '</div>';
     return content;
@@ -505,88 +349,71 @@ export class ModalContentGenerators {
    */
   static generateStoolUrineModal(pillar) {
     if (!PillarDataValidators.hasStoolUrineData(pillar)) {
-      return '<p class="text-gray-500">No stool/urine data recorded.</p>';
+      return `<p class="text-gray-500">${getModalTranslation('modal_no_data_recorded') || 'No stool/urine data recorded.'}</p>`;
     }
 
     const hasUrineBlood = pillar?.urine?.blood ?? false;
     const hasStoolBlood = pillar?.stool?.blood ?? false;
     const consistency = pillar?.stool?.consistency;
-    const data = modalContentData.stoolUrine;
 
     let content = '<div class="space-y-6">';
+    
+    content += ModalHelpers.createCenteredHeader(getModalTranslation('modal_stool_urine_title') || 'Stool & Urine Conditions');
 
-    content += ModalHelpers.createCenteredHeader(data.title);
-    content += ModalHelpers.createIconGrid();
+    content += '<div class="text-center mb-6">';
+    content += '<div class="flex flex-wrap justify-center items-center gap-2 mb-4 max-w-md mx-auto">';
 
     const conditions = [
-      { key: 'blood', icon: 'urine_stool.png', label: 'Blood', active: hasUrineBlood || hasStoolBlood },
-      { key: 'hard', icon: 'urine_stool_1.png', label: 'Hard', active: consistency === 'hard' },
-      { key: 'normal', icon: 'urine_stool_2.png', label: 'Normal', active: consistency === 'normal' },
-      { key: 'soft', icon: 'urine_stool_3.png', label: 'Soft', active: consistency === 'soft' },
-      { key: 'watery', icon: 'urine_stool_4.png', label: 'Watery', active: consistency === 'watery' },
-      { key: 'something_else', icon: 'urine_stool_5.png', label: 'Other', active: consistency === 'something_else' },
-      { key: 'no_stool', icon: 'urine_stool_6.png', label: 'No Stool', active: consistency === 'no_stool' }
+      { key: 'blood', icon: 'urine_stool.png', label: STOOL_URINE_LABELS['blood'] ? STOOL_URINE_LABELS['blood']() : 'Blood', active: hasUrineBlood || hasStoolBlood },
+      { key: 'hard', icon: 'urine_stool_1.png', label: STOOL_URINE_LABELS['hard'] ? STOOL_URINE_LABELS['hard']() : 'Hard', active: consistency === 'hard' },
+      { key: 'normal', icon: 'urine_stool_2.png', label: STOOL_URINE_LABELS['normal'] ? STOOL_URINE_LABELS['normal']() : 'Normal', active: consistency === 'normal' },
+      { key: 'soft', icon: 'urine_stool_3.png', label: STOOL_URINE_LABELS['soft'] ? STOOL_URINE_LABELS['soft']() : 'Soft', active: consistency === 'soft' },
+      { key: 'watery', icon: 'urine_stool_4.png', label: STOOL_URINE_LABELS['watery'] ? STOOL_URINE_LABELS['watery']() : 'Watery', active: consistency === 'watery' },
+      { key: 'something_else', icon: 'urine_stool_5.png', label: STOOL_URINE_LABELS['something_else'] ? STOOL_URINE_LABELS['something_else']() : 'Other', active: consistency === 'something_else' },
+      { key: 'no_stool', icon: 'urine_stool_6.png', label: STOOL_URINE_LABELS['no_stool'] ? STOOL_URINE_LABELS['no_stool']() : 'No Stool', active: consistency === 'no_stool' }
     ];
 
     conditions.forEach(condition => {
-      content += ModalHelpers.createIcon(condition.icon, condition.label, condition.active);
+      const classes = condition.active ? 'opacity-100 bg-blue-100 border-2 border-blue-500 rounded-full p-2' : 'opacity-30';
+      content += `<div class="${classes}"><img src="/images/${condition.icon}" alt="${condition.label}" class="w-10 h-10 object-contain"></div>`;
     });
+    content += '</div>';
     content += '</div>';
 
     content += '<div class="text-center mb-4">';
     if (hasUrineBlood || hasStoolBlood) {
-      content += ModalHelpers.createStatusIndicator('Status', 'Blood Detected', 'error');
+      content += ModalHelpers.createStatusIndicator(getModalTranslation('modal_stool_urine_status') || 'Status', getModalTranslation('modal_stool_urine_blood_detected') || 'Blood Detected', 'error');
     } else if (consistency) {
       const statusColors = {
         'hard': 'text-orange-600', 'normal': 'text-green-600', 'soft': 'text-yellow-600',
         'watery': 'text-blue-600', 'something_else': 'text-purple-600', 'no_stool': 'text-gray-600'
       };
       const colorClass = statusColors[consistency] || 'text-gray-600';
-      content += `<p class="${colorClass} font-medium">Status: ${consistency.charAt(0).toUpperCase() + consistency.slice(1).replace('_', ' ')}</p>`;
+      const label = STOOL_URINE_LABELS[consistency] ? STOOL_URINE_LABELS[consistency]() : consistency;
+      content += `<p class="${colorClass} font-medium">${getModalTranslation('modal_stool_urine_status') || 'Status'}: ${label}</p>`;
     }
     content += '</div>';
 
     if (hasUrineBlood || hasStoolBlood) {
-      let bloodContent = ModalHelpers.createSectionHeader(data.bloodDetectionTitle, 'red-800');
-
-      if (hasUrineBlood && hasStoolBlood) {
-        bloodContent += ModalHelpers.createDescription(data.bloodMessages.both, 'red-700', 'sm');
-      } else if (hasUrineBlood) {
-        bloodContent += ModalHelpers.createDescription(data.bloodMessages.urine, 'red-700', 'sm');
-      } else if (hasStoolBlood) {
-        bloodContent += ModalHelpers.createDescription(data.bloodMessages.stool, 'red-700', 'sm');
+      let bloodContent = ModalHelpers.createSectionHeader(getModalTranslation('modal_stool_urine_blood_detection_title') || 'Blood Detection', 'red-800');
+      if (hasUrineBlood) {
+        bloodContent += ModalHelpers.createListItem('urine_stool.png', STOOL_URINE_LABELS['blood'] ? STOOL_URINE_LABELS['blood']() : 'Blood in urine', null, 'red-700');
       }
-
-      bloodContent += ModalHelpers.createWarning(data.bloodWarning, 'danger');
+      if (hasStoolBlood) {
+        bloodContent += ModalHelpers.createListItem('urine_stool.png', getModalTranslation('modal_stool_urine_blood_in_stool') || 'Blood in stool', null, 'red-700');
+      }
       content += ModalHelpers.createSection('red', 'red', bloodContent);
     }
 
     if (consistency) {
-      let consistencyContent = ModalHelpers.createSectionHeader(data.consistencyTitle, 'blue-800');
-      const description = data.consistencyDescriptions[consistency];
-      const label = consistency.charAt(0).toUpperCase() + consistency.slice(1).replace('_', ' ');
-
-      consistencyContent += ModalHelpers.createLabelValue('Stool Type:', label, 'blue-700');
-      if (description) {
-        consistencyContent += ModalHelpers.createDescription(description, 'blue-600', 'xs');
+      let consistencyContent = ModalHelpers.createSectionHeader(getModalTranslation('modal_stool_urine_consistency_title') || 'Stool Consistency', 'blue-800');
+      const label = STOOL_URINE_LABELS[consistency] ? STOOL_URINE_LABELS[consistency]() : consistency;
+      const consistencyData = STOOL_CONSISTENCY_MAP[consistency];
+      if (consistencyData) {
+        consistencyContent += ModalHelpers.createListItem(consistencyData.icon.replace('/images/', ''), label, null, 'blue-700');
       }
       content += ModalHelpers.createSection('blue', 'blue', consistencyContent);
     }
-
-    /*
-    let trackingContent = ModalHelpers.createSectionHeader(data.trackingTitle, 'gray-800');
-    if (hasUrineBlood || hasStoolBlood) {
-      trackingContent += ModalHelpers.createDescription('Blood detection requires medical attention for proper evaluation and treatment.', 'gray-600', 'xs');
-    } else if (consistency === 'normal') {
-      trackingContent += ModalHelpers.createDescription(data.normalMessage, 'gray-600', 'xs');
-    } else if (consistency === 'hard') {
-      trackingContent += ModalHelpers.createDescription('Hard stools may indicate constipation. Consider increasing fiber and water intake.', 'gray-600', 'xs');
-    } else if (consistency === 'watery') {
-      trackingContent += ModalHelpers.createDescription('Persistent diarrhea may require dietary adjustments or medical evaluation.', 'gray-600', 'xs');
-    }
-    trackingContent += ModalHelpers.createDescription(data.trackingInfo, 'gray-600', 'xs');
-    content += ModalHelpers.createSection('gray', 'gray', trackingContent);
-    */
 
     content += '</div>';
     return content;
@@ -597,7 +424,7 @@ export class ModalContentGenerators {
    */
   static generateSleepModal(pillar) {
     if (!PillarDataValidators.hasSleepData(pillar)) {
-      return '<p class="text-gray-500">No sleep data recorded.</p>';
+      return `<p class="text-gray-500">${getModalTranslation('modal_no_data_recorded') || 'No sleep data recorded.'}</p>`;
     }
 
     const hours = pillar?.calculatedHours ?? 0;
@@ -606,32 +433,32 @@ export class ModalContentGenerators {
     const troubleAsleep = pillar?.troubleAsleep ?? false;
     const wakeUpDuringNight = pillar?.wakeUpDuringNight ?? false;
     const tiredRested = pillar?.tiredRested ?? false;
-    const data = modalContentData.sleep;
 
     let content = '<div class="space-y-6">';
-    content += ModalHelpers.createCenteredHeader(data.title, null, 'sleep.png');
+    
+    content += ModalHelpers.createCenteredHeader(getModalTranslation('modal_sleep_title') || 'Sleep Quality', null, 'sleep.png');
 
-    let quality = data.qualityLabels.good;
+    let quality = SLEEP_QUALITY_LABELS['good'] ? SLEEP_QUALITY_LABELS['good']() : 'Good Sleep';
     let qualityColor = 'text-green-600';
     if (hours < 6 || hours > 10 || troubleAsleep || wakeUpDuringNight || !tiredRested) {
       if (hours < 4 || (troubleAsleep && wakeUpDuringNight && !tiredRested)) {
-        quality = data.qualityLabels.poor;
+        quality = SLEEP_QUALITY_LABELS['poor'] ? SLEEP_QUALITY_LABELS['poor']() : 'Poor Sleep';
         qualityColor = 'text-red-600';
       } else {
-        quality = data.qualityLabels.okay;
+        quality = SLEEP_QUALITY_LABELS['okay'] ? SLEEP_QUALITY_LABELS['okay']() : 'Okay Sleep';
         qualityColor = 'text-yellow-600';
       }
     }
 
     content += '<div class="text-center mb-4">';
     content += `<p class="${qualityColor} font-medium mb-2">${quality}</p>`;
-    content += `<p class="text-gray-600">${hours.toFixed(1)} hours</p>`;
+    content += `<p class="text-gray-600">${hours.toFixed(1)} ${getModalTranslation('modal_sleep_hours') || 'hours'}</p>`;
     content += '</div>';
 
     if (fellAsleep && wokeUp) {
-      let scheduleContent = ModalHelpers.createSectionHeader(data.scheduleTitle, 'blue-800');
-      scheduleContent += `<div class="text-sm text-blue-700">Fell asleep: ${fellAsleep}</div>`;
-      scheduleContent += `<div class="text-sm text-blue-700">Woke up: ${wokeUp}</div>`;
+      let scheduleContent = ModalHelpers.createSectionHeader(getModalTranslation('modal_sleep_schedule_title') || 'Sleep Schedule', 'blue-800');
+      scheduleContent += `<div class="text-sm text-blue-700">${getModalTranslation('modal_sleep_fell_asleep') || 'Fell asleep:'} ${fellAsleep}</div>`;
+      scheduleContent += `<div class="text-sm text-blue-700">${getModalTranslation('modal_sleep_woke_up') || 'Woke up:'} ${wokeUp}</div>`;
       content += ModalHelpers.createSection('blue', 'blue', scheduleContent);
     }
 
@@ -641,41 +468,18 @@ export class ModalContentGenerators {
     if (!tiredRested) issues.push('not_tired_rested');
 
     if (issues.length > 0) {
-      let issuesContent = ModalHelpers.createSectionHeader(data.issuesTitle, 'red-800');
+      let issuesContent = ModalHelpers.createSectionHeader(getModalTranslation('modal_sleep_issues_title') || 'Sleep Challenges', 'red-800');
 
       issues.forEach(issue => {
-        const label = SLEEP_ISSUE_LABELS[issue];
+        const label = SLEEP_ISSUE_LABELS[issue] ? SLEEP_ISSUE_LABELS[issue]() : issue;
         issuesContent += ModalHelpers.createListItem(null, label, null, 'red-700');
       });
 
-      issuesContent += ModalHelpers.createDescription(data.poorSleepWarning, 'red-600', 'xs');
       content += ModalHelpers.createSection('red', 'red', issuesContent);
     } else {
-      let qualityContent = ModalHelpers.createSectionHeader(data.noIssuesTitle, 'green-800');
-      qualityContent += ModalHelpers.createDescription('Excellent! No sleep issues reported tonight.', 'green-700', 'sm');
-      qualityContent += ModalHelpers.createDescription(data.qualityMessage, 'green-600', 'xs');
+      let qualityContent = ModalHelpers.createSectionHeader(getModalTranslation('modal_sleep_no_issues_title') || 'Quality Sleep', 'green-800');
       content += ModalHelpers.createSection('green', 'green', qualityContent);
     }
-
-    /*
-    let analysisContent = ModalHelpers.createSectionHeader(data.analysisTitle, 'blue-800');
-    
-    let durationMessage;
-    if (hours >= 7 && hours <= 9) {
-      durationMessage = data.durationMessages.optimal;
-    } else if (hours < 6) {
-      durationMessage = data.durationMessages.short;
-    } else if (hours > 10) {
-      durationMessage = data.durationMessages.long;
-    } else {
-      durationMessage = data.durationMessages.borderline;
-    }
-    
-    analysisContent += ModalHelpers.createDescription(durationMessage, 'blue-700', 'sm');
-    analysisContent += ModalHelpers.createLabelValue('Sleep Quality Score:', `${quality} based on duration and reported issues`, 'blue-700');
-    analysisContent += ModalHelpers.createDescription(data.trackingInfo, 'blue-600', 'xs');
-    content += ModalHelpers.createSection('blue', 'blue', analysisContent);
-    */
 
     content += '</div>';
     return content;
@@ -686,17 +490,19 @@ export class ModalContentGenerators {
    */
   static generateExerciseModal(pillar) {
     if (!PillarDataValidators.hasExerciseData(pillar)) {
-      return '<p class="text-gray-500">No exercise data recorded.</p>';
+      return `<p class="text-gray-500">${getModalTranslation('modal_no_data_recorded') || 'No exercise data recorded.'}</p>`;
     }
 
     const hasExercise = pillar?.any ?? false;
     const levels = pillar?.levels || [];
     const impacts = pillar?.impacts || [];
-    const data = modalContentData.exercise;
 
     let content = '<div class="space-y-6">';
-    content += ModalHelpers.createCenteredHeader(data.title);
-    content += ModalHelpers.createIconGrid();
+    
+    content += ModalHelpers.createCenteredHeader(getModalTranslation('modal_exercise_title') || 'Exercise Activity');
+
+    content += '<div class="text-center mb-6">';
+    content += '<div class="flex justify-center items-center gap-8 mb-4">';
 
     const hasDuration = levels && levels.length > 0;
     const hasImpact = impacts && (impacts.includes('high_impact') || impacts.includes('low_impact'));
@@ -706,46 +512,46 @@ export class ModalContentGenerators {
     const isType2Active = hasPrecisionExercise;
 
     const exerciseIcons = [
-      { file: 'exercise_type_1.png', label: EXERCISE_TYPE_LABELS.high_impact, active: isType1Active },
-      { file: 'exercise_type_2.png', label: EXERCISE_TYPE_LABELS.relaxation_exercise, active: isType2Active }
+      { file: 'exercise_type_1.png', label: EXERCISE_TYPE_LABELS.high_impact ? EXERCISE_TYPE_LABELS.high_impact() : 'High Impact', active: isType1Active },
+      { file: 'exercise_type_2.png', label: EXERCISE_TYPE_LABELS.relaxation_exercise ? EXERCISE_TYPE_LABELS.relaxation_exercise() : 'Relaxation Exercise', active: isType2Active }
     ];
 
     exerciseIcons.forEach(({ file, label, active }) => {
-      content += ModalHelpers.createIcon(file, label, active);
+      const classes = active ? 'opacity-100 bg-blue-100 border-2 border-blue-500 rounded-full p-3' : 'opacity-30';
+      content += `<div class="${classes}"><img src="/images/${file}" alt="${label}" class="w-12 h-12 object-contain"></div>`;
     });
 
+    content += '</div>';
     content += '</div>';
 
     content += '<div class="text-center mb-4">';
     if (hasExercise) {
-      content += ModalHelpers.createStatusIndicator('Status', 'Exercise Completed', 'success');
+      content += ModalHelpers.createStatusIndicator(getModalTranslation('modal_exercise_status') || 'Status:', getModalTranslation('modal_exercise_completed') || 'Exercise Completed', 'success');
     } else {
-      content += ModalHelpers.createStatusIndicator('Status', 'Rest Day', 'info');
+      content += ModalHelpers.createStatusIndicator(getModalTranslation('modal_exercise_status') || 'Status:', getModalTranslation('modal_exercise_rest_day') || 'Rest Day', 'info');
     }
     content += '</div>';
 
     if (hasExercise && levels.length > 0) {
-      let durationContent = ModalHelpers.createSectionHeader(data.durationTitle, 'green-800');
+      let durationContent = ModalHelpers.createSectionHeader(getModalTranslation('modal_exercise_duration_title') || 'Duration', 'green-800');
       levels.forEach(level => {
-        const label = EXERCISE_DURATION_LABELS[level] || level;
+        const label = EXERCISE_DURATION_LABELS[level] ? EXERCISE_DURATION_LABELS[level]() : level;
         durationContent += ModalHelpers.createListItem(null, label, null, 'green-700');
       });
       content += ModalHelpers.createSection('green', 'green', durationContent);
     }
 
     if (hasExercise && impacts.length > 0) {
-      let typesContent = ModalHelpers.createSectionHeader(data.typesTitle, 'blue-800');
+      let typesContent = ModalHelpers.createSectionHeader(getModalTranslation('modal_exercise_activity_types_title') || 'Activity Types', 'blue-800');
       impacts.forEach(impact => {
-        const label = EXERCISE_TYPE_LABELS[impact] || impact;
+        const label = EXERCISE_TYPE_LABELS[impact] ? EXERCISE_TYPE_LABELS[impact]() : impact;
         typesContent += ModalHelpers.createListItem(null, label, null, 'blue-700');
       });
       content += ModalHelpers.createSection('blue', 'blue', typesContent);
     }
 
     if (!hasExercise) {
-      let restContent = ModalHelpers.createSectionHeader(data.noExerciseTitle, 'gray-800');
-      restContent += ModalHelpers.createDescription(data.noExerciseMessage, 'gray-700', 'sm');
-      restContent += ModalHelpers.createDescription(data.noExerciseAdvice, 'gray-600', 'xs');
+      let restContent = ModalHelpers.createSectionHeader(getModalTranslation('modal_exercise_no_exercise_title') || 'Rest Day', 'gray-800');
       content += ModalHelpers.createSection('gray', 'gray', restContent);
     }
 
@@ -753,80 +559,50 @@ export class ModalContentGenerators {
     return content;
   }
 
-
   /**
    * Generate Sexual Health modal content
    */
   static generateSexModal(pillar) {
     if (!PillarDataValidators.hasSexData(pillar)) {
-      return '<p class="text-gray-500">No sexual health data recorded.</p>';
+      return `<p class="text-gray-500">${getModalTranslation('modal_no_data_recorded') || 'No sexual health data recorded.'}</p>`;
     }
 
     const today = pillar?.today ?? false;
     const avoided = pillar?.avoided ?? false;
     const satisfied = pillar?.satisfied ?? false;
     const issues = pillar?.issues || [];
-    const data = modalContentData.sexualHealth;
 
     let content = '<div class="space-y-6">';
-    content += ModalHelpers.createCenteredHeader(data.title, null, 'sex.png');
+    
+    content += ModalHelpers.createCenteredHeader(getModalTranslation('modal_sexual_health_title') || 'Sexual Health');
 
     content += '<div class="text-center mb-4">';
     if (today) {
-      if (satisfied) {
-        content += ModalHelpers.createStatusIndicator('Status', data.statusMessages.satisfied, 'success');
-      } else {
-        content += ModalHelpers.createStatusIndicator('Status', data.statusMessages.unsatisfied, 'warning');
-      }
+      content += ModalHelpers.createStatusIndicator(getModalTranslation('modal_sexual_health_status') || 'Status:', getModalTranslation('modal_sexual_health_had_sex_today') || 'I had sex today.', 'success');
     } else if (avoided) {
-      content += ModalHelpers.createStatusIndicator('Status', data.statusMessages.avoided, 'warning');
+      content += ModalHelpers.createStatusIndicator(getModalTranslation('modal_sexual_health_status') || 'Status:', getModalTranslation('modal_sexual_health_avoided_sex') || 'I avoided sex because of pain complaints.', 'warning');
     } else {
-      content += ModalHelpers.createStatusIndicator('Status', data.statusMessages.noActivity, 'info');
+      content += ModalHelpers.createStatusIndicator(getModalTranslation('modal_sexual_health_status') || 'Status:', getModalTranslation('modal_sexual_health_no_activity') || 'No activity', 'info');
     }
     content += '</div>';
 
     if (today) {
-      let activityContent = ModalHelpers.createSectionHeader(data.activityTitle, 'green-800');
-      activityContent += ModalHelpers.createDescription(satisfied ? 'Satisfying experience reported' : 'Experience was not satisfying', 'green-700', 'sm');
+      let activityContent = ModalHelpers.createSectionHeader(getModalTranslation('modal_sexual_health_activity_title') || 'Activity Details', 'green-800');
+      const statusLabel = satisfied ? 
+        (SEX_STATUS_LABELS['satisfied'] ? SEX_STATUS_LABELS['satisfied']() : 'Satisfying experience') :
+        (SEX_STATUS_LABELS['unsatisfied'] ? SEX_STATUS_LABELS['unsatisfied']() : 'Unsatisfying experience');
+      activityContent += ModalHelpers.createListItem(null, statusLabel, null, satisfied ? 'green-700' : 'orange-700');
       content += ModalHelpers.createSection('green', 'green', activityContent);
     }
 
-    if (avoided) {
-      let avoidanceContent = ModalHelpers.createSectionHeader(data.avoidanceTitle, 'orange-800');
-      avoidanceContent += ModalHelpers.createDescription(data.avoidanceMessage, 'orange-700', 'sm');
-      content += ModalHelpers.createSection('orange', 'orange', avoidanceContent);
-    }
-
     if (issues.length > 0) {
-      let issuesContent = ModalHelpers.createSectionHeader(data.issuesTitle, 'red-800');
-
+      let issuesContent = ModalHelpers.createSectionHeader(getModalTranslation('modal_sexual_health_issues_title') || 'Health Concerns', 'red-800');
       issues.forEach(issue => {
-        const label = SEX_ISSUE_LABELS[issue] || issue;
+        const label = SEX_ISSUE_LABELS[issue] ? SEX_ISSUE_LABELS[issue]() : issue;
         issuesContent += ModalHelpers.createListItem(null, label, null, 'red-700');
       });
-
-      issuesContent += ModalHelpers.createWarning(data.issuesWarning, 'danger');
       content += ModalHelpers.createSection('red', 'red', issuesContent);
     }
-
-    /*
-    let insightsContent = ModalHelpers.createSectionHeader(data.insightsTitle, 'blue-800');
-    
-    let experienceMessage;
-    if (today && satisfied) {
-      experienceMessage = data.experienceMessages.positive;
-    } else if (today && !satisfied) {
-      experienceMessage = data.experienceMessages.negative;
-    } else if (avoided) {
-      experienceMessage = data.experienceMessages.avoided;
-    } else {
-      experienceMessage = data.experienceMessages.noActivity;
-    }
-    
-    insightsContent += ModalHelpers.createDescription(experienceMessage, 'blue-700', 'sm');
-    insightsContent += ModalHelpers.createDescription(data.trackingInfo, 'blue-600', 'xs');
-    content += ModalHelpers.createSection('blue', 'blue', insightsContent);
-    */
 
     content += '</div>';
     return content;
@@ -837,88 +613,62 @@ export class ModalContentGenerators {
    */
   static generateNotesModal(pillar) {
     if (!PillarDataValidators.hasNotesData(pillar)) {
-      return '<p class="text-gray-500">No notes recorded.</p>';
+      return `<p class="text-gray-500">${getModalTranslation('modal_no_data_recorded') || 'No notes recorded.'}</p>`;
     }
 
     const text = pillar?.text || '';
     const hasNote = pillar?.hasNote ?? false;
-    const data = modalContentData.notes;
 
     let content = '<div class="space-y-6">';
-    content += ModalHelpers.createCenteredHeader(data.title, null, 'grid_notes.png');
+    
+    content += ModalHelpers.createCenteredHeader(getModalTranslation('modal_notes_title') || 'Personal Notes', null, 'grid_notes.png');
 
     if (hasNote && text) {
-      let noteContent = ModalHelpers.createSectionHeader(data.contentTitle, 'blue-800');
-      noteContent += `<div class="bg-white rounded p-3 border">`;
-      noteContent += ModalHelpers.formatTextWithBreaks(text);
+      let noteContent = ModalHelpers.createSectionHeader(getModalTranslation('modal_notes_content_title') || 'Your Personal Note', 'blue-800');
+      noteContent += `<div class="bg-white rounded p-3 border text-gray-700">`;
+      noteContent += ModalHelpers.formatTextWithBreaks ? ModalHelpers.formatTextWithBreaks(text) : text.replace(/\n/g, '<br>');
       noteContent += `</div>`;
-
       content += ModalHelpers.createSection('blue', 'blue', noteContent);
     } else {
-      let noNoteContent = ModalHelpers.createSectionHeader(data.noNoteTitle, 'gray-800');
-      noNoteContent += ModalHelpers.createDescription('No personal notes recorded for today.', 'gray-700', 'sm');
+      let noNoteContent = ModalHelpers.createSectionHeader(getModalTranslation('modal_notes_no_notes_title') || 'No Notes Today', 'gray-800');
       content += ModalHelpers.createSection('gray', 'gray', noNoteContent);
     }
-
-    /*
-    let valueContent = ModalHelpers.createSectionHeader(data.valueTitle, 'green-800');
-    
-    if (hasNote && text) {
-      valueContent += ModalHelpers.createDescription(data.valueMessages.withNote, 'green-700', 'sm');
-      valueContent += ModalHelpers.createDescription(data.benefitMessages.withNote, 'green-600', 'xs');
-    } else {
-      valueContent += ModalHelpers.createDescription(data.valueMessages.withoutNote, 'green-700', 'sm');
-      valueContent += ModalHelpers.createDescription(data.benefitMessages.withoutNote, 'green-600', 'xs');
-    }
-    content += ModalHelpers.createSection('green', 'green', valueContent);
-
-    let tipsContent = ModalHelpers.createSectionHeader(data.tipsTitle, 'blue-800');
-    data.tips.forEach(tip => {
-      tipsContent += `<p class="text-sm text-blue-700 mb-1">• ${tip}</p>`;
-    });
-    content += ModalHelpers.createSection('blue', 'blue', tipsContent);
-    */
 
     content += '</div>';
     return content;
   }
 
   /**
-   * Main method to generate modal content based on pillar type
+   * Generate modal content based on pillar type
    */
   static generateModalContent(pillar, pillarType) {
-    try {
-      switch (pillarType) {
-        case 'blood_loss':
-          return this.generateBloodLossModal(pillar);
-        case 'pain':
-          return this.generatePainModal(pillar);
-        case 'mood':
-          return this.generateMoodModal(pillar);
-        case 'diet':
-          return this.generateDietModal(pillar);
-        case 'impact':
-          return this.generateImpactModal(pillar);
-        case 'general_health':
-        case 'energy':
-          return this.generateEnergyModal(pillar);
-        case 'stool_urine':
-        case 'stool':
-          return this.generateStoolUrineModal(pillar);
-        case 'sleep':
-          return this.generateSleepModal(pillar);
-        case 'exercise':
-          return this.generateExerciseModal(pillar);
-        case 'sex':
-          return this.generateSexModal(pillar);
-        case 'notes':
-          return this.generateNotesModal(pillar);
-        default:
-          return `<p class="text-gray-500">Modal content for ${pillarType} is not yet implemented.</p>`;
-      }
-    } catch (error) {
-      console.error(`Error generating modal content for ${pillarType}:`, error);
-      return `<p class="text-red-500">Error loading modal content. Please try again.</p>`;
+    switch (pillarType) {
+      case 'blood_loss':
+        return this.generateBloodLossModal(pillar);
+      case 'pain':
+        return this.generatePainModal(pillar);
+      case 'mood':
+        return this.generateMoodModal(pillar);
+      case 'diet':
+        return this.generateDietModal(pillar);
+      case 'impact':
+        return this.generateImpactModal(pillar);
+      case 'general_health':
+      case 'energy':
+        return this.generateEnergyModal(pillar);
+      case 'stool_urine':
+      case 'stool':
+        return this.generateStoolUrineModal(pillar);
+      case 'sleep':
+        return this.generateSleepModal(pillar);
+      case 'exercise':
+        return this.generateExerciseModal(pillar);
+      case 'sex':
+        return this.generateSexModal(pillar);
+      case 'notes':
+        return this.generateNotesModal(pillar);
+      default:
+        return '<p class="text-gray-500">No data available for this category.</p>';
     }
   }
 }

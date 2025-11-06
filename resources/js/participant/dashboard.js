@@ -41,6 +41,7 @@ window.addEventListener('DOMContentLoaded', () => {
     headerToolbar: false,
     dayMaxEvents: false,
     eventDisplay: 'block',
+    locale: window.appLocale || 'en', 
 
     dayCellDidMount: CalendarLayout.handleDayCellMount,
     dateClick: CalendarUI.handleDateClick,

@@ -6,6 +6,7 @@
 import { CardIconGenerators } from './card-icon-generators.js';
 import { PillarDataValidators } from './pillar-data-validators.js';
 import { CardStatusGenerators } from './card-status-generators.js';
+import { __ } from '../../utils/translations.js';
 import { 
   PAIN_REGION_LABELS,
   IMPACT_LIMITATION_LABELS,
@@ -54,7 +55,7 @@ export class CardGenerators {
 
     return {
       key: 'blood_loss',
-      label: translations.blood_loss || 'Blood Loss',
+      label: translations.blood_loss || __('blood_loss', 'Blood Loss'),
       iconSrc: '/images/grid_blood_loss.png',
       context: statusInfo.context,
       statusColor: statusInfo.statusColor,
@@ -77,11 +78,11 @@ export class CardGenerators {
     const iconData = CardIconGenerators.getPainIcons(pillar);
     const translations = window.healthDomainTranslations || {};
 
-    const formattedRegions = regions.map(region => PAIN_REGION_LABELS[region] || region).join(', ');
+    const formattedRegions = regions.map(region => PAIN_REGION_LABELS[region] ? PAIN_REGION_LABELS[region]() : region).join(', ');
     
     return {
       key: 'pain',
-      label: translations.pain || 'Pain',
+      label: translations.pain || __('pain', 'Pain'),
       iconSrc: '/images/grid_pain.png',
       context: statusInfo.context, 
       statusColor: statusInfo.statusColor,
@@ -106,13 +107,13 @@ export class CardGenerators {
 
     const formattedLimitations = limitations
       .filter(limitation => limitation && limitation !== '_' && limitation.trim() !== '')
-      .map(limitation => IMPACT_LIMITATION_LABELS[limitation] || limitation.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()))
+      .map(limitation => IMPACT_LIMITATION_LABELS[limitation] ? IMPACT_LIMITATION_LABELS[limitation]() : limitation.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()))
       .join(', ');
 
 
     return {
       key: 'impact',
-      label: translations.impact || 'Impact',
+      label: translations.impact || __('impact', 'Impact'),
       iconSrc: '/images/grid_impact.png',
       context: statusInfo.context, 
       statusColor: statusInfo.statusColor,
@@ -136,12 +137,12 @@ export class CardGenerators {
     const symptoms = pillar?.symptoms || [];
     const symptomsText = symptoms
       .filter(symptom => symptom && symptom !== '_' && symptom.trim() !== '')
-      .map(symptom => SYMPTOM_LABELS[symptom] || symptom.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()))
+      .map(symptom => SYMPTOM_LABELS[symptom] ? SYMPTOM_LABELS[symptom]() : symptom.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()))
       .join(', ');
     
     return {
       key: 'general_health',
-      label: translations.general_health || 'General Health',
+      label: translations.general_health || __('general_health', 'General Health'),
       iconSrc: '/images/grid_general_health.png',
       context: statusInfo.context, 
       statusColor: statusInfo.statusColor,
@@ -164,7 +165,7 @@ export class CardGenerators {
 
     return {
       key: 'mood',
-      label: translations.mood || 'Mood',
+      label: translations.mood || __('mood', 'Mood'),
       iconSrc: '/images/grid_mood.png',
       context: statusInfo.context,
       statusColor: statusInfo.statusColor,
@@ -187,7 +188,7 @@ export class CardGenerators {
     
     return {
       key: 'stool_urine',
-      label: translations.stool_urine || 'Stool/Urine',
+      label: translations.stool_urine || __('stool_urine', 'Stool/Urine'),
       iconSrc: '/images/grid_urine_stool.png',
       context: statusInfo.context,
       statusColor: statusInfo.statusColor,
@@ -210,7 +211,7 @@ export class CardGenerators {
     
     return {
       key: 'sleep',
-      label: translations.sleep || 'Sleep',
+      label: translations.sleep || __('sleep', 'Sleep'),
       iconSrc: '/images/grid_sleep.png',
       context: statusInfo.context,
       statusColor: statusInfo.statusColor,
@@ -233,7 +234,7 @@ export class CardGenerators {
     
     return {
       key: 'diet',
-      label: translations.diet || 'Diet',
+      label: translations.diet || __('diet', 'Diet'),
       iconSrc: '/images/grid_diet.png',
       context: statusInfo.context,
       statusColor: statusInfo.statusColor,
@@ -263,7 +264,7 @@ export class CardGenerators {
 
     return {
       key: 'exercise',
-      label: translations.exercise || 'Exercise',
+      label: translations.exercise || __('exercise', 'Exercise'),
       iconSrc: '/images/grid_sport.png',
       context: statusInfo.context,
       statusColor: statusInfo.statusColor,
@@ -286,7 +287,7 @@ export class CardGenerators {
     
     return {
       key: 'sex',
-      label: translations.sex || 'Sexual Health',
+      label: translations.sex || __('sex', 'Sexual Health'),
       iconSrc: '/images/grid_sex.png',
       context: statusInfo.context,
       statusColor: statusInfo.statusColor,
@@ -309,7 +310,7 @@ export class CardGenerators {
     
     return {
       key: 'notes',
-      label: translations.notes || 'Notes',
+      label: translations.notes || __('notes', 'Notes'),
       iconSrc: '/images/grid_notes.png',
       context: statusInfo.context,
       statusColor: statusInfo.statusColor,

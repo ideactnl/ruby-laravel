@@ -33,7 +33,18 @@
 
             <div class="hidden md:flex items-center gap-2 sm:gap-3">
                 <span
-                    class="hidden rounded-full bg-gray-100 px-4 py-2 text-xs font-medium text-gray-700 sm:inline">{{ now()->format('d M Y, l') }}</span>
+                    class="hidden rounded-full bg-gray-100 px-4 py-2 text-xs font-medium text-gray-700 sm:inline">
+                    @php
+                        $locale = app()->getLocale();
+                        $date = now();
+                        if ($locale === 'nl') {
+                            $formattedDate = $date->locale('nl')->isoFormat('D MMM YYYY, dddd');
+                        } else {
+                            $formattedDate = $date->format('d M Y, l');
+                        }
+                    @endphp
+                    {{ $formattedDate }}
+                </span>
                 @auth('participant-web')
                     <!-- Profile dropdown - hidden on mobile, visible on desktop -->
                     <div class="relative hidden md:block" x-data="{
@@ -53,38 +64,53 @@
                             <span>{{ strtoupper(substr(Auth::guard('participant-web')->user()->registration_number ?? 'P', 0, 1)) }}</span>
                         </button>
                         <div x-show="open" x-transition
-                            class="absolute right-0 mt-2 w-44 rounded-md border border-gray-200 bg-white shadow-lg py-1 z-50"
+                            class="absolute right-0 mt-3 w-56 rounded-lg border border-gray-200 bg-white shadow-xl py-2 z-50"
                             style="display:none">
+                            
+                            <!-- Profile Button -->
                             <button type="button"
                                 @click="open=false; window.dispatchEvent(new CustomEvent('profile:open'))"
-                                class="block w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 cursor-pointer">{{ __('participant.profile') }}</button>
+                                class="flex items-center gap-3 w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer group">
+                                <i class="fa-solid fa-user text-gray-400 group-hover:text-primary transition-colors"></i>
+                                <span class="font-medium">{{ __('participant.profile') }}</span>
+                            </button>
                             
-                            <!-- Desktop-only Language Switcher -->
+                            <!-- Language Switcher Section -->
                             <div class="hidden md:block">
-                                <div class="border-t border-gray-100 my-1"></div>
-                                <div class="px-3 py-1">
-                                    <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ __('participant.language') }}</span>
+                                <div class="border-t border-gray-100 my-2"></div>
+                                <div class="px-4 py-2">
+                                    <div class="flex items-center gap-2">
+                                        <i class="fa-solid fa-language text-gray-400 text-sm"></i>
+                                        <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">{{ __('participant.language') }}</span>
+                                    </div>
                                 </div>
-                                @foreach(config('app.available_locales') as $localeCode => $localeName)
-                                    <form method="POST" action="{{ route('switch-language') }}" class="inline-block w-full">
-                                        @csrf
-                                        <input type="hidden" name="locale" value="{{ $localeCode }}">
-                                        <button type="submit" 
-                                            class="block w-full text-left px-3 py-2 text-sm hover:bg-gray-50 cursor-pointer {{ app()->getLocale() === $localeCode ? 'text-primary font-medium' : 'text-gray-700' }}">
-                                            <span class="flex items-center justify-between">
-                                                {{ __('participant.' . strtolower($localeName)) }}
+                                <div class="pl-2">
+                                    @foreach(config('app.available_locales') as $localeCode => $localeName)
+                                        <form method="POST" action="{{ route('switch-language') }}" class="inline-block w-full">
+                                            @csrf
+                                            <input type="hidden" name="locale" value="{{ $localeCode }}">
+                                            <button type="submit" 
+                                                class="flex items-center justify-between w-full px-4 py-2.5 text-sm hover:bg-gray-50 transition-colors cursor-pointer {{ app()->getLocale() === $localeCode ? 'bg-primary-50' : '' }}">
+                                                <span class="flex items-center gap-3 {{ app()->getLocale() === $localeCode ? 'text-primary font-semibold' : 'text-gray-700 font-medium' }}">
+                                                    <i class="fa-solid fa-globe text-gray-400 {{ app()->getLocale() === $localeCode ? 'text-primary' : '' }}"></i>
+                                                    {{ __('participant.' . strtolower($localeName)) }}
+                                                </span>
                                                 @if(app()->getLocale() === $localeCode)
-                                                    <i class="fa-solid fa-check text-primary text-xs"></i>
+                                                    <i class="fa-solid fa-check text-primary text-sm"></i>
                                                 @endif
-                                            </span>
-                                        </button>
-                                    </form>
-                                @endforeach
+                                            </button>
+                                        </form>
+                                    @endforeach
+                                </div>
                             </div>
                             
-                            <div class="border-t border-gray-100 my-1"></div>
+                            <!-- Logout Button -->
+                            <div class="border-t border-gray-100 my-2"></div>
                             <button @click="logout()"
-                                class="block w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-gray-50 cursor-pointer">{{ __('participant.logout') }}</button>
+                                class="flex items-center gap-3 w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors cursor-pointer group">
+                                <i class="fa-solid fa-right-from-bracket text-red-400 group-hover:text-red-600 transition-colors"></i>
+                                <span class="font-medium">{{ __('participant.logout') }}</span>
+                            </button>
                         </div>
                     </div>
                 @endauth

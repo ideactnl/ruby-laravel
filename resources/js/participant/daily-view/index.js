@@ -8,5 +8,3 @@ export * from './core/index.js';
 export * from './cards/index.js';
 
 export * from './modals/index.js';
-
-export * from './data/index.js';
