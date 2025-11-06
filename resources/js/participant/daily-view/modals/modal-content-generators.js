@@ -233,20 +233,20 @@ export class ModalContentGenerators {
     
     content += ModalHelpers.createCenteredHeader(getModalTranslation('modal_diet_title') || 'Diet Items');
 
-    content += '<div class="grid grid-cols-4 gap-4 justify-items-center mb-6 max-w-2xl mx-auto">';
+    content += '<div class="grid grid-cols-3 sm:grid-cols-4 gap-2 sm:gap-4 justify-items-center mb-6 max-w-2xl mx-auto">';
     const allDietItems = [...positives, ...negatives, ...neutrals];
     DIET_KEYS.forEach(dietKey => {
       const isActive = allDietItems.includes(dietKey);
       const label = DIET_LABELS[dietKey] ? DIET_LABELS[dietKey]() : dietKey;
       const containerClasses = isActive 
-        ? 'bg-red-100 border-2 border-red-500 rounded-full p-3 opacity-100' 
+        ? 'bg-red-100 border-2 border-red-500 rounded-full p-2 sm:p-3 opacity-100' 
         : 'opacity-30';
       content += `
         <div class="flex flex-col items-center">
           <div class="${containerClasses}">
-            <img src="/images/${DIET_ICON_MAP[dietKey]}" alt="${label}" class="w-12 h-12 object-contain">
+            <img src="/images/${DIET_ICON_MAP[dietKey]}" alt="${label}" class="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 object-contain">
           </div>
-          <span class="text-xs text-gray-700 text-center mt-2 max-w-20">${label}</span>
+          <span class="text-xs text-gray-700 text-center mt-1 sm:mt-2 max-w-[70px] sm:max-w-20 leading-tight hyphens-auto" style="word-break: break-word; overflow-wrap: anywhere;">${label}</span>
         </div>
       `;
     });
@@ -380,22 +380,22 @@ export class ModalContentGenerators {
     content += '</div>';
 
     content += ModalHelpers.createSectionHeader(getModalTranslation('modal_general_health_symptoms_title') || 'Symptoms Experienced', 'gray-800');
-    content += '<div class="grid grid-cols-4 gap-4 justify-items-center mb-6 max-w-2xl mx-auto">';
+    content += '<div class="grid grid-cols-3 sm:grid-cols-4 gap-2 sm:gap-4 justify-items-center mb-6 max-w-2xl mx-auto">';
     
     SYMPTOM_KEYS.forEach(symptomKey => {
       const isActive = symptoms.includes(symptomKey);
       const label = SYMPTOM_LABELS[symptomKey] ? SYMPTOM_LABELS[symptomKey]() : symptomKey;
       const icon = SYMPTOM_ICON_MAP[symptomKey] || 'general_health.png';
       const containerClasses = isActive 
-        ? 'bg-red-100 border-2 border-red-500 rounded-full p-3 opacity-100' 
+        ? 'bg-red-100 border-2 border-red-500 rounded-full p-2 sm:p-3 opacity-100' 
         : 'opacity-30';
       
       content += `
         <div class="flex flex-col items-center">
           <div class="${containerClasses}">
-            <img src="/images/${icon}" alt="${label}" class="w-12 h-12 object-contain">
+            <img src="/images/${icon}" alt="${label}" class="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 object-contain">
           </div>
-          <span class="text-xs text-gray-700 text-center mt-2 max-w-20">${label}</span>
+          <span class="text-xs text-gray-700 text-center mt-1 sm:mt-2 max-w-[70px] sm:max-w-20 leading-tight hyphens-auto" style="word-break: break-word; overflow-wrap: anywhere;">${label}</span>
         </div>
       `;
     });
