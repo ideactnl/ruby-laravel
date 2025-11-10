@@ -80,7 +80,8 @@ export class ModalHelpers {
       'info': 'blue'
     };
     const color = colorMap[type] || 'gray';
-    return `<p class="text-${color}-600 font-medium">${status}: ${message}</p>`;
+    const statusText = status ? `${status}: ` : '';
+    return `<p class="text-${color}-600 font-medium">${statusText}${message}</p>`;
   }
 
   /**

@@ -53,13 +53,11 @@ export class ModalContentGenerators {
     content += '</div>';
 
     if (spotting) {
-      const spottingContent = ModalHelpers.createSectionHeader(getModalTranslation('modal_spotting_title') || 'Spotting Detected', 'orange-800');
+      const spottingContent = ModalHelpers.createLabelValue(getModalTranslation('modal_spotting_title') || 'Spotting Detected', '', 'orange-700');
       content += ModalHelpers.createSection('orange', 'orange', spottingContent);
     } else if (severity && severity !== 'none') {
       const severityLabel = BLOOD_LOSS_SEVERITY_LABELS[severity] ? BLOOD_LOSS_SEVERITY_LABELS[severity]() : severity;
-      const severityContent = 
-        ModalHelpers.createSectionHeader(getModalTranslation('modal_blood_loss_severity_title') || 'Blood Loss Severity', 'blue-800') +
-        ModalHelpers.createLabelValue(getModalTranslation('modal_blood_loss_severity') || 'Severity:', severityLabel, 'blue-700');
+      const severityContent = ModalHelpers.createLabelValue(getModalTranslation('modal_blood_loss_severity') || 'Severity:', severityLabel, 'blue-700');
       content += ModalHelpers.createSection('blue', 'blue', severityContent);
     }
 
@@ -115,9 +113,7 @@ export class ModalContentGenerators {
     content += '</div>';
 
     if (value > 0) {
-      const painContent =
-        ModalHelpers.createSectionHeader(getModalTranslation('modal_pain_level_title') || 'Pain Level', 'blue-800') +
-        ModalHelpers.createLabelValue(getModalTranslation('modal_pain_level') || 'Pain Level:', `${value}/10`, 'blue-700');
+      const painContent = ModalHelpers.createLabelValue(getModalTranslation('modal_pain_level') || 'Pain Level:', `${value}/10`, 'blue-700');
       content += ModalHelpers.createSection('blue', 'blue', painContent);
     }
 
@@ -169,9 +165,11 @@ export class ModalContentGenerators {
     const allMoods = [...positives, ...negatives];
     MOOD_KEYS.forEach(moodKey => {
       const isActive = allMoods.includes(moodKey) ||
-        (moodKey === 'anxious' && (allMoods.includes('anxious') || allMoods.includes('stressed'))) ||
-        (moodKey === 'angry' && (allMoods.includes('angry') || allMoods.includes('irritable'))) ||
-        (moodKey === 'worthless' && (allMoods.includes('worthless') || allMoods.includes('guilty')));
+        (moodKey === 'anxious' && allMoods.includes('anxious_stressed')) ||
+        (moodKey === 'angry' && allMoods.includes('angry_irritable')) ||
+        (moodKey === 'worthless' && allMoods.includes('worthless_guilty')) ||
+        (moodKey === 'depressed' && allMoods.includes('depressed_sad_down')) ||
+        (moodKey === 'hopes' && allMoods.includes('hopes'));
 
       const classes = isActive ? 'opacity-100 bg-blue-100 border-2 border-blue-500 rounded-full p-2' : 'opacity-30';
       const label = MOOD_LABELS[moodKey] ? MOOD_LABELS[moodKey]() : moodKey;
@@ -449,7 +447,7 @@ export class ModalContentGenerators {
 
     content += '<div class="text-center mb-4">';
     if (hasUrineBlood || hasStoolBlood) {
-      content += ModalHelpers.createStatusIndicator(getModalTranslation('modal_stool_urine_status') || 'Status', getModalTranslation('modal_stool_urine_blood_detected') || 'Blood Detected', 'error');
+      content += ModalHelpers.createStatusIndicator('', getModalTranslation('modal_stool_urine_blood_detected') || 'Blood Detected', 'error');
     } else if (consistency) {
       const statusColors = {
         'hard': 'text-orange-600', 'normal': 'text-green-600', 'soft': 'text-yellow-600',
@@ -457,7 +455,7 @@ export class ModalContentGenerators {
       };
       const colorClass = statusColors[consistency] || 'text-gray-600';
       const label = STOOL_URINE_LABELS[consistency] ? STOOL_URINE_LABELS[consistency]() : consistency;
-      content += `<p class="${colorClass} font-medium">${getModalTranslation('modal_stool_urine_status') || 'Status'}: ${label}</p>`;
+      content += `<p class="${colorClass} font-medium">${label}</p>`;
     }
     content += '</div>';
 
@@ -608,9 +606,9 @@ export class ModalContentGenerators {
 
     content += '<div class="text-center mb-4">';
     if (hasExercise) {
-      content += ModalHelpers.createStatusIndicator(getModalTranslation('modal_exercise_status') || 'Status:', getModalTranslation('modal_exercise_completed') || 'Exercise Completed', 'success');
+      content += ModalHelpers.createStatusIndicator('', getModalTranslation('modal_exercise_completed') || 'Exercise Completed', 'success');
     } else {
-      content += ModalHelpers.createStatusIndicator(getModalTranslation('modal_exercise_status') || 'Status:', getModalTranslation('modal_exercise_rest_day') || 'Rest Day', 'info');
+      content += ModalHelpers.createStatusIndicator('', getModalTranslation('modal_exercise_rest_day') || 'Rest Day', 'info');
     }
     content += '</div>';
 
@@ -660,11 +658,11 @@ export class ModalContentGenerators {
 
     content += '<div class="text-center mb-4">';
     if (today) {
-      content += ModalHelpers.createStatusIndicator(getModalTranslation('modal_sexual_health_status') || 'Status:', getModalTranslation('modal_sexual_health_had_sex_today') || 'I had sex today.', 'success');
+      content += ModalHelpers.createStatusIndicator('', getModalTranslation('modal_sexual_health_had_sex_today') || 'I had sex today.', 'success');
     } else if (avoided) {
-      content += ModalHelpers.createStatusIndicator(getModalTranslation('modal_sexual_health_status') || 'Status:', getModalTranslation('modal_sexual_health_avoided_sex') || 'I avoided sex because of pain complaints.', 'warning');
+      content += ModalHelpers.createStatusIndicator('', getModalTranslation('modal_sexual_health_avoided_sex') || 'I avoided sex because of pain complaints.', 'warning');
     } else {
-      content += ModalHelpers.createStatusIndicator(getModalTranslation('modal_sexual_health_status') || 'Status:', getModalTranslation('modal_sexual_health_no_activity') || 'No activity', 'info');
+      content += ModalHelpers.createStatusIndicator('', getModalTranslation('modal_sexual_health_no_activity') || 'No activity', 'info');
     }
     content += '</div>';
 

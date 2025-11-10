@@ -276,7 +276,7 @@ return [
     'modal_stool_urine_title' => 'Stool & Urine Conditions',
     'modal_stool_urine_consistency_title' => 'Stool Consistency',
     'modal_stool_urine_blood_detection_title' => 'Blood Detection',
-    'modal_stool_urine_status' => 'Status',
+    'modal_stool_urine_status' => '',
     'modal_stool_urine_blood_detected' => 'Blood Detected',
 
     // Stool/Urine Conditions
@@ -332,7 +332,7 @@ return [
     'modal_exercise_duration_title' => 'Duration',
     'modal_exercise_activity_types_title' => 'Activity Types',
     'modal_exercise_no_exercise_title' => 'Rest Day',
-    'modal_exercise_status' => 'Status:',
+    'modal_exercise_status' => '',
     'modal_exercise_completed' => 'Exercise Completed',
     'modal_exercise_rest_day' => 'Rest Day',
 
@@ -357,7 +357,7 @@ return [
     'modal_sexual_health_title' => 'Sexual Health',
     'modal_sexual_health_activity_title' => 'Activity Details',
     'modal_sexual_health_issues_title' => 'Health Concerns',
-    'modal_sexual_health_status' => 'Status:',
+    'modal_sexual_health_status' => '',
     'modal_sexual_health_had_sex_today' => 'I had sex today.',
     'modal_sexual_health_avoided_sex' => 'I avoided sex because of pain complaints.',
     'modal_sexual_health_no_activity' => 'No activity',

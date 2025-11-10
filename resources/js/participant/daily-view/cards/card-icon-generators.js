@@ -11,7 +11,9 @@ import {
   MOOD_KEYS,
   DIET_ICON_MAP,
   DIET_KEYS,
-  EXERCISE_LEVELS
+  EXERCISE_LEVELS,
+  SYMPTOM_ICON_MAP,
+  SYMPTOM_KEYS
 } from './pillar-constants.js';
 
 export class CardIconGenerators {
@@ -138,23 +140,8 @@ export class CardIconGenerators {
     const symptoms = pillar.symptoms || [];
     const energy = pillar.energyLevel ?? 0;
 
-    const SYMPTOM_KEYS = [
-      'dizzy', 'nauseous', 'headache_migraine', 'bloated', 
-      'painful_sensitive_breasts', 'acne', 'muscle_joint_pain'
-    ];
-    
-    const SYMPTOM_ICON_MAP = {
-      'dizzy': 'general_health_3.png',
-      'nauseous': 'general_health_2.png',
-      'headache_migraine': 'headache_migraine.png',
-      'bloated': 'general_health_7.png',
-      'painful_sensitive_breasts': 'general_health_6.png',
-      'acne': 'general_health_7.png',
-      'muscle_joint_pain': 'general_health_4.png'
-    };
-
     const severityIcons = [];
-    SYMPTOM_KEYS.slice(0, 5).forEach(symptomKey => {
+    SYMPTOM_KEYS.forEach(symptomKey => {
       const isActive = symptoms.includes(symptomKey);
       const iconSrc = `/images/${SYMPTOM_ICON_MAP[symptomKey] || 'general_health.png'}`;
       severityIcons.push({
@@ -184,9 +171,11 @@ export class CardIconGenerators {
 
     const severityIcons = MOOD_KEYS.map(moodKey => {
       const isActive = allMoods.includes(moodKey) ||
-        (moodKey === 'anxious' && (allMoods.includes('anxious') || allMoods.includes('stressed'))) ||
-        (moodKey === 'angry' && (allMoods.includes('angry') || allMoods.includes('irritable'))) ||
-        (moodKey === 'worthless' && (allMoods.includes('worthless') || allMoods.includes('guilty')));
+        (moodKey === 'anxious' && allMoods.includes('anxious_stressed')) ||
+        (moodKey === 'angry' && allMoods.includes('angry_irritable')) ||
+        (moodKey === 'worthless' && allMoods.includes('worthless_guilty')) ||
+        (moodKey === 'depressed' && allMoods.includes('depressed_sad_down')) ||
+        (moodKey === 'hopes' && allMoods.includes('hopes'));
 
       return {
         src: `/images/${MOOD_ICON_MAP[moodKey]}`,

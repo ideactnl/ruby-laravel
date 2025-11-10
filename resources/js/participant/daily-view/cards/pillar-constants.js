@@ -86,23 +86,13 @@ export const SYMPTOM_LABELS = {
 };
 
 export const SYMPTOM_ICON_MAP = {
-  'fatigue': 'general_health_1.png',
-  'headache': 'headache_migraine.png',
-  'nausea': 'general_health_2.png',
+  'dizzy': 'general_health_1.png',
   'nauseous': 'general_health_2.png',
-  'dizziness': 'general_health_3.png',
-  'dizzy': 'general_health_3.png',
-  'weakness': 'general_health_1.png',
-  'joint_pain': 'general_health_4.png',
-  'muscle_pain': 'general_health_4.png',
-  'fever': 'general_health_5.png',
-  'chills': 'general_health_5.png',
-  'sweating': 'general_health_6.png',
-  'bloated': 'general_health_7.png',
-  'painful_sensitive_breasts': 'general_health_6.png',
-  'acne': 'general_health_7.png',
-  'muscle_joint_pain': 'general_health_4.png',
-  'headache_migraine': 'headache_migraine.png'
+  'headache_migraine': 'general_health_3.png',
+  'bloated': 'general_health_4.png',
+  'painful_sensitive_breasts': 'general_health_5.png',
+  'acne': 'general_health_6.png',
+  'muscle_joint_pain': 'general_health_7.png'
 };
 
 export const SYMPTOM_KEYS = [
