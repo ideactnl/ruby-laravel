@@ -16,7 +16,7 @@
             </div>
         </div>
 
-        <div class="swiper educationSwiper cursor-grab">
+        <div class="swiper educationSwiper self-management cursor-grab">
             <div class="swiper-loading py-8 text-gray-500">Loading...</div>
             <div class="swiper-wrapper pb-3" style="display: none;">
 

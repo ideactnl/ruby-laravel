@@ -247,6 +247,9 @@ body {
         .pbac-selected-domains-3 {
         display: block !important;
     }
+    .self-management .p-4.text-sm {
+    min-height: 74px;
+}
     .card-new-dec {
         height: 206px;
     }
@@ -435,27 +438,27 @@ body {
 }
 @media (max-width: 430px) {
     .card-new-dec {
-        height: 240px;
+        height: 219px;
     }
 }
 @media (max-width: 414px) {
     .card-new-dec {
-        height: 234px;
+        height: 213px;
     }
 }
 @media (max-width: 390px) {
     .card-new-dec {
-        height: 223px;
+        height: 202px;
     }
 }
 @media (max-width: 375px) {
     .card-new-dec {
-        height: 215px;
+        height: 196px;
     }
 }
 @media (max-width: 360px) {
     .card-new-dec {
-        height: 210px;
+        height: 189px;
     }
 }
 @media (min-width: 350px) and (max-width: 360px) {
@@ -524,7 +527,7 @@ body .fc-scroller-harness .fc-daygrid-day-number{
         width: 100% !important;
     }
     .card-new-dec {
-        height: 265px;
+        height: 246px;
     }
     .msg-send {
         grid-template-columns: 1fr;
