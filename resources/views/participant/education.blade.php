@@ -179,7 +179,125 @@
 @endsection
 @push('scripts')
     <script>
-        window.addEventListener('DOMContentLoaded', () => {
+        window.addEventListener('DOMContentLoaded', async () => {
+            // Fetch videos from API
+            try {
+                const response = await fetch('/api/v1/participant/videos/education');
+                const data = await response.json();
+                const videos = data.videos || [];
+
+                const flipCards = [
+                    `<div class="swiper-slide px-2">
+                        <div class="group [perspective:1000px] select-none touch-manipulation" data-flip-card>
+                            <div class="card-new-dec relative h-70 w-full transition-transform duration-700 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)]">
+                                <div class="absolute inset-0 bg-[#FC9490] text-white text-center rounded-lg shadow-md [backface-visibility:hidden] flex flex-col justify-center items-center cursor-pointer select-none">
+                                    <div class="p-4 text-sm font-medium">
+                                        <div class="text-[23px] font-bold mb-2">MYTH</div>
+                                        <h4 class="text-[20px]">{{ __('participant.taking_pill_without_break_bad') }}</h4>
+                                    </div>
+                                    <div class="absolute top-3 right-3">
+                                        <i class="fas fa-sync-alt text-white opacity-70"></i>
+                                    </div>
+                                </div>
+                                <div class="absolute inset-0 rounded-lg bg-primary text-white text-center p-4 [transform:rotateY(180deg)] [backface-visibility:hidden] flex flex-col justify-center items-center cursor-pointer select-none">
+                                    <div class="text-sm font-medium">
+                                        {{ __('participant.pill_continuous_explanation') }}
+                                    </div>
+                                    <div class="absolute top-3 right-3">
+                                        <i class="fas fa-sync-alt text-white opacity-70"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>`,
+                    `<div class="swiper-slide px-2">
+                        <div class="group [perspective:1000px] select-none touch-manipulation" data-flip-card>
+                            <div class="card-new-dec relative h-70 w-full transition-transform duration-700 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)]">
+                                <div class="absolute inset-0 bg-[#FC9490] text-white text-center rounded-lg shadow-md [backface-visibility:hidden] flex flex-col justify-center items-center cursor-pointer select-none">
+                                    <div class="p-4 text-sm font-medium">
+                                        <div class="text-[23px] font-bold mb-2">MYTH</div>
+                                        <h4 class="text-[20px]">{{ __('participant.cant_exercise_during_period') }}</h4>
+                                    </div>
+                                    <div class="absolute top-3 right-3">
+                                        <i class="fas fa-sync-alt text-white opacity-70"></i>
+                                    </div>
+                                </div>
+                                <div class="absolute inset-0 rounded-lg bg-primary text-white text-center p-4 [transform:rotateY(180deg)] [backface-visibility:hidden] flex flex-col justify-center items-center cursor-pointer select-none">
+                                    <div class="text-sm font-medium">
+                                        {{ __('participant.exercise_helps_period_symptoms') }}
+                                    </div>
+                                    <div class="absolute top-3 right-3">
+                                        <i class="fas fa-sync-alt text-white opacity-70"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>`
+                ];
+
+                const firstSliderVideos = videos.slice(0, 4);
+                const secondSliderVideos = videos.slice(4);
+
+                const educationWrapper = document.querySelector('.educationSwiper .swiper-wrapper');
+                if (educationWrapper) {
+                    educationWrapper.innerHTML = '';
+                    
+                    firstSliderVideos.forEach((video, index) => {
+                        const videoSlide = document.createElement('div');
+                        videoSlide.className = 'swiper-slide';
+                        videoSlide.innerHTML = `
+                            <div class="rounded overflow-hidden shadow-md bg-white">
+                                <div class="aspect-video">
+                                    <iframe class="w-full h-full" 
+                                            src="${video.embed_url}" 
+                                            frameborder="0" 
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                            allowfullscreen
+                                            loading="lazy"></iframe>
+                                </div>
+                                <div class="p-4 text-sm">${video.title}</div>
+                            </div>
+                        `;
+                        educationWrapper.appendChild(videoSlide);
+                        
+                        if (index === 0 && flipCards[0]) {
+                            const flipCardDiv = document.createElement('div');
+                            flipCardDiv.innerHTML = flipCards[0];
+                            educationWrapper.appendChild(flipCardDiv.firstElementChild);
+                        } else if (index === 2 && flipCards[1]) {
+                            const flipCardDiv = document.createElement('div');
+                            flipCardDiv.innerHTML = flipCards[1];
+                            educationWrapper.appendChild(flipCardDiv.firstElementChild);
+                        }
+                    });
+                }
+
+                const videoWrapper = document.querySelector('.videoSwiper .swiper-wrapper');
+                if (videoWrapper && secondSliderVideos.length > 0) {
+                    videoWrapper.innerHTML = '';
+                    secondSliderVideos.forEach(video => {
+                        const slide = document.createElement('div');
+                        slide.className = 'swiper-slide';
+                        slide.innerHTML = `
+                            <div class="rounded overflow-hidden shadow-md bg-white">
+                                <div class="aspect-video">
+                                    <iframe class="w-full h-full" 
+                                            src="${video.embed_url}" 
+                                            frameborder="0" 
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                            allowfullscreen
+                                            loading="lazy"></iframe>
+                                </div>
+                                <div class="p-4 text-sm">${video.title}</div>
+                            </div>
+                        `;
+                        videoWrapper.appendChild(slide);
+                    });
+                }
+            } catch (error) {
+                console.error('Error fetching videos:', error);
+            }
+
             const educationSwiper = new Swiper('.educationSwiper', {
                 slidesPerView: 1.3,
                 spaceBetween: 16,

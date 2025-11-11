@@ -123,7 +123,95 @@
 
 @push('scripts')
     <script>
-        window.addEventListener('DOMContentLoaded', () => {
+        window.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const response = await fetch('/api/v1/participant/videos/self-management');
+                const data = await response.json();
+                const videos = data.videos || [];
+
+                if (videos.length < 7) {
+                    const educationWrapper = document.querySelector('.educationSwiper .swiper-wrapper');
+                    if (educationWrapper && videos.length > 0) {
+                        educationWrapper.innerHTML = '';
+                        videos.forEach(video => {
+                            const slide = document.createElement('div');
+                            slide.className = 'swiper-slide';
+                            slide.innerHTML = `
+                                <div class="rounded overflow-hidden shadow-md bg-white">
+                                    <div class="aspect-video">
+                                        <iframe class="w-full h-full" 
+                                                src="${video.embed_url}" 
+                                                frameborder="0" 
+                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                                allowfullscreen
+                                                loading="lazy"></iframe>
+                                    </div>
+                                    <div class="p-4 text-sm">${video.title}</div>
+                                </div>
+                            `;
+                            educationWrapper.appendChild(slide);
+                        });
+                    }
+
+                    const videoSection = document.querySelector('.videoSwiper').closest('section');
+                    if (videoSection) {
+                        videoSection.style.display = 'none';
+                    }
+                } else {
+                    const midPoint = Math.ceil(videos.length / 2);
+                    const firstHalfVideos = videos.slice(0, midPoint);
+                    const secondHalfVideos = videos.slice(midPoint);
+
+                    const educationWrapper = document.querySelector('.educationSwiper .swiper-wrapper');
+                    if (educationWrapper && firstHalfVideos.length > 0) {
+                        educationWrapper.innerHTML = '';
+                        firstHalfVideos.forEach(video => {
+                            const slide = document.createElement('div');
+                            slide.className = 'swiper-slide';
+                            slide.innerHTML = `
+                                <div class="rounded overflow-hidden shadow-md bg-white">
+                                    <div class="aspect-video">
+                                        <iframe class="w-full h-full" 
+                                                src="${video.embed_url}" 
+                                                frameborder="0" 
+                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                                allowfullscreen
+                                                loading="lazy"></iframe>
+                                    </div>
+                                    <div class="p-4 text-sm">${video.title}</div>
+                                </div>
+                            `;
+                            educationWrapper.appendChild(slide);
+                        });
+                    }
+
+                    const videoWrapper = document.querySelector('.videoSwiper .swiper-wrapper');
+                    if (videoWrapper && secondHalfVideos.length > 0) {
+                        videoWrapper.innerHTML = '';
+                        secondHalfVideos.forEach(video => {
+                            const slide = document.createElement('div');
+                            slide.className = 'swiper-slide';
+                            slide.innerHTML = `
+                                <div class="rounded overflow-hidden shadow-md bg-white">
+                                    <div class="aspect-video">
+                                        <iframe class="w-full h-full" 
+                                                src="${video.embed_url}" 
+                                                frameborder="0" 
+                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                                allowfullscreen
+                                                loading="lazy"></iframe>
+                                    </div>
+                                    <div class="p-4 text-sm">${video.title}</div>
+                                </div>
+                            `;
+                            videoWrapper.appendChild(slide);
+                        });
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching videos:', error);
+            }
+
             const educationSwiper = new Swiper('.educationSwiper', {
                 slidesPerView: 1.3,
                 spaceBetween: 16,

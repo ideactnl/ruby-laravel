@@ -8,6 +8,7 @@ use App\Models\Participant;
 use App\Models\Pbac;
 use App\Services\ExportTrackingService;
 use App\Services\PbacExportService;
+use App\Services\VideoService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -469,6 +470,109 @@ class ParticipantWebApiController extends Controller
     public function dailyViewPage()
     {
         return view('participant.daily-view');
+    }
+
+    /**
+     * Get videos for education page
+     *
+     * Returns all active videos for the education page ordered by their sequence.
+     *
+     * @response 200 {"videos":[{"id":1,"title":"Wat is de menstruele cyclus?","location":"education","order":1,"video_url":"https://youtube.com/shorts/YHxWLpAfY_M","video_type":"youtube","video_id":"YHxWLpAfY_M","thumbnail_url":"https://img.youtube.com/vi/YHxWLpAfY_M/hqdefault.jpg","embed_url":"https://www.youtube.com/embed/YHxWLpAfY_M","watch_url":"https://www.youtube.com/watch?v=YHxWLpAfY_M"}]}
+     */
+    public function getEducationVideos(VideoService $videoService)
+    {
+        $videos = $videoService->getVideosForLocation('education');
+        
+        return response()->json([
+            'videos' => $videos,
+        ]);
+    }
+
+    /**
+     * Get videos for self-management page
+     *
+     * Returns all active videos for the self-management page ordered by their sequence.
+     *
+     * @response 200 {"videos":[{"id":13,"title":"Pijn verminderen door ontspanning","location":"self-management","order":1,"video_url":"https://youtube.com/shorts/oxTaiuHAq-U","video_type":"youtube","video_id":"oxTaiuHAq-U","thumbnail_url":"https://img.youtube.com/vi/oxTaiuHAq-U/hqdefault.jpg","embed_url":"https://www.youtube.com/embed/oxTaiuHAq-U","watch_url":"https://www.youtube.com/watch?v=oxTaiuHAq-U"}]}
+     */
+    public function getSelfManagementVideos(VideoService $videoService)
+    {
+        $videos = $videoService->getVideosForLocation('self-management');
+        
+        return response()->json([
+            'videos' => $videos,
+        ]);
+    }
+
+    /**
+     * Get conditional videos for daily view
+     *
+     * Returns videos that meet the conditions based on the participant's data for a specific date.
+     *
+     * <b style="color: red;">AUTHENTICATION REQUIRED: Must have active session</b>
+     *
+     * @queryParam date date required Target date (Y-m-d). Example: 2025-09-10
+     *
+     * @response 200 {"videos":[{"id":3,"title":"Menstruatiepijn","location":"education","order":3,"video_url":"https://youtube.com/shorts/45GBEKxA9IQ","video_type":"youtube","video_id":"45GBEKxA9IQ","thumbnail_url":"https://img.youtube.com/vi/45GBEKxA9IQ/hqdefault.jpg","embed_url":"https://www.youtube.com/embed/45GBEKxA9IQ","watch_url":"https://www.youtube.com/watch?v=45GBEKxA9IQ"}]}
+     * @response 401 {"error":"Unauthenticated"}
+     * @response 422 {"error":"Invalid query parameters.","errors":{"date":["The date field is required."]}}
+     */
+    public function getDailyViewVideos(Request $request, VideoService $videoService)
+    {
+        $participant = auth('participant-web')->user();
+        if (! $participant) {
+            return response()->json(['error' => 'Unauthenticated'], 401);
+        }
+
+        $validated = $request->query();
+
+        $validator = validator($validated, [
+            'date' => ['required', 'date'],
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'error' => 'Invalid query parameters.',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        $validated = $validator->validated();
+        $date = $validated['date'];
+
+        $record = Pbac::query()
+            ->forParticipant($participant->id)
+            ->whereDate('reported_date', $date)
+            ->orderBy('reported_date')
+            ->first();
+
+        if (! $record) {
+            return response()->json(['videos' => []]);
+        }
+
+        $participantData = [
+            'reported_date' => $record->reported_date,
+            'pillars' => [
+                'blood_loss' => $record->blood_loss,
+                'pain' => $record->pain,
+                'impact' => $record->impact,
+                'general_health' => $record->general_health,
+                'mood' => $record->mood,
+                'stool_urine' => $record->stool_urine,
+                'sleep' => $record->sleep,
+                'diet' => $record->diet,
+                'exercise' => $record->exercise,
+                'sex' => $record->sex,
+                'notes' => $record->notes,
+            ],
+            'sleep_hours' => $record->sleep['calculatedHours'] ?? null,
+        ];
+
+        $videos = $videoService->getVideosForDailyView($participantData);
+
+        return response()->json([
+            'videos' => $videos,
+        ]);
     }
 
     /**

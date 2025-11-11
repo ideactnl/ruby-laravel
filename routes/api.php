@@ -29,11 +29,15 @@ Route::prefix('v1')->group(function () {
         Route::post('/login', [ParticipantWebApiController::class, 'login']);
         Route::post('/logout', [ParticipantWebApiController::class, 'logout']);
 
+        Route::get('/videos/education', [ParticipantWebApiController::class, 'getEducationVideos'])->name('participant.videos.education');
+        Route::get('/videos/self-management', [ParticipantWebApiController::class, 'getSelfManagementVideos'])->name('participant.videos.self-management');
+
         Route::middleware('auth:sanctum')->group(function () {
             Route::get('/dashboard', [ParticipantWebApiController::class, 'dashboard']);
             Route::get('/pbac/export', [ParticipantWebApiController::class, 'exportPbacData'])->name('participant.pbac.export');
             Route::post('/pbac/chart/export/pdf', [ParticipantWebApiController::class, 'exportChartPdf'])->name('participant.pbac.chart.export.pdf');
             Route::get('/daily', [ParticipantWebApiController::class, 'dailyData'])->name('participant.daily');
+            Route::get('/videos/daily-view', [ParticipantWebApiController::class, 'getDailyViewVideos'])->name('participant.videos.daily-view');
             Route::get('/exports/active', [ParticipantWebApiController::class, 'activeExport'])->name('participant.exports.active');
             Route::get('/exports/{jobId}', [ParticipantWebApiController::class, 'exportStatus'])->name('participant.exports.status');
             Route::get('/exports/{jobId}/download', [ParticipantWebApiController::class, 'downloadExport'])->middleware('signed')->name('participant.exports.download');

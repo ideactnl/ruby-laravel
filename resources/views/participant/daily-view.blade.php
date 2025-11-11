@@ -84,8 +84,8 @@
                                     <!-- Header with icon and title -->
                                     <div class="flex items-center justify-between mb-3">
                                         <div class="flex items-center gap-2">
-                                            <img :src="item.iconSrc" :alt="item.label"
-                                                class="w-6 h-6 object-contain" x-show="item.iconSrc">
+                                            <img :src="item.iconSrc" :alt="item.label" class="w-6 h-6 object-contain"
+                                                x-show="item.iconSrc">
                                             <h3 class="text-sm font-semibold text-gray-900 uppercase tracking-wide truncate md:overflow-visible md:whitespace-normal"
                                                 x-text="item.label"></h3>
                                         </div>
@@ -117,7 +117,7 @@
                                     <!-- Context and additional info -->
                                     <div class="mb-3">
                                         <div class="text-sm font-medium text-gray-700 text-center truncate md:overflow-visible md:whitespace-normal"
-                                            x-text="item.context" x-show="item.context"></div>
+                                            x-html="item.context" x-show="item.context"></div>
                                         <div class="text-xs text-gray-600 text-center mt-1 truncate md:overflow-visible md:whitespace-normal"
                                             x-text="item.additionalInfo" x-show="item.additionalInfo"></div>
                                     </div>
@@ -215,4 +215,3 @@
 @endsection
 
 @include('participant.partials.daily-view-translations')
-
