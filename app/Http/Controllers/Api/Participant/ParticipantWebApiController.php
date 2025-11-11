@@ -482,7 +482,7 @@ class ParticipantWebApiController extends Controller
     public function getEducationVideos(VideoService $videoService)
     {
         $videos = $videoService->getVideosForLocation('education');
-        
+
         return response()->json([
             'videos' => $videos,
         ]);
@@ -498,7 +498,7 @@ class ParticipantWebApiController extends Controller
     public function getSelfManagementVideos(VideoService $videoService)
     {
         $videos = $videoService->getVideosForLocation('self-management');
-        
+
         return response()->json([
             'videos' => $videos,
         ]);

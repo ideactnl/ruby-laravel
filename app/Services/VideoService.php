@@ -55,6 +55,7 @@ class VideoService
             if (preg_match('/painscore\s*>\s*(\d+)/', $condition, $matches)) {
                 $threshold = (int) $matches[1];
                 $painScore = $this->getPainScore($data);
+
                 return $painScore !== null && $painScore > $threshold;
             }
 
@@ -69,6 +70,7 @@ class VideoService
             if (preg_match('/energy_level\s*<\s*(-?\d+)/', $condition, $matches)) {
                 $threshold = (int) $matches[1];
                 $energyLevel = $this->getEnergyLevel($data);
+
                 return $energyLevel !== null && $energyLevel < $threshold;
             }
 
@@ -94,6 +96,7 @@ class VideoService
                 'condition' => $condition,
                 'error' => $e->getMessage(),
             ]);
+
             return false;
         }
     }
@@ -103,8 +106,8 @@ class VideoService
      */
     protected function getPainScore(array $data): ?int
     {
-        return $data['pillars']['pain']['value'] ?? 
-               $data['pillars']['pain']['painScore'] ?? 
+        return $data['pillars']['pain']['value'] ??
+               $data['pillars']['pain']['painScore'] ??
                null;
     }
 
@@ -114,7 +117,7 @@ class VideoService
     protected function hasMenstruationBloodLoss(array $data): bool
     {
         $bloodLoss = $data['pillars']['blood_loss'] ?? [];
-        
+
         return ($bloodLoss['amount'] ?? 0) > 0;
     }
 
@@ -124,13 +127,13 @@ class VideoService
     protected function hasAnyGeneralHealthSymptom(array $data): bool
     {
         $generalHealth = $data['pillars']['general_health'] ?? [];
-        
+
         $symptoms = $generalHealth['symptoms'] ?? [];
-        
-        if (!is_array($symptoms)) {
+
+        if (! is_array($symptoms)) {
             return false;
         }
-        
+
         return count($symptoms) > 0;
     }
 
@@ -139,8 +142,8 @@ class VideoService
      */
     protected function getEnergyLevel(array $data): ?int
     {
-        return $data['pillars']['general_health']['energyLevel'] ?? 
-               $data['pillars']['general_health']['energy_level'] ?? 
+        return $data['pillars']['general_health']['energyLevel'] ??
+               $data['pillars']['general_health']['energy_level'] ??
                null;
     }
 
@@ -150,13 +153,13 @@ class VideoService
     protected function hasMoodSymptoms(array $data): bool
     {
         $mood = $data['pillars']['mood'] ?? [];
-        
+
         $negatives = $mood['negatives'] ?? [];
-        
-        if (!is_array($negatives)) {
+
+        if (! is_array($negatives)) {
             return false;
         }
-        
+
         $targetSymptoms = [
             'anxious_stressed',
             'ashamed',
@@ -166,15 +169,15 @@ class VideoService
             'worthless_guilty',
             'overwhelmed',
             'hopeless',
-            'depressed_sad_down'
+            'depressed_sad_down',
         ];
-        
+
         foreach ($targetSymptoms as $symptom) {
             if (in_array($symptom, $negatives, true)) {
                 return true;
             }
         }
-        
+
         return false;
     }
 
@@ -184,17 +187,17 @@ class VideoService
     protected function hasStoolUrineIssues(array $data): bool
     {
         $stoolUrine = $data['pillars']['stool_urine'] ?? [];
-        
+
         $stoolConsistency = $stoolUrine['stool']['consistency'] ?? null;
         if (in_array($stoolConsistency, ['hard', 'soft', 'watery', 'no_stool'])) {
             return true;
         }
-        
+
         if (($stoolUrine['urine']['blood'] ?? false) === true ||
             ($stoolUrine['stool']['blood'] ?? false) === true) {
             return true;
         }
-        
+
         return false;
     }
 
@@ -204,25 +207,25 @@ class VideoService
     protected function hasSleepIssues(array $data): bool
     {
         $sleep = $data['pillars']['sleep'] ?? [];
-        
+
         $sleepHours = $sleep['calculatedHours'] ?? $sleep['sleep_hours'] ?? null;
         if ($sleepHours !== null && $sleepHours < 7) {
             return true;
         }
-        
+
         $sleepIssues = [
             'troubleAsleep',
             'wakeUpDuringNight',
-            'tiredRested'
+            'tiredRested',
         ];
-        
+
         $issueCount = 0;
         foreach ($sleepIssues as $issue) {
             if (($sleep[$issue] ?? false) === true) {
                 $issueCount++;
             }
         }
-        
+
         return $issueCount >= 2;
     }
 
@@ -232,13 +235,13 @@ class VideoService
     protected function hasLowExercise(array $data): bool
     {
         $exercise = $data['pillars']['exercise'] ?? [];
-        
+
         $levels = $exercise['levels'] ?? [];
-        
-        if (!is_array($levels)) {
+
+        if (! is_array($levels)) {
             return false;
         }
-        
+
         return in_array('less_thirty', $levels, true);
     }
 

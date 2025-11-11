@@ -62,15 +62,15 @@ class VideoContent extends Model
         if (preg_match('/youtube\.com\/shorts\/([a-zA-Z0-9_-]+)/', $url, $matches)) {
             return $matches[1];
         }
-        
+
         if (preg_match('/[?&]v=([a-zA-Z0-9_-]+)/', $url, $matches)) {
             return $matches[1];
         }
-        
+
         if (preg_match('/youtu\.be\/([a-zA-Z0-9_-]+)/', $url, $matches)) {
             return $matches[1];
         }
-        
+
         return null;
     }
 
@@ -82,7 +82,7 @@ class VideoContent extends Model
         if ($this->video_type === 'youtube' && $this->video_id) {
             return "https://img.youtube.com/vi/{$this->video_id}/hqdefault.jpg";
         }
-        
+
         return null;
     }
 
@@ -94,7 +94,7 @@ class VideoContent extends Model
         if ($this->video_type === 'youtube' && $this->video_id) {
             return "https://www.youtube-nocookie.com/embed/{$this->video_id}?rel=0&modestbranding=1";
         }
-        
+
         return $this->video_url;
     }
 
@@ -106,7 +106,7 @@ class VideoContent extends Model
         if ($this->video_type === 'youtube' && $this->video_id) {
             return "https://www.youtube.com/watch?v={$this->video_id}";
         }
-        
+
         return $this->video_url;
     }
 }
