@@ -165,6 +165,7 @@ export class DataManager {
           type: video.video_type || 'youtube',
           id: video.video_id,
           title: video.title,
+          subtitle: video.subtitle,
           src: video.video_url
         }));
         

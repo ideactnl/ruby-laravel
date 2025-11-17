@@ -253,6 +253,7 @@ class VideoService
         return [
             'id' => $video->id,
             'title' => $video->title,
+            'subtitle' => $video->subtitle,
             'location' => $video->location,
             'order' => $video->order,
             'video_url' => $video->video_url,

@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('video_contents', function (Blueprint $table) {
             $table->id();
             $table->string('title');
+            $table->text('subtitle')->nullable()->comment('Optional subtitle/description for the video');
             $table->enum('location', ['education', 'self-management'])->index();
             $table->integer('order')->default(0);
             $table->text('condition')->nullable()->comment('Condition to show video on daily view. NULL means NA (not shown on daily view)');

@@ -110,8 +110,27 @@ export class SwiperManager {
             preventClicksPropagation: false,
             breakpoints: {
                 768: {
-                    slidesPerView: "auto",
+                    slidesPerView: 'auto',
                     spaceBetween: 28,
+                },
+            },
+        };
+    }
+
+    getVideoSwiperConfig() {
+        return {
+            slidesPerView: 1.5,
+            spaceBetween: 12,
+            grabCursor: true,
+            freeMode: true,
+            allowTouchMove: true,
+            simulateTouch: true,
+            preventClicks: false,
+            preventClicksPropagation: false,
+            breakpoints: {
+                768: {
+                    slidesPerView: 5.5,
+                    spaceBetween: 12,
                 },
             },
         };
@@ -136,17 +155,26 @@ export class SwiperManager {
         this.component._vidSwiper?.destroy(true, true);
         this.component._vidSwiper = new window.Swiper(
             this.component.$refs.vidSwiper,
-            this.getCommonSwiperConfig()
+            this.getVideoSwiperConfig()
         );
 
         this.attachHapticFeedback(this.component._vidSwiper);
         this.attachDynamicSpeed(this.component._vidSwiper);
+        this.attachIframeDragProtection(this.component._vidSwiper);
+
+        const sync = () => this.syncVideoCaptionHeights();
+        setTimeout(sync, 100);
+        window.CascadeSyncDailyCaptions = sync;
+        this.component._vidSwiper.on('resize', sync);
+        this.component._vidSwiper.on('slidesLengthChange', sync);
+        this.component._vidSwiper.on('transitionEnd', sync);
     }
 
     updateSwipers() {
         setTimeout(() => {
             this.component._symSwiper?.update();
             this.component._vidSwiper?.update();
+            this.syncVideoCaptionHeights();
         }, 100);
     }
 
@@ -164,5 +192,74 @@ export class SwiperManager {
             this.initSymptomsSwiper();
             this.initVideosSwiper();
         }, 50);
+    }
+
+    /**
+     * Disable iframe/video pointer events while dragging to avoid accidental plays
+     */
+    attachIframeDragProtection(swiper) {
+        if (!swiper) return;
+
+        const setPointers = (value) => {
+            const nodes = swiper.el.querySelectorAll('iframe, video');
+            nodes.forEach((el) => {
+                el.style.pointerEvents = value;
+            });
+        };
+
+        swiper.on('touchStart', () => {
+            setPointers('none');
+        });
+
+        swiper.on('sliderMove', () => {
+            setPointers('none');
+        });
+
+        const restore = () => setTimeout(() => setPointers('auto'), 80);
+        swiper.on('touchEnd', restore);
+        swiper.on('transitionEnd', restore);
+    }
+
+    /**
+     * Make all video captions the same height across slides
+     */
+    syncVideoCaptionHeights() {
+        const wrapper = this.component.$refs?.vidSwiper;
+        if (!wrapper) return;
+
+        const captions = wrapper.querySelectorAll('.dv-video-caption');
+        const cards = wrapper.querySelectorAll('.dv-video-card');
+        const medias = wrapper.querySelectorAll('.dv-video-media');
+        if (!cards || cards.length === 0 || !medias || medias.length === 0) return;
+
+        captions.forEach((el) => (el.style.height = 'auto'));
+        medias.forEach((el) => (el.style.height = ''));
+
+        let max = 0;
+        captions.forEach((el) => {
+            const style = window.getComputedStyle(el);
+            if (style.display === 'none' || style.visibility === 'hidden') return;
+            const h = el.offsetHeight;
+            if (h > max) max = h;
+        });
+
+        if (!max) return;
+
+        captions.forEach((el) => (el.style.height = `${max}px`));
+
+        cards.forEach((card) => {
+            const media = card.querySelector('.dv-video-media');
+            const caption = card.querySelector('.dv-video-caption');
+            if (!media) return;
+            const hasSubtitle = caption && caption.textContent && caption.textContent.trim().length > 0;
+            if (!hasSubtitle) {
+                const current = media.offsetHeight;
+                if (current > 0) {
+                    media.style.height = `${current + max}px`;
+                }
+            } else {
+                media.style.height = '';
+            }
+        });
     }
 }

@@ -8,117 +8,21 @@
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
             <div class="flex gap-2">
                 <select class="border border-gray-300 rounded px-3 py-1 text-sm text-white bg-[#7B1C1C]">
-                    <option>Category</option>
+                    <option>{{ __('participant.category') }}</option>
                 </select>
                 <select class="border border-gray-300 rounded px-3 py-3 text-sm text-white bg-[#7B1C1C]">
-                    <option>Recommended</option>
+                    <option>{{ __('participant.recommended') }}</option>
                 </select>
             </div>
         </div>
 
-        <div class="swiper educationSwiper self-management cursor-grab">
-            <div class="swiper-loading py-8 text-gray-500">Loading...</div>
-            <div class="swiper-wrapper pb-3" style="display: none;">
+        <div id="selfmanagement-loading" class="py-8 text-gray-500 text-center">{{ __('participant.loading') }}</div>
 
-                <!-- Slide 1 -->
-                <div class="swiper-slide">
-                    <div class="rounded overflow-hidden shadow-md bg-white">
-                        <div class="aspect-video">
-                            <iframe class="w-full h-full" src="https://www.youtube.com/embed/tgbNymZ7vqY"
-                                allowfullscreen></iframe>
-                        </div>
-                        <div class="p-4 text-sm">Learn more about the subject in this video.</div>
-                    </div>
-                </div>
-
-                <!-- Slide 2 -->
-                <div class="swiper-slide">
-                    <div class="rounded overflow-hidden shadow-md bg-white">
-                        <div class="aspect-video">
-                            <iframe class="w-full h-full" src="https://www.youtube.com/embed/jNQXAC9IVRw"
-                                allowfullscreen></iframe>
-                        </div>
-                        <div class="p-4 text-sm">Another educational topic presented here.</div>
-                    </div>
-                </div>
-
-                <!-- Slide 3 -->
-                <div class="swiper-slide">
-                    <div class="rounded overflow-hidden shadow-md bg-white">
-                        <div class="aspect-video">
-                            <iframe class="w-full h-full" src="https://www.youtube.com/embed/tgbNymZ7vqY"
-                                allowfullscreen></iframe>
-                        </div>
-                        <div class="p-4 text-sm">Learn more about the subject in this video.</div>
-                    </div>
-                </div>
-                <!-- Slide 4 -->
-                <div class="swiper-slide">
-                    <div class="rounded overflow-hidden shadow-md bg-white">
-                        <div class="aspect-video">
-                            <iframe class="w-full h-full" src="https://www.youtube.com/embed/tgbNymZ7vqY"
-                                allowfullscreen></iframe>
-                        </div>
-                        <div class="p-4 text-sm">Learn more about the subject in this video.</div>
-                    </div>
-                </div>
-            </div>
-            <!-- Navigation -->
-
+        <div id="selfmanagement-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4"
+            style="display: none;">
+            <!-- Content will be populated by JavaScript -->
+        </div>
     </section>
-
-    <!-- VIDEOS -->
-    <section class="mt-12">
-        <div class="swiper videoSwiper cursor-grab">
-            <div class="swiper-loading py-8 text-gray-500">Loading...</div>
-            <div class="swiper-wrapper pb-3" style="display: none;">
-                <!-- Slide 1 -->
-                <div class="swiper-slide">
-                    <div class="rounded overflow-hidden shadow-md bg-white">
-                        <div class="aspect-video">
-                            <iframe class="w-full h-full" src="https://www.youtube.com/embed/tgbNymZ7vqY"
-                                allowfullscreen></iframe>
-                        </div>
-                        <div class="p-4 text-sm">Learn more about the subject in this video.</div>
-                    </div>
-                </div>
-
-                <!-- Slide 2 -->
-                <div class="swiper-slide">
-                    <div class="rounded overflow-hidden shadow-md bg-white">
-                        <div class="aspect-video">
-                            <iframe class="w-full h-full" src="https://www.youtube.com/embed/jNQXAC9IVRw"
-                                allowfullscreen></iframe>
-                        </div>
-                        <div class="p-4 text-sm">Another educational topic presented here.</div>
-                    </div>
-                </div>
-
-                <!-- Slide 3 -->
-                <div class="swiper-slide">
-                    <div class="rounded overflow-hidden shadow-md bg-white">
-                        <div class="aspect-video">
-                            <iframe class="w-full h-full" src="https://www.youtube.com/embed/tgbNymZ7vqY"
-                                allowfullscreen></iframe>
-                        </div>
-                        <div class="p-4 text-sm">Learn more about the subject in this video.</div>
-                    </div>
-                </div>
-                <!-- Slide 4 -->
-                <div class="swiper-slide">
-                    <div class="rounded overflow-hidden shadow-md bg-white">
-                        <div class="aspect-video">
-                            <iframe class="w-full h-full" src="https://www.youtube.com/embed/tgbNymZ7vqY"
-                                allowfullscreen></iframe>
-                        </div>
-                        <div class="p-4 text-sm">Learn more about the subject in this video.</div>
-                    </div>
-                </div>
-            </div>
-            <!-- Navigation -->
-
-    </section>
-
 @endsection
 
 @push('scripts')
@@ -129,126 +33,78 @@
                 const data = await response.json();
                 const videos = data.videos || [];
 
-                if (videos.length < 7) {
-                    const educationWrapper = document.querySelector('.educationSwiper .swiper-wrapper');
-                    if (educationWrapper && videos.length > 0) {
-                        educationWrapper.innerHTML = '';
-                        videos.forEach(video => {
-                            const slide = document.createElement('div');
-                            slide.className = 'swiper-slide';
-                            slide.innerHTML = `
-                                <div class="rounded overflow-hidden shadow-md bg-white">
-                                    <div class="aspect-video">
-                                        <iframe class="w-full h-full" 
-                                                src="${video.embed_url}" 
-                                                frameborder="0" 
-                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                                                allowfullscreen
-                                                loading="lazy"></iframe>
-                                    </div>
-                                    <div class="p-4 text-sm">${video.title}</div>
+                const selfManagementGrid = document.getElementById('selfmanagement-grid');
+                const loadingElement = document.getElementById('selfmanagement-loading');
+
+                if (selfManagementGrid) {
+                    selfManagementGrid.innerHTML = '';
+
+                    videos.forEach((video, index) => {
+                        const videoCard = document.createElement('div');
+                        videoCard.className = 'rounded overflow-hidden shadow-md bg-white flex flex-col';
+
+                        const maxLength = 25;
+                        let subtitleContent = '';
+                        if (video.subtitle) {
+                            const isLong = video.subtitle.length > maxLength;
+                            const truncated = isLong ? video.subtitle.substring(0, maxLength) + '...' : video.subtitle;
+                            const subtitleId = `subtitle-${video.id}`;
+
+                            subtitleContent = `
+                                <div class="text-sm text-gray-600">
+                                    <span id="${subtitleId}">${truncated}</span>
+                                    ${isLong ? `
+                                        <button onclick="toggleReadMore('${subtitleId}', '${video.subtitle.replace(/'/g, "\\'")}', '${truncated.replace(/'/g, "\\'")}', this)" 
+                                                class="text-primary ml-1 text-xs font-medium">
+                                            More
+                                        </button>
+                                    ` : ''}
                                 </div>
                             `;
-                            educationWrapper.appendChild(slide);
-                        });
-                    }
+                        }
 
-                    const videoSection = document.querySelector('.videoSwiper').closest('section');
-                    if (videoSection) {
-                        videoSection.style.display = 'none';
-                    }
-                } else {
-                    const midPoint = Math.ceil(videos.length / 2);
-                    const firstHalfVideos = videos.slice(0, midPoint);
-                    const secondHalfVideos = videos.slice(midPoint);
+                        videoCard.innerHTML = `
+                        <div class="aspect-[9/16]">
+                            <iframe class="w-full h-full" 
+                                    src="${video.embed_url}" 
+                                    frameborder="0" 
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                    allowfullscreen
+                                    loading="lazy"></iframe>
+                        </div>
 
-                    const educationWrapper = document.querySelector('.educationSwiper .swiper-wrapper');
-                    if (educationWrapper && firstHalfVideos.length > 0) {
-                        educationWrapper.innerHTML = '';
-                        firstHalfVideos.forEach(video => {
-                            const slide = document.createElement('div');
-                            slide.className = 'swiper-slide';
-                            slide.innerHTML = `
-                                <div class="rounded overflow-hidden shadow-md bg-white">
-                                    <div class="aspect-video">
-                                        <iframe class="w-full h-full" 
-                                                src="${video.embed_url}" 
-                                                frameborder="0" 
-                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                                                allowfullscreen
-                                                loading="lazy"></iframe>
-                                    </div>
-                                    <div class="p-4 text-sm">${video.title}</div>
-                                </div>
-                            `;
-                            educationWrapper.appendChild(slide);
-                        });
-                    }
+                        ${subtitleContent
+                                ? `<div class="p-4 flex-1 flex items-start">${subtitleContent}</div>`
+                                : ''
+                            }
+                        `;
 
-                    const videoWrapper = document.querySelector('.videoSwiper .swiper-wrapper');
-                    if (videoWrapper && secondHalfVideos.length > 0) {
-                        videoWrapper.innerHTML = '';
-                        secondHalfVideos.forEach(video => {
-                            const slide = document.createElement('div');
-                            slide.className = 'swiper-slide';
-                            slide.innerHTML = `
-                                <div class="rounded overflow-hidden shadow-md bg-white">
-                                    <div class="aspect-video">
-                                        <iframe class="w-full h-full" 
-                                                src="${video.embed_url}" 
-                                                frameborder="0" 
-                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                                                allowfullscreen
-                                                loading="lazy"></iframe>
-                                    </div>
-                                    <div class="p-4 text-sm">${video.title}</div>
-                                </div>
-                            `;
-                            videoWrapper.appendChild(slide);
-                        });
-                    }
+                        selfManagementGrid.appendChild(videoCard);
+                    });
+
+                    loadingElement.style.display = 'none';
+                    selfManagementGrid.style.display = 'grid';
                 }
             } catch (error) {
                 console.error('Error fetching videos:', error);
+                const loadingElement = document.getElementById('selfmanagement-loading');
+                if (loadingElement) {
+                    loadingElement.textContent = 'Error loading content';
+                }
             }
-
-            const educationSwiper = new Swiper('.educationSwiper', {
-                slidesPerView: 1.3,
-                spaceBetween: 16,
-                breakpoints: {
-                    1024: {
-                        slidesPerView: 2.9,
-                    },
-                },
-                on: {
-                    init: function() {
-                        const container = document.querySelector('.educationSwiper');
-                        const loading = container.querySelector('.swiper-loading');
-                        const wrapper = container.querySelector('.swiper-wrapper');
-                        if (loading) loading.style.display = 'none';
-                        if (wrapper) wrapper.style.display = 'flex';
-                    }
-                }
-            });
-
-            const videoSwiper = new Swiper('.videoSwiper', {
-                slidesPerView: 1.3,
-                spaceBetween: 16,
-                breakpoints: {
-                    1024: {
-                        slidesPerView: 2.9,
-                    },
-                },
-                on: {
-                    init: function() {
-                        const container = document.querySelector('.videoSwiper');
-                        const loading = container.querySelector('.swiper-loading');
-                        const wrapper = container.querySelector('.swiper-wrapper');
-                        if (loading) loading.style.display = 'none';
-                        if (wrapper) wrapper.style.display = 'flex';
-                    }
-                }
-            });
         });
+
+        function toggleReadMore(subtitleId, fullText, truncatedText, button) {
+            const span = document.getElementById(subtitleId);
+            const isExpanded = button.textContent === 'Less';
+
+            if (isExpanded) {
+                span.textContent = truncatedText;
+                button.textContent = 'More';
+            } else {
+                span.textContent = fullText;
+                button.textContent = 'Less';
+            }
+        }
     </script>
 @endpush

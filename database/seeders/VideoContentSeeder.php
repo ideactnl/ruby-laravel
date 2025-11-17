@@ -17,20 +17,23 @@ class VideoContentSeeder extends Seeder
             // Education Page Videos
             [
                 'title' => 'Wat is de menstruele cyclus?',
+                'subtitle' => 'Klik voor verhalen van anderen over de menstruele cyclus, van menstruatieverhalen.',
                 'location' => 'education',
                 'order' => 1,
-                'condition' => null, // NA - not shown on daily view
+                'condition' => null, 
                 'video_url' => 'https://youtube.com/shorts/YHxWLpAfY_M?feature=share',
             ],
             [
                 'title' => 'Wat is normaal?',
+                'subtitle' => 'Klik voor verhalen van anderen over een normale cyclus van menstruatieverhalen.',
                 'location' => 'education',
                 'order' => 2,
-                'condition' => null, // NA
+                'condition' => null,
                 'video_url' => 'https://youtube.com/shorts/P1Cs00lgyHE?feature=share',
             ],
             [
                 'title' => 'Menstruatiepijn',
+                'subtitle' => 'Klik hier voor verhalen van anderen over pijn, van menstruatieverhalen.',
                 'location' => 'education',
                 'order' => 3,
                 'condition' => 'painscore > 4',
@@ -38,6 +41,7 @@ class VideoContentSeeder extends Seeder
             ],
             [
                 'title' => 'Bloedverlies',
+                'subtitle' => 'Klik hier voor verhalen van anderen over bloedverlies, van menstruatieverhalen.',
                 'location' => 'education',
                 'order' => 4,
                 'condition' => 'menstruation_bloodloss = true',
@@ -45,13 +49,15 @@ class VideoContentSeeder extends Seeder
             ],
             [
                 'title' => 'Alarmsignalen',
+                'subtitle' => null,
                 'location' => 'education',
                 'order' => 5,
-                'condition' => null, // NA
+                'condition' => null,
                 'video_url' => 'https://youtube.com/shorts/jbQFJYLtDz4?feature=share',
             ],
             [
                 'title' => 'Bijkomende klachten',
+                'subtitle' => null,
                 'location' => 'education',
                 'order' => 6,
                 'condition' => 'general_health.any = true',
@@ -59,13 +65,15 @@ class VideoContentSeeder extends Seeder
             ],
             [
                 'title' => 'Menstruele aandoeningen',
+                'subtitle' => null,
                 'location' => 'education',
                 'order' => 7,
-                'condition' => null, // NA
+                'condition' => null,
                 'video_url' => 'https://youtube.com/shorts/aprAcqpSMq8?feature=share',
             ],
             [
                 'title' => 'Energie',
+                'subtitle' => null,
                 'location' => 'education',
                 'order' => 8,
                 'condition' => 'energy_level < 0',
@@ -73,6 +81,7 @@ class VideoContentSeeder extends Seeder
             ],
             [
                 'title' => 'Humeur & menstruele cyclus',
+                'subtitle' => 'Klik voor verhalen van anderen over humeur, van menstruatieverhalen.',
                 'location' => 'education',
                 'order' => 9,
                 'condition' => 'mood.symptoms = true',
@@ -80,20 +89,23 @@ class VideoContentSeeder extends Seeder
             ],
             [
                 'title' => 'Vruchtbaarheid',
+                'subtitle' => null,
                 'location' => 'education',
                 'order' => 10,
-                'condition' => null, // NA
+                'condition' => null,
                 'video_url' => 'https://youtube.com/shorts/xf2E1tNm_Bs?feature=share',
             ],
             [
                 'title' => 'Wat voor behandelingen zijn er?',
+                'subtitle' => null,
                 'location' => 'education',
                 'order' => 11,
-                'condition' => null, // NA
+                'condition' => null,
                 'video_url' => 'https://youtube.com/shorts/5tGYtC_OqQQ?feature=share',
             ],
             [
                 'title' => 'Poep & menstruele cyclus',
+                'subtitle' => null,
                 'location' => 'education',
                 'order' => 12,
                 'condition' => 'stool_urine.issues = true',
@@ -103,13 +115,15 @@ class VideoContentSeeder extends Seeder
             // Self-Management Page Videos
             [
                 'title' => 'Pijn verminderen door ontspanning',
+                'subtitle' => null,
                 'location' => 'self-management',
                 'order' => 1,
-                'condition' => null, // NA
+                'condition' => null,
                 'video_url' => 'https://youtube.com/shorts/oxTaiuHAq-U?feature=share',
             ],
             [
                 'title' => 'Pijnstillers',
+                'subtitle' => null,
                 'location' => 'self-management',
                 'order' => 2,
                 'condition' => 'painscore > 4',
@@ -117,6 +131,7 @@ class VideoContentSeeder extends Seeder
             ],
             [
                 'title' => 'Slapen',
+                'subtitle' => null,
                 'location' => 'self-management',
                 'order' => 3,
                 'condition' => 'sleep.issues = true',
@@ -124,6 +139,7 @@ class VideoContentSeeder extends Seeder
             ],
             [
                 'title' => 'Sporten',
+                'subtitle' => null,
                 'location' => 'self-management',
                 'order' => 4,
                 'condition' => 'exercise_minutes BETWEEN 0 AND 30',
@@ -136,6 +152,7 @@ class VideoContentSeeder extends Seeder
             
             VideoContent::create([
                 'title' => $videoData['title'],
+                'subtitle' => $videoData['subtitle'],
                 'location' => $videoData['location'],
                 'order' => $videoData['order'],
                 'condition' => $videoData['condition'],

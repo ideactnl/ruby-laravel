@@ -6,8 +6,7 @@
     font-style: normal;
     font-weight: 100 900;
     font-display: swap;
-    src: url("../fonts/Geist/Geist-VariableFont_wght.ttf")
-        format("truetype-variations");
+    src: url("../fonts/Geist/Geist-VariableFont_wght.ttf") format("truetype-variations");
 }
 
 /* Hide scrollbar but keep scroll functionality */
@@ -61,6 +60,7 @@ body {
 }
 
 @layer base {
+
     html,
     body {
         font-family: var(--font-family-sans);
@@ -171,9 +171,6 @@ body {
         -webkit-overflow-scrolling: touch;
         overscroll-behavior: contain;
     }
-    .card-new-dec {
-        height: 38vh;
-    }
 
     @media (max-width: 768px) {
         .pbac-mobile-events .fc-daygrid-day-frame {
@@ -193,7 +190,7 @@ body {
         }
 
         .pbac-calendar-icon {
-            width: 18px ;
+            width: 18px;
             height: 18px;
             min-width: 18px;
             min-height: 18px;
@@ -243,30 +240,22 @@ body {
 }
 
 @media (max-width: 767px) {
-    tr.fc-scrollgrid-section.fc-scrollgrid-section-body
-        .pbac-selected-domains-3 {
+    tr.fc-scrollgrid-section.fc-scrollgrid-section-body .pbac-selected-domains-3 {
         display: block !important;
     }
+
     .self-management .p-4.text-sm {
-    min-height: 74px;
-}
-    .card-new-dec {
-        height: 206px;
-    }
-    .pbac-day-count-1 .fc-daygrid-event-harness {
-        padding-top: 10px !important;
+        min-height: 74px;
     }
 
-    .card-new-dec h4 {
-        font-size: 15px;
-        font-weight: 400;
+    */ .card-new-dec .text-sm.font-medium {
+        font-size: 16px;
     }
-    .card-new-dec .text-sm.font-medium {
-        font-size: 13px;
-    }
+
     .pbac-day-count-0 .fc-daygrid-day-top.justify-center {
         width: 100% !important;
     }
+
     .fc-daygrid-day-events {
         display: none;
     }
@@ -295,6 +284,7 @@ body {
         margin: auto;
         flex-direction: column;
     }
+
     .three-present.pbac-day-count-1 {
         display: block;
     }
@@ -302,6 +292,7 @@ body {
     .three-present.pbac-day-count-2 .fc-daygrid-event-harness {
         padding-top: 0px;
     }
+
     .three-present .fc-daygrid-day-top.justify-center {
         justify-content: flex-end;
         padding-left: 2px;
@@ -310,6 +301,7 @@ body {
     .pbac-day-count-1 .fc-daygrid-day-top.justify-center {
         width: 100%;
     }
+
     .three-present.pbac-day-count-1 .fc-daygrid-day-top.justify-center {
         width: 48%;
         float: left;
@@ -327,14 +319,17 @@ body {
         height: 80px;
         padding-top: 20px !important;
     }
+
     .pbac-day-count-2 .fc-daygrid-event-harness:nth-last-child(2) {
         justify-content: center !important;
         padding-top: 10px;
 
     }
-.three-present .fc-daygrid-event-harness {
-    padding: 0 !important;
-}
+
+    .three-present .fc-daygrid-event-harness {
+        padding: 0 !important;
+    }
+
     .pbac-day-count-2 .fc-daygrid-event-harness:nth-last-child(1) {
         justify-content: center !important;
         padding-top: 10px;
@@ -392,6 +387,7 @@ body {
     padding-top: 0px !important;
     float: right;
 }
+
 .pbac-day-count-2 .fc-daygrid-event-harness:nth-last-child(2) {
     justify-content: end;
 }
@@ -429,6 +425,11 @@ body {
     -webkit-overflow-scrolling: touch;
 }
 
+.education-flip{
+    width: 100%;
+    height: 100%;
+}
+
 /* Mobile chart optimizations */
 @media (max-width: 768px) {
     .overflow-x-auto {
@@ -436,31 +437,8 @@ body {
         scrollbar-color: #cbd5e1 #f1f5f9;
     }
 }
-@media (max-width: 430px) {
-    .card-new-dec {
-        height: 219px;
-    }
-}
-@media (max-width: 414px) {
-    .card-new-dec {
-        height: 213px;
-    }
-}
-@media (max-width: 390px) {
-    .card-new-dec {
-        height: 202px;
-    }
-}
-@media (max-width: 375px) {
-    .card-new-dec {
-        height: 196px;
-    }
-}
-@media (max-width: 360px) {
-    .card-new-dec {
-        height: 189px;
-    }
-}
+
+
 @media (min-width: 350px) and (max-width: 360px) {
     body .fc-scroller-harness .pbac-calendar-icon {
         min-width: 14px !important;
@@ -469,23 +447,28 @@ body {
         width: 15px;
         height: 15px;
     }
-body .fc-scroller-harness .fc-daygrid-day-number{
-    font-size: 14px !important;
-}
+
+    body .fc-scroller-harness .fc-daygrid-day-number {
+        font-size: 14px !important;
+    }
+
     .three-present .fc-daygrid-day-top.justify-center {
         padding-left: 2px;
     }
 }
 
 @keyframes shake {
+
     0%,
     100% {
         transform: translateX(0);
     }
+
     20%,
     60% {
         transform: translateX(-4px);
     }
+
     40%,
     80% {
         transform: translateX(4px);
@@ -502,33 +485,37 @@ body .fc-scroller-harness .fc-daygrid-day-number{
         gap: 20px;
         display: flex;
     }
+
     .pbac-day-count-3 .fc-daygrid-event-harness {
         width: 42%;
         float: left;
         display: flex;
         align-items: center;
     }
+
     .fc-daygrid-day-top.justify-center {
         width: 42%;
         float: left;
     }
+
     .fc-daygrid-day {
         padding-top: 10px !important;
         padding-bottom: 10px !important;
     }
+
     .pbac-day-count-2 .fc-daygrid-day-top.justify-center,
     .pbac-day-count-1 .fc-daygrid-day-top.justify-center {
         width: 100%;
     }
+
     .pbac-day-count-2 .fc-daygrid-event-harness {
         width: 43%;
     }
+
     .pbac-day-count-0 .fc-daygrid-day-top.justify-center {
         width: 100% !important;
     }
-    .card-new-dec {
-        height: 246px;
-    }
+
     .msg-send {
         grid-template-columns: 1fr;
     }

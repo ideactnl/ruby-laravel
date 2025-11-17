@@ -151,28 +151,34 @@
                 <div class="swiper pl-0 md:pl-0" x-ref="vidSwiper">
                     <div class="swiper-wrapper">
                         <template x-for="(vid,vi) in videos" :key="'vid-' + vi">
-                            <div class="swiper-slide md:!w-auto">
-                                <a :href="vid.type === 'youtube' ? `https://www.youtube.com/watch?v=${vid.id}` : (vid.src || '#')"
-                                    target="_blank" class="block">
-                                    <div
-                                        class="w-full md:w-[500px] h-[200px] md:h-[240px] rounded-lg bg-rose-50 shadow-sm border border-gray-200 flex items-center justify-center ml-0 md:mx-auto relative overflow-hidden">
+                            <div class="swiper-slide">
+                                <div
+                                    class="dv-video-card w-full rounded-lg bg-white shadow-sm border border-gray-200 ml-0 md:mx-auto overflow-hidden flex flex-col">
+                                    <div class="dv-video-media aspect-[9/16]">
                                         <template x-if="vid.type==='youtube'">
-                                            <img :src="`https://img.youtube.com/vi/${vid.id}/hqdefault.jpg`"
-                                                alt="Video thumbnail" class="w-full h-full object-cover rounded" />
+                                            <iframe class="w-full h-full"
+                                                :src="`https://www.youtube-nocookie.com/embed/${vid.id}?rel=0&modestbranding=1`"
+                                                frameborder="0"
+                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                allowfullscreen loading="lazy"></iframe>
                                         </template>
                                         <template x-if="vid.type==='mp4'">
-                                            <div class="w-full h-full bg-black/10 rounded"></div>
+                                            <video class="w-full h-full object-cover" :src="vid.src" controls
+                                                playsinline></video>
                                         </template>
-                                        <div class="absolute inset-0 flex items-center justify-center">
-                                            <span
-                                                class="inline-flex h-12 w-12 items-center justify-center rounded-full bg-white/90 shadow">
-                                                <i class="fa-solid fa-play text-primary"></i>
-                                            </span>
-                                        </div>
                                     </div>
-                                </a>
-                                <div class="mt-2 text-sm font-medium text-gray-800 w-full md:w-[500px] mx-auto" x-cloak
-                                    x-text="vid.title || '{{ __('participant.video') }}'"></div>
+                                    <div class="dv-video-caption p-3 text-sm text-gray-600 w-full"
+                                        x-data="{ expanded: false, max: 20 }" x-show="vid.subtitle && vid.subtitle.length"
+                                        x-cloak>
+                                        <span
+                                            x-text="!expanded ? (vid.subtitle.length > max ? vid.subtitle.slice(0,max) + '...' : vid.subtitle) : vid.subtitle"></span>
+                                        <template x-if="vid.subtitle && vid.subtitle.length > max">
+                                            <button class="text-primary ml-1 text-xs font-medium"
+                                                @click="expanded = !expanded; $nextTick(() => window.CascadeSyncDailyCaptions && window.CascadeSyncDailyCaptions())"
+                                                x-text="expanded ? 'Less' : 'More'"></button>
+                                        </template>
+                                    </div>
+                                </div>
                             </div>
                         </template>
                     </div>
@@ -180,7 +186,6 @@
             </div>
         </template>
 
-        <!-- Domain Detail Modal -->
         <div x-show="showModal" x-cloak class="fixed inset-0 z-50 overflow-y-auto" @keydown.escape.window="closeModal()">
             <!-- Backdrop -->
             <div class="fixed inset-0 bg-white bg-opacity-20 backdrop-blur-sm transition-opacity" @click="closeModal()">

@@ -8,6 +8,7 @@ class VideoContent extends Model
 {
     protected $fillable = [
         'title',
+        'subtitle',
         'location',
         'order',
         'condition',

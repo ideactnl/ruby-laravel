@@ -101,8 +101,6 @@ return [
     'learn_more_about_subject' => 'Learn more about the subject in this video.',
     'another_educational_topic' => 'Another educational topic presented here.',
     'myth' => 'MYTH',
-    'taking_pill_without_break_bad' => 'Taking the anticonception pill without a break is bad',
-    'pill_continuous_explanation' => 'You don\'t have to stop taking the pill every 21 days. You can also take the pill continuously, and that\'s totally fine. After 2 or 3 months, you might get some breakthrough bleeding. In that case, it can be helpful to include a seven day pill break.',
     'cant_exercise_during_period' => 'You can\'t exercise when you\'re on your period',
     'exercise_helps_period_symptoms' => 'Exercising can actually help with period symptoms! It can reduce cramps, and your body releases feel-good chemicals that can improve your mood.',
 

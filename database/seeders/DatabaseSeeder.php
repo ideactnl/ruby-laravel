@@ -14,6 +14,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             RolesAndUsersSeeder::class,
             ParticipantPbacSeeder::class,
+            VideoContentSeeder::class,
         ]);
     }
 }
