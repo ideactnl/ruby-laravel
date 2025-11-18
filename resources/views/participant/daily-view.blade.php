@@ -168,14 +168,22 @@
                                         </template>
                                     </div>
                                     <div class="dv-video-caption p-3 text-sm text-gray-600 w-full"
-                                        x-data="{ expanded: false, max: 20 }" x-show="vid.subtitle && vid.subtitle.length"
-                                        x-cloak>
-                                        <span
-                                            x-text="!expanded ? (vid.subtitle.length > max ? vid.subtitle.slice(0,max) + '...' : vid.subtitle) : vid.subtitle"></span>
-                                        <template x-if="vid.subtitle && vid.subtitle.length > max">
-                                            <button class="text-primary ml-1 text-xs font-medium"
-                                                @click="expanded = !expanded; $nextTick(() => window.CascadeSyncDailyCaptions && window.CascadeSyncDailyCaptions())"
-                                                x-text="expanded ? 'Less' : 'More'"></button>
+                                        x-data="{ expanded: false, max: 20, sub: (vid && vid.subtitle) || '' }" x-cloak>
+                                        <template x-if="sub && sub.length">
+                                            <div>
+                                                <span
+                                                    x-text="!expanded ? (sub.length > max ? sub.slice(0,max) + '...' : sub) : sub"></span>
+                                                <template x-if="sub.length > max">
+                                                    <button class="text-primary ml-1 text-xs font-medium"
+                                                        @click="expanded = !expanded; $nextTick(() => window.CascadeSyncDailyCaptions && window.CascadeSyncDailyCaptions())"
+                                                        x-text="expanded ? 'Less' : 'More'"></button>
+                                                </template>
+                                            </div>
+                                        </template>
+                                        <template x-if="!sub || !sub.length">
+                                            <div>
+                                                <div class="h-[16px]"></div>
+                                            </div>
                                         </template>
                                     </div>
                                 </div>

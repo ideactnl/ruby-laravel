@@ -229,11 +229,12 @@ export class SwiperManager {
 
         const captions = wrapper.querySelectorAll('.dv-video-caption');
         const cards = wrapper.querySelectorAll('.dv-video-card');
-        const medias = wrapper.querySelectorAll('.dv-video-media');
-        if (!cards || cards.length === 0 || !medias || medias.length === 0) return;
+        if (!cards || cards.length === 0) return;
 
-        captions.forEach((el) => (el.style.height = 'auto'));
-        medias.forEach((el) => (el.style.height = ''));
+        captions.forEach((el) => {
+            el.style.height = 'auto';
+            el.style.minHeight = '';
+        });
 
         let max = 0;
         captions.forEach((el) => {
@@ -245,21 +246,8 @@ export class SwiperManager {
 
         if (!max) return;
 
-        captions.forEach((el) => (el.style.height = `${max}px`));
-
-        cards.forEach((card) => {
-            const media = card.querySelector('.dv-video-media');
-            const caption = card.querySelector('.dv-video-caption');
-            if (!media) return;
-            const hasSubtitle = caption && caption.textContent && caption.textContent.trim().length > 0;
-            if (!hasSubtitle) {
-                const current = media.offsetHeight;
-                if (current > 0) {
-                    media.style.height = `${current + max}px`;
-                }
-            } else {
-                media.style.height = '';
-            }
+        captions.forEach((el) => {
+            el.style.height = `${max}px`;
         });
     }
 }

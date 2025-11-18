@@ -169,7 +169,6 @@ export class DataManager {
           src: video.video_url
         }));
         
-        console.log(`Loaded ${this.component.videos.length} conditional videos for ${this.component.date}`);
       } else {
         this.component.videos = [];
       }

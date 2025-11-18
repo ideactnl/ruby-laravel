@@ -51,7 +51,7 @@
                             const subtitleId = `subtitle-${video.id}`;
 
                             subtitleContent = `
-                                <div class="text-sm text-gray-600">
+                                <div class="text-sm text-gray-600 sm-video-caption">
                                     <span id="${subtitleId}">${truncated}</span>
                                     ${isLong ? `
                                         <button onclick="toggleReadMore('${subtitleId}', '${video.subtitle.replace(/'/g, "\\'")}', '${truncated.replace(/'/g, "\\'")}', this)" 
@@ -73,10 +73,7 @@
                                     loading="lazy"></iframe>
                         </div>
 
-                        ${subtitleContent
-                                ? `<div class="p-4 flex-1 flex items-start">${subtitleContent}</div>`
-                                : ''
-                            }
+                        <div class="p-4 flex-1 flex items-start">${subtitleContent || '<div class="text-sm text-gray-600 sm-video-caption"></div>'}</div>
                         `;
 
                         selfManagementGrid.appendChild(videoCard);

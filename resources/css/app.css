@@ -248,7 +248,7 @@ body {
         min-height: 74px;
     }
 
-    */ .card-new-dec .text-sm.font-medium {
+    .card-new-dec .text-sm.font-medium {
         font-size: 16px;
     }
 
@@ -425,7 +425,7 @@ body {
     -webkit-overflow-scrolling: touch;
 }
 
-.education-flip{
+.education-flip {
     width: 100%;
     height: 100%;
 }

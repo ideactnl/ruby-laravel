@@ -77,7 +77,7 @@
                             const subtitleId = `subtitle-${video.id}`;
 
                             subtitleContent = `
-                                    <div class="text-sm text-gray-600">
+                                    <div class="text-sm text-gray-600 edu-video-caption">
                                         <span id="${subtitleId}">${truncated}</span>
                                         ${isLong ? `
                                             <button onclick="toggleReadMore('${subtitleId}', '${video.subtitle.replace(/'/g, "\\'")}', '${truncated.replace(/'/g, "\\'")}', this)" 
@@ -90,7 +90,7 @@
                         }
 
                         videoCard.innerHTML = `
-                            <div class="aspect-[9/16] h-full">
+                            <div class="aspect-[9/16] edu-video-media">
                                 <iframe class="w-full h-full" 
                                         src="${video.embed_url}" 
                                         frameborder="0" 
@@ -99,10 +99,7 @@
                                         loading="lazy"></iframe>
                             </div>
 
-                            ${subtitleContent
-                                ? `<div class="p-4 flex-1 flex items-start">${subtitleContent}</div>`
-                                : ''
-                            }
+                            <div class="p-4 flex-1 flex items-start">${subtitleContent || '<div class="text-sm text-gray-600 edu-video-caption"></div>'}</div>
                         `;
 
                         educationGrid.appendChild(videoCard);
@@ -111,9 +108,12 @@
                             const flipCardContainer = document.createElement('div');
                             flipCardContainer.className = 'rounded overflow-hidden shadow-md bg-white flex flex-col';
                             flipCardContainer.innerHTML = `
-                                <div class="flip-wrapper h-full">
-                                    <div class="aspect-[9/16] h-full w-full">
+                                <div class="flip-wrapper h-full flex flex-col">
+                                    <div class="aspect-[9/16] w-full">
                                         ${flipCard}
+                                    </div>
+                                    <div class="p-4 flex-1 flex items-center item">
+                                        <div class="text-sm text-gray-600 edu-video-caption">Myth &amp; Fact</div>
                                     </div>
                                 </div>
                             `;
@@ -164,6 +164,8 @@
                 card.style.height = maxHeight + 'px';
             });
         }
+
+        // Removed grid-wide equalization so More/Less only affects the clicked caption
 
 
         function triggerHapticFeedback(type = 'light') {
