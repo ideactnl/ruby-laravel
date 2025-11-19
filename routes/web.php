@@ -2,63 +2,49 @@
 
 use App\Http\Controllers\Api\MedicalSpecialist\MedicalSpecialistController;
 use App\Http\Controllers\Api\Participant\ParticipantWebApiController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\PbacExportController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
-Route::get("/", function () {
+Route::get('/', function () {
     return view('index');
 });
 
+/*
+|--------------------------------------------------------------------------
+| Language Switch
+|--------------------------------------------------------------------------
+*/
 Route::post('/switch-language', [LanguageController::class, 'switch'])->name('switch-language');
 
 /*
 |--------------------------------------------------------------------------
-| Localized Routes Helper Function
+| Participant Routes
 |--------------------------------------------------------------------------
 */
-$registerParticipantRoutes = function ($locale = null) {
-    $prefix = $locale ? "{$locale}/participant" : 'participant';
-    
-    Route::middleware(['web'])->prefix($prefix)->group(function () use ($locale) {
-        Route::get('/web-login', function () use ($locale) {
-            if (Auth::guard('participant-web')->check()) {
-                $dashboardRoute = $locale ? "/{$locale}/participant/dashboard" : '/participant/dashboard';
-                return redirect($dashboardRoute);
-            }
-            return view('participant.web_login');
-        })->name($locale ? "{$locale}.participant.web.login" : 'participant.web.login');
+Route::prefix('participant')->middleware(['web'])->group(function () {
 
-        Route::middleware('auth.participant')->group(function () use ($locale) {
-            $namePrefix = $locale ? "{$locale}." : '';
-            
-            Route::get('/dashboard', [ParticipantWebApiController::class, 'dashboardPage'])->name($namePrefix . 'participant.dashboard');
-            Route::get('/export', [ParticipantWebApiController::class, 'exportPage'])->name($namePrefix . 'participant.export');
-            Route::get('/daily-view', [ParticipantWebApiController::class, 'dailyViewPage'])->name($namePrefix . 'participant.daily-view');
-            Route::get('/education', [ParticipantWebApiController::class, 'education'])->name($namePrefix . 'participant.education');
-            Route::get('/self-management', [ParticipantWebApiController::class, 'selfManagement'])->name($namePrefix . 'participant.self-management');
-            Route::get('/external-links', [ParticipantWebApiController::class, 'externalLinks'])->name($namePrefix . 'participant.external-links');
-            Route::get('/general-information', [ParticipantWebApiController::class, 'generalInformation'])->name($namePrefix . 'participant.general-information');
-            Route::get('/api/v1/participant/profile', [ParticipantWebApiController::class, 'profile'])->name($namePrefix . 'participant.api.profile');
-        });
+    Route::get('/web-login', function () {
+        if (Auth::guard('participant-web')->check()) {
+            return redirect('/participant/dashboard');
+        }
+
+        return view('participant.web_login');
+    })->name('participant.web.login');
+
+    Route::middleware('auth.participant')->group(function () {
+        Route::get('/dashboard', [ParticipantWebApiController::class, 'dashboardPage'])->name('participant.dashboard');
+        Route::get('/export', [ParticipantWebApiController::class, 'exportPage'])->name('participant.export');
+        Route::get('/daily-view', [ParticipantWebApiController::class, 'dailyViewPage'])->name('participant.daily-view');
+        Route::get('/education', [ParticipantWebApiController::class, 'education'])->name('participant.education');
+        Route::get('/self-management', [ParticipantWebApiController::class, 'selfManagement'])->name('participant.self-management');
+        Route::get('/external-links', [ParticipantWebApiController::class, 'externalLinks'])->name('participant.external-links');
+        Route::get('/general-information', [ParticipantWebApiController::class, 'generalInformation'])->name('participant.general-information');
+        Route::get('/api/v1/participant/profile', [ParticipantWebApiController::class, 'profile'])->name('participant.api.profile');
     });
-};
-
-/*
-|--------------------------------------------------------------------------
-| Sanctum Web Auth Routes (For Participant)
-|--------------------------------------------------------------------------
-*/
-// Default routes (English)
-$registerParticipantRoutes();
-
-foreach (array_keys(config('app.available_locales', [])) as $locale) {
-    if ($locale !== config('app.locale')) {
-        $registerParticipantRoutes($locale);
-    }
-}
+});
 
 /*
 |--------------------------------------------------------------------------
@@ -66,9 +52,10 @@ foreach (array_keys(config('app.available_locales', [])) as $locale) {
 |--------------------------------------------------------------------------
 */
 Route::prefix('medical-specialist')->name('medical-specialist.')->group(function () {
+
     Route::get('/login', [MedicalSpecialistController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [MedicalSpecialistController::class, 'login'])->name('login.submit');
-    
+
     Route::middleware('auth.medical-specialist')->group(function () {
         Route::get('/dashboard', [MedicalSpecialistController::class, 'dashboard'])->name('dashboard');
         Route::get('/chart-data', [MedicalSpecialistController::class, 'getChartData'])->name('chart-data');
@@ -86,8 +73,9 @@ Route::prefix('medical-specialist')->name('medical-specialist.')->group(function
 | Authenticated Routes (Laravel UI)
 |--------------------------------------------------------------------------
 */
-Route::get('/admin', fn() => redirect()->to('/login'));
+Route::get('/admin', fn () => redirect()->to('/login'));
 Auth::routes(['register' => false]);
+
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
     Route::post('/profile', [UserController::class, 'updateSelf'])->name('profile.update');
@@ -102,7 +90,6 @@ Route::middleware(['auth', 'role:superadmin'])->group(function () {
     Route::resource('users', UserController::class);
     Route::get('logs', [PbacExportController::class, 'logs'])->name('logs');
 });
-
 
 /*
 |--------------------------------------------------------------------------

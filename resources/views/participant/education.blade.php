@@ -113,7 +113,6 @@
                                         ${flipCard}
                                     </div>
                                     <div class="p-4 flex-1 flex items-center item">
-                                        <div class="text-sm text-gray-600 edu-video-caption">Myth &amp; Fact</div>
                                     </div>
                                 </div>
                             `;
