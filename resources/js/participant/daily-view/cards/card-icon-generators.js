@@ -138,7 +138,7 @@ export class CardIconGenerators {
     if (!pillar) return { severityIcons: [], statusIcon: null };
 
     const symptoms = pillar.symptoms || [];
-    const energy = pillar.energyLevel ?? 0;
+    const energy = pillar.energyLevel;
 
     const severityIcons = [];
     SYMPTOM_KEYS.forEach(symptomKey => {
@@ -151,8 +151,16 @@ export class CardIconGenerators {
       });
     });
 
+    const energyIconMap = {
+      [-2]: '/images/sleep.png',
+      [-1]: '/images/general_health_1.png',
+      [0]: '/images/general_health_2.png',
+      [1]: '/images/general_health_3.png',
+      [2]: '/images/general_health_4.png'
+    };
+
     const statusIcon = {
-      src: energy === 1 ? '/images/sleep.png' : `/images/general_health_${Math.min(energy - 1, 4)}.png`,
+      src: energyIconMap[energy] || '/images/general_health.png',
       alt: 'Energy Level'
     };
 

@@ -104,7 +104,7 @@ class StoreOrUpdatePbacRequest extends FormRequest
 
             // ** General health ** //
             'isGeneralHealthAnswered' => 'nullable|boolean',
-            'generalHealthEnergyLevelSliderValue' => 'nullable|integer|min:1|max:5',
+            'generalHealthEnergyLevelSliderValue' => 'nullable|integer|min:-2|max:2',
             'isGeneralHealthDizzy' => 'nullable|boolean',
             'isGeneralHealthNauseous' => 'nullable|boolean',
             'isGeneralHealthHeadacheMigraine' => 'nullable|boolean',
@@ -298,7 +298,7 @@ class StoreOrUpdatePbacRequest extends FormRequest
 
             // ** General health ** //
             'isGeneralHealthAnswered' => ['description' => 'General health section answered', 'example' => 1, 'required' => false, 'type' => 'boolean'],
-            'generalHealthEnergyLevelSliderValue' => ['description' => 'Energy level slider (1=Very Low, 2=Low, 3=Moderate, 4=Good, 5=High)', 'example' => 4, 'required' => false, 'type' => 'integer'],
+            'generalHealthEnergyLevelSliderValue' => ['description' => 'Energy level slider (-2=No energy, -1=Low, 0=Normal, 1=High, 2=Maximum)', 'example' => 0, 'required' => false, 'type' => 'integer'],
             'isGeneralHealthDizzy' => ['description' => 'Dizzy', 'example' => 0, 'required' => false, 'type' => 'boolean'],
             'isGeneralHealthNauseous' => ['description' => 'Nauseous', 'example' => 0, 'required' => false, 'type' => 'boolean'],
             'isGeneralHealthHeadacheMigraine' => ['description' => 'Headache/migraine', 'example' => 0, 'required' => false, 'type' => 'boolean'],

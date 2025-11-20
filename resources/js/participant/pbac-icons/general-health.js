@@ -1,6 +1,6 @@
 /**
  * General Health Icon Mapping
- * Maps energy levels 1-5 to specific icons
+ * Maps energy levels -2..2 to specific icons
  */
 
 import { createIconResult, getTranslatedTooltip } from './config.js';
@@ -16,11 +16,11 @@ const SYMPTOM_LABELS = {
 };
 
 const ENERGY_MAP = {
-  1: { icon: 'sleep.png' },
-  2: { icon: 'general_health_1.png' },
-  3: { icon: 'general_health_2.png' },
-  4: { icon: 'general_health_3.png' },
-  5: { icon: 'general_health_4.png' }
+  [-2]: { icon: 'sleep.png' },
+  [-1]: { icon: 'general_health_1.png' },
+  [0]: { icon: 'general_health_2.png' },
+  [1]: { icon: 'general_health_3.png' },
+  [2]: { icon: 'general_health_4.png' }
 };
 
 export function getGeneralHealthIcon(value) {
@@ -28,12 +28,12 @@ export function getGeneralHealthIcon(value) {
     return createIconResult('general_health.png', getTranslatedTooltip('tooltip_general_health'));
   }
 
-  const energyLevel = value.energyLevel || 1;
+  const energyLevel = (value.energyLevel === null || value.energyLevel === undefined) ? 0 : value.energyLevel;
   const symptoms = value.symptoms || [];
 
-  const mapping = ENERGY_MAP[energyLevel] || ENERGY_MAP[1];
+  const mapping = ENERGY_MAP[energyLevel] || { icon: 'general_health.png' };
 
-  let tooltip = `${getTranslatedTooltip('tooltip_energy_level')}: ${energyLevel}/5`;
+  let tooltip = `${getTranslatedTooltip('tooltip_energy_level')}: ${energyLevel}`;
 
   if (symptoms.length > 0) {
     const friendlySymptoms = symptoms.map(symptom =>

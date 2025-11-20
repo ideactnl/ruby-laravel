@@ -62,15 +62,15 @@ export class TooltipGenerators {
   }
 
   static getEnergyTooltip(pillar) {
-    if (!pillar || !pillar.energyLevel) return getTooltipTranslation('tooltip_no_energy_level_recorded');
+    if (!pillar || pillar.energyLevel === null || pillar.energyLevel === undefined) return getTooltipTranslation('tooltip_no_energy_level_recorded');
     const energy = pillar.energyLevel;
     const symptoms = pillar.symptoms || [];
 
     if (symptoms.length > 0) {
       const friendlySymptoms = symptoms.map(symptom => getSymptomLabel(symptom));
-      return `${getTooltipTranslation('tooltip_energy')} ${energy}/5 | ${getTooltipTranslation('tooltip_symptoms')} ${friendlySymptoms.join(', ')}`;
+      return `${getTooltipTranslation('tooltip_energy')} ${energy} | ${getTooltipTranslation('tooltip_symptoms')} ${friendlySymptoms.join(', ')}`;
     }
-    return `${getTooltipTranslation('tooltip_energy_level')} ${energy}/5`;
+    return `${getTooltipTranslation('tooltip_energy_level')} ${energy}`;
   }
 
   static getMoodTooltip(pillar) {

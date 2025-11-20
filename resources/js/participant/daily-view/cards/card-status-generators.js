@@ -123,33 +123,34 @@ export class CardStatusGenerators {
    * General Health Status - Based on energy level and symptoms
    */
   static getGeneralHealthStatus(pillar) {
-    const energy = pillar?.energyLevel ?? 0;
+    const energy = pillar?.energyLevel;
     const symptoms = pillar?.symptoms || [];
     
     let statusColor = 'bg-gray-300';
     let statusText = getCardStatusTranslation('card_general_health_no_energy_data');
     let context = '';
     
-    if (energy > 0) {
+    if (energy !== null && energy !== undefined) {
+      const e = Number(energy);
       const energyLevelMap = {
-        1: 'card_general_health_energy_very_low',
-        2: 'card_general_health_energy_low', 
-        3: 'card_general_health_energy_moderate',
-        4: 'card_general_health_energy_good',
-        5: 'card_general_health_energy_high'
+        [-2]: 'card_general_health_energy_very_low',
+        [-1]: 'card_general_health_energy_low',
+        [0]: 'card_general_health_energy_moderate',
+        [1]: 'card_general_health_energy_good',
+        [2]: 'card_general_health_energy_high'
       };
-      context = getCardStatusTranslation(energyLevelMap[energy] || 'card_general_health_unknown');
-      
-      if (energy >= 5) {
+      context = getCardStatusTranslation(energyLevelMap[e] || 'card_general_health_unknown');
+
+      if (e >= 2) {
         statusColor = symptoms.length > 0 ? 'bg-yellow-500' : 'bg-green-500';
         statusText = symptoms.length > 0 ? getCardStatusTranslation('card_general_health_high_energy_with_symptoms') : getCardStatusTranslation('card_general_health_high_energy');
-      } else if (energy >= 4) {
+      } else if (e === 1) {
         statusColor = symptoms.length > 0 ? 'bg-yellow-500' : 'bg-green-500';
         statusText = symptoms.length > 0 ? getCardStatusTranslation('card_general_health_good_energy_with_symptoms') : getCardStatusTranslation('card_general_health_good_energy');
-      } else if (energy >= 3) {
+      } else if (e === 0) {
         statusColor = 'bg-yellow-400';
         statusText = getCardStatusTranslation('card_general_health_moderate_energy');
-      } else if (energy >= 2) {
+      } else if (e === -1) {
         statusColor = 'bg-orange-400';
         statusText = getCardStatusTranslation('card_general_health_low_energy');
       } else {

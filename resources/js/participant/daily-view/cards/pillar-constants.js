@@ -58,11 +58,11 @@ export const IMPACT_LIMITATION_LABELS = {
 };
 
 export const ENERGY_LEVEL_LABELS = {
-  1: () => getCardStatusTranslation('card_general_health_energy_1'),
-  2: () => getCardStatusTranslation('card_general_health_energy_2'), 
-  3: () => getCardStatusTranslation('card_general_health_energy_3'),
-  4: () => getCardStatusTranslation('card_general_health_energy_4'),
-  5: () => getCardStatusTranslation('card_general_health_energy_5')
+  [-2]: () => getCardStatusTranslation('card_general_health_energy_very_low'),
+  [-1]: () => getCardStatusTranslation('card_general_health_energy_low'),
+  [0]: () => getCardStatusTranslation('card_general_health_energy_moderate'),
+  [1]: () => getCardStatusTranslation('card_general_health_energy_good'),
+  [2]: () => getCardStatusTranslation('card_general_health_energy_high')
 };
 
 export const SYMPTOM_LABELS = {

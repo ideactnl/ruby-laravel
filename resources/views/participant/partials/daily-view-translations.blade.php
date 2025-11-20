@@ -76,11 +76,6 @@ window.cardStatusTranslations = {
     'card_general_health_energy_good': '{{ __('participant.card_general_health_energy_good') }}',
     'card_general_health_energy_high': '{{ __('participant.card_general_health_energy_high') }}',
     'card_general_health_unknown': '{{ __('participant.card_general_health_unknown') }}',
-    'card_general_health_energy_1': '{{ __('participant.card_general_health_energy_1') }}',
-    'card_general_health_energy_2': '{{ __('participant.card_general_health_energy_2') }}',
-    'card_general_health_energy_3': '{{ __('participant.card_general_health_energy_3') }}',
-    'card_general_health_energy_4': '{{ __('participant.card_general_health_energy_4') }}',
-    'card_general_health_energy_5': '{{ __('participant.card_general_health_energy_5') }}',
     
     // Mood
     'card_mood_balanced': '{{ __('participant.card_mood_balanced') }}',

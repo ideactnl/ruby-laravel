@@ -364,7 +364,7 @@ export class ModalContentGenerators {
       return `<p class="text-gray-500">${getModalTranslation('modal_no_data_recorded') || 'No energy/health data recorded.'}</p>`;
     }
 
-    const energy = pillar?.energyLevel ?? 0;
+    const energy = (pillar?.energyLevel === null || pillar?.energyLevel === undefined) ? 0 : pillar.energyLevel;
     const symptoms = pillar?.symptoms || [];
 
     let content = '<div class="space-y-6">';
@@ -372,10 +372,6 @@ export class ModalContentGenerators {
     content += ModalHelpers.createCenteredHeader(getModalTranslation('modal_general_health_title') || 'General Health & Energy');
 
     const energyLabel = ENERGY_LEVEL_LABELS[energy] ? ENERGY_LEVEL_LABELS[energy]() : getModalTranslation('card_general_health_unknown') || 'Unknown';
-    content += `<div class="text-center mb-4">`;
-    content += `<p class="text-lg font-medium mb-2">${energyLabel}</p>`;
-    content += ModalHelpers.createGradeDisplay(energy, 5, getModalTranslation('modal_level') || 'Level');
-    content += '</div>';
 
     content += ModalHelpers.createSectionHeader(getModalTranslation('modal_general_health_symptoms_title') || 'Symptoms Experienced', 'gray-800');
     content += '<div class="grid grid-cols-3 sm:grid-cols-4 gap-2 sm:gap-4 justify-items-center mb-6 max-w-2xl mx-auto">';
@@ -401,7 +397,7 @@ export class ModalContentGenerators {
     content += '</div>';
 
     let energyContent = ModalHelpers.createSectionHeader(getModalTranslation('modal_general_health_energy_title') || 'Energy Assessment', 'blue-800');
-    energyContent += ModalHelpers.createLabelValue(getModalTranslation('modal_general_health_current_level') || 'Current level:', `${energyLabel} (${energy}/5)`, 'blue-700');
+    energyContent += ModalHelpers.createLabelValue(getModalTranslation('modal_general_health_current_level') || 'Current level:', `${energyLabel}`, 'blue-700');
     content += ModalHelpers.createSection('blue', 'blue', energyContent);
 
     content += '</div>';

@@ -40,8 +40,8 @@ export class PillarDataValidators {
    */
   static hasGeneralHealthData(pillar) {
     if (!pillar) return false;
-    const energy = pillar.energyLevel ?? 0;
-    return energy > 0;
+    const energy = pillar.energyLevel;
+    return energy !== null && energy !== undefined;
   }
 
   /**
