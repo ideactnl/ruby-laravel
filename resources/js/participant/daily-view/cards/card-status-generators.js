@@ -131,7 +131,8 @@ export class CardStatusGenerators {
     let context = '';
     
     if (energy !== null && energy !== undefined) {
-      const e = Number(energy);
+      const eRaw = Number(energy);
+      const e = (eRaw === -3) ? 0 : eRaw;
       const energyLevelMap = {
         [-2]: 'card_general_health_energy_very_low',
         [-1]: 'card_general_health_energy_low',

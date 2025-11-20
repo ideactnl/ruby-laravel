@@ -63,7 +63,8 @@ export class TooltipGenerators {
 
   static getEnergyTooltip(pillar) {
     if (!pillar || pillar.energyLevel === null || pillar.energyLevel === undefined) return getTooltipTranslation('tooltip_no_energy_level_recorded');
-    const energy = pillar.energyLevel;
+    const raw = Number(pillar.energyLevel);
+    const energy = (raw === -3) ? 0 : raw;
     const symptoms = pillar.symptoms || [];
 
     if (symptoms.length > 0) {

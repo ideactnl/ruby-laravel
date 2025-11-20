@@ -365,13 +365,14 @@ export class ModalContentGenerators {
     }
 
     const energy = (pillar?.energyLevel === null || pillar?.energyLevel === undefined) ? 0 : pillar.energyLevel;
+    const normalizedEnergy = (Number(energy) === -3) ? 0 : Number(energy);
     const symptoms = pillar?.symptoms || [];
 
     let content = '<div class="space-y-6">';
     
     content += ModalHelpers.createCenteredHeader(getModalTranslation('modal_general_health_title') || 'General Health & Energy');
 
-    const energyLabel = ENERGY_LEVEL_LABELS[energy] ? ENERGY_LEVEL_LABELS[energy]() : getModalTranslation('card_general_health_unknown') || 'Unknown';
+    const energyLabel = ENERGY_LEVEL_LABELS[normalizedEnergy] ? ENERGY_LEVEL_LABELS[normalizedEnergy]() : getModalTranslation('card_general_health_unknown') || 'Unknown';
 
     content += ModalHelpers.createSectionHeader(getModalTranslation('modal_general_health_symptoms_title') || 'Symptoms Experienced', 'gray-800');
     content += '<div class="grid grid-cols-3 sm:grid-cols-4 gap-2 sm:gap-4 justify-items-center mb-6 max-w-2xl mx-auto">';

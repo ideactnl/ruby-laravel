@@ -29,11 +29,12 @@ export function getGeneralHealthIcon(value) {
   }
 
   const energyLevel = (value.energyLevel === null || value.energyLevel === undefined) ? 0 : value.energyLevel;
+  const normalizedEnergy = (Number(energyLevel) === -3) ? 0 : Number(energyLevel);
   const symptoms = value.symptoms || [];
 
-  const mapping = ENERGY_MAP[energyLevel] || { icon: 'general_health.png' };
+  const mapping = ENERGY_MAP[normalizedEnergy] || { icon: 'general_health.png' };
 
-  let tooltip = `${getTranslatedTooltip('tooltip_energy_level')}: ${energyLevel}`;
+  let tooltip = `${getTranslatedTooltip('tooltip_energy_level')}: ${normalizedEnergy}`;
 
   if (symptoms.length > 0) {
     const friendlySymptoms = symptoms.map(symptom =>

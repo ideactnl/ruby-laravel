@@ -104,7 +104,7 @@ class StoreOrUpdatePbacRequest extends FormRequest
 
             // ** General health ** //
             'isGeneralHealthAnswered' => 'nullable|boolean',
-            'generalHealthEnergyLevelSliderValue' => 'nullable|integer|min:-2|max:2',
+            'generalHealthEnergyLevelSliderValue' => 'nullable|integer|min:-3|max:3',
             'isGeneralHealthDizzy' => 'nullable|boolean',
             'isGeneralHealthNauseous' => 'nullable|boolean',
             'isGeneralHealthHeadacheMigraine' => 'nullable|boolean',
