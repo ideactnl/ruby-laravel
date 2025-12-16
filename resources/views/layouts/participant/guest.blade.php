@@ -16,6 +16,7 @@
         </header>
 
         <main class="flex-1">
+            <x-common.alerts />
             @yield('content')
         </main>
 

@@ -30,7 +30,7 @@
                 <!-- Content -->
                 <div class="flex-1 min-w-0">
                     <p class="font-medium text-sm text-gray-900" x-text="t.title"></p>
-                    <p class="text-sm text-gray-600 mt-1" x-text="t.message"></p>
+                    <p class="text-sm text-gray-600 mt-1" x-html="t.message"></p>
                 </div>
                 
                 <!-- Close button -->

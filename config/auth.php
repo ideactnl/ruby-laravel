@@ -114,5 +114,5 @@ return [
     */
 
     'password_timeout' => env('AUTH_PASSWORD_TIMEOUT', 10800),
-
+    'dashboard_url_expiry' => env('DASHBOARD_URL_EXPIRY', 5)
 ];
