@@ -9,10 +9,15 @@ use App\Models\Pbac;
 use App\Services\ExportTrackingService;
 use App\Services\PbacExportService;
 use App\Services\VideoService;
+use Carbon\Carbon;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Validation\ValidationException;
+use Laravel\Sanctum\PersonalAccessToken;
 
 /**
  * @group Participant Dashboard
@@ -605,5 +610,149 @@ class ParticipantWebApiController extends Controller
     public function externalLinks()
     {
         return view('participant.external-links');
+    }
+
+    /**
+     * Dashboard Login (Bearer Token)
+     *
+     * Generates a temporary signed URL for auto-login to the participant web dashboard.
+     * Requires a valid Bearer token in the Authorization header.
+     *
+     * @unauthenticated
+     *
+     * @header Authorization Bearer <token> required The API access token.
+     *
+     * @response 200 {"success": true, "message": "Login successful", "data": {"url": "http://example.com/participant/login?token=..."}}
+     * @response 401 {"success": false, "message": "Unauthorized", "data": null}
+     *
+     * @responseField success boolean Whether the operation was successful
+     * @responseField message string Status message
+     * @responseField data object Contains the signed login URL
+     * @responseField data.url string The temporary signed URL for web dashboard access
+     */
+    public function dashboardLogin(Request $request)
+    {
+        $bearerToken = $request->headers->get('authorization');
+        $bearerToken = explode(' ', $bearerToken)[1] ?? null;
+
+        if (! $bearerToken) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized',
+                'data' => null,
+            ], 401);
+        }
+
+        $accessToken = PersonalAccessToken::findToken($bearerToken);
+
+        if (! $accessToken) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized',
+                'data' => null,
+            ], 401);
+        }
+
+        $user = $accessToken->tokenable;
+
+        if (! $user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized',
+                'data' => null,
+            ], 401);
+        }
+
+        $encodedToken = rtrim(strtr(base64_encode(Crypt::encryptString($bearerToken)), '+/', '-_'), '=');
+        $url = URL::temporarySignedRoute(
+            'participant.web.login',
+            now()->addMinutes((int) config('auth.dashboard_url_expiry', 5)),
+            ['token' => $encodedToken]
+        );
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Login successful',
+            'data' => [
+                'url' => $url,
+            ],
+        ]);
+    }
+
+    /**
+     * @hideFromAPIDocumentation
+     */
+    public function refreshSession(Request $request)
+    {
+        if (! session('api_login')) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Not allowed',
+            ], 403);
+        }
+
+        $token = session('api_auth_token');
+
+        if (! $token) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Token missing',
+            ], 401);
+        }
+
+        $url = URL::temporarySignedRoute(
+            'participant.web.login',
+            now()->addMinutes((int) config('auth.dashboard_url_expiry', 5)),
+            ['token' => $token]
+        );
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'url' => $url,
+            ],
+        ]);
+    }
+
+    public function webLogin(Request $request)
+    {
+
+        try {
+
+            $encoded = $request->query('token');
+            $decoded = base64_decode(strtr($encoded, '-_', '+/'));
+            $token = Crypt::decryptString($decoded);
+
+        } catch (\Exception $e) {
+            return view('participant.web_login');
+        }
+
+        $expires = $request->query('expires');
+        if ($token && $request->hasValidSignature()) {
+
+            $accessToken = PersonalAccessToken::findToken($token);
+            if (! $accessToken) {
+                return view('participant.web_login');
+            }
+
+            $user = $accessToken->tokenable;
+
+            if (! $user) {
+                return view('participant.web_login');
+            }
+
+            if (! $user instanceof Authenticatable) {
+                return view('participant.web_login');
+            }
+
+            Auth::guard('participant-web')->login($user);
+            $request->session()->put('api_login', true);
+            $request->session()->put('api_login_expires_at', Carbon::createFromTimestamp($expires));
+            $request->session()->put('api_auth_token', $token);
+
+            return redirect('/participant/dashboard');
+        }
+
+        return view('participant.web_login');
     }
 }

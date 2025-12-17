@@ -23,6 +23,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
             'auth.participant' => \App\Http\Middleware\RedirectIfParticipantUnauthenticated::class,
             'auth.medical-specialist' => \App\Http\Middleware\MedicalSpecialistAuth::class,
+            'api.login.expiry' => \App\Http\Middleware\EnforceApiLoginExpiry::class,
         ]);
 
     })

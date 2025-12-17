@@ -55,7 +55,7 @@
                                 const token = decodeURIComponent((document.cookie.split('; ').find(c => c.startsWith('XSRF-TOKEN=')) || '').split('=')[1] || '');
                                 await fetch('{{ url('/api/v1/participant/logout') }}', { method: 'POST', headers: { 'Accept': 'application/json', 'X-XSRF-TOKEN': token }, credentials: 'include' });
                             } catch (e) {}
-                            window.location.href = '{{ route('participant.web.login') }}';
+                            window.location.href = '/';
                         }
                     }" @click.outside="open=false">
                         <button @click="open=!open"
