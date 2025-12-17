@@ -18,7 +18,7 @@ class EnforceApiLoginExpiry
     public function handle(Request $request, Closure $next): Response
     {
 
-         if (Auth::guard('participant-web')->check() && session('api_login') === true) {
+        if (Auth::guard('participant-web')->check() && session('api_login') === true) {
             $expiresAt = session('api_login_expires_at');
 
             if ($expiresAt) {
@@ -35,7 +35,7 @@ class EnforceApiLoginExpiry
                 }
             }
         }
-        
+
         return $next($request);
     }
 }

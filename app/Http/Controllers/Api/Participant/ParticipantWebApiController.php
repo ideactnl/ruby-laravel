@@ -10,6 +10,7 @@ use App\Services\ExportTrackingService;
 use App\Services\PbacExportService;
 use App\Services\VideoService;
 use Carbon\Carbon;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
@@ -683,7 +684,6 @@ class ParticipantWebApiController extends Controller
      */
     public function refreshSession(Request $request)
     {
-        // only API-based logins allowed
         if (! session('api_login')) {
             return response()->json([
                 'success' => false,
@@ -700,7 +700,6 @@ class ParticipantWebApiController extends Controller
             ], 401);
         }
 
-        // generate NEW signed URL
         $url = URL::temporarySignedRoute(
             'participant.web.login',
             now()->addMinutes((int) config('auth.dashboard_url_expiry', 5)),
@@ -719,12 +718,11 @@ class ParticipantWebApiController extends Controller
     {
 
         try {
-            // Restore Base64 padding
+
             $encoded = $request->query('token');
             $decoded = base64_decode(strtr($encoded, '-_', '+/'));
-
-            // Decrypt original token
             $token = Crypt::decryptString($decoded);
+
         } catch (\Exception $e) {
             return view('participant.web_login');
         }
@@ -740,6 +738,10 @@ class ParticipantWebApiController extends Controller
             $user = $accessToken->tokenable;
 
             if (! $user) {
+                return view('participant.web_login');
+            }
+
+            if (! $user instanceof Authenticatable) {
                 return view('participant.web_login');
             }
 
