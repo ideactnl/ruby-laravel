@@ -39,54 +39,50 @@
     @include('components.participant.profile-modal')
     @stack('scripts')
 
-    @if(session('show_expiry_warning'))
+    @if(session('api_login_expires_at'))
+        <script>
+            window.API_LOGIN_EXPIRES_AT = {{ session('api_login_expires_at')->timestamp }} * 1000;
+        </script>
+    @endif
+    
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            window.dispatchEvent(new CustomEvent('alert:warning', {
-                detail: {
-                    key: 'session', 
-                    title: 'Session', 
-                    message: ` Your session is about to expire..
-                        <button
-                            data-extend-session
-                            class="text-blue-600 underline font-medium bg-transparent p-0 border-0 cursor-pointer">
-                            Continue session
-                        </button> `}
-            }));
-        })
+            if (!window.API_LOGIN_EXPIRES_AT) return;
 
-    document.addEventListener('click', async (e) => {
-        const btn = e.target.closest('[data-extend-session]');
-        if (!btn) return;
+            const WARNING_BEFORE = 60 * 1000; // 60 seconds
+            const expiresAt = window.API_LOGIN_EXPIRES_AT;
 
-        try {
-            btn.disabled = true;
-            btn.textContent = 'Extending...';
+            let warningShown = false;
 
-            const res = await fetch("{{ route('participant.refresh.session') }}", {
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                    'Accept': 'application/json'
+            const checkExpiry = () => {
+                const now = Date.now();
+                const remaining = expiresAt - now;
+
+                // Hard expiry fallback (extra safety)
+                if (remaining <= 0) {
+                    window.location.href = "{{ route('participant.web.login') }}";
+                    return;
                 }
-            });
 
-            const data = await res.json();
+                // Show warning exactly when needed
+                if (remaining <= WARNING_BEFORE && !warningShown) {
+                    warningShown = true;
 
-            if (data.success && data.data?.url) {
-                window.location.href = data.data.url;
-            }
-        } catch {
-            window.dispatchEvent(new CustomEvent('alert:error', {
-                detail: {
-                    title: 'Session',
-                    message: 'Could not extend session. Please login again.'
+                    window.dispatchEvent(new CustomEvent('alert:warning', {
+                        detail: {
+                            key: 'session',
+                            title: 'Session Expiring',
+                            message: 'Your session is about to expire.'
+                        }
+                    }));
                 }
-            }));
-        }
-    });
+            };
+
+            // Run immediately + every second
+            checkExpiry();
+            setInterval(checkExpiry, 1000);
+        });
     </script>
-    @endif
 </body>
 
 </html>

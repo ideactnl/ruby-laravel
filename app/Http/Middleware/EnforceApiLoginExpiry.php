@@ -31,13 +31,7 @@ class EnforceApiLoginExpiry
                     $request->session()->regenerateToken();
 
                     return redirect()
-                        ->route('participant.web.login')
-                        ->withErrors(['error' => 'Session expired !']);
-                }
-
-                // Warning window (last 60 seconds)
-                if ($now->diffInSeconds($expiresAt, false) <= 60) {
-                    session()->put('show_expiry_warning', true);
+                        ->route('participant.web.login');
                 }
             }
         }
