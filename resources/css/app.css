@@ -520,3 +520,8 @@ body {
         grid-template-columns: 1fr;
     }
 }
+
+
+.fc-daygrid-day.fc-day-today {
+  background-color: #F2CFCC !important;
+}

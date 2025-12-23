@@ -9,7 +9,15 @@
 <body class="bg-white min-h-screen">
     <div class="min-h-screen" x-data="{ sidebarOpen: window.innerWidth >= 768 }"
         x-on:resize.window="sidebarOpen = window.innerWidth >= 768">
-        @include('components.participant.navbar')
+        {{-- @include('components.participant.navbar') --}}
+
+        {{-- Mobile --}}
+@include('components.participant.mobile-header')
+
+{{-- Desktop --}}
+<div class="hidden md:block">
+    @include('components.participant.navbar')
+</div>
 
         <div class="relative">
             @auth('participant-web')
@@ -19,7 +27,9 @@
                     @click="sidebarOpen=false" style="display:none"></div>
 
 
-                <main class="flex-1 md:ml-64">
+                {{-- <main class="flex-1 md:ml-64"> --}}
+                    <main class="flex-1 md:ml-64 pb-20 md:pb-0">
+
                     <div class="px-5 py-6 md:px-8">
                         <x-common.alerts />
                         @yield('content')
@@ -36,6 +46,8 @@
         </div>
 
     </div>
+    @include('components.participant.mobile-bottom-nav')
+
     @include('components.participant.profile-modal')
     @stack('scripts')
 
@@ -44,45 +56,43 @@
             window.API_LOGIN_EXPIRES_AT = {{ session('api_login_expires_at')->timestamp }} * 1000;
         </script>
     @endif
-    
+
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            if (!window.API_LOGIN_EXPIRES_AT) return;
+    const REFRESH_INTERVAL = 60 * 1000; // 1 minute
 
-            const WARNING_BEFORE = 60 * 1000; // 60 seconds
-            const expiresAt = window.API_LOGIN_EXPIRES_AT;
+    async function refreshSession() {
 
-            let warningShown = false;
+        const route = `{{ route('participant.refresh.session') }}`
+        try {
+            const res = await fetch(route, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json'
+                },
+                credentials: 'same-origin'
+            });
 
-            const checkExpiry = () => {
-                const now = Date.now();
-                const remaining = expiresAt - now;
+            if (!res.ok) {
+                throw new Error('Session refresh failed');
+            }
 
-                // Hard expiry fallback (extra safety)
-                if (remaining <= 0) {
-                    window.location.href = "{{ route('participant.web.login') }}";
-                    return;
-                }
+            const data = await res.json();
 
-                // Show warning exactly when needed
-                if (remaining <= WARNING_BEFORE && !warningShown) {
-                    warningShown = true;
+            if (!data.success) {
+                throw new Error('Session expired');
+            }
 
-                    window.dispatchEvent(new CustomEvent('alert:warning', {
-                        detail: {
-                            key: 'session',
-                            title: 'Session Expiring',
-                            message: 'Your session is about to expire.'
-                        }
-                    }));
-                }
-            };
+            console.log('Session extended till', data.expires_at);
+        } catch (e) {
+            console.warn('Logging out due to session expiry');
+            window.location.href = "/";
+        }
+    }
 
-            // Run immediately + every second
-            checkExpiry();
-            setInterval(checkExpiry, 1000);
-        });
-    </script>
+    setInterval(refreshSession, REFRESH_INTERVAL);
+</script>
+
 </body>
 
 </html>

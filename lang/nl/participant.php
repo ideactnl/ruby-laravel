@@ -662,4 +662,6 @@ return [
     // Session Expired
     'session_expired' => 'Sessie verlopen',
     'please_refresh_your_session_to_continue' => 'Ververs uw sessie om door te gaan.',
+
+    'home' => 'Home'
 ];
