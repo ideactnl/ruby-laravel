@@ -15,24 +15,6 @@
 
 
     <x-participant.setting-item
-        icon="fa-calendar-days"
-        label="{{ __('participant.calendar') }}"
-        href="{{ route($routePrefix.'participant.dashboard') }}"
-    />
-
-    <x-participant.setting-item
-        icon="fa-eye"
-        label="{{ __('participant.daily_view') }}"
-        href="{{ route($routePrefix.'participant.daily-view', ['date' => now()->toDateString()]) }}"
-    />
-
-    <x-participant.setting-item
-        icon="fa-circle-play"
-        label="{{ __('participant.education') }}"
-        href="{{ route($routePrefix.'participant.education') }}"
-    />
-
-    <x-participant.setting-item
         icon="fa-lightbulb"
         label="{{ __('participant.selfmanagement') }}"
         href="{{ route($routePrefix.'participant.self-management') }}"

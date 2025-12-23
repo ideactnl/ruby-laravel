@@ -156,18 +156,50 @@
                         <template x-for="(vid,vi) in videos" :key="'vid-' + vi">
                             <div class="swiper-slide">
                                 <div
-                                    class="dv-video-card w-full rounded-[10px] bg-white shadow-sm border border-gray-200 ml-0 md:mx-auto overflow-hidden flex flex-col">
-                                    <div class="dv-video-media aspect-[9/16]">
+                                    class="dv-video-card w-full rounded-[10px] bg-white  border border-gray-200 ml-0 md:mx-auto overflow-hidden flex flex-col">
+                                    <div class="dv-video-media aspect-[9/16] relative bg-black group" x-data="{ playing: false }">
+                                        <!-- YouTube -->
                                         <template x-if="vid.type==='youtube'">
-                                            <iframe class="w-full h-full"
-                                                :src="`https://www.youtube-nocookie.com/embed/${vid.id}?rel=0&modestbranding=1`"
-                                                frameborder="0"
-                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                                allowfullscreen loading="lazy"></iframe>
+                                            <div class="w-full h-full">
+                                                <!-- Facade -->
+                                                <div x-show="!playing" @click="playing = true"
+                                                    class="absolute inset-0 cursor-pointer flex items-center justify-center z-10">
+                                                    <img :src="`https://img.youtube.com/vi/${vid.id}/hqdefault.jpg`"
+                                                        class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
+                                                        alt="Video Thumbnail">
+                                                    <div
+                                                        class="absolute w-12 h-12 bg-black/50 rounded-full flex items-center justify-center backdrop-blur-sm group-hover:scale-110 transition-transform">
+                                                        <i class="fa-solid fa-play text-white text-lg ml-1"></i>
+                                                    </div>
+                                                </div>
+                                                <!-- Active Player -->
+                                                <template x-if="playing">
+                                                    <iframe class="w-full h-full"
+                                                        :src="`https://www.youtube-nocookie.com/embed/${vid.id}?rel=0&modestbranding=1&autoplay=1`"
+                                                        frameborder="0"
+                                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                        allowfullscreen></iframe>
+                                                </template>
+                                            </div>
                                         </template>
+
+                                        <!-- MP4 -->
                                         <template x-if="vid.type==='mp4'">
-                                            <video class="w-full h-full object-cover" :src="vid.src" controls
-                                                playsinline></video>
+                                            <div class="w-full h-full relative">
+                                                <!-- Facade Overlay -->
+                                                <div x-show="!playing"
+                                                    @click="playing = true; $refs.videoPlayer.play()"
+                                                    class="absolute inset-0 cursor-pointer flex items-center justify-center z-10 bg-black/10 group-hover:bg-black/20 transition-colors">
+                                                    <div
+                                                        class="w-12 h-12 bg-black/50 rounded-full flex items-center justify-center backdrop-blur-sm group-hover:scale-110 transition-transform">
+                                                        <i class="fa-solid fa-play text-white text-lg ml-1"></i>
+                                                    </div>
+                                                </div>
+                                                <!-- Video Element -->
+                                                <video x-ref="videoPlayer" class="w-full h-full object-cover"
+                                                    :src="vid.src" controls playsinline
+                                                    @pause="playing = false" @play="playing = true"></video>
+                                            </div>
                                         </template>
                                     </div>
                                     <div class="dv-video-caption p-3 text-sm text-gray-600 w-full rounded-b-[10px] rounded-tl-none rounded-tr-none border border-t-0 border-primary" x-data="{ expanded: false, max: 20, sub: (vid && vid.subtitle) || '' }"

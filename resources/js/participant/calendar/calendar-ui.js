@@ -55,11 +55,9 @@ export class CalendarUI {
 
         if (isCurrentMonth) {
           mobileDate.textContent = today.getDate().toString().padStart(2, '0');
-          mobileDate.classList.add('text-primary');
           mobileDate.classList.remove('text-gray-500');
         } else {
           mobileDate.textContent = '01';
-          mobileDate.classList.add('text-primary');
           mobileDate.classList.remove('text-gray-500');
         }
 

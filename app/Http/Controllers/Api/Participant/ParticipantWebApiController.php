@@ -752,8 +752,8 @@ class ParticipantWebApiController extends Controller
         return view('participant.web_login');
     }
 
-
-    public function settings() {
-        return view('participant.setting'); 
+    public function settings()
+    {
+        return view('participant.setting');
     }
 }

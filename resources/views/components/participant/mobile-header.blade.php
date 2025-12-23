@@ -1,12 +1,13 @@
-<div class="md:hidden sticky top-0 z-50 bg-[#fff] px-4 py-3" x-data="filterMenu()" x-init="init()">
+<div class="md:hidden sticky top-0 z-50 bg-[#FFF7F8] px-4 py-3" x-data="filterMenu()" x-init="init()">
     <div class="flex items-center justify-between">
+       <a href="{{ route('participant.dashboard') }}">
         <img
             src="{{ asset('images/logo.png') }}"
             alt="Logo"
             class="h-14 object-contain"
         />
-
-@if (request()->routeIs('participant.dashboard'))
+        </a>
+    @if (request()->routeIs('participant.dashboard'))
 
             <div class="relative flex-shrink-0" @click.outside="open=false" x-cloak>
                 <button
@@ -98,7 +99,7 @@
                 </div>
             </div>
 
-@endif
+    @endif
     </div>
 </div>
 

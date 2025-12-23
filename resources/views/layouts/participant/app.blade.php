@@ -83,7 +83,6 @@
                 throw new Error('Session expired');
             }
 
-            console.log('Session extended till', data.expires_at);
         } catch (e) {
             console.warn('Logging out due to session expiry');
             window.location.href = "/";
