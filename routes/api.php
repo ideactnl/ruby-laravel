@@ -26,7 +26,7 @@ Route::prefix('v1')->group(function () {
     });
 
     Route::prefix('participant')->middleware([EnsureFrontendRequestsAreStateful::class, ])->group(function () {
-        Route::post('/refresh-session', [ParticipantWebApiController::class, 'refreshSession'])->middleware('web')->name('participant.refresh.session');
+        Route::post('/refresh-session', [ParticipantWebApiController::class, 'refreshSession'])->name('participant.refresh.session');
         Route::post('/login', [ParticipantWebApiController::class, 'login']);
         Route::post('/logout', [ParticipantWebApiController::class, 'logout']);
         Route::post('/dashboard-login', [ParticipantWebApiController::class, 'dashboardLogin'])->name('participant.dashboard.login');

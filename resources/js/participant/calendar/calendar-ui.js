@@ -44,12 +44,12 @@ export class CalendarUI {
     const mobileMonth = document.getElementById('mobile-month');
     const mobileYear = document.getElementById('mobile-year');
     const mobileContainer = document.getElementById('mobile-date-container');
-    
+
     if (mobileDate && mobileMonth && mobileYear && mobileContainer) {
       const updateMobileDate = () => {
         const currentCalendarDate = this.calendar.getDate();
         const today = new Date();
-        
+
         const isCurrentMonth = currentCalendarDate.getFullYear() === today.getFullYear() &&
           currentCalendarDate.getMonth() === today.getMonth();
 
@@ -64,7 +64,7 @@ export class CalendarUI {
         }
 
         const locale = window.appLocale === 'nl' ? 'nl-NL' : 'en-US';
-        mobileMonth.textContent = currentCalendarDate.toLocaleDateString(locale, { month: 'short' }).toUpperCase();
+        mobileMonth.textContent = currentCalendarDate.toLocaleDateString(locale, { month: 'numeric' }).toUpperCase();
         mobileYear.textContent = currentCalendarDate.getFullYear();
       };
 
@@ -108,7 +108,7 @@ export class CalendarUI {
       btnBackCurrent.addEventListener('click', () => {
         if (window.innerWidth <= 768 && 'vibrate' in navigator) {
           try {
-            navigator.vibrate([10, 30, 10]); 
+            navigator.vibrate([10, 30, 10]);
           } catch (e) {
           }
         }
@@ -182,7 +182,7 @@ export class CalendarUI {
       }
     }, 50);
 
-    return false; 
+    return false;
   }
 
   /**

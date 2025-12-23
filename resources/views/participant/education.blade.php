@@ -7,10 +7,10 @@
     <section>
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
             <div class="flex gap-2">
-                <select class="border border-gray-300 rounded px-3 py-1 text-sm text-white bg-primary">
+                <select class="border border-gray-300 rounded-md  px-3 py-1 text-sm text-white bg-primary">
                     <option>{{ __('participant.category') }}</option>
                 </select>
-                <select class="border border-gray-300 rounded px-3 py-3 text-sm text-white bg-primary">
+                <select class="border border-gray-300 rounded-md  px-3 py-3 text-sm text-white bg-primary">
                     <option>{{ __('participant.recommended') }}</option>
                 </select>
             </div>

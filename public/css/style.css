@@ -146,6 +146,37 @@ td {
   .active-nav::after {
     display: none !important;
   }
+/* new */
+.fc-daygrid-day.fc-day-today {
+  background-color: #F2CFCC !important;
+  border-radius: 5px;
+}
 
+/* Remove borders from ALL table rows & cells in FullCalendar */
+#participantCalendar table,
+#participantCalendar thead,
+#participantCalendar tbody,
+#participantCalendar tr,
+#participantCalendar th,
+#participantCalendar td {
+    border: none !important;
+}
 
+/* Remove scroll grid borders (FullCalendar v5/v6) */
+#participantCalendar .fc-scrollgrid,
+#participantCalendar .fc-scrollgrid-section,
+#participantCalendar .fc-scrollgrid-section table {
+    border: none !important;
+}
+
+/* Remove day cell borders explicitly */
+#participantCalendar .fc-daygrid-day {
+    border: none !important;
+}
+.fc-col-header {
+    background-color: #FDF8FE; /* Tailwind gray-100 */
+}
+img.footer-img {
+    width: 26px;
+}
 }

@@ -39,6 +39,8 @@ Route::prefix('participant')->middleware(['web'])->group(function () {
         Route::get('/self-management', [ParticipantWebApiController::class, 'selfManagement'])->name('participant.self-management');
         Route::get('/external-links', [ParticipantWebApiController::class, 'externalLinks'])->name('participant.external-links');
         Route::get('/general-information', [ParticipantWebApiController::class, 'generalInformation'])->name('participant.general-information');
+        Route::get('/settings', [ParticipantWebApiController::class, 'settings'])->name('participant.settings');
+
         Route::get('/api/v1/participant/profile', [ParticipantWebApiController::class, 'profile'])->name('participant.api.profile');
     });
 });

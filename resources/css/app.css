@@ -250,9 +250,9 @@ body {
         font-size: 16px;
     }
 
-    .pbac-day-count-0 .fc-daygrid-day-top.justify-center {
+    /* .pbac-day-count-0 .fc-daygrid-day-top.justify-center {
         width: 100% !important;
-    }
+    } */
 
     .fc-daygrid-day-events {
         display: none;
@@ -509,12 +509,15 @@ body {
     .pbac-day-count-2 .fc-daygrid-event-harness {
         width: 43%;
     }
-
+/*
     .pbac-day-count-0 .fc-daygrid-day-top.justify-center {
         width: 100% !important;
-    }
+    } */
 
     .msg-send {
         grid-template-columns: 1fr;
     }
 }
+
+
+
