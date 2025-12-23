@@ -7,10 +7,10 @@
     <section>
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
             <div class="flex gap-2">
-                <select class="border border-gray-300 rounded px-3 py-1 text-sm text-white bg-[#7B1C1C]">
+                <select class="border border-gray-300 rounded-md px-3 py-1 text-sm text-white bg-primary">
                     <option>{{ __('participant.category') }}</option>
                 </select>
-                <select class="border border-gray-300 rounded px-3 py-3 text-sm text-white bg-[#7B1C1C]">
+                <select class="border border-gray-300 rounded-md px-3 py-3 text-sm text-white bg-primary">
                     <option>{{ __('participant.recommended') }}</option>
                 </select>
             </div>
@@ -183,17 +183,17 @@
                 const educationWrapper = document.querySelector('.educationSwiper .swiper-wrapper');
                 if (educationWrapper) {
                     educationWrapper.innerHTML = '';
-                    
+
                     firstSliderVideos.forEach((video, index) => {
                         const videoSlide = document.createElement('div');
                         videoSlide.className = 'swiper-slide';
                         videoSlide.innerHTML = `
                             <div class="rounded overflow-hidden shadow-md bg-white">
                                 <div class="aspect-video">
-                                    <iframe class="w-full h-full" 
-                                            src="${video.embed_url}" 
-                                            frameborder="0" 
-                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                    <iframe class="w-full h-full"
+                                            src="${video.embed_url}"
+                                            frameborder="0"
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                             allowfullscreen
                                             loading="lazy"></iframe>
                                 </div>
@@ -201,7 +201,7 @@
                             </div>
                         `;
                         educationWrapper.appendChild(videoSlide);
-                        
+
                         // Insert the flip card after the second video (index 1)
                         if (index === 1 && flipCard) {
                             const flipCardDiv = document.createElement('div');
@@ -220,10 +220,10 @@
                         slide.innerHTML = `
                             <div class="rounded overflow-hidden shadow-md bg-white">
                                 <div class="aspect-video">
-                                    <iframe class="w-full h-full" 
-                                            src="${video.embed_url}" 
-                                            frameborder="0" 
-                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                    <iframe class="w-full h-full"
+                                            src="${video.embed_url}"
+                                            frameborder="0"
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                             allowfullscreen
                                             loading="lazy"></iframe>
                                 </div>

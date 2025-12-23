@@ -10,14 +10,14 @@
             <div class="flex items-center gap-1 mb-4">
                 <!-- Previous Button -->
                 <button @click="prevDay()"
-                    class="inline-flex items-center justify-center gap-1 rounded-md bg-red-900 flex-1 px-2 py-2 text-xs font-semibold text-white shadow hover:bg-red-800 cursor-pointer">
+                    class="inline-flex items-center justify-center gap-1 rounded-md bg-primary flex-1 px-6 py-4 text-sm font-semibold text-white shadow hover:bg-red-800 cursor-pointer">
                     <i class="fa-solid fa-chevron-left text-xs"></i>
                     {{ __('participant.prev') }}
                 </button>
 
                 <!-- Next Button -->
                 <button @click="nextDay()"
-                    class="inline-flex items-center justify-center gap-1 rounded-md bg-red-900 flex-1 px-2 py-2 text-xs font-semibold text-white shadow hover:bg-red-800 cursor-pointer">
+                    class="inline-flex items-center justify-center gap-1 rounded-md bg-primary flex-1 px-6 py-4 text-sm font-semibold text-white shadow hover:bg-red-800 cursor-pointer">
                     {{ __('participant.next') }}
                     <i class="fa-solid fa-chevron-right text-xs"></i>
                 </button>
@@ -25,7 +25,7 @@
                 <!-- Select Date Button -->
                 <div class="relative flex-1">
                     <button @click="openDate()"
-                        class="inline-flex items-center justify-center gap-1 rounded-md bg-red-900 w-full px-2 py-2 text-xs font-semibold text-white shadow cursor-pointer hover:bg-red-800 transition-colors">
+                        class="inline-flex items-center justify-center gap-1 rounded-md bg-primary w-full px-6 py-4 text-sm font-semibold text-white shadow cursor-pointer hover:bg-red-800 transition-colors">
                         {{ __('participant.select') }}
                         <i class="fa-solid fa-calendar text-xs"></i>
                     </button>
@@ -35,7 +35,7 @@
 
             <!-- Date Display -->
             <div class="mb-6">
-                <h2 class="text-lg font-semibold text-gray-900 text-center" x-text="heading"></h2>
+                <h2 class="text-lg font-normal mt-7 text-gray-900 text-center" x-text="heading"></h2>
             </div>
         </div>
 
@@ -80,14 +80,17 @@
                         <template x-for="item in items" :key="item.key">
                             <div class="swiper-slide md:!w-auto">
                                 <div
-                                    class="w-full sm:w-[320px] md:w-[350px] h-[200px] rounded-lg bg-white shadow-sm border border-gray-200 p-3 sm:p-4 mx-auto relative hover:shadow-md transition-shadow">
+                                    class="w-full sm:w-[320px] md:w-[350px] h-[200px] rounded-lg bg-white shadow-sm border border-primary p-3 sm:p-4 mx-auto relative hover:shadow-md transition-shadow">
                                     <!-- Header with icon and title -->
                                     <div class="flex items-center justify-between mb-3">
                                         <div class="flex items-center gap-2">
-                                            <img :src="item.iconSrc" :alt="item.label" class="w-6 h-6 object-contain"
-                                                x-show="item.iconSrc">
-                                            <h3 class="text-sm font-semibold text-gray-900 uppercase tracking-wide truncate md:overflow-visible md:whitespace-normal"
-                                                x-text="item.label"></h3>
+                                            <img :src="item.iconSrc" :alt="item.label"
+                                                class="w-6 h-6 object-contain" x-show="item.iconSrc">
+                                            <h3 class="text-[18px] font-normal capitalize
+           md:text-sm md:font-semibold md:uppercase
+           text-gray-900 tracking-wide
+           truncate md:overflow-visible md:whitespace-normal"
+                                                x-text="item.label">
                                         </div>
                                         <!-- Removed color marker -->
                                     </div>
@@ -99,7 +102,7 @@
                                             x-show="item.severityIcons && item.severityIcons.length > 0">
                                             <template x-for="(icon, index) in item.severityIcons" :key="index">
                                                 <div
-                                                    :class="`${icon.active ? 'p-0.5 sm:p-1 bg-blue-100 border-2 border-blue-500 rounded-full' : 'p-0.5 sm:p-1'} flex-shrink-0`">
+                                                    :class="`${icon.active ? 'p-0.5 sm:p-1 bg-blue-100 border-2 border-primary rounded-full' : 'p-0.5 sm:p-1'} flex-shrink-0`">
                                                     <img :src="icon.src" :alt="icon.alt"
                                                         :class="`object-contain ${icon.active ? 'opacity-100' : 'opacity-30'} w-6 h-6 sm:w-7 sm:h-7`">
                                                 </div>
@@ -153,22 +156,54 @@
                         <template x-for="(vid,vi) in videos" :key="'vid-' + vi">
                             <div class="swiper-slide">
                                 <div
-                                    class="dv-video-card w-full rounded-lg bg-white shadow-sm border border-gray-200 ml-0 md:mx-auto overflow-hidden flex flex-col">
-                                    <div class="dv-video-media aspect-[9/16]">
+                                    class="dv-video-card w-full rounded-[10px] bg-white  border border-gray-200 ml-0 md:mx-auto overflow-hidden flex flex-col">
+                                    <div class="dv-video-media aspect-[9/16] relative bg-black group" x-data="{ playing: false }">
+                                        <!-- YouTube -->
                                         <template x-if="vid.type==='youtube'">
-                                            <iframe class="w-full h-full"
-                                                :src="`https://www.youtube-nocookie.com/embed/${vid.id}?rel=0&modestbranding=1`"
-                                                frameborder="0"
-                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                                allowfullscreen loading="lazy"></iframe>
+                                            <div class="w-full h-full">
+                                                <!-- Facade -->
+                                                <div x-show="!playing" @click="playing = true"
+                                                    class="absolute inset-0 cursor-pointer flex items-center justify-center z-10">
+                                                    <img :src="`https://img.youtube.com/vi/${vid.id}/hqdefault.jpg`"
+                                                        class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
+                                                        alt="Video Thumbnail">
+                                                    <div
+                                                        class="absolute w-12 h-12 bg-black/50 rounded-full flex items-center justify-center backdrop-blur-sm group-hover:scale-110 transition-transform">
+                                                        <i class="fa-solid fa-play text-white text-lg ml-1"></i>
+                                                    </div>
+                                                </div>
+                                                <!-- Active Player -->
+                                                <template x-if="playing">
+                                                    <iframe class="w-full h-full"
+                                                        :src="`https://www.youtube-nocookie.com/embed/${vid.id}?rel=0&modestbranding=1&autoplay=1`"
+                                                        frameborder="0"
+                                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                        allowfullscreen></iframe>
+                                                </template>
+                                            </div>
                                         </template>
+
+                                        <!-- MP4 -->
                                         <template x-if="vid.type==='mp4'">
-                                            <video class="w-full h-full object-cover" :src="vid.src" controls
-                                                playsinline></video>
+                                            <div class="w-full h-full relative">
+                                                <!-- Facade Overlay -->
+                                                <div x-show="!playing"
+                                                    @click="playing = true; $refs.videoPlayer.play()"
+                                                    class="absolute inset-0 cursor-pointer flex items-center justify-center z-10 bg-black/10 group-hover:bg-black/20 transition-colors">
+                                                    <div
+                                                        class="w-12 h-12 bg-black/50 rounded-full flex items-center justify-center backdrop-blur-sm group-hover:scale-110 transition-transform">
+                                                        <i class="fa-solid fa-play text-white text-lg ml-1"></i>
+                                                    </div>
+                                                </div>
+                                                <!-- Video Element -->
+                                                <video x-ref="videoPlayer" class="w-full h-full object-cover"
+                                                    :src="vid.src" controls playsinline
+                                                    @pause="playing = false" @play="playing = true"></video>
+                                            </div>
                                         </template>
                                     </div>
-                                    <div class="dv-video-caption p-3 text-sm text-gray-600 w-full"
-                                        x-data="{ expanded: false, max: 20, sub: (vid && vid.subtitle) || '' }" x-cloak>
+                                    <div class="dv-video-caption p-3 text-sm text-gray-600 w-full rounded-b-[10px] rounded-tl-none rounded-tr-none border border-t-0 border-primary" x-data="{ expanded: false, max: 20, sub: (vid && vid.subtitle) || '' }"
+                                        x-cloak>
                                         <template x-if="sub && sub.length">
                                             <div>
                                                 <span

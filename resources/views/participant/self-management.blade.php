@@ -7,10 +7,10 @@
     <section>
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
             <div class="flex gap-2">
-                <select class="border border-gray-300 rounded px-3 py-1 text-sm text-white bg-[#7B1C1C]">
+                <select class="border border-gray-300 rounded-md px-6 py-4 text-sm text-white bg-[#7B1C1C]">
                     <option>{{ __('participant.category') }}</option>
                 </select>
-                <select class="border border-gray-300 rounded px-3 py-3 text-sm text-white bg-[#7B1C1C]">
+                <select class="border border-gray-300 rounded-md px-3 py-3 text-sm text-white bg-[#7B1C1C]">
                     <option>{{ __('participant.recommended') }}</option>
                 </select>
             </div>
@@ -41,7 +41,7 @@
 
                     videos.forEach((video, index) => {
                         const videoCard = document.createElement('div');
-                        videoCard.className = 'rounded overflow-hidden shadow-md bg-white flex flex-col';
+                        videoCard.className = 'rounded-[10px] overflow-hidden shadow-md bg-white flex flex-col';
 
                         const maxLength = 25;
                         let subtitleContent = '';
@@ -54,7 +54,7 @@
                                 <div class="text-sm text-gray-600 sm-video-caption">
                                     <span id="${subtitleId}">${truncated}</span>
                                     ${isLong ? `
-                                        <button onclick="toggleReadMore('${subtitleId}', '${video.subtitle.replace(/'/g, "\\'")}', '${truncated.replace(/'/g, "\\'")}', this)" 
+                                        <button onclick="toggleReadMore('${subtitleId}', '${video.subtitle.replace(/'/g, "\\'")}', '${truncated.replace(/'/g, "\\'")}', this)"
                                                 class="text-primary ml-1 text-xs font-medium">
                                             More
                                         </button>
@@ -65,15 +65,15 @@
 
                         videoCard.innerHTML = `
                         <div class="aspect-[9/16]">
-                            <iframe class="w-full h-full" 
-                                    src="${video.embed_url}" 
-                                    frameborder="0" 
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            <iframe class="w-full h-full"
+                                    src="${video.embed_url}"
+                                    frameborder="0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                     allowfullscreen
                                     loading="lazy"></iframe>
                         </div>
 
-                        <div class="p-4 flex-1 flex items-start">${subtitleContent || '<div class="text-sm text-gray-600 sm-video-caption"></div>'}</div>
+                        <div class="p-4 flex-1 flex items-start rounded-tl-none rounded-tr-none rounded-b-[10px] rounded-tl-none rounded-tr-none border border-t-0 border-primary">${subtitleContent || '<div class="text-sm text-gray-600 sm-video-caption"></div>'}</div>
                         `;
 
                         selfManagementGrid.appendChild(videoCard);

@@ -263,12 +263,24 @@ export class CalendarLayout {
    */
   static handleDayCellMount(info) {
     const frame = info.el.querySelector('.fc-daygrid-day-frame') || info.el;
+    const day = info.date.getDay(); 
     frame.classList.add('cursor-pointer', 'hover:bg-gray-50');
 
     const events = frame.querySelectorAll('.fc-daygrid-event');
     if (events.length === 0) {
       frame.classList.add('pbac-day-count-0');
     }
+
+  if (day === 0 || day === 6) {
+    const dateNumber = info.el.querySelector('.fc-daygrid-day-number');
+
+    if (dateNumber) {
+      dateNumber.classList.add(
+        'text-red-500!',
+      );
+    }
+  }
+
   }
 
   /**

@@ -700,17 +700,13 @@ class ParticipantWebApiController extends Controller
             ], 401);
         }
 
-        $url = URL::temporarySignedRoute(
-            'participant.web.login',
-            now()->addMinutes((int) config('auth.dashboard_url_expiry', 5)),
-            ['token' => $token]
-        );
+        $newExpiry = now()->addMinutes((int) config('auth.dashboard_url_expiry', 5));
+
+        session()->put('api_login_expires_at', $newExpiry);
 
         return response()->json([
             'success' => true,
-            'data' => [
-                'url' => $url,
-            ],
+            'expires_at' => $newExpiry->timestamp,
         ]);
     }
 
@@ -754,5 +750,10 @@ class ParticipantWebApiController extends Controller
         }
 
         return view('participant.web_login');
+    }
+
+    public function settings()
+    {
+        return view('participant.setting');
     }
 }
