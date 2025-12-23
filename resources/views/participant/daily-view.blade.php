@@ -10,14 +10,14 @@
             <div class="flex items-center gap-1 mb-4">
                 <!-- Previous Button -->
                 <button @click="prevDay()"
-                    class="inline-flex items-center justify-center gap-1 rounded-md bg-red-900 flex-1 px-2 py-2 text-xs font-semibold text-white shadow hover:bg-red-800 cursor-pointer">
+                    class="inline-flex items-center justify-center gap-1 rounded-md bg-primary flex-1 px-2 py-2 text-xs font-semibold text-white shadow hover:bg-red-800 cursor-pointer">
                     <i class="fa-solid fa-chevron-left text-xs"></i>
                     {{ __('participant.prev') }}
                 </button>
 
                 <!-- Next Button -->
                 <button @click="nextDay()"
-                    class="inline-flex items-center justify-center gap-1 rounded-md bg-red-900 flex-1 px-2 py-2 text-xs font-semibold text-white shadow hover:bg-red-800 cursor-pointer">
+                    class="inline-flex items-center justify-center gap-1 rounded-md bg-primary flex-1 px-2 py-2 text-xs font-semibold text-white shadow hover:bg-red-800 cursor-pointer">
                     {{ __('participant.next') }}
                     <i class="fa-solid fa-chevron-right text-xs"></i>
                 </button>
@@ -25,7 +25,7 @@
                 <!-- Select Date Button -->
                 <div class="relative flex-1">
                     <button @click="openDate()"
-                        class="inline-flex items-center justify-center gap-1 rounded-md bg-red-900 w-full px-2 py-2 text-xs font-semibold text-white shadow cursor-pointer hover:bg-red-800 transition-colors">
+                        class="inline-flex items-center justify-center gap-1 rounded-md bg-primary w-full px-2 py-2 text-xs font-semibold text-white shadow cursor-pointer hover:bg-red-800 transition-colors">
                         {{ __('participant.select') }}
                         <i class="fa-solid fa-calendar text-xs"></i>
                     </button>
@@ -35,7 +35,7 @@
 
             <!-- Date Display -->
             <div class="mb-6">
-                <h2 class="text-lg font-semibold text-gray-900 text-center" x-text="heading"></h2>
+                <h2 class="text-lg font-normal mt-5 text-gray-900 text-center" x-text="heading"></h2>
             </div>
         </div>
 
@@ -80,14 +80,17 @@
                         <template x-for="item in items" :key="item.key">
                             <div class="swiper-slide md:!w-auto">
                                 <div
-                                    class="w-full sm:w-[320px] md:w-[350px] h-[200px] rounded-lg bg-white shadow-sm border border-gray-200 p-3 sm:p-4 mx-auto relative hover:shadow-md transition-shadow">
+                                    class="w-full sm:w-[320px] md:w-[350px] h-[200px] rounded-lg bg-white shadow-sm border border-primary p-3 sm:p-4 mx-auto relative hover:shadow-md transition-shadow">
                                     <!-- Header with icon and title -->
                                     <div class="flex items-center justify-between mb-3">
                                         <div class="flex items-center gap-2">
-                                            <img :src="item.iconSrc" :alt="item.label" class="w-6 h-6 object-contain"
-                                                x-show="item.iconSrc">
-                                            <h3 class="text-sm font-semibold text-gray-900 uppercase tracking-wide truncate md:overflow-visible md:whitespace-normal"
-                                                x-text="item.label"></h3>
+                                            <img :src="item.iconSrc" :alt="item.label"
+                                                class="w-6 h-6 object-contain" x-show="item.iconSrc">
+                                            <h3 class="text-[18px] font-normal capitalize
+           md:text-sm md:font-semibold md:uppercase
+           text-gray-900 tracking-wide
+           truncate md:overflow-visible md:whitespace-normal"
+                                                x-text="item.label">
                                         </div>
                                         <!-- Removed color marker -->
                                     </div>
@@ -99,7 +102,7 @@
                                             x-show="item.severityIcons && item.severityIcons.length > 0">
                                             <template x-for="(icon, index) in item.severityIcons" :key="index">
                                                 <div
-                                                    :class="`${icon.active ? 'p-0.5 sm:p-1 bg-blue-100 border-2 border-blue-500 rounded-full' : 'p-0.5 sm:p-1'} flex-shrink-0`">
+                                                    :class="`${icon.active ? 'p-0.5 sm:p-1 bg-blue-100 border-2 border-primary rounded-full' : 'p-0.5 sm:p-1'} flex-shrink-0`">
                                                     <img :src="icon.src" :alt="icon.alt"
                                                         :class="`object-contain ${icon.active ? 'opacity-100' : 'opacity-30'} w-6 h-6 sm:w-7 sm:h-7`">
                                                 </div>
@@ -153,7 +156,7 @@
                         <template x-for="(vid,vi) in videos" :key="'vid-' + vi">
                             <div class="swiper-slide">
                                 <div
-                                    class="dv-video-card w-full rounded-lg bg-white shadow-sm border border-gray-200 ml-0 md:mx-auto overflow-hidden flex flex-col">
+                                    class="dv-video-card w-full rounded-[10px] bg-white shadow-sm border border-gray-200 ml-0 md:mx-auto overflow-hidden flex flex-col">
                                     <div class="dv-video-media aspect-[9/16]">
                                         <template x-if="vid.type==='youtube'">
                                             <iframe class="w-full h-full"
@@ -167,8 +170,8 @@
                                                 playsinline></video>
                                         </template>
                                     </div>
-                                    <div class="dv-video-caption p-3 text-sm text-gray-600 w-full"
-                                        x-data="{ expanded: false, max: 20, sub: (vid && vid.subtitle) || '' }" x-cloak>
+                                    <div class="dv-video-caption p-3 text-sm text-gray-600 w-full rounded-b-[10px] rounded-tl-none rounded-tr-none border border-t-0 border-primary" x-data="{ expanded: false, max: 20, sub: (vid && vid.subtitle) || '' }"
+                                        x-cloak>
                                         <template x-if="sub && sub.length">
                                             <div>
                                                 <span

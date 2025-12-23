@@ -36,9 +36,9 @@ td {
   right: -5px;
   width: 35px;
   height: 45px;
-  background: #5e0f0f;
+  background: #7D2435;
   border: 5px solid #ffffff;
-  border-top-color: #5e0f0f;
+  border-top-color: #7D2435;
   border-left: 0;
   border-bottom-right-radius: 100%;
   z-index: 1;
@@ -51,9 +51,9 @@ td {
   right: -5px;
   width: 35px;
   height: 45px;
-  background: #5e0f0f;
+  background: #7D2435;
   border: 5px solid #ffffff;
-  border-bottom-color: #5e0f0f;
+  border-bottom-color: #7D2435;
   border-left: 0;
   border-top-right-radius: 100%;
   z-index: -1;
@@ -118,11 +118,11 @@ td {
   .sidebar-list-nav a.active-nav {
     background: rgba(94, 15, 15, 0.08);
     font-weight: 500;
-    border-left: 4px solid #5e0f0f;
+    border-left: 4px solid #7D2435;
   }
 
   .sidebar-list-nav a.active-nav span i {
-    color: #5e0f0f;
+    color: #7D2435;
   }
 
   .sidebar-list-nav a br {
@@ -139,7 +139,7 @@ td {
 
   .sidebar-list-nav a span i {
     font-size: 22px;
-    color: #5e0f0f;
+    color: #7D2435;
   }
 
   .active-nav::before,
