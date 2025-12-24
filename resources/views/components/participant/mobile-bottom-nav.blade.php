@@ -54,7 +54,7 @@
     <!-- BOTTOM TABS -->
     <div class="flex justify-around py-2 text-xs text-black text-[14px] ">
         @foreach ($items as $item)
-            <a href="{{ $item['href'] }}" @click="navigating = true"
+            <a href="{{ $item['href'] }}" @click="navigating = true; if('vibrate' in navigator) { try { navigator.vibrate(10); } catch(e) {} }"
                 class="flex flex-col items-center gap-1 transition
                    {{ $item['active'] ? 'text-primary font-semibold' : '' }}">
 

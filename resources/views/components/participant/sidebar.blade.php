@@ -118,7 +118,7 @@
                             onclick="if('vibrate' in navigator) { try { navigator.vibrate(10); } catch(e) {} }"
                             class="group relative flex h-14 items-center gap-3 pl-5 pr-6 text-sm font-medium transition
                               {{ $isActive
-                                  ? ' active-nav bg-white text-neutral-900 rounded-l-[26px] rounded-r-[0px] shadow'
+                                  ? ' active-nav bg-[#FDF8FE] text-neutral-900 rounded-l-[26px] rounded-r-[0px] shadow'
                                   : 'text-white rounded-xl' }}">
 
                             <!-- Icon (Font Awesome) -->
