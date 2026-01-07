@@ -30,6 +30,8 @@ class PbacController extends Controller
      *       "isBloodLossAnswered": 1,
      *       "blPadSmall": 2,
      *       "painSliderValue": 5,
+     *       "blCupLowCount": 1,
+     *       "blPeriodUnderwearCount": 1,
      *       "pbacScorePerDay": 2
      *     }
      *   ]

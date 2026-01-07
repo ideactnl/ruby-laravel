@@ -189,7 +189,7 @@ class Pbac extends Model
 
     private const BLOOD_LOSS_FIELDS = [
         'is_blood_loss_answered', 'menstrual_blood_loss', 'spotting', 'no_blood_loss', 'is_bl_first_day_period',
-        'is_bl_pads', 'is_bl_tampon', 'is_bl_menstrual_cup', 'is_bl_period_underwear', 'is_bl_other', 'is_bl_other_text',
+        'is_bl_pads', 'is_bl_tampon', 'bl_cup_low_count', 'bl_cup_half_empty_count', 'bl_cup_full_count', 'bl_period_underwear_count', 'is_bl_menstrual_cup', 'is_bl_period_underwear', 'is_bl_other', 'is_bl_other_text',
         'bl_pad_small', 'bl_pad_medium', 'bl_pad_large', 'bl_tampon_small', 'bl_tampon_medium', 'bl_tampon_large',
         'is_bl_very_light', 'is_bl_light', 'is_bl_moderate', 'is_bl_heavy', 'is_bl_very_heavy', 'is_bl_blood_clots',
         'is_bl_double_protection', 'is_bl_leaked_clothes', 'is_bl_change_products', 'is_bl_wake_up_night',
@@ -274,6 +274,10 @@ class Pbac extends Model
         'bl_tampon_small' => 'integer',
         'bl_tampon_medium' => 'integer',
         'bl_tampon_large' => 'integer',
+        'bl_cup_low_count' => 'integer',
+        'bl_cup_half_empty_count' => 'integer',
+        'bl_cup_full_count' => 'integer',
+        'bl_period_underwear_count' => 'integer',
         'pain_slider_value' => 'integer',
         'impact_slider_grade_your_day' => 'integer',
         'impact_slider_complaints' => 'integer',
