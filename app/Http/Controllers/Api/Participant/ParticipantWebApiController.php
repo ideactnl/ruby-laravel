@@ -13,6 +13,7 @@ use Carbon\Carbon;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\URL;
@@ -86,6 +87,11 @@ class ParticipantWebApiController extends Controller
      */
     public function logout(Request $request)
     {
+
+        if ($request->session()->has('api_auth_token')) {
+            Cache::forget('dashboard_login_token:'.hash('sha256', $request->session()->get('api_auth_token')));
+        }
+
         Auth::guard('participant-web')->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
@@ -664,8 +670,11 @@ class ParticipantWebApiController extends Controller
         }
 
         $encodedToken = rtrim(strtr(base64_encode(Crypt::encryptString($bearerToken)), '+/', '-_'), '=');
+
+        Cache::put('dashboard_login_token:'.hash('sha256', $bearerToken), true, now()->addMinutes((int) config('auth.dashboard_url_expiry', 5)));
+
         $url = URL::temporarySignedRoute(
-            'participant.web.login',
+            'participant.app.login',
             now()->addMinutes((int) config('auth.dashboard_url_expiry', 5)),
             ['token' => $encodedToken]
         );
@@ -710,7 +719,7 @@ class ParticipantWebApiController extends Controller
         ]);
     }
 
-    public function webLogin(Request $request)
+    public function appLogin(Request $request)
     {
 
         try {
@@ -720,32 +729,46 @@ class ParticipantWebApiController extends Controller
             $token = Crypt::decryptString($decoded);
 
         } catch (\Exception $e) {
-            return view('participant.web_login');
+            return view('participant.session_expired');
         }
 
         $expires = $request->query('expires');
         if ($token && $request->hasValidSignature()) {
+            $cacheKey = 'dashboard_login_token:'.hash('sha256', $token);
+            if (! Cache::has($cacheKey)) {
+                return view('participant.session_expired');
+            }
 
             $accessToken = PersonalAccessToken::findToken($token);
             if (! $accessToken) {
-                return view('participant.web_login');
+                return view('participant.session_expired');
             }
 
             $user = $accessToken->tokenable;
 
             if (! $user) {
-                return view('participant.web_login');
+                return view('participant.session_expired');
             }
 
             if (! $user instanceof Authenticatable) {
-                return view('participant.web_login');
+                return view('participant.session_expired');
             }
 
             Auth::guard('participant-web')->login($user);
+            Cache::forget($cacheKey);
             $request->session()->put('api_login', true);
             $request->session()->put('api_login_expires_at', Carbon::createFromTimestamp($expires));
             $request->session()->put('api_auth_token', $token);
 
+            return redirect('/participant/dashboard');
+        }
+
+        return view('participant.session_expired');
+    }
+
+    public function webLogin(Request $request)
+    {
+        if (Auth::guard('participant-web')->check()) {
             return redirect('/participant/dashboard');
         }
 

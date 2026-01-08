@@ -7,6 +7,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Cache;
 use Laravel\Sanctum\Sanctum;
 
 uses(RefreshDatabase::class);
@@ -29,7 +30,7 @@ describe('Participant Web Dashboard Login Flow', function () {
             ]);
 
         $url = $response->json('data.url');
-        expect($url)->toContain('/participant/web-login');
+        expect($url)->toContain('/participant/app-login');
         expect($url)->toContain('signature=');
         expect($url)->toContain('token=');
     });
@@ -44,18 +45,20 @@ describe('Participant Web Dashboard Login Flow', function () {
     it('logs in participant via signed url and redirects to dashboard', function () {
         $participant = Participant::factory()->create();
         $plainToken = $participant->createToken('test-token')->plainTextToken;
+
+        Cache::put('dashboard_login_token:'.hash('sha256', $plainToken), true, now()->addMinutes((int) config('auth.dashboard_url_expiry', 5)));
         
         $encodedToken = rtrim(strtr(base64_encode(Crypt::encryptString($plainToken)), '+/', '-_'), '=');
         
         $url = URL::temporarySignedRoute(
-            'participant.web.login',
+            'participant.app.login',
             now()->addMinutes(5),
             ['token' => $encodedToken]
         );
 
         $response = $this->get($url);
 
-        $response->assertRedirect('/participant/dashboard');
+        $response->assertRedirect(route('participant.dashboard'));
         
         $this->assertAuthenticatedAs($participant, 'participant-web');
         $this->assertTrue(session('api_login'));
@@ -68,11 +71,11 @@ describe('Participant Web Dashboard Login Flow', function () {
         $plainToken = $participant->createToken('test-token')->plainTextToken;
         $encodedToken = rtrim(strtr(base64_encode(Crypt::encryptString($plainToken)), '+/', '-_'), '=');
 
-        $url = route('participant.web.login', ['token' => $encodedToken]); 
+        $url = route('participant.app.login', ['token' => $encodedToken]); 
 
         $response = $this->get($url);
         $response->assertOk();
-        $response->assertViewIs('participant.web_login');
+        $response->assertViewIs('participant.session_expired');
         $this->assertGuest('participant-web');
     });
     
@@ -82,7 +85,7 @@ describe('Participant Web Dashboard Login Flow', function () {
         $encodedToken = rtrim(strtr(base64_encode(Crypt::encryptString($plainToken)), '+/', '-_'), '=');
         
         $validUrl = URL::temporarySignedRoute(
-            'participant.web.login',
+            'participant.app.login',
             now()->addMinutes(5),
             ['token' => $encodedToken]
         );
@@ -92,7 +95,7 @@ describe('Participant Web Dashboard Login Flow', function () {
         $response = $this->get($tamperedUrl);
 
         $response->assertOk(); 
-        $response->assertViewIs('participant.web_login');
+        $response->assertViewIs('participant.session_expired');
         $this->assertGuest('participant-web');
     });
 
@@ -100,7 +103,7 @@ describe('Participant Web Dashboard Login Flow', function () {
         $garbageToken = 'garbage_data';
         
         $url = URL::temporarySignedRoute(
-            'participant.web.login',
+            'participant.app.login',
             now()->addMinutes(5),
             ['token' => $garbageToken]
         );
@@ -108,7 +111,7 @@ describe('Participant Web Dashboard Login Flow', function () {
         $response = $this->get($url);
 
         $response->assertOk(); 
-        $response->assertViewIs('participant.web_login');
+        $response->assertViewIs('participant.session_expired');
         $this->assertGuest('participant-web');
     });
 
