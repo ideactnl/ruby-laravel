@@ -28,6 +28,7 @@ Route::post('/switch-language', [LanguageController::class, 'switch'])->name('sw
 */
 Route::prefix('participant')->middleware(['web'])->group(function () {
 
+    Route::get('/app-login', [ParticipantWebApiController::class,'appLogin'])->name('participant.app.login');
     Route::get('/web-login', [ParticipantWebApiController::class,'webLogin'])->name('participant.web.login');
     
     Route::middleware(['auth.participant', 'api.login.expiry'])->group(function () {

@@ -21,10 +21,10 @@
 
         <!-- Buttons -->
         <div class="flex flex-col sm:flex-row justify-center gap-4">
-            {{-- <a href="{{ route('participant.web.login') }}"
+            <a href="{{ route('participant.web.login') }}"
                class="px-4 py-2 sm:px-6 sm:py-3 bg-white border border-gray-300 text-gray-700 rounded hover:bg-gray-100 shadow transition-all duration-200">
                 User Login
-            </a> --}}
+            </a>
             <a href="{{ route('medical-specialist.login') }}"
                class="px-4 py-2 sm:px-6 sm:py-3 bg-white border border-gray-300 text-gray-700 rounded hover:bg-gray-100 shadow transition-all duration-200">
                 Share your calendar

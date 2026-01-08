@@ -2,52 +2,103 @@
 
 @section('content')
 <div class="min-h-screen flex items-center justify-center bg-white p-4">
-    <div class="bg-white rounded-lg  p-10 flex flex-col items-center text-center max-w-md w-full  shadow-md border border-[#5e0f0f]">
-        <h2 class="text-3xl font-bold text-black-600 mb-4 uppercase">{{ __('participant.session_expired') }}</h2>
-        <p class="text-gray-700 mb-6">{{ __('participant.please_refresh_your_session_to_continue') }}</p>
+  <div class="w-full max-w-4xl bg-white rounded-lg overflow-hidden flex flex-col md:flex-row shadow-[0_5px_15px_rgba(0,0,0,0.35)]">
 
-        {{-- <button 
-            x-data
-            x-on:click="refreshSession($el)"
-            class="bg-[#800000] hover:bg-[#660000] text-white font-semibold px-8 py-3 rounded-xl shadow-md transition-colors">
-            Refresh Session
-        </button> --}}
+
+
+        <!-- Left Section -->
+        <div class="w-full md:w-1/2 bg-primary text-white flex flex-col justify-center items-center p-8 md:p-10">
+            <div class="flex flex-col items-center text-center">
+                <!-- Logo -->
+                <div class="bg-white rounded-full p-4 mb-6">
+                    <img src="/images/ruby-new-logo.png" alt="Logo" class="w-16 h-16 md:w-20 md:h-20">
+                </div>
+                <h2 class="text-xl font-semibold md:text-2xl">{{ __('participant.ruby_app') }}</h2>
+                <h3 class="text-2xl font-bold mt-2 md:text-3xl">{{ __('participant.welcome_back') }}</h3>
+                <p class="mt-4 text-sm md:text-base leading-relaxed">
+                    {{ __('participant.empowering_women_menstrual_health') }}
+                </p>
+            </div>
+        </div>
+
+        <!-- Right Section -->
+        <div class="w-full md:w-1/2 p-8 md:p-10 flex flex-col justify-center" x-data="loginForm()">
+            <h2 class="text-2xl font-bold mb-0 text-left uppercase md:text-3xl">{{ __('participant.participant_login') }}</h2>
+            <p class="mt-2 text-sm mb-6 leading-relaxed md:text-base">
+                {{ __('participant.log_in_with_account') }}
+            </p>
+
+            <template x-if="error">
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded mb-4" x-text="error"></div>
+            </template>
+
+            <form @submit.prevent="submit" method="POST" class="space-y-4">
+                <x-form.group name="registration_number">
+                    <x-form.label name="registration_number" required>{{ __('participant.registration_number') }}</x-form.label>
+                    <x-form.input name="registration_number" x-model="registration_number" type="text" required autofocus />
+                </x-form.group>
+
+                <x-form.group name="password">
+                    <x-form.label name="password" required>{{ __('participant.password') }}</x-form.label>
+                    <x-form.input name="password" x-model="password" type="password" required />
+                </x-form.group>
+
+                <div class="mt-6">
+                    <button type="submit"
+                        class="w-full bg-primary hover:bg-primary text-white font-semibold py-2 px-4 rounded transition disabled:opacity-50"
+                        x-bind:disabled="loading">
+                        <span x-show="!loading">{{ __('participant.login') }}</span>
+                        <span x-show="loading">{{ __('participant.logging_in') }}</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+
     </div>
 </div>
 @endsection
 
 @push('scripts')
 <script>
-function refreshSession(el){
-    el.disabled = true;
-    el.innerText = 'Refreshing...';
+function loginForm() {
+    return {
+        registration_number: '',
+        password: '',
+        loading: false,
+        error: '',
+        async submit() {
+            this.error = '';
+            this.loading = true;
+            try {
+                await fetch('/sanctum/csrf-cookie', { credentials: 'include' });
+                const xsrfToken = decodeURIComponent(document.cookie.split('; ').find(row => row.startsWith('XSRF-TOKEN=')).split('=')[1]);
+                const res = await fetch('/api/v1/participant/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-XSRF-TOKEN': xsrfToken
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        registration_number: this.registration_number,
+                        password: this.password,
+                    })
+                });
+                const data = await res.json();
 
-    fetch('{{ route("participant.refresh.session") }}', {
-        method: 'POST',
-        headers: {
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-            'Accept': 'application/json'
-        },
-        credentials: 'same-origin'
-    })
-    .then(res => res.json())
-    .then(res => {
-        console.log(res)
-        if(res.success){
-            window.dispatchEvent(new CustomEvent('alert:success', { detail: { message: 'Session refreshed successfully!' }}));
-            setTimeout(() => window.location.href = res.data.url, 1000);
-        } else {
-            window.dispatchEvent(new CustomEvent('alert:error', { detail: { message: 'Failed to refresh session. Please login again.' }}));
-            el.disabled = false;
-            el.innerText = 'Refresh Session';
+                if (!res.ok || !data.success) {
+                    this.error = data.message || '{{ __('participant.login_failed_check_credentials') }}';
+                } else {
+                    window.location.href = '/participant/dashboard';
+                }
+            } catch (e) {
+                this.error = '{{ __('participant.unexpected_error_occurred') }}' + (e.message || e);
+                console.error(e);
+            }
+            this.loading = false;
         }
-    })
-    .catch((err) => {
-        console.log(err)
-        window.dispatchEvent(new CustomEvent('alert:error', { detail: { message: 'Network error. Try again.' }}));
-        el.disabled = false;
-        el.innerText = 'Refresh Session';
-    });
+    }
 }
 </script>
 @endpush
