@@ -114,7 +114,7 @@ export class CardGenerators {
     return {
       key: 'impact',
       label: translations.impact || __('impact', 'Impact'),
-      iconSrc: '/images/grid_impact.png',
+      iconSrc: limitations.length > 1 ? '/images/grid_impact_new.png' : '/images/grid_impact.png',
       context: statusInfo.context, 
       statusColor: statusInfo.statusColor,
       statusText: statusInfo.statusText,
