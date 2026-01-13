@@ -224,7 +224,7 @@ body {
 
         .pbac-day-count-0 {
             display: flex;
-            justify-content: center;
+            justify-content: left;
             align-items: baseline;
         }
     }
@@ -241,6 +241,9 @@ body {
     tr.fc-scrollgrid-section.fc-scrollgrid-section-body .pbac-selected-domains-3 {
         display: block !important;
     }
+    th.fc-col-header-cell {
+    text-align: left;
+}
 
     .self-management .p-4.text-sm {
         min-height: 74px;
@@ -258,9 +261,11 @@ body {
         display: none;
     }
 
-    .fc-daygrid-day-top.justify-center {
+      .fc-daygrid-day-top.justify-center {
         width: 48%;
         float: left;
+        justify-content: flex-end;
+        padding-left: 2px;
     }
 
     .fc-daygrid-event-harness {
@@ -273,15 +278,17 @@ body {
     }
 
     .pbac-day-count-1 .fc-daygrid-event-harness {
-        width: 100% !important;
+        width: 45% !important;
         margin: 0 !important;
+        float: right;
+        justify-content: end;
     }
 
-    .pbac-day-count-1 {
+    /* .pbac-day-count-1 {
         display: flex;
         margin: auto;
         flex-direction: column;
-    }
+    } */
 
     .three-present.pbac-day-count-1 {
         display: block;
@@ -297,7 +304,8 @@ body {
     }
 
     .pbac-day-count-1 .fc-daygrid-day-top.justify-center {
-        width: 100%;
+        width: 45%;
+         float: left;
     }
 
     .three-present.pbac-day-count-1 .fc-daygrid-day-top.justify-center {
@@ -306,11 +314,14 @@ body {
     }
 
     .pbac-day-count-2 .fc-daygrid-day-top.justify-center {
-        width: 100%;
+        width: 45%;
+        justify-content: left;
+        padding-left: 2px;
     }
 
     .three-present.pbac-day-count-2 .fc-daygrid-day-top.justify-center {
-        width: 48%;
+        width: 45%;
+        margin-bottom: 10px;
     }
 
     .fc-daygrid-day {
@@ -319,8 +330,8 @@ body {
     }
 
     .pbac-day-count-2 .fc-daygrid-event-harness:nth-last-child(2) {
-        justify-content: center !important;
-        padding-top: 10px;
+        width: 45% !important;
+        float: right;
 
     }
 
@@ -381,7 +392,7 @@ body {
 }
 
 .three-present.pbac-day-count-1 .fc-daygrid-event-harness {
-    width: 42% !important;
+    width: 38% !important;
     padding-top: 0px !important;
     float: right;
 }
