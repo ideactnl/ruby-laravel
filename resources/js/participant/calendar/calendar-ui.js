@@ -45,24 +45,16 @@ export class CalendarUI {
     const mobileYear = document.getElementById('mobile-year');
     const mobileContainer = document.getElementById('mobile-date-container');
 
-    if (mobileDate && mobileMonth && mobileYear && mobileContainer) {
+    if (mobileMonth && mobileYear && mobileContainer) {
       const updateMobileDate = () => {
         const currentCalendarDate = this.calendar.getDate();
         const today = new Date();
 
         const isCurrentMonth = currentCalendarDate.getFullYear() === today.getFullYear() &&
-          currentCalendarDate.getMonth() === today.getMonth();
-
-        if (isCurrentMonth) {
-          mobileDate.textContent = today.getDate().toString().padStart(2, '0');
-          mobileDate.classList.remove('text-gray-500');
-        } else {
-          mobileDate.textContent = '01';
-          mobileDate.classList.remove('text-gray-500');
-        }
+        currentCalendarDate.getMonth() === today.getMonth();
 
         const locale = window.appLocale === 'nl' ? 'nl-NL' : 'en-US';
-        mobileMonth.textContent = currentCalendarDate.toLocaleDateString(locale, { month: 'numeric' }).toUpperCase();
+        mobileMonth.textContent = currentCalendarDate.toLocaleDateString(locale, { month: 'long' });
         mobileYear.textContent = currentCalendarDate.getFullYear();
       };
 

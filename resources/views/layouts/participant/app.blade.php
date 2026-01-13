@@ -12,12 +12,12 @@
         {{-- @include('components.participant.navbar') --}}
 
         {{-- Mobile --}}
-@include('components.participant.mobile-header')
+        @include('components.participant.mobile-header')
 
-{{-- Desktop --}}
-<div class="hidden md:block">
-    @include('components.participant.navbar')
-</div>
+        {{-- Desktop --}}
+        <div class="hidden md:block">
+            @include('components.participant.navbar')
+        </div>
 
         <div class="relative">
             @auth('participant-web')
@@ -30,19 +30,19 @@
                 {{-- <main class="flex-1 md:ml-64"> --}}
                     <main class="flex-1 md:ml-64 pb-20 md:pb-0">
 
-                    <div class="px-5 py-6 md:px-8">
-                        <x-common.alerts />
-                        @yield('content')
-                    </div>
-                </main>
+                        <div class="px-5 py-6 md:px-8">
+                            <x-common.alerts />
+                            @yield('content')
+                        </div>
+                    </main>
             @else
-                <main class="flex-1">
-                    <div class="px-5 py-6 md:px-8">
-                        <x-common.alerts />
-                        @yield('content')
-                    </div>
-                </main>
-            @endauth
+                    <main class="flex-1">
+                        <div class="px-5 py-6 md:px-8">
+                            <x-common.alerts />
+                            @yield('content')
+                        </div>
+                    </main>
+                @endauth
         </div>
 
     </div>
@@ -61,40 +61,39 @@
     const REFRESH_INTERVAL = 60 * 1000; // 1 minute
     const isApiLogin = @json(session('api_login'));
 
-    async function refreshSession() {
+        async function refreshSession() {
 
-        const route = `{{ route('participant.refresh.session') }}`
-        try {
-            const res = await fetch(route, {
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                    'Accept': 'application/json'
-                },
-                credentials: 'same-origin'
-            });
+            const route = `{{ route('participant.refresh.session') }}`
+            try {
+                const res = await fetch(route, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json'
+                    },
+                    credentials: 'same-origin'
+                });
 
-            if (!res.ok) {
-                throw new Error('Session refresh failed');
+                if (!res.ok) {
+                    throw new Error('Session refresh failed');
+                }
+
+                const data = await res.json();
+
+                if (!data.success) {
+                    throw new Error('Session expired');
+                }
+
+            } catch (e) {
+                console.log(e);
+                console.warn('Logging out due to session expiry');
+                window.location.href = "/";
             }
-
-            const data = await res.json();
-
-            if (!data.success) {
-                throw new Error('Session expired');
-            }
-
-        } catch (e) {
-            console.warn('Logging out due to session expiry');
-            window.location.href = "/";
         }
-    }
-
-    if (isApiLogin) {
-        setInterval(refreshSession, REFRESH_INTERVAL);
-    }
-
-</script>
+        if (isApiLogin) {
+            setInterval(refreshSession, REFRESH_INTERVAL);
+        }
+    </script>
 
 </body>
 

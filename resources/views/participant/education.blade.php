@@ -64,7 +64,6 @@
 
                 if (educationGrid) {
                     educationGrid.innerHTML = '';
-
                     videos.forEach((video, index) => {
                         const videoCard = document.createElement('div');
                         videoCard.className = 'rounded-[10px] overflow-hidden  bg-white flex flex-col';
@@ -78,7 +77,16 @@
 
                             subtitleContent = `
                                     <div class="text-sm text-gray-600 edu-video-caption">
-                                        <span id="${subtitleId}">${truncated}</span>
+                                        
+                                        <span>
+                                            <a href="${video.watch_url}" 
+                                                target="_blank" 
+                                                id="${subtitleId}"
+                                                class="text-sm text-primary hover:underline block">
+                                                ${truncated}
+                                            </a>
+                                        </span>
+
                                         ${isLong ? `
                                             <button onclick="toggleReadMore('${subtitleId}', '${video.subtitle.replace(/'/g, "\\'")}', '${truncated.replace(/'/g, "\\'")}', this)"
                                                     class="text-primary ml-1 text-xs font-medium">
@@ -99,7 +107,9 @@
                                         loading="lazy"></iframe>
                             </div>
 
-                            <div class="p-4 flex-1 flex items-start rounded-b-[10px] rounded-tl-none rounded-tr-none border border-t-0 border-primary bg-[#FDF8FE]">${subtitleContent || '<div class="text-sm text-gray-600 edu-video-caption"></div>'}</div>
+                            <div class="p-2 md:p-4 flex-1 flex flex-col items-start rounded-b-[10px] rounded-tl-none rounded-tr-none border border-t-0 border-primary bg-[#FDF8FE]">
+                                <h3 class="text-[14px] font-semibold text-black mb-[6px]">${video.title}</h3>
+                                ${subtitleContent || '<div class="text-sm text-gray-600 edu-video-caption"></div>'}</div>
                         `;
 
                         educationGrid.appendChild(videoCard);
@@ -120,6 +130,7 @@
                             educationGrid.appendChild(flipCardContainer);
                         }
                     });
+
 
                     loadingElement.style.display = 'none';
                     educationGrid.style.display = 'grid';

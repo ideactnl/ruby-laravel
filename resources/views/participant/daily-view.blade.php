@@ -157,7 +157,8 @@
                             <div class="swiper-slide">
                                 <div
                                     class="dv-video-card w-full rounded-[10px] bg-[#FDF8FE]  border border-gray-200 ml-0 md:mx-auto overflow-hidden flex flex-col">
-                                    <div class="dv-video-media aspect-[9/16] relative bg-black group" x-data="{ playing: false }">
+                                    <div class="dv-video-media aspect-[9/16] relative bg-black group"
+                                        x-data="{ playing: false }">
                                         <!-- YouTube -->
                                         <template x-if="vid.type==='youtube'">
                                             <div class="w-full h-full">
@@ -187,8 +188,7 @@
                                         <template x-if="vid.type==='mp4'">
                                             <div class="w-full h-full relative">
                                                 <!-- Facade Overlay -->
-                                                <div x-show="!playing"
-                                                    @click="playing = true; $refs.videoPlayer.play()"
+                                                <div x-show="!playing" @click="playing = true; $refs.videoPlayer.play()"
                                                     class="absolute inset-0 cursor-pointer flex items-center justify-center z-10 bg-black/10 group-hover:bg-black/20 transition-colors">
                                                     <div
                                                         class="w-12 h-12 bg-black/50 rounded-full flex items-center justify-center backdrop-blur-sm group-hover:scale-110 transition-transform">
@@ -197,17 +197,28 @@
                                                 </div>
                                                 <!-- Video Element -->
                                                 <video x-ref="videoPlayer" class="w-full h-full object-cover"
-                                                    :src="vid.src" controls playsinline
-                                                    @pause="playing = false" @play="playing = true"></video>
+                                                    :src="vid.src" controls playsinline @pause="playing = false"
+                                                    @play="playing = true"></video>
                                             </div>
                                         </template>
                                     </div>
-                                    <div class="dv-video-caption p-3 text-sm text-gray-600 w-full rounded-b-[10px] rounded-tl-none rounded-tr-none border border-t-0 border-primary" x-data="{ expanded: false, max: 20, sub: (vid && vid.subtitle) || '' }"
-                                        x-cloak>
+
+                                    <div class="dv-video-caption p-3 text-sm text-gray-600 w-full rounded-b-[10px] rounded-tl-none rounded-tr-none border border-t-0 border-primary"
+                                        x-data="{ expanded: false, max: 20, sub: (vid && vid.subtitle) || '', title: (vid && vid.title) || '' }" x-cloak>
+
+                                        <!-- Video Title -->
+                                        <template x-if="title">
+                                            <h4 class="text-sm font-semibold text-black mb-1" x-text="title"></h4>
+                                        </template>
+
+                                        <!-- Subtitle as link -->
                                         <template x-if="sub && sub.length">
                                             <div>
-                                                <span
-                                                    x-text="!expanded ? (sub.length > max ? sub.slice(0,max) + '...' : sub) : sub"></span>
+                                                <a :href="vid.src" target="_blank"
+                                                    class="text-sm text-primary hover:underline block"
+                                                    x-text="!expanded ? (sub.length > max ? sub.slice(0, max) + '...' : sub) : sub">
+                                                </a>
+
                                                 <template x-if="sub.length > max">
                                                     <button class="text-primary ml-1 text-xs font-medium"
                                                         @click="expanded = !expanded; $nextTick(() => window.CascadeSyncDailyCaptions && window.CascadeSyncDailyCaptions())"
@@ -215,12 +226,12 @@
                                                 </template>
                                             </div>
                                         </template>
+
                                         <template x-if="!sub || !sub.length">
-                                            <div>
-                                                <div class="h-[16px]"></div>
-                                            </div>
+                                            <div class="h-[16px]"></div>
                                         </template>
                                     </div>
+
                                 </div>
                             </div>
                         </template>
