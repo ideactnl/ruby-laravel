@@ -47,12 +47,12 @@
                     d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
                 </path>
             </svg>
-            
+
         </div>
     </div>
 
     <!-- BOTTOM TABS -->
-    <div class="flex justify-around py-2 text-xs text-black text-[14px] ">
+    <div class="flex justify-around py-2 text-xs text-black text-[14px]  ">
         @foreach ($items as $item)
             <a href="{{ $item['href'] }}" @click="navigating = true; if('vibrate' in navigator) { try { navigator.vibrate(10); } catch(e) {} }"
                 class="flex flex-col items-center gap-1 transition

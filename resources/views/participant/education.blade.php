@@ -99,7 +99,7 @@
                                         loading="lazy"></iframe>
                             </div>
 
-                            <div class="p-4 flex-1 flex items-start rounded-b-[10px] rounded-tl-none rounded-tr-none border border-t-0 border-primary">${subtitleContent || '<div class="text-sm text-gray-600 edu-video-caption"></div>'}</div>
+                            <div class="p-4 flex-1 flex items-start rounded-b-[10px] rounded-tl-none rounded-tr-none border border-t-0 border-primary bg-[#FDF8FE]">${subtitleContent || '<div class="text-sm text-gray-600 edu-video-caption"></div>'}</div>
                         `;
 
                         educationGrid.appendChild(videoCard);
@@ -112,7 +112,7 @@
                                     <div class="aspect-[9/16] w-full">
                                         ${flipCard}
                                     </div>
-                                    <div class="p-4 flex-1 flex items-center item  rounded-b-[10px] rounded-tl-none rounded-tr-none border border-t-0 border-primary">
+                                    <div class="p-4 flex-1 flex items-center item  rounded-b-[10px] rounded-tl-none rounded-tr-none border border-t-0 border-primary bg-[#FDF8FE]">
                                     </div>
                                 </div>
                             `;

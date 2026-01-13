@@ -156,7 +156,7 @@
                         <template x-for="(vid,vi) in videos" :key="'vid-' + vi">
                             <div class="swiper-slide">
                                 <div
-                                    class="dv-video-card w-full rounded-[10px] bg-white  border border-gray-200 ml-0 md:mx-auto overflow-hidden flex flex-col">
+                                    class="dv-video-card w-full rounded-[10px] bg-[#FDF8FE]  border border-gray-200 ml-0 md:mx-auto overflow-hidden flex flex-col">
                                     <div class="dv-video-media aspect-[9/16] relative bg-black group" x-data="{ playing: false }">
                                         <!-- YouTube -->
                                         <template x-if="vid.type==='youtube'">
