@@ -64,6 +64,7 @@
 
                 if (educationGrid) {
                     educationGrid.innerHTML = '';
+
                     videos.forEach((video, index) => {
                         const videoCard = document.createElement('div');
                         videoCard.className = 'rounded-[10px] overflow-hidden  bg-white flex flex-col';
@@ -105,9 +106,10 @@
                                         loading="lazy"></iframe>
                             </div>
 
-                            <div class="p-2 md:p-4 flex-1 flex flex-col items-start rounded-b-[10px] rounded-tl-none rounded-tr-none border border-t-0 border-primary bg-[#FDF8FE]">
+                             <div class="p-2 md:p-4 flex-1 flex flex-col items-start rounded-b-[10px] rounded-tl-none rounded-tr-none border border-t-0 border-primary bg-[#FDF8FE]">
                                 <h3 class="text-[14px] font-semibold text-black mb-[6px]">${video.title}</h3>
-                                ${subtitleContent || '<div class="text-sm text-gray-600 edu-video-caption"></div>'}</div>
+                                ${subtitleContent || '<div class="text-sm text-gray-600 edu-video-caption"></div>'}
+                            </div>
                         `;
 
                         educationGrid.appendChild(videoCard);
@@ -120,7 +122,7 @@
                                     <div class="aspect-[9/16] w-full">
                                         ${flipCard}
                                     </div>
-                                    <div class="p-4 flex-1 flex items-center item  rounded-b-[10px] rounded-tl-none rounded-tr-none border border-t-0 border-primary bg-[#FDF8FE]">
+                                    <div class="p-4 flex-1 flex items-center item  rounded-b-[10px] rounded-tl-none rounded-tr-none border border-t-0 border-primary">
                                     </div>
                                 </div>
                             `;
@@ -128,7 +130,6 @@
                             educationGrid.appendChild(flipCardContainer);
                         }
                     });
-
 
                     loadingElement.style.display = 'none';
                     educationGrid.style.display = 'grid';

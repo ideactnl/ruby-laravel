@@ -41,7 +41,7 @@
 
                     videos.forEach((video, index) => {
                         const videoCard = document.createElement('div');
-                        videoCard.className = 'rounded-[10px] overflow-hidden  bg-[#FDF8FE] flex flex-col';
+                        videoCard.className = 'rounded-[10px] overflow-hidden shadow-md bg-white flex flex-col';
 
                         const maxLength = 25;
                         let subtitleContent = '';
@@ -80,9 +80,12 @@
                                     loading="lazy"></iframe>
                         </div>
 
-                        <div class="p-4 flex-1 flex flex-col items-start rounded-tl-none rounded-tr-none rounded-b-[10px] rounded-tl-none rounded-tr-none border border-t-0 border-primary bg-[#FDF8FE]">
+
+                         <div class="p-4 flex-1 flex flex-col items-start rounded-tl-none rounded-tr-none rounded-b-[10px] rounded-tl-none rounded-tr-none border border-t-0 border-primary bg-[#FDF8FE]">
                             <h3 class="text-[14px] font-semibold text-black mb-[6px]">${video.title}</h3>
-                            ${subtitleContent || '<div class="text-sm text-gray-600 sm-video-caption"></div>'}</div>
+                            ${subtitleContent || '<div class="text-sm text-gray-600 sm-video-caption"></div>'}
+                        </div>
+                        
                         `;
 
                         selfManagementGrid.appendChild(videoCard);

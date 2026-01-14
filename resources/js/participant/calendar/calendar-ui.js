@@ -40,7 +40,6 @@ export class CalendarUI {
    * Setup mobile date display that updates on calendar navigation
    */
   setupMobileDateDisplay() {
-    const mobileDate = document.getElementById('mobile-date');
     const mobileMonth = document.getElementById('mobile-month');
     const mobileYear = document.getElementById('mobile-year');
     const mobileContainer = document.getElementById('mobile-date-container');
@@ -51,7 +50,7 @@ export class CalendarUI {
         const today = new Date();
 
         const isCurrentMonth = currentCalendarDate.getFullYear() === today.getFullYear() &&
-        currentCalendarDate.getMonth() === today.getMonth();
+          currentCalendarDate.getMonth() === today.getMonth();
 
         const locale = window.appLocale === 'nl' ? 'nl-NL' : 'en-US';
         mobileMonth.textContent = currentCalendarDate.toLocaleDateString(locale, { month: 'long' });
