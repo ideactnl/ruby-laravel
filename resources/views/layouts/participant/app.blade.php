@@ -59,7 +59,6 @@
 
     <script>
     const REFRESH_INTERVAL = 60 * 1000; // 1 minute
-    const isApiLogin = @json(session('api_login'));
 
     async function refreshSession() {
 
@@ -90,10 +89,7 @@
         }
     }
 
-    if (isApiLogin) {
-        setInterval(refreshSession, REFRESH_INTERVAL);
-    }
-
+    setInterval(refreshSession, REFRESH_INTERVAL);
 </script>
 
 </body>
