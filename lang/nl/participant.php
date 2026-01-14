@@ -657,5 +657,11 @@ return [
     'card_notes_note_recorded' => 'Notitie geregistreerd',
 
     // Common
-    'card_common_unknown' => 'Onbekend'
+    'card_common_unknown' => 'Onbekend',
+
+    // Session Expired
+    'session_expired' => 'Sessie verlopen',
+    'please_refresh_your_session_to_continue' => 'Ververs uw sessie om door te gaan.',
+
+    'home' => 'Home'
 ];

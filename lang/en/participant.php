@@ -658,4 +658,10 @@ return [
 
     // Common
     'card_common_unknown' => 'Unknown',
+
+    // Session Expired
+    'session_expired' => 'Session Expired',
+    'please_refresh_your_session_to_continue' => 'Please refresh your session to continue.',
+
+    'home' => 'Home'
 ];

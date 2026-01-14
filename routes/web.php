@@ -6,6 +6,8 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\PbacExportController;
 use App\Http\Controllers\UserController;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -26,15 +28,11 @@ Route::post('/switch-language', [LanguageController::class, 'switch'])->name('sw
 */
 Route::prefix('participant')->middleware(['web'])->group(function () {
 
-    Route::get('/web-login', function () {
-        if (Auth::guard('participant-web')->check()) {
-            return redirect('/participant/dashboard');
-        }
-
-        return view('participant.web_login');
-    })->name('participant.web.login');
-
-    Route::middleware('auth.participant')->group(function () {
+    Route::get('/app-login', [ParticipantWebApiController::class,'appLogin'])->name('participant.app.login');
+    Route::get('/web-login', [ParticipantWebApiController::class,'webLogin'])->name('participant.web.login');
+    
+    Route::middleware(['auth.participant', 'api.login.expiry'])->group(function () {
+        
         Route::get('/dashboard', [ParticipantWebApiController::class, 'dashboardPage'])->name('participant.dashboard');
         Route::get('/export', [ParticipantWebApiController::class, 'exportPage'])->name('participant.export');
         Route::get('/daily-view', [ParticipantWebApiController::class, 'dailyViewPage'])->name('participant.daily-view');
@@ -42,6 +40,8 @@ Route::prefix('participant')->middleware(['web'])->group(function () {
         Route::get('/self-management', [ParticipantWebApiController::class, 'selfManagement'])->name('participant.self-management');
         Route::get('/external-links', [ParticipantWebApiController::class, 'externalLinks'])->name('participant.external-links');
         Route::get('/general-information', [ParticipantWebApiController::class, 'generalInformation'])->name('participant.general-information');
+        Route::get('/settings', [ParticipantWebApiController::class, 'settings'])->name('participant.settings');
+
         Route::get('/api/v1/participant/profile', [ParticipantWebApiController::class, 'profile'])->name('participant.api.profile');
     });
 });

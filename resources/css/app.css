@@ -2,11 +2,11 @@
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 
 @font-face {
-    font-family: "Geist";
+    font-family: "OpenSans";
     font-style: normal;
     font-weight: 100 900;
     font-display: swap;
-    src: url("../fonts/Geist/Geist-VariableFont_wght.ttf") format("truetype-variations");
+    src: url("../fonts/Open_Sans/OpenSans-VariableFont.ttf") format("truetype-variations");
 }
 
 /* Hide scrollbar but keep scroll functionality */
@@ -35,13 +35,11 @@ body {
 }
 
 @theme {
-    --font-family-sans: "Geist", ui-sans-serif, system-ui, sans-serif,
-        "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
-        "Noto Color Emoji";
+    --font-family-sans: "OpenSans", system-ui, sans-serif;
 
     /* Primary Color System */
     --color-primary-800: #991b1b;
-    --color-primary: #5e0f0f;
+    --color-primary: #7D2435;
 
     /* Essential Neutral Colors */
     --color-neutral-200: #e2e8f0;
@@ -252,9 +250,9 @@ body {
         font-size: 16px;
     }
 
-    .pbac-day-count-0 .fc-daygrid-day-top.justify-center {
+    /* .pbac-day-count-0 .fc-daygrid-day-top.justify-center {
         width: 100% !important;
-    }
+    } */
 
     .fc-daygrid-day-events {
         display: none;
@@ -511,12 +509,15 @@ body {
     .pbac-day-count-2 .fc-daygrid-event-harness {
         width: 43%;
     }
-
+/*
     .pbac-day-count-0 .fc-daygrid-day-top.justify-center {
         width: 100% !important;
-    }
+    } */
 
     .msg-send {
         grid-template-columns: 1fr;
     }
 }
+
+
+
