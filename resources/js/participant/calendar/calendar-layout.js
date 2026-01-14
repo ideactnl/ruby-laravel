@@ -26,6 +26,7 @@ export class CalendarLayout {
       '/images/grid_blood_loss.png',
       '/images/grid_pain.png',
       '/images/grid_impact.png',
+      '/images/grid_impact_new.png',
       '/images/grid_general_health.png',
       '/images/grid_mood.png',
       '/images/grid_urine_stool.png',

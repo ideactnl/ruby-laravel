@@ -22,9 +22,7 @@
                         onclick="goToCurrentMonth()"
                         title="{{ __('participant.tap_to_go_current_month') }}"
                         class="flex md:hidden items-center justify-center cursor-pointer rounded-lg px-4 py-2 hover:bg-gray-100 transition text-gray-900 text-[18px] font-normal">
-                    <span id="mobile-date">{{ now()->format('d') }}</span>
-                    <span class="mx-1">-</span>
-                    <span id="mobile-month">{{ now()->format('m') }}</span>
+                    <span id="mobile-month">{{ now()->format('F') }}</span>
                     <span class="mx-1">-</span>
                     <span id="mobile-year">{{ now()->format('Y') }}</span>
                 </div>
