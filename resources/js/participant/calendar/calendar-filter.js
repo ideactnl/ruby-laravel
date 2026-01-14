@@ -3,8 +3,6 @@
  * Handles the filter dropdown for selecting calendar event types
  */
 
-import { CalendarLayout } from "./calendar-layout";
-
 export function createFilterMenu() {
   // Get translations from window object (set by Laravel)
   const translations = window.healthDomainTranslations || {};
@@ -44,30 +42,12 @@ export function createFilterMenu() {
       const saved = localStorage.getItem('calendar_selected_types');
       this.selected = saved ? JSON.parse(saved) : ['blood_loss', 'pain', 'impact'];
       if (this.selected.length > 3) this.selected = this.selected.slice(0, 3);
-
       window.selectedCalendarTypes = new Set(this.selected);
-
-      window.addEventListener('calendar-filter-updated', (e) => {
-        if (JSON.stringify(this.selected) !== JSON.stringify(e.detail.selected)) {
-          this.selected = [...e.detail.selected];
-          window.selectedCalendarTypes = new Set(this.selected);
-          
-          if (window.participantCalendar) {
-            window.participantCalendar.refetchEvents();
-            CalendarLayout.addNewClassForMobile();
-          }
-        }
-      });
     },
 
     apply() {
       window.selectedCalendarTypes = new Set(this.selected);
       localStorage.setItem('calendar_selected_types', JSON.stringify(this.selected));
-
-      window.dispatchEvent(new CustomEvent('calendar-filter-updated', {
-        detail: { selected: this.selected }
-      }));
-
       if (window.participantCalendar) {
         window.participantCalendar.refetchEvents();
         CalendarLayout.addNewClassForMobile();
