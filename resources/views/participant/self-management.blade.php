@@ -60,7 +60,6 @@
                                             ${truncated}
                                         </a>
                                     </span>
-
                                     ${isLong ? `
                                         <button onclick="toggleReadMore('${subtitleId}', '${video.subtitle.replace(/'/g, "\\'")}', '${truncated.replace(/'/g, "\\'")}', this)"
                                                 class="text-primary ml-1 text-xs font-medium">

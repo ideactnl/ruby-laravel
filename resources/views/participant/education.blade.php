@@ -77,7 +77,6 @@
 
                             subtitleContent = `
                                     <div class="text-sm text-gray-600 edu-video-caption">
-                                        
                                         <span>
                                             <a href="${video.watch_url}" 
                                                 target="_blank" 
@@ -86,7 +85,6 @@
                                                 ${truncated}
                                             </a>
                                         </span>
-
                                         ${isLong ? `
                                             <button onclick="toggleReadMore('${subtitleId}', '${video.subtitle.replace(/'/g, "\\'")}', '${truncated.replace(/'/g, "\\'")}', this)"
                                                     class="text-primary ml-1 text-xs font-medium">
