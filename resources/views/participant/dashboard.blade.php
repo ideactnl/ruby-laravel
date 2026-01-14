@@ -59,8 +59,8 @@
                     {{ __('participant.next_month_btn') }} <i class="fa-solid fa-angles-right"></i>
                 </button>
             </div>
-
-
+            <!-- Domain Filter Dropdown -->
+                <x-participant.domain-dropdown :className="'hidden md:flex'"/>
         </div>
 
         <div class="relative">
