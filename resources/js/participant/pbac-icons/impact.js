@@ -41,6 +41,12 @@ export function getImpactIcon(value) {
   const { gradeYourDay, limitations } = value;
 
   if (limitations && limitations.length > 0) {
+
+    if (limitations.length > 1) {
+      const tooltip = `${getTranslatedTooltip('tooltip_grade_your_day')}: ${gradeYourDay}/10`;
+      return createIconResult('grid_impact_new.png', tooltip);
+    }
+
     const primaryLimitation = limitations[0];
     const condition = CONDITIONS[primaryLimitation];
     if (condition) {
