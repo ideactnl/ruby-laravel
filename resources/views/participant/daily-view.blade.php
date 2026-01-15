@@ -84,13 +84,12 @@
                                     <!-- Header with icon and title -->
                                     <div class="flex items-center justify-between mb-3">
                                         <div class="flex items-center gap-2">
-                                            <img :src="item.iconSrc" :alt="item.label"
-                                                class="w-6 h-6 object-contain" x-show="item.iconSrc">
+                                            <img :src="item.iconSrc" :alt="item.label" class="w-6 h-6 object-contain"
+                                                x-show="item.iconSrc">
                                             <h3 class="text-[18px] font-normal capitalize
-           md:text-sm md:font-semibold md:uppercase
-           text-gray-900 tracking-wide
-           truncate md:overflow-visible md:whitespace-normal"
-                                                x-text="item.label">
+               md:text-sm md:font-semibold md:uppercase
+               text-gray-900 tracking-wide
+               truncate md:overflow-visible md:whitespace-normal" x-text="item.label">
                                         </div>
                                         <!-- Removed color marker -->
                                     </div>
@@ -156,8 +155,9 @@
                         <template x-for="(vid,vi) in videos" :key="'vid-' + vi">
                             <div class="swiper-slide">
                                 <div
-                                    class="dv-video-card w-full rounded-[10px] bg-white  border border-gray-200 ml-0 md:mx-auto overflow-hidden flex flex-col">
-                                    <div class="dv-video-media aspect-[9/16] relative bg-black group" x-data="{ playing: false }">
+                                    class="dv-video-card w-full rounded-[10px] bg-[#FDF8FE] border border-gray-200 ml-0 md:mx-auto overflow-hidden flex flex-col">
+                                    <div class="dv-video-media aspect-[9/16] relative bg-black group"
+                                        x-data="{ playing: false }">
                                         <!-- YouTube -->
                                         <template x-if="vid.type==='youtube'">
                                             <div class="w-full h-full">
@@ -187,8 +187,7 @@
                                         <template x-if="vid.type==='mp4'">
                                             <div class="w-full h-full relative">
                                                 <!-- Facade Overlay -->
-                                                <div x-show="!playing"
-                                                    @click="playing = true; $refs.videoPlayer.play()"
+                                                <div x-show="!playing" @click="playing = true; $refs.videoPlayer.play()"
                                                     class="absolute inset-0 cursor-pointer flex items-center justify-center z-10 bg-black/10 group-hover:bg-black/20 transition-colors">
                                                     <div
                                                         class="w-12 h-12 bg-black/50 rounded-full flex items-center justify-center backdrop-blur-sm group-hover:scale-110 transition-transform">
@@ -196,18 +195,20 @@
                                                     </div>
                                                 </div>
                                                 <!-- Video Element -->
-                                                <video x-ref="videoPlayer" class="w-full h-full object-cover"
-                                                    :src="vid.src" controls playsinline
-                                                    @pause="playing = false" @play="playing = true"></video>
+                                                <video x-ref="videoPlayer" class="w-full h-full object-cover" :src="vid.src"
+                                                    controls playsinline @pause="playing = false"
+                                                    @play="playing = true"></video>
                                             </div>
                                         </template>
                                     </div>
-                                    <div class="dv-video-caption p-3 text-sm text-gray-600 w-full rounded-b-[10px] rounded-tl-none rounded-tr-none border border-t-0 border-primary" x-data="{ expanded: false, max: 20, sub: (vid && vid.subtitle) || '' }"
-                                        x-cloak>
+                                    <div class="dv-video-caption p-3 text-sm text-gray-600 w-full rounded-b-[10px] rounded-tl-none rounded-tr-none border border-t-0 border-primary"
+                                        x-data="{ expanded: false, max: 20, sub: (vid && vid.subtitle) || '' }" x-cloak>
                                         <template x-if="sub && sub.length">
                                             <div>
-                                                <span
-                                                    x-text="!expanded ? (sub.length > max ? sub.slice(0,max) + '...' : sub) : sub"></span>
+                                                <span>
+                                                    <a target="_blank"  class="text-sm text-primary hover:underline block" :href="vid.src" x-text="!expanded ? (sub.length > max ? sub.slice(0, max) + '...' : sub) : sub"></a>
+                                                </span>
+
                                                 <template x-if="sub.length > max">
                                                     <button class="text-primary ml-1 text-xs font-medium"
                                                         @click="expanded = !expanded; $nextTick(() => window.CascadeSyncDailyCaptions && window.CascadeSyncDailyCaptions())"

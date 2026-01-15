@@ -41,7 +41,7 @@
 
                     videos.forEach((video, index) => {
                         const videoCard = document.createElement('div');
-                        videoCard.className = 'rounded-[10px] overflow-hidden shadow-md bg-white flex flex-col';
+                        videoCard.className = 'rounded-[10px] overflow-hidden bg-[#FDF8FE] flex flex-col';
 
                         const maxLength = 25;
                         let subtitleContent = '';

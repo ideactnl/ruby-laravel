@@ -3,7 +3,7 @@
 return [
     // Navigation - Sidebar labels
     'calendar' => 'Kalender',
-    'daily_view' => 'Dagelijks overzicht',
+    'daily_view' => 'Per dag',
     'education' => 'Over menstruatie',
     'selfmanagement' => 'Zelf doen',
     'links_external_websites' => 'Handige websites',
@@ -13,8 +13,8 @@ return [
     // Page titles (navbar)
     'visualise_symptoms_monthly_overview' => 'MAANDELIJKS OVERZICHT',
     'monthly_overview_showing_relationship' => 'Maandelijks overzicht van jouw bijgehouden symptomen',
-    'visualise_symptoms_daily_view' => 'DAGELIJKS OVERZICHT',
-    'daily_overview_showing_selected_domains' => 'Dagelijks overzicht van jouw bijgehouden symptomen over de menstruele cyclus',
+    'visualise_symptoms_daily_view' => 'PER DAG',
+    'daily_overview_showing_selected_domains' => 'Per dag van jouw bijgehouden symptomen over de menstruele cyclus',
     'educational_resources_learning_materials' => 'Video\'s over menstruatie en alles wat daarbij komt kijken',
     'tools_resources_managing_health' => 'Wat te doen bij menstruatieklachten',
     'helpful_external_websites_resources' => 'Links naar handige websites',
