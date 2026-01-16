@@ -3,7 +3,7 @@
     $routePrefix = $currentLocale !== config('app.locale') ? $currentLocale . '.' : '';
 @endphp
 
-<nav class="sticky top-0 z-50 bg-white/95 backdrop-blur border-t-0 border-white md:ml-64">
+<nav class="sticky top-0 z-50 bg-[#FDF8FE] backdrop-blur border-t-0 border-white md:ml-64">
     <div class="mx-auto w-full px-5 md:px-8 border-b border-neutral-200">
         <div class="flex h-20 items-center justify-between border-b border-gray-100/70">
             <!-- Mobile: Hamburger + Logo layout -->

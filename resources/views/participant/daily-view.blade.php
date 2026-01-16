@@ -10,7 +10,7 @@
             <div class="flex items-center gap-1 mb-4">
                 <!-- Previous Button -->
                 <button @click="prevDay()"
-                    class="inline-flex items-center justify-center gap-1 rounded-md bg-primary flex-1 px-6 py-4 text-sm font-semibold text-white shadow hover:bg-red-800 cursor-pointer">
+                    class="inline-flex items-center justify-center gap-1 rounded-md bg-primary flex-1 px-4 py-4 text-sm font-semibold text-white shadow hover:bg-red-800 cursor-pointer">
                     <i class="fa-solid fa-chevron-left text-xs"></i>
                     {{ __('participant.prev') }}
                 </button>
@@ -80,7 +80,7 @@
                         <template x-for="item in items" :key="item.key">
                             <div class="swiper-slide md:!w-auto">
                                 <div
-                                    class="w-full sm:w-[320px] md:w-[350px] h-[200px] rounded-lg bg-white shadow-sm border border-primary p-3 sm:p-4 mx-auto relative hover:shadow-md transition-shadow">
+                                    class="w-full sm:w-[320px] md:w-[350px] h-[200px] rounded-lg bg-[#FDF8FE] shadow-sm border border-primary p-3 sm:p-4 mx-auto relative hover:shadow-md transition-shadow">
                                     <!-- Header with icon and title -->
                                     <div class="flex items-center justify-between mb-3">
                                         <div class="flex items-center gap-2">

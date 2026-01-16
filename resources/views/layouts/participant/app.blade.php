@@ -30,7 +30,7 @@
                 {{-- <main class="flex-1 md:ml-64"> --}}
                     <main class="flex-1 md:ml-64 pb-20 md:pb-0">
 
-                    <div class="px-5 py-6 md:px-8">
+                    <div class="w-[90%] mx-auto p-0 md:w-auto md:mx-0 md:px-5 md:py-6">
                         <x-common.alerts />
                         @yield('content')
                     </div>
