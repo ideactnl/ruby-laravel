@@ -44,7 +44,7 @@ export function buildEventsFromRows(rows, selected) {
       pushIf(date, true, 'exercise', { ...pillars.exercise });
     if (pillars.notes?.hasNote ?? false)
       pushIf(date, true, 'notes', { ...pillars.notes });
-    if ((pillars.impact?.gradeYourDay ?? 0) > 0)
+    if ((pillars.impact?.gradeYourDay ?? 0) > 0 && (pillars.impact?.limitations?.length ?? 0) > 0)
       pushIf(date, true, 'impact', { ...pillars.impact });
     if (pillars.general_health?.answered)
       pushIf(date, true, 'general_health', { ...pillars.general_health });

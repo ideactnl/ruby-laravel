@@ -34,7 +34,7 @@
     ];
 @endphp
 
-<nav class="md:hidden fixed bottom-0 inset-x-0 z-50 bg-white " x-data="{ moreOpen: false, navigating: false }">
+<nav class="md:hidden fixed bottom-0 inset-x-0 z-50 bg-[#FDF8FE]" x-data="{ moreOpen: false, navigating: false }">
     <!-- Loader Overlay -->
     <div x-show="navigating" class="fixed inset-0 z-[60] flex items-center justify-center "
         style="display: none;">

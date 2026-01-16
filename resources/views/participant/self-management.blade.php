@@ -62,7 +62,7 @@
                                     </span>
                                     ${isLong ? `
                                         <button onclick="toggleReadMore('${subtitleId}', '${video.subtitle.replace(/'/g, "\\'")}', '${truncated.replace(/'/g, "\\'")}', this)"
-                                                class="text-primary ml-1 text-xs font-medium">
+                                                class="text-primary text-xs font-medium">
                                             More
                                         </button>
                                     ` : ''}

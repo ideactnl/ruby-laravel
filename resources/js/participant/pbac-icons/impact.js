@@ -34,29 +34,32 @@ function getGradeCategory(grade) {
 }
 
 export function getImpactIcon(value) {
-  if (typeof value !== 'object') {
-    return createIconResult('impact.png', getTranslatedTooltip('tooltip_impact'));
+  if (typeof value !== 'object' || !value) {
+    return null;
   }
 
   const { gradeYourDay, limitations } = value;
-
-  if (limitations && limitations.length > 0) {
-
-    if (limitations.length > 1) {
-      const tooltip = `${getTranslatedTooltip('tooltip_grade_your_day')}: ${gradeYourDay}/10`;
-      return createIconResult('grid_impact_new.png', tooltip);
-    }
-
-    const primaryLimitation = limitations[0];
-    const condition = CONDITIONS[primaryLimitation];
-    if (condition) {
-      const tooltip = `${getTranslatedTooltip('tooltip_grade_your_day')}: ${gradeYourDay}/10`;
-      return createIconResult(condition.icon, tooltip);
-    }
+  
+  // If no limitations, show nothing as per request
+  if (!limitations || limitations.length === 0) {
+    return null;
   }
 
-  const { icon } = getGradeCategory(gradeYourDay);
   const tooltip = `${getTranslatedTooltip('tooltip_grade_your_day')}: ${gradeYourDay}/10`;
 
-  return createIconResult(icon, tooltip);
+  // If multiple limitations, show the grid icon
+  if (limitations.length > 1) {
+    return createIconResult('grid_impact_new.png', tooltip);
+  }
+
+  // Exactly one limitation
+  const primaryLimitation = limitations[0];
+  const condition = CONDITIONS[primaryLimitation];
+  
+  if (condition) {
+    return createIconResult(condition.icon, tooltip);
+  }
+
+  // Fallback if condition not found (shouldn't happen with valid data)
+  return createIconResult('impact.png', tooltip);
 }

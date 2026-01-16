@@ -27,7 +27,7 @@ export function createFilterMenu() {
                 value: "impact",
                 label: translations.impact || "Impact",
                 color: "#22C55E",
-                iconSrc: "/images/grid_impact.png",
+                iconSrc: "/images/grid_impact_new.png",
             },
             {
                 value: "general_health",

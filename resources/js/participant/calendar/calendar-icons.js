@@ -20,7 +20,7 @@ export function getDynamicIconAndTooltip(type, value) {
     const gridIcons = {
       blood_loss: 'grid_blood_loss.png',
       pain: 'grid_pain.png',
-      impact: type === 'impact' && value.limitations.length > 1 ? 'grid_impact_new.png' : 'grid_impact.png',
+      impact:'grid_impact_new.png',
       general_health: 'grid_general_health.png',
       mood: 'grid_mood.png',
       stool_urine: 'grid_urine_stool.png',
