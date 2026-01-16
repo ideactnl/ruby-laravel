@@ -88,7 +88,7 @@
                                         </span>
                                         ${isLong ? `
                                             <button onclick="toggleReadMore('${subtitleId}', '${video.subtitle.replace(/'/g, "\\'")}', '${truncated.replace(/'/g, "\\'")}', this)"
-                                                    class="text-primary ml-1 text-xs font-medium">
+                                                    class="text-primary text-xs font-medium">
                                                 More
                                             </button>
                                         ` : ''}
@@ -116,7 +116,7 @@
 
                         if (index === 1) {
                             const flipCardContainer = document.createElement('div');
-                            flipCardContainer.className = 'rounded-10 overflow-hidden  bg-white flex flex-col';
+                            flipCardContainer.className = 'rounded-10 overflow-hidden bg-[#FDF8FE] flex flex-col';
                             flipCardContainer.innerHTML = `
                                 <div class="flip-wrapper h-full flex flex-col">
                                     <div class="aspect-[9/16] w-full">

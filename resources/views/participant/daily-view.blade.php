@@ -203,6 +203,7 @@
                                     </div>
                                     <div class="dv-video-caption p-3 text-sm text-gray-600 w-full rounded-b-[10px] rounded-tl-none rounded-tr-none border border-t-0 border-primary"
                                         x-data="{ expanded: false, max: 20, sub: (vid && vid.subtitle) || '' }" x-cloak>
+                                        <h3 class="text-[14px] font-semibold text-black mb-[6px]" x-text="vid.title"></h3>
                                         <template x-if="sub && sub.length">
                                             <div>
                                                 <span>
@@ -210,7 +211,7 @@
                                                 </span>
 
                                                 <template x-if="sub.length > max">
-                                                    <button class="text-primary ml-1 text-xs font-medium"
+                                                    <button class="text-primary text-xs font-medium"
                                                         @click="expanded = !expanded; $nextTick(() => window.CascadeSyncDailyCaptions && window.CascadeSyncDailyCaptions())"
                                                         x-text="expanded ? 'Less' : 'More'"></button>
                                                 </template>

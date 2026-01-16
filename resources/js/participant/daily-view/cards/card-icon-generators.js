@@ -98,34 +98,31 @@ export class CardIconGenerators {
       active: limitations.includes(type)
     }));
 
-    let primaryIcon = '/images/impact_1.png';
-    if (limitations.includes('used_medication')) {
-      primaryIcon = '/images/impact_1.png';
-    } else if (limitations.includes('missed_work')) {
-      primaryIcon = '/images/impact_2.png';
-    } else if (limitations.includes('missed_school')) {
-      primaryIcon = '/images/impact_3.png';
-    } else if (limitations.includes('could_not_sport')) {
-      primaryIcon = '/images/impact_4.png';
-    } else if (limitations.includes('missed_social_activities')) {
-      primaryIcon = '/images/impact_5.png';
-    } else if (limitations.includes('missed_leisure_activities')) {
-      primaryIcon = '/images/impact_6.png';
-    } else if (limitations.includes('had_to_sit_more')) {
-      primaryIcon = '/images/impact_7.png';
-    } else if (limitations.includes('had_to_lie_down')) {
-      primaryIcon = '/images/impact_8.png';
-    } else if (limitations.includes('had_to_stay_longer_in_bed')) {
-      primaryIcon = '/images/impact_9.png';
-    } else if (limitations.includes('could_not_do_unpaid_work')) {
-      primaryIcon = '/images/impact_10.png';
-    } else if (limitations.includes('other')) {
-      primaryIcon = '/images/impact_11.png';
+  let primaryIcon = '/images/impact_1.png';
+   if (limitations.length > 1) {
+      primaryIcon = '/images/grid_impact_new.png';
+    } else {
+      const typeToIndex = {
+        'used_medication': 1,
+        'missed_work': 2,
+        'missed_school': 3,
+        'could_not_sport': 4,
+        'missed_social_activities': 5,
+        'missed_leisure_activities': 6,
+        'had_to_sit_more': 7,
+        'had_to_lie_down': 8,
+        'had_to_stay_longer_in_bed': 9,
+        'could_not_do_unpaid_work': 10,
+        'other': 11
+      };
+      const index = typeToIndex[limitations[0]] || 1;
+      primaryIcon = `/images/impact_${index}.png`;
     }
 
     const statusIcon = {
       src: primaryIcon,
-      alt: 'Daily Impact'
+      alt: 'Daily Impact',
+      visible: limitations.length > 0
     };
 
     return { severityIcons, statusIcon };
