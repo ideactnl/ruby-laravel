@@ -17,7 +17,7 @@
 
                 <!-- Next Button -->
                 <button @click="nextDay()"
-                    class="inline-flex items-center justify-center gap-1 rounded-md bg-primary flex-1 px-6 py-4 text-sm font-semibold text-white shadow hover:bg-red-800 cursor-pointer">
+                    class="inline-flex items-center justify-center gap-1 rounded-md bg-primary flex-1 px-4 py-4 text-sm font-semibold text-white shadow hover:bg-red-800 cursor-pointer">
                     {{ __('participant.next') }}
                     <i class="fa-solid fa-chevron-right text-xs"></i>
                 </button>
