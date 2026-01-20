@@ -31,6 +31,7 @@ return [
     'next' => 'Volgende',
     'select_date' => 'Selecteer datum',
     'more' => 'Meer',
+    'less' => 'Minder',
     'category' => 'Categorie',
     'recommended' => 'Aanbevolen',
 

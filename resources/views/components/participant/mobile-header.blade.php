@@ -20,7 +20,8 @@
              }"
              @wrapped-data-loaded.window="wrappedData = $event.detail">
 
-            <a href="{{ route('participant.dashboard') }}" class="flex-shrink-0">
+            <a href="{{ route('participant.dashboard') }}" class="flex-shrink-0"
+               @click="if('vibrate' in navigator) { try { navigator.vibrate(20); } catch(e) {} }">
                 <img src="{{ asset('images/logo.png') }}" alt="Logo" class="h-12 w-auto object-contain" />
             </a>
 
@@ -30,12 +31,6 @@
                 <p class="text-[16px] leading-tight text-gray-900 font-bold" x-html="getHeaderText()"></p>
             </div>
         </div>
-
-        {{-- @if (request()->routeIs('participant.dashboard'))
-            <div class="flex-shrink-0">
-                <x-participant.domain-dropdown />
-            </div>
-        @endif --}}
     </div>
 </div>
 

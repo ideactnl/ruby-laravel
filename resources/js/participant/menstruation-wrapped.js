@@ -13,6 +13,9 @@ export const menstruationWrapped = (config) => {
                 this.activeTooltip = null;
             } else {
                 this.activeTooltip = id;
+                if (window.navigator && window.navigator.vibrate) {
+                    window.navigator.vibrate(20);
+                }
             }
         },
         async fetchData() {

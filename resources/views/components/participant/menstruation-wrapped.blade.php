@@ -44,7 +44,8 @@
 
                 <div class="flex-shrink-0 relative">
                     <img src="{{ asset('images/question.png') }}"
-                         class="w-5 h-5 cursor-help opacity-60 hover:opacity-100"
+                         class="w-5 h-5 cursor-help hover:opacity-100"
+                         :class="activeTooltip === 'cycle' ? 'opacity-100' : 'opacity-60'"
                          @mouseenter="if (window.innerWidth >= 1024) activeTooltip = 'cycle'"
                          @mouseleave="if (window.innerWidth >= 1024) activeTooltip = null"
                          @click.stop="if (window.innerWidth < 1024) toggleTooltip('cycle')">
@@ -76,7 +77,8 @@
                         </div>
                         <div class="flex-shrink-0 relative">
                             <img src="{{ asset('images/question.png') }}"
-                                 class="w-5 h-5 cursor-help opacity-60 hover:opacity-100"
+                                 class="w-5 h-5 cursor-help hover:opacity-100"
+                                 :class="activeTooltip === 'blood' ? 'opacity-100' : 'opacity-60'"
                                  @mouseenter="if (window.innerWidth >= 1024) activeTooltip = 'blood'"
                                  @mouseleave="if (window.innerWidth >= 1024) activeTooltip = null"
                                  @click.stop="if (window.innerWidth < 1024) toggleTooltip('blood')">
@@ -111,7 +113,8 @@
                     </div>
                     <div class="flex-shrink-0 relative">
                         <img src="{{ asset('images/question.png') }}"
-                             class="w-5 h-5 cursor-help opacity-60 hover:opacity-100"
+                             class="w-5 h-5 cursor-help hover:opacity-100"
+                             :class="activeTooltip === 'pain' ? 'opacity-100' : 'opacity-60'"
                              @mouseenter="if (window.innerWidth >= 1024) activeTooltip = 'pain'"
                              @mouseleave="if (window.innerWidth >= 1024) activeTooltip = null"
                              @click.stop="if (window.innerWidth < 1024) toggleTooltip('pain')">
@@ -138,7 +141,8 @@
                     </div>
                     <div class="flex-shrink-0 relative">
                         <img src="{{ asset('images/question.png') }}"
-                             class="w-5 h-5 cursor-help opacity-60 hover:opacity-100"
+                             class="w-5 h-5 cursor-help hover:opacity-100"
+                             :class="activeTooltip === 'impact' ? 'opacity-100' : 'opacity-60'"
                              @mouseenter="if (window.innerWidth >= 1024) activeTooltip = 'impact'"
                              @mouseleave="if (window.innerWidth >= 1024) activeTooltip = null"
                              @click.stop="if (window.innerWidth < 1024) toggleTooltip('impact')">
