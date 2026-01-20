@@ -17,21 +17,18 @@
 
     <div x-show="!loading && data" class="space-y-6 animate-in fade-in duration-500">
 
-        <!-- Header (Desktop Only) -->
         <template x-if="data && data.can_calculate">
             <div class="hidden md:block bg-primary/5 rounded-xl p-4 border border-primary/10">
                 <h3 class="text-lg font-bold text-gray-900" x-html="getHeaderText()"></h3>
             </div>
         </template>
 
-        <!-- Cards -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
 
             <!-- 1. Cycle Length -->
-            <div
-                class="bg-[#FDF8FE] rounded-2xl px-[10px] py-[6px] shadow-sm border border-primary flex items-center gap-2 hover:shadow-md transition-shadow">
+            <div class="bg-[#FDF8FE] rounded-2xl px-[10px] py-[6px] shadow-sm border border-primary flex items-center gap-2 hover:shadow-md transition-shadow">
                 <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center">
-                    <img src="{{ asset('images/calender.png') }}" class="size-8 object-contain opacity-80 contrast-75 brightness-110">
+                    <img src="{{ asset('images/calender.png') }}" class="size-6 object-contain opacity-80 contrast-75 brightness-110">
                 </div>
 
                 <div class="flex-1 min-w-0">
@@ -39,34 +36,41 @@
                         <p class="text-sm text-gray-600 leading-tight" x-html="getCycleLengthText()"></p>
                     </template>
                     <template x-if="data && !data.can_calculate">
-                        <p class="text-sm text-gray-600 leading-tight">{{ __('participant.wrapped_no_cycle_length') }}
+                        <p class="text-sm text-gray-600 leading-tight">
+                            {{ __('participant.wrapped_no_cycle_length') }}
                         </p>
                     </template>
                 </div>
 
-                <div class="flex-shrink-0 relative group">
+                <div class="flex-shrink-0 relative">
                     <img src="{{ asset('images/question.png') }}"
-                        class="w-5 h-5 cursor-help opacity-60 hover:opacity-100">
+                         class="w-5 h-5 cursor-help opacity-60 hover:opacity-100"
+                         @mouseenter="if (window.innerWidth >= 1024) activeTooltip = 'cycle'"
+                         @mouseleave="if (window.innerWidth >= 1024) activeTooltip = null"
+                         @click.stop="if (window.innerWidth < 1024) toggleTooltip('cycle')">
 
-                    <div
-                        class="absolute bottom-full right-0 z-[99] mb-3 w-72 p-3 bg-gray-900 text-white text-xs rounded-lg shadow-xl opacity-0 group-hover:opacity-100 pointer-events-none">
+                    <div x-show="activeTooltip === 'cycle'"
+                         x-transition.opacity
+                         x-cloak
+                         @click.away="activeTooltip = null"
+                         class="absolute top-full mt-3 md:top-auto md:bottom-full md:mb-3 right-0 z-[99] w-82 p-3 bg-gray-900 text-white text-xs rounded-lg shadow-xl">
                         <template x-if="data && data.can_calculate">
-                            <span>{{ __('participant.cycle_length') }}</span>
+                            <span>{!! __('participant.cycle_length') !!}</span>
                         </template>
                         <template x-if="!data || !data.can_calculate">
-                            <span>{{ __('participant.wrapped_no_cycle_length_info') }}</span>
+                            <span>{!! __('participant.wrapped_no_cycle_length_info') !!}</span>
                         </template>
-                        <div class="absolute top-full right-2 -mt-1 border-8 border-transparent border-t-gray-900">
-                        </div>
+                        <!-- Arrow Desktop (Points Down to icon) -->
+                        <div class="hidden md:block absolute top-full right-2 -mt-1 border-8 border-transparent border-t-gray-900"></div>
+                        <!-- Arrow Mobile (Points Up to icon) -->
+                        <div class="block md:hidden absolute bottom-full right-2 -mb-1 border-8 border-transparent border-b-gray-900"></div>
                     </div>
                 </div>
-
             </div>
 
             <!-- 2. Blood Loss -->
             <template x-if="data && data.can_calculate">
-                <div
-                    class="bg-[#FDF8FE] rounded-2xl px-[10px] py-[6px] shadow-sm border border-primary flex flex-col gap-2 hover:shadow-md transition-shadow">
+                <div class="bg-[#FDF8FE] rounded-2xl px-[10px] py-[6px] shadow-sm border border-primary flex flex-col gap-2 hover:shadow-md transition-shadow">
                     <div class="flex items-center gap-2">
                         <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center">
                             <img src="{{ asset('images/grid_blood_loss.png') }}" class="w-8 h-8 object-contain">
@@ -74,21 +78,29 @@
                         <div class="flex-1 min-w-0">
                             <p class="text-sm text-gray-600 leading-tight" x-html="getBloodLossText()"></p>
                         </div>
-                        <div class="flex-shrink-0 relative group">
+                        <div class="flex-shrink-0 relative">
                             <img src="{{ asset('images/question.png') }}"
-                                class="w-5 h-5 cursor-help opacity-60 hover:opacity-100">
-                            <div
-                                class="absolute bottom-full right-0 mb-3 w-72 p-3 bg-gray-900 text-white text-xs rounded-lg shadow-xl opacity-0 group-hover:opacity-100 pointer-events-none z-[99]">
-                                {{ __('participant.wrapped_blood_loss_info') }}
-                                <div
-                                    class="absolute top-full right-2 -mt-1 border-8 border-transparent border-t-gray-900">
-                                </div>
+                                 class="w-5 h-5 cursor-help opacity-60 hover:opacity-100"
+                                 @mouseenter="if (window.innerWidth >= 1024) activeTooltip = 'blood'"
+                                 @mouseleave="if (window.innerWidth >= 1024) activeTooltip = null"
+                                 @click.stop="if (window.innerWidth < 1024) toggleTooltip('blood')">
+
+                            <div x-show="activeTooltip === 'blood'"
+                                 x-transition.opacity
+                                 x-cloak
+                                 @click.away="activeTooltip = null"
+                                 class="absolute top-full mt-3 md:top-auto md:bottom-full md:mb-3 right-0 w-82 p-3 bg-gray-900 text-white text-xs rounded-lg shadow-xl z-[99]">
+                                {!! __('participant.wrapped_blood_loss_info') !!}
+                                <!-- Arrow Desktop (Points Down to icon) -->
+                                <div class="hidden md:block absolute top-full right-2 -mt-1 border-8 border-transparent border-t-gray-900"></div>
+                                <!-- Arrow Mobile (Points Up to icon) -->
+                                <div class="block md:hidden absolute bottom-full right-2 -mb-1 border-8 border-transparent border-b-gray-900"></div>
                             </div>
                         </div>
                     </div>
+
                     <template x-if="data.show_pbac_high">
-                        <div
-                            class="inline-flex items-center px-2 py-1 rounded-md bg-red-50 text-primary text-[10px] font-bold border border-red-100">
+                        <div class="inline-flex items-center px-2 py-1 rounded-md bg-red-50 text-primary text-[10px] font-bold border border-red-100">
                             <i class="fa-solid fa-triangle-exclamation mr-1"></i>
                             {{ __('participant.wrapped_pbac_high') }}
                         </div>
@@ -98,22 +110,30 @@
 
             <!-- 3. Pain -->
             <template x-if="data && data.can_calculate">
-                <div
-                    class="bg-[#FDF8FE] rounded-2xl px-[10px] py-[6px] shadow-sm border border-primary flex items-center gap-2 hover:shadow-md transition-shadow">
+                <div class="bg-[#FDF8FE] rounded-2xl px-[10px] py-[6px] shadow-sm border border-primary flex items-center gap-2 hover:shadow-md transition-shadow">
                     <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center">
                         <img src="{{ asset('images/grid_pain.png') }}" class="w-8 h-8 object-contain">
                     </div>
                     <div class="flex-1 min-w-0">
                         <p class="text-sm text-gray-600 leading-tight" x-html="getPainText()"></p>
                     </div>
-                    <div class="flex-shrink-0 relative group">
+                    <div class="flex-shrink-0 relative">
                         <img src="{{ asset('images/question.png') }}"
-                            class="w-5 h-5 cursor-help opacity-60 hover:opacity-100">
-                        <div
-                            class="absolute bottom-full right-0 mb-3 w-72 p-3 bg-gray-900 text-white text-xs rounded-lg shadow-xl opacity-0 group-hover:opacity-100 pointer-events-none z-[99]">
-                            {{ __('participant.wrapped_pain_info') }}
-                            <div class="absolute top-full right-2 -mt-1 border-8 border-transparent border-t-gray-900">
-                            </div>
+                             class="w-5 h-5 cursor-help opacity-60 hover:opacity-100"
+                             @mouseenter="if (window.innerWidth >= 1024) activeTooltip = 'pain'"
+                             @mouseleave="if (window.innerWidth >= 1024) activeTooltip = null"
+                             @click.stop="if (window.innerWidth < 1024) toggleTooltip('pain')">
+
+                        <div x-show="activeTooltip === 'pain'"
+                             x-transition.opacity
+                             x-cloak
+                             @click.away="activeTooltip = null"
+                             class="absolute top-full mt-3 md:top-auto md:bottom-full md:mb-3 right-0 w-82 p-3 bg-gray-900 text-white text-xs rounded-lg shadow-xl z-[99]">
+                            {!! __('participant.wrapped_pain_info') !!}
+                            <!-- Arrow Desktop (Points Down to icon) -->
+                            <div class="hidden md:block absolute top-full right-2 -mt-1 border-8 border-transparent border-t-gray-900"></div>
+                            <!-- Arrow Mobile (Points Up to icon) -->
+                            <div class="block md:hidden absolute bottom-full right-2 -mb-1 border-8 border-transparent border-b-gray-900"></div>
                         </div>
                     </div>
                 </div>
@@ -121,22 +141,30 @@
 
             <!-- 4. Impact -->
             <template x-if="data && data.can_calculate">
-                <div
-                    class="bg-[#FDF8FE] rounded-2xl px-[10px] py-[6px] shadow-sm border border-primary flex items-center gap-2 hover:shadow-md transition-shadow">
+                <div class="bg-[#FDF8FE] rounded-2xl px-[10px] py-[6px] shadow-sm border border-primary flex items-center gap-2 hover:shadow-md transition-shadow">
                     <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center">
                         <img src="{{ asset('images/grid_impact_new.png') }}" class="w-8 h-8 object-contain">
                     </div>
                     <div class="flex-1 min-w-0">
                         <p class="text-sm text-gray-600 leading-tight" x-html="getImpactText()"></p>
                     </div>
-                    <div class="flex-shrink-0 relative group">
+                    <div class="flex-shrink-0 relative">
                         <img src="{{ asset('images/question.png') }}"
-                            class="w-5 h-5 cursor-help opacity-60 hover:opacity-100">
-                        <div
-                            class="absolute bottom-full right-0 mb-3 w-72 p-3 bg-gray-900 text-white text-xs rounded-lg shadow-xl opacity-0 group-hover:opacity-100 pointer-events-none z-[99]">
-                            {{ __('participant.wrapped_impact_info') }}
-                            <div class="absolute top-full right-2 -mt-1 border-8 border-transparent border-t-gray-900">
-                            </div>
+                             class="w-5 h-5 cursor-help opacity-60 hover:opacity-100"
+                             @mouseenter="if (window.innerWidth >= 1024) activeTooltip = 'impact'"
+                             @mouseleave="if (window.innerWidth >= 1024) activeTooltip = null"
+                             @click.stop="if (window.innerWidth < 1024) toggleTooltip('impact')">
+
+                        <div x-show="activeTooltip === 'impact'"
+                             x-transition.opacity
+                             x-cloak
+                             @click.away="activeTooltip = null"
+                             class="absolute top-full mt-3 md:top-auto md:bottom-full md:mb-3 right-0 w-82 p-3 bg-gray-900 text-white text-xs rounded-lg shadow-xl z-[99]">
+                            {!! __('participant.wrapped_impact_info') !!}
+                            <!-- Arrow Desktop (Points Down to icon) -->
+                            <div class="hidden md:block absolute top-full right-2 -mt-1 border-8 border-transparent border-t-gray-900"></div>
+                            <!-- Arrow Mobile (Points Up to icon) -->
+                            <div class="block md:hidden absolute bottom-full right-2 -mb-1 border-8 border-transparent border-b-gray-900"></div>
                         </div>
                     </div>
                 </div>
