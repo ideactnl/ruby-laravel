@@ -31,6 +31,7 @@ return [
     'next' => 'Next',
     'select_date' => 'Select Date',
     'more' => 'More',
+    'less' => 'Less',
     'category' => 'Category',
     'recommended' => 'Recommended',
 

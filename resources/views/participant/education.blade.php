@@ -89,7 +89,7 @@
                                         ${isLong ? `
                                             <button onclick="toggleReadMore('${subtitleId}', '${video.subtitle.replace(/'/g, "\\'")}', '${truncated.replace(/'/g, "\\'")}', this)"
                                                     class="text-primary text-xs font-medium">
-                                                More
+                                                {{ __('participant.more') }}
                                             </button>
                                         ` : ''}
                                     </div>
@@ -147,14 +147,16 @@
 
         function toggleReadMore(subtitleId, fullText, truncatedText, button) {
             const span = document.getElementById(subtitleId);
-            const isExpanded = button.textContent === 'Less';
+            const moreText = "{{ __('participant.more') }}";
+            const lessText = "{{ __('participant.less') }}";
+            const isExpanded = button.textContent.trim() === lessText;
 
             if (isExpanded) {
                 span.textContent = truncatedText;
-                button.textContent = 'More';
+                button.textContent = moreText;
             } else {
                 span.textContent = fullText;
-                button.textContent = 'Less';
+                button.textContent = lessText;
             }
         }
 

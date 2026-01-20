@@ -213,7 +213,7 @@
                                                 <template x-if="sub.length > max">
                                                     <button class="text-primary text-xs font-medium"
                                                         @click="expanded = !expanded; $nextTick(() => window.CascadeSyncDailyCaptions && window.CascadeSyncDailyCaptions())"
-                                                        x-text="expanded ? 'Less' : 'More'"></button>
+                                                        x-text="expanded ? '{{ __('participant.less') }}' : '{{ __('participant.more') }}'"></button>
                                                 </template>
                                             </div>
                                         </template>
