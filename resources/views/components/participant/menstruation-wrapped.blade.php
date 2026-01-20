@@ -25,11 +25,11 @@
         </template>
 
         <!-- Cards -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
 
             <!-- 1. Cycle Length -->
             <div
-                class="bg-[#FDF8FE] rounded-2xl p-4 shadow-sm border border-primary flex items-center gap-4 hover:shadow-md transition-shadow">
+                class="bg-[#FDF8FE] rounded-2xl px-[10px] py-[6px] shadow-sm border border-primary flex items-center gap-2 hover:shadow-md transition-shadow">
                 <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center">
                     <img src="{{ asset('images/calender.png') }}" class="size-8 object-contain opacity-80 contrast-75 brightness-110">
                 </div>
@@ -54,7 +54,7 @@
                         class="w-5 h-5 cursor-help opacity-60 hover:opacity-100">
 
                     <div
-                        class="absolute bottom-full right-0 mb-3 w-72 p-3 bg-gray-900 text-white text-xs rounded-lg shadow-xl opacity-0 group-hover:opacity-100 pointer-events-none z-50">
+                        class="absolute bottom-full right-0 z-[99] mb-3 w-72 p-3 bg-gray-900 text-white text-xs rounded-lg shadow-xl opacity-0 group-hover:opacity-100 pointer-events-none">
                         <template x-if="data && data.can_calculate">
                             <span>{{ __('participant.cycle_length') }}</span>
                         </template>
@@ -71,8 +71,8 @@
             <!-- 2. Blood Loss -->
             <template x-if="data && data.can_calculate">
                 <div
-                    class="bg-[#FDF8FE] rounded-2xl p-4 shadow-sm border border-primary flex flex-col gap-2 hover:shadow-md transition-shadow">
-                    <div class="flex items-center gap-4">
+                    class="bg-[#FDF8FE] rounded-2xl px-[10px] py-[6px] shadow-sm border border-primary flex flex-col gap-2 hover:shadow-md transition-shadow">
+                    <div class="flex items-center gap-2">
                         <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center">
                             <img src="{{ asset('images/grid_blood_loss.png') }}" class="w-8 h-8 object-contain">
                         </div>
@@ -86,7 +86,7 @@
                             <img src="{{ asset('images/question.png') }}"
                                 class="w-5 h-5 cursor-help opacity-60 hover:opacity-100">
                             <div
-                                class="absolute bottom-full right-0 mb-3 w-72 p-3 bg-gray-900 text-white text-xs rounded-lg shadow-xl opacity-0 group-hover:opacity-100 pointer-events-none z-50">
+                                class="absolute bottom-full right-0 mb-3 w-72 p-3 bg-gray-900 text-white text-xs rounded-lg shadow-xl opacity-0 group-hover:opacity-100 pointer-events-none z-[99]">
                                 {{ __('participant.wrapped_blood_loss_info') }}
                                 <div
                                     class="absolute top-full right-2 -mt-1 border-8 border-transparent border-t-gray-900">
@@ -96,7 +96,7 @@
                     </div>
                     <template x-if="data.show_pbac_high">
                         <div
-                            class="inline-flex items-center px-2 py-1 rounded-md bg-red-50 text-red-700 text-[10px] font-bold border border-red-100">
+                            class="inline-flex items-center px-2 py-1 rounded-md bg-red-50 text-primary text-[10px] font-bold border border-red-100">
                             <i class="fa-solid fa-triangle-exclamation mr-1"></i>
                             {{ __('participant.wrapped_pbac_high') }}
                         </div>
@@ -107,7 +107,7 @@
             <!-- 3. Pain -->
             <template x-if="data && data.can_calculate">
                 <div
-                    class="bg-[#FDF8FE] rounded-2xl p-4 shadow-sm border border-primary flex items-center gap-4 hover:shadow-md transition-shadow">
+                    class="bg-[#FDF8FE] rounded-2xl px-[10px] py-[6px] shadow-sm border border-primary flex items-center gap-2 hover:shadow-md transition-shadow">
                     <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center">
                         <img src="{{ asset('images/grid_pain.png') }}" class="w-8 h-8 object-contain">
                     </div>
@@ -121,7 +121,7 @@
                         <img src="{{ asset('images/question.png') }}"
                             class="w-5 h-5 cursor-help opacity-60 hover:opacity-100">
                         <div
-                            class="absolute bottom-full right-0 mb-3 w-72 p-3 bg-gray-900 text-white text-xs rounded-lg shadow-xl opacity-0 group-hover:opacity-100 pointer-events-none z-50">
+                            class="absolute bottom-full right-0 mb-3 w-72 p-3 bg-gray-900 text-white text-xs rounded-lg shadow-xl opacity-0 group-hover:opacity-100 pointer-events-none z-[99]">
                             {{ __('participant.wrapped_pain_info') }}
                             <div class="absolute top-full right-2 -mt-1 border-8 border-transparent border-t-gray-900">
                             </div>
@@ -133,7 +133,7 @@
             <!-- 4. Impact -->
             <template x-if="data && data.can_calculate">
                 <div
-                    class="bg-[#FDF8FE] rounded-2xl p-4 shadow-sm border border-primary flex items-center gap-4 hover:shadow-md transition-shadow">
+                    class="bg-[#FDF8FE] rounded-2xl px-[10px] py-[6px] shadow-sm border border-primary flex items-center gap-2 hover:shadow-md transition-shadow">
                     <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center">
                         <img src="{{ asset('images/grid_impact_new.png') }}" class="w-8 h-8 object-contain">
                     </div>
@@ -147,7 +147,7 @@
                         <img src="{{ asset('images/question.png') }}"
                             class="w-5 h-5 cursor-help opacity-60 hover:opacity-100">
                         <div
-                            class="absolute bottom-full right-0 mb-3 w-72 p-3 bg-gray-900 text-white text-xs rounded-lg shadow-xl opacity-0 group-hover:opacity-100 pointer-events-none z-50">
+                            class="absolute bottom-full right-0 mb-3 w-72 p-3 bg-gray-900 text-white text-xs rounded-lg shadow-xl opacity-0 group-hover:opacity-100 pointer-events-none z-[99]">
                             {{ __('participant.wrapped_impact_info') }}
                             <div class="absolute top-full right-2 -mt-1 border-8 border-transparent border-t-gray-900">
                             </div>
