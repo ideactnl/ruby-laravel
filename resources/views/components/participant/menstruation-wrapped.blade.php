@@ -34,17 +34,12 @@
                     <img src="{{ asset('images/calender.png') }}" class="size-8 object-contain opacity-80 contrast-75 brightness-110">
                 </div>
 
-                <div class="flex-1 min-w-0" x-data="{ expanded: false }" @click="expanded = !expanded">
+                <div class="flex-1 min-w-0">
                     <template x-if="data && data.can_calculate">
-                        <p class="text-sm leading-tight transition-all duration-300" 
-                           :class="expanded ? 'text-gray-600' : 'line-clamp-1 cursor-pointer text-primary'">
-                           <span class="text-gray-600" x-html="getCycleLengthText()"></span>
-                        </p>
+                        <p class="text-sm text-gray-600 leading-tight" x-html="getCycleLengthText()"></p>
                     </template>
                     <template x-if="data && !data.can_calculate">
-                        <p class="text-sm leading-tight transition-all duration-300"
-                           :class="expanded ? 'text-gray-600' : 'line-clamp-1 cursor-pointer text-primary'">
-                            <span class="text-gray-600">{{ __('participant.wrapped_no_cycle_length') }}</span>
+                        <p class="text-sm text-gray-600 leading-tight">{{ __('participant.wrapped_no_cycle_length') }}
                         </p>
                     </template>
                 </div>
@@ -76,11 +71,8 @@
                         <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center">
                             <img src="{{ asset('images/grid_blood_loss.png') }}" class="w-8 h-8 object-contain">
                         </div>
-                        <div class="flex-1 min-w-0" x-data="{ expanded: false }" @click="expanded = !expanded">
-                            <p class="text-sm leading-tight transition-all duration-300" 
-                               :class="expanded ? 'text-gray-600' : 'line-clamp-1 cursor-pointer text-primary'">
-                               <span class="text-gray-600" x-html="getBloodLossText()"></span>
-                            </p>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm text-gray-600 leading-tight" x-html="getBloodLossText()"></p>
                         </div>
                         <div class="flex-shrink-0 relative group">
                             <img src="{{ asset('images/question.png') }}"
@@ -111,11 +103,8 @@
                     <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center">
                         <img src="{{ asset('images/grid_pain.png') }}" class="w-8 h-8 object-contain">
                     </div>
-                    <div class="flex-1 min-w-0" x-data="{ expanded: false }" @click="expanded = !expanded">
-                        <p class="text-sm leading-tight transition-all duration-300" 
-                           :class="expanded ? 'text-gray-600' : 'line-clamp-1 cursor-pointer text-primary'">
-                           <span class="text-gray-600" x-html="getPainText()"></span>
-                        </p>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm text-gray-600 leading-tight" x-html="getPainText()"></p>
                     </div>
                     <div class="flex-shrink-0 relative group">
                         <img src="{{ asset('images/question.png') }}"
@@ -137,11 +126,8 @@
                     <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center">
                         <img src="{{ asset('images/grid_impact_new.png') }}" class="w-8 h-8 object-contain">
                     </div>
-                    <div class="flex-1 min-w-0" x-data="{ expanded: false }" @click="expanded = !expanded">
-                        <p class="text-sm leading-tight transition-all duration-300" 
-                           :class="expanded ? 'text-gray-600' : 'line-clamp-1 cursor-pointer text-primary'">
-                           <span class="text-gray-600" x-html="getImpactText()"></span>
-                        </p>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm text-gray-600 leading-tight" x-html="getImpactText()"></p>
                     </div>
                     <div class="flex-shrink-0 relative group">
                         <img src="{{ asset('images/question.png') }}"

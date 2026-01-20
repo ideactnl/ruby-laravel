@@ -127,7 +127,6 @@ class PbacService
         $bloodLossDays = $records->where('menstrual_blood_loss', '>', 0)->pluck('reported_date')->unique()->count();
         $spottingDays = $records->where('spotting', true)->pluck('reported_date')->unique()->count();
 
-        // 4. PBAC Score calculation
         $pbacScore = $records->sum(fn ($r) => ($r->bl_pad_small ?? 0) * 1 +
             ($r->bl_pad_medium ?? 0) * 5 +
             ($r->bl_pad_large ?? 0) * 20 +

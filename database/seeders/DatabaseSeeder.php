@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
             RolesAndUsersSeeder::class,
             ParticipantPbacSeeder::class,
             VideoContentSeeder::class,
+            MenstruationWrappedSeeder::class,
         ]);
     }
 }
