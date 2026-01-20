@@ -4,8 +4,16 @@ export const menstruationWrapped = (config) => {
         data: null,
         translations: config.translations,
         selectedDomains: [],
+        activeTooltip: null,
         init() {
             this.fetchData();
+        },
+        toggleTooltip(id) {
+            if (this.activeTooltip === id) {
+                this.activeTooltip = null;
+            } else {
+                this.activeTooltip = id;
+            }
         },
         async fetchData() {
             try {
