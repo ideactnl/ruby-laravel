@@ -6,8 +6,9 @@ use App\Helpers\CommonHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Participant;
 use App\Models\Pbac;
-use App\Services\{ExportTrackingService, PbacService};
+use App\Services\ExportTrackingService;
 use App\Services\PbacExportService;
+use App\Services\PbacService;
 use App\Services\VideoService;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\Authenticatable;
@@ -52,7 +53,7 @@ class ParticipantWebApiController extends Controller
 
         $participant = Participant::where('registration_number', $request->registration_number)->first();
 
-        if (!$participant || !Hash::check($request->password, $participant->password)) {
+        if (! $participant || ! Hash::check($request->password, $participant->password)) {
             throw ValidationException::withMessages([
                 'registration_number' => ['The provided credentials are incorrect.'],
             ]);
@@ -89,7 +90,7 @@ class ParticipantWebApiController extends Controller
     {
 
         if ($request->session()->has('api_auth_token')) {
-            Cache::forget('dashboard_login_token:' . hash('sha256', $request->session()->get('api_auth_token')));
+            Cache::forget('dashboard_login_token:'.hash('sha256', $request->session()->get('api_auth_token')));
         }
 
         Auth::guard('participant-web')->logout();
@@ -122,7 +123,7 @@ class ParticipantWebApiController extends Controller
     public function dashboard(Request $request)
     {
         $participant = Auth::guard('participant-web')->user();
-        if (!$participant) {
+        if (! $participant) {
             return response()->json(['error' => 'Unauthenticated'], 401);
         }
 
@@ -183,7 +184,7 @@ class ParticipantWebApiController extends Controller
     public function dailyData(Request $request)
     {
         $participant = auth('participant-web')->user();
-        if (!$participant) {
+        if (! $participant) {
             return response()->json(['error' => 'Unauthenticated'], 401);
         }
         $validated = $request->query();
@@ -209,7 +210,7 @@ class ParticipantWebApiController extends Controller
             ->orderBy('reported_date')
             ->first();
 
-        if (!$record) {
+        if (! $record) {
             return response()->json(['date' => $date, 'data' => null]);
         }
 
@@ -259,7 +260,7 @@ class ParticipantWebApiController extends Controller
     public function exportPbacData(Request $request, PbacExportService $exportService)
     {
         $participant = auth('participant-web')->user();
-        if (!$participant) {
+        if (! $participant) {
             return response()->json(['error' => 'Unauthenticated'], 401);
         }
 
@@ -315,11 +316,11 @@ class ParticipantWebApiController extends Controller
             'end_date' => ['nullable', 'date', 'after_or_equal:start_date'],
         ]);
         $imageData = $request->input('chart_image');
-        if (!str_starts_with($imageData, 'data:image/png;base64,')) {
+        if (! str_starts_with($imageData, 'data:image/png;base64,')) {
             return response()->json(['error' => 'Invalid image format'], 400);
         }
         $participant = auth('participant-web')->user();
-        if (!$participant) {
+        if (! $participant) {
             return response()->json(['error' => 'Unauthenticated'], 401);
         }
 
@@ -346,7 +347,7 @@ class ParticipantWebApiController extends Controller
     public function activeExport(Request $request, ExportTrackingService $tracker)
     {
         $participant = auth('participant-web')->user();
-        if (!$participant) {
+        if (! $participant) {
             return response()->json(['error' => 'Unauthenticated'], 401);
         }
         $active = $tracker->getActiveForParticipant($participant->id);
@@ -376,11 +377,11 @@ class ParticipantWebApiController extends Controller
     public function exportStatus(string $jobId, ExportTrackingService $tracker)
     {
         $participant = auth('participant-web')->user();
-        if (!$participant) {
+        if (! $participant) {
             return response()->json(['error' => 'Unauthenticated'], 401);
         }
         $job = $tracker->getById($jobId);
-        if (!$job || $job->participant_id !== $participant->id) {
+        if (! $job || $job->participant_id !== $participant->id) {
             return response()->json(['error' => 'Not found'], 404);
         }
 
@@ -408,11 +409,11 @@ class ParticipantWebApiController extends Controller
     public function downloadExport(string $jobId, ExportTrackingService $tracker)
     {
         $participant = auth('participant-web')->user();
-        if (!$participant) {
+        if (! $participant) {
             return response()->json(['error' => 'Unauthenticated'], 401);
         }
         $job = $tracker->getById($jobId);
-        if (!$job || $job->participant_id !== $participant->id) {
+        if (! $job || $job->participant_id !== $participant->id) {
             return response()->json(['error' => 'Not found'], 404);
         }
         if ($job->status !== 'completed' || empty($job->file_path)) {
@@ -420,7 +421,7 @@ class ParticipantWebApiController extends Controller
         }
 
         $disk = \Illuminate\Support\Facades\Storage::disk('local');
-        if (!$disk->exists($job->file_path)) {
+        if (! $disk->exists($job->file_path)) {
             return response()->json(['error' => 'File missing'], 410);
         }
 
@@ -443,7 +444,7 @@ class ParticipantWebApiController extends Controller
     public function profile(Request $request)
     {
         $participant = Auth::guard('participant-web')->user();
-        if (!$participant) {
+        if (! $participant) {
             return response()->json(['error' => 'Unauthenticated'], 401);
         }
 
@@ -531,7 +532,7 @@ class ParticipantWebApiController extends Controller
     public function getDailyViewVideos(Request $request, VideoService $videoService)
     {
         $participant = auth('participant-web')->user();
-        if (!$participant) {
+        if (! $participant) {
             return response()->json(['error' => 'Unauthenticated'], 401);
         }
 
@@ -557,7 +558,7 @@ class ParticipantWebApiController extends Controller
             ->orderBy('reported_date')
             ->first();
 
-        if (!$record) {
+        if (! $record) {
             return response()->json(['videos' => []]);
         }
 
@@ -641,7 +642,7 @@ class ParticipantWebApiController extends Controller
         $bearerToken = $request->headers->get('authorization');
         $bearerToken = explode(' ', $bearerToken)[1] ?? null;
 
-        if (!$bearerToken) {
+        if (! $bearerToken) {
             return response()->json([
                 'success' => false,
                 'message' => 'Unauthorized',
@@ -651,7 +652,7 @@ class ParticipantWebApiController extends Controller
 
         $accessToken = PersonalAccessToken::findToken($bearerToken);
 
-        if (!$accessToken) {
+        if (! $accessToken) {
             return response()->json([
                 'success' => false,
                 'message' => 'Unauthorized',
@@ -661,7 +662,7 @@ class ParticipantWebApiController extends Controller
 
         $user = $accessToken->tokenable;
 
-        if (!$user) {
+        if (! $user) {
             return response()->json([
                 'success' => false,
                 'message' => 'Unauthorized',
@@ -671,7 +672,7 @@ class ParticipantWebApiController extends Controller
 
         $encodedToken = rtrim(strtr(base64_encode(Crypt::encryptString($bearerToken)), '+/', '-_'), '=');
 
-        Cache::put('dashboard_login_token:' . hash('sha256', $bearerToken), true, now()->addMinutes((int) config('auth.dashboard_url_expiry', 5)));
+        Cache::put('dashboard_login_token:'.hash('sha256', $bearerToken), true, now()->addMinutes((int) config('auth.dashboard_url_expiry', 5)));
 
         $url = URL::temporarySignedRoute(
             'participant.app.login',
@@ -693,7 +694,7 @@ class ParticipantWebApiController extends Controller
      */
     public function refreshSession(Request $request)
     {
-        if (!session('api_login')) {
+        if (! session('api_login')) {
             return response()->json([
                 'success' => false,
                 'message' => 'Not allowed',
@@ -702,7 +703,7 @@ class ParticipantWebApiController extends Controller
 
         $token = session('api_auth_token');
 
-        if (!$token) {
+        if (! $token) {
             return response()->json([
                 'success' => false,
                 'message' => 'Token missing',
@@ -734,23 +735,23 @@ class ParticipantWebApiController extends Controller
 
         $expires = $request->query('expires');
         if ($token && $request->hasValidSignature()) {
-            $cacheKey = 'dashboard_login_token:' . hash('sha256', $token);
-            if (!Cache::has($cacheKey)) {
+            $cacheKey = 'dashboard_login_token:'.hash('sha256', $token);
+            if (! Cache::has($cacheKey)) {
                 return view('participant.session_expired');
             }
 
             $accessToken = PersonalAccessToken::findToken($token);
-            if (!$accessToken) {
+            if (! $accessToken) {
                 return view('participant.session_expired');
             }
 
             $user = $accessToken->tokenable;
 
-            if (!$user) {
+            if (! $user) {
                 return view('participant.session_expired');
             }
 
-            if (!$user instanceof Authenticatable) {
+            if (! $user instanceof Authenticatable) {
                 return view('participant.session_expired');
             }
 
@@ -793,7 +794,7 @@ class ParticipantWebApiController extends Controller
      * @authenticated
      *
      * @header Authorization Bearer <token> required The API access token.
-     * 
+     *
      * @response 200 {
      *   "can_calculate": true,
      *   "start_date": "2025-08-01",
@@ -807,24 +808,19 @@ class ParticipantWebApiController extends Controller
      *   "extreme_pain_days": 1,
      *   "impact_days": 3
      * }
-     *
      * @response 200 {
      *   "can_calculate": false,
      *   "reason": "insufficient_data"
      * }
-     *
      * @response 200 {
      *   "can_calculate": false,
      *   "reason": "cycle_too_long",
      *   "cycle_length": 74
      * }
-     *
      * @response 401 {
      *   "error": "Unauthenticated"
      * }
      */
-
-
     public function getMenstruationWrapped(Request $request, PbacService $pbacService)
     {
 
@@ -838,11 +834,11 @@ class ParticipantWebApiController extends Controller
             }
         }
 
-        if (!$participant && Auth::guard('participant-web')->check()) {
+        if (! $participant && Auth::guard('participant-web')->check()) {
             $participant = Auth::guard('participant-web')->user();
         }
 
-        if (!$participant) {
+        if (! $participant) {
             return response()->json(['error' => 'Unauthenticated'], 401);
         }
 

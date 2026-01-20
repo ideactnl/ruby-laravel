@@ -21,7 +21,7 @@ class PbacService
     public function getParticipantPbacs($registration_number, $id = null, $day = null, $month = null, $year = null)
     {
         $participant = Participant::where('registration_number', $registration_number)->first();
-        if (!$participant) {
+        if (! $participant) {
             return $id ? null : (new Pbac)->newCollection();
         }
         $query = Pbac::where('participant_id', $participant->id);
@@ -52,18 +52,18 @@ class PbacService
     public function upsertByRegistrationAndDate(array $input)
     {
         $participant = Participant::where('registration_number', $input['registration_number'] ?? null)->first();
-        if (!$participant) {
+        if (! $participant) {
             throw new Exception('Participant not found');
         }
         $reportedDate = $input['reported_date'] ?? $input['reportedDate'] ?? null;
-        if (!$reportedDate) {
+        if (! $reportedDate) {
             throw new Exception('Reported date is required');
         }
         $pbac = Pbac::firstOrNew([
             'participant_id' => $participant->id,
             'reported_date' => $reportedDate,
         ]);
-        $created = !$pbac->exists;
+        $created = ! $pbac->exists;
         $data = Pbac::camelToSnake($input);
         $data['reported_date'] = $reportedDate;
         unset($data['registration_number'], $data['reporteddate'], $data['ReportedDate']);
@@ -81,7 +81,7 @@ class PbacService
      */
     public function checkParticipant($registration_number = null)
     {
-        if (!$registration_number) {
+        if (! $registration_number) {
             return null;
         }
 
@@ -90,9 +90,6 @@ class PbacService
 
     /**
      * Get the 'Menstruation Wrapped' data for the last cycle.
-     *
-     * @param  int  $participantId
-     * @return array
      */
     public function getMenstruationWrappedData(int $participantId): array
     {
@@ -113,7 +110,7 @@ class PbacService
         $previousStart = $periodStartDates[1];
 
         $cycleEnd = $mostRecentStart->copy()->subDay();
-        $cycleLength = $previousStart->diffInDays($mostRecentStart); 
+        $cycleLength = $previousStart->diffInDays($mostRecentStart);
 
         if ($cycleLength > 60) {
             return [
@@ -131,13 +128,13 @@ class PbacService
         $spottingDays = $records->where('spotting', true)->pluck('reported_date')->unique()->count();
 
         // 4. PBAC Score calculation
-        $pbacScore = $records->sum(fn($r) => ($r->bl_pad_small ?? 0) * 1 +
+        $pbacScore = $records->sum(fn ($r) => ($r->bl_pad_small ?? 0) * 1 +
             ($r->bl_pad_medium ?? 0) * 5 +
             ($r->bl_pad_large ?? 0) * 20 +
             ($r->bl_tampon_small ?? 0) * 1 +
             ($r->bl_tampon_medium ?? 0) * 5 +
             ($r->bl_tampon_large ?? 0) * 20);
-    
+
         $painDays = $records->where('pain_slider_value', '>', 2)->pluck('reported_date')->unique()->count();
         $extremePainDays = $records->where('pain_slider_value', '>', 5)->pluck('reported_date')->unique()->count();
 
