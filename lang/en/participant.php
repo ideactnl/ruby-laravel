@@ -663,5 +663,19 @@ return [
     'session_expired' => 'Session Expired',
     'please_refresh_your_session_to_continue' => 'Please refresh your session to continue.',
 
-    'home' => 'Home'
+    'home' => 'Home',
+
+    // Menstruation Wrapped
+    'cycle_length' => 'Cycle length This is the number of days from the first day of your period until the first day of your next period. In the app, you can mark the first day of your period under “blood loss”.',
+    'wrapped_header' => 'Your last cycle was from :start until :end and...',
+    'wrapped_cycle_length' => 'The cycle length was :days days',
+    'wrapped_no_cycle_length' => 'We could not calculate the length of your cycle.',
+    'wrapped_no_cycle_length_info' => 'We can’t calculate your cycle length We’re unable to calculate your cycle length. This may be because you haven’t marked the first day of your period in the app yet. You can do this under “bleeding.” We also can’t calculate your cycle length if it is longer than 60 days.',
+    'wrapped_blood_loss_info' => 'Number of days with bleeding This is the number of days you had your period or experienced spotting. Spotting is a small amount of brown or pink discharge. Blood loss score The blood loss score is based on the number of pads and/or tampons you used. A score of more than 150 could indicate too much menstrual bleeding. You could discuss this for example with your GP or gynaecologist.',
+    'wrapped_pain_info' => 'Pain score This is the number of days on which you recorded a pain score.',
+    'wrapped_impact_info' => 'Days you could do less This is the number of days on which you indicated that you were able to do less, such as not going to school or work, not meeting friends, or cancelling fun activities.',
+    'wrapped_blood_loss_spotting' => 'You experienced :blood_days days with blood loss and :spotting_days days with spotting',
+    'wrapped_pbac_high' => 'Your bloodloss score was >150',
+    'wrapped_pain_extreme' => 'You experienced :pain_days days with pain of which :extreme_days days extreme pain',
+    'wrapped_impact' => 'You could do less on :days days',
 ];
