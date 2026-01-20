@@ -8,6 +8,7 @@ use App\Models\Participant;
 use App\Models\Pbac;
 use App\Services\ExportTrackingService;
 use App\Services\PbacExportService;
+use App\Services\PbacService;
 use App\Services\VideoService;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\Authenticatable;
@@ -778,5 +779,71 @@ class ParticipantWebApiController extends Controller
     public function settings()
     {
         return view('participant.setting');
+    }
+
+    /**
+     * Get Menstruation Wrapped data
+     *
+     * Returns a summary of the participant's last menstrual cycle symptoms.
+     * Calculated from the previous "first day of period" until the day before the most recent one.
+     *
+     * <b style="color: red;">AUTHENTICATION REQUIRED:</b>
+     * - Web: Logged-in session via `participant-web` guard
+     * - Mobile: Bearer token (Sanctum Personal Access Token)
+     *
+     * @authenticated
+     *
+     * @header Authorization Bearer <token> required The API access token.
+     *
+     * @response 200 {
+     *   "can_calculate": true,
+     *   "start_date": "2025-08-01",
+     *   "end_date": "2025-08-27",
+     *   "cycle_length": 27,
+     *   "blood_loss_days": 5,
+     *   "spotting_days": 2,
+     *   "pbac_score": 165,
+     *   "show_pbac_high": true,
+     *   "pain_days": 4,
+     *   "extreme_pain_days": 1,
+     *   "impact_days": 3
+     * }
+     * @response 200 {
+     *   "can_calculate": false,
+     *   "reason": "insufficient_data"
+     * }
+     * @response 200 {
+     *   "can_calculate": false,
+     *   "reason": "cycle_too_long",
+     *   "cycle_length": 74
+     * }
+     * @response 401 {
+     *   "error": "Unauthenticated"
+     * }
+     */
+    public function getMenstruationWrapped(Request $request, PbacService $pbacService)
+    {
+
+        $participant = null;
+
+        if ($request->bearerToken()) {
+            $accessToken = PersonalAccessToken::findToken($request->bearerToken());
+
+            if ($accessToken && $accessToken->tokenable instanceof Authenticatable) {
+                $participant = $accessToken->tokenable;
+            }
+        }
+
+        if (! $participant && Auth::guard('participant-web')->check()) {
+            $participant = Auth::guard('participant-web')->user();
+        }
+
+        if (! $participant) {
+            return response()->json(['error' => 'Unauthenticated'], 401);
+        }
+
+        $data = $pbacService->getMenstruationWrappedData($participant->id);
+
+        return response()->json($data);
     }
 }

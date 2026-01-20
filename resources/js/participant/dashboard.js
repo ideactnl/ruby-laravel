@@ -10,8 +10,9 @@ import {
     CalendarNavigation,
     CalendarUI,
 } from "./calendar/index.js";
-
+import { menstruationWrapped } from "./menstruation-wrapped.js";
 window.filterMenu = createFilterMenu;
+window.menstruationWrapped = menstruationWrapped;
 
 window.goToCurrentMonth = () => {
     if (window.participantCalendar) {

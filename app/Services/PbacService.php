@@ -87,4 +87,82 @@ class PbacService
 
         return Participant::where('registration_number', $registration_number)->first();
     }
+
+    /**
+     * Get the 'Menstruation Wrapped' data for the last cycle.
+     */
+    public function getMenstruationWrappedData(int $participantId): array
+    {
+        $periodStartDates = Pbac::where('participant_id', $participantId)
+            ->where('is_bl_first_day_period', true)
+            ->orderByDesc('reported_date')
+            ->take(2)
+            ->pluck('reported_date');
+
+        if ($periodStartDates->count() < 2) {
+            return [
+                'can_calculate' => false,
+                'reason' => 'insufficient_data',
+            ];
+        }
+
+        $mostRecentStart = $periodStartDates[0];
+        $previousStart = $periodStartDates[1];
+
+        $cycleEnd = $mostRecentStart->copy()->subDay();
+        $cycleLength = $previousStart->diffInDays($mostRecentStart);
+
+        if ($cycleLength > 60) {
+            return [
+                'can_calculate' => false,
+                'reason' => 'cycle_too_long',
+                'cycle_length' => $cycleLength,
+            ];
+        }
+
+        $records = Pbac::where('participant_id', $participantId)
+            ->whereBetween('reported_date', [$previousStart, $cycleEnd])
+            ->get();
+
+        $bloodLossDays = $records->where('menstrual_blood_loss', '>', 0)->pluck('reported_date')->unique()->count();
+        $spottingDays = $records->where('spotting', true)->pluck('reported_date')->unique()->count();
+
+        // 4. PBAC Score calculation
+        $pbacScore = $records->sum(fn ($r) => ($r->bl_pad_small ?? 0) * 1 +
+            ($r->bl_pad_medium ?? 0) * 5 +
+            ($r->bl_pad_large ?? 0) * 20 +
+            ($r->bl_tampon_small ?? 0) * 1 +
+            ($r->bl_tampon_medium ?? 0) * 5 +
+            ($r->bl_tampon_large ?? 0) * 20);
+
+        $painDays = $records->where('pain_slider_value', '>', 2)->pluck('reported_date')->unique()->count();
+        $extremePainDays = $records->where('pain_slider_value', '>', 5)->pluck('reported_date')->unique()->count();
+
+        $impactDays = $records->filter(function ($r) {
+            return $r->is_impact_missed_work ||
+                $r->is_impact_missed_school ||
+                $r->is_impact_could_not_sport ||
+                $r->is_impact_missed_special_activities ||
+                $r->is_impact_missed_leisure_activities ||
+                $r->is_impact_had_to_sit_more ||
+                $r->is_impact_could_not_move ||
+                $r->is_impact_had_to_stay_longer_in_bed ||
+                $r->is_impact_could_not_do_unpaid_work ||
+                $r->is_impact_other;
+        })->pluck('reported_date')->unique()->count();
+
+        return [
+            'can_calculate' => true,
+            'start_date' => $previousStart->format('Y-m-d'),
+            'end_date' => $cycleEnd->format('Y-m-d'),
+            'cycle_length' => $cycleLength,
+            'blood_loss_days' => $bloodLossDays,
+            'spotting_days' => $spottingDays,
+            'pbac_score' => $pbacScore,
+            'show_pbac_high' => $pbacScore > 150,
+            'pain_days' => $painDays,
+            'extreme_pain_days' => $extremePainDays,
+            'impact_days' => $impactDays,
+        ];
+    }
 }
