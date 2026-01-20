@@ -53,17 +53,13 @@
                          x-transition.opacity
                          x-cloak
                          @click.away="activeTooltip = null"
-                         class="absolute top-full mt-3 md:top-auto md:bottom-full md:mb-3 right-0 z-[99] w-82 p-3 bg-gray-900 text-white text-xs rounded-lg shadow-xl">
+                         class="absolute top-full mt-3 md:top-auto md:bottom-full md:mb-3 right-0 z-[99] w-72 md:w-90 p-3 bg-[#FDF8FE] text-black border-primary border text-xs rounded-lg shadow-xl">
                         <template x-if="data && data.can_calculate">
                             <span>{!! __('participant.cycle_length') !!}</span>
                         </template>
                         <template x-if="!data || !data.can_calculate">
                             <span>{!! __('participant.wrapped_no_cycle_length_info') !!}</span>
                         </template>
-                        <!-- Arrow Desktop (Points Down to icon) -->
-                        <div class="hidden md:block absolute top-full right-2 -mt-1 border-8 border-transparent border-t-gray-900"></div>
-                        <!-- Arrow Mobile (Points Up to icon) -->
-                        <div class="block md:hidden absolute bottom-full right-2 -mb-1 border-8 border-transparent border-b-gray-900"></div>
                     </div>
                 </div>
             </div>
@@ -89,12 +85,8 @@
                                  x-transition.opacity
                                  x-cloak
                                  @click.away="activeTooltip = null"
-                                 class="absolute top-full mt-3 md:top-auto md:bottom-full md:mb-3 right-0 w-82 p-3 bg-gray-900 text-white text-xs rounded-lg shadow-xl z-[99]">
+                                 class="absolute top-full mt-3 md:top-auto md:bottom-full md:mb-3 right-0 w-72 p-3 bg-[#FDF8FE] text-black border-primary border text-xs rounded-lg shadow-xl z-[99]">
                                 {!! __('participant.wrapped_blood_loss_info') !!}
-                                <!-- Arrow Desktop (Points Down to icon) -->
-                                <div class="hidden md:block absolute top-full right-2 -mt-1 border-8 border-transparent border-t-gray-900"></div>
-                                <!-- Arrow Mobile (Points Up to icon) -->
-                                <div class="block md:hidden absolute bottom-full right-2 -mb-1 border-8 border-transparent border-b-gray-900"></div>
                             </div>
                         </div>
                     </div>
@@ -128,12 +120,8 @@
                              x-transition.opacity
                              x-cloak
                              @click.away="activeTooltip = null"
-                             class="absolute top-full mt-3 md:top-auto md:bottom-full md:mb-3 right-0 w-82 p-3 bg-gray-900 text-white text-xs rounded-lg shadow-xl z-[99]">
+                             class="absolute top-full mt-3 md:top-auto md:bottom-full md:mb-3 right-0 w-72 p-3 bg-[#FDF8FE] text-black border-primary border text-xs rounded-lg shadow-xl z-[99]">
                             {!! __('participant.wrapped_pain_info') !!}
-                            <!-- Arrow Desktop (Points Down to icon) -->
-                            <div class="hidden md:block absolute top-full right-2 -mt-1 border-8 border-transparent border-t-gray-900"></div>
-                            <!-- Arrow Mobile (Points Up to icon) -->
-                            <div class="block md:hidden absolute bottom-full right-2 -mb-1 border-8 border-transparent border-b-gray-900"></div>
                         </div>
                     </div>
                 </div>
@@ -159,12 +147,8 @@
                              x-transition.opacity
                              x-cloak
                              @click.away="activeTooltip = null"
-                             class="absolute top-full mt-3 md:top-auto md:bottom-full md:mb-3 right-0 w-82 p-3 bg-gray-900 text-white text-xs rounded-lg shadow-xl z-[99]">
+                             class="absolute top-full mt-3 md:top-auto md:bottom-full md:mb-3 right-0 w-72 p-3 bg-[#FDF8FE] text-black border-primary border text-xs rounded-lg shadow-xl z-[99]">
                             {!! __('participant.wrapped_impact_info') !!}
-                            <!-- Arrow Desktop (Points Down to icon) -->
-                            <div class="hidden md:block absolute top-full right-2 -mt-1 border-8 border-transparent border-t-gray-900"></div>
-                            <!-- Arrow Mobile (Points Up to icon) -->
-                            <div class="block md:hidden absolute bottom-full right-2 -mb-1 border-8 border-transparent border-b-gray-900"></div>
                         </div>
                     </div>
                 </div>
