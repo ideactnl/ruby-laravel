@@ -7,7 +7,8 @@
         wrapped_no_cycle_length: @js(__('participant.wrapped_no_cycle_length')),
         wrapped_blood_loss_spotting: @js(__('participant.wrapped_blood_loss_spotting')),
         wrapped_pain_extreme: @js(__('participant.wrapped_pain_extreme')),
-        wrapped_impact: @js(__('participant.wrapped_impact'))
+        wrapped_impact: @js(__('participant.wrapped_impact')),
+        wrapped_tracked: @js(__('participant.wrapped_tracked'))
     }
 })" x-init="init()" class="mb-10 mt-5" x-cloak>
 
@@ -64,6 +65,7 @@
                     </div>
                 </div>
             </div>
+
 
             <!-- 2. Blood Loss -->
             <template x-if="data && data.can_calculate">

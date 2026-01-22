@@ -668,7 +668,7 @@ return [
 
     // Menstruation Wrapped
     'cycle_length' => '<strong>Cyclus lengte</strong><br>Dit is het aantal dagen van de eerste dag dat je ongesteld was, tot de volgende keer dat je ongesteld bent. In de app kun je de eerste dag dat je ongesteld bent aangeven bij ‘bloedverlies’.',
-    'wrapped_header' => 'Je laatste cyclus was van :start tot :end en...',
+    'wrapped_header' => ':tracked_text Je laatste cyclus was van :start tot :end en...',
     'wrapped_cycle_length' => 'Duurde :days dagen',
     'wrapped_no_cycle_length' => 'We konden de lengte van je cyclus niet berekenen.',
     'wrapped_no_cycle_length_info' => '<strong>We kunnen je cyclusduur niet berekenen</strong><br>Dit kan komen omdat je de eerste dag van je menstruatie nog niet hebt aangegeven in de app. Dit kun je doen onder "bloedverlies". We kunnen je cyclusduur ook niet berekenen als deze langer is dan 60 dagen.',
@@ -679,4 +679,5 @@ return [
     'wrapped_pbac_high' => 'Je bloedverlies score was >150',
     'wrapped_pain_extreme' => 'Je had :pain_days dagen pijn, waarvan :extreme_days dagen heel erge pijn',
     'wrapped_impact' => 'Je kon op :days dagen minder doen',
+    'wrapped_tracked' => 'Je hebt :days dagen met Ruby bijgehouden!',
 ];

@@ -668,7 +668,7 @@ return [
 
     // Menstruation Wrapped
     'cycle_length' => '<strong>Cycle length</strong><br>This is the number of days from the first day of your period until the first day of your next period. In the app, you can mark the first day of your period under “blood loss”.',
-    'wrapped_header' => 'Your last cycle was from :start until :end and...',
+    'wrapped_header' => ':tracked_text Your last cycle was from :start until :end and...',
     'wrapped_cycle_length' => 'The cycle length was :days days',
     'wrapped_no_cycle_length' => 'We could not calculate the length of your cycle.',
     'wrapped_no_cycle_length_info' => '<strong>We can’t calculate your cycle length</strong><br>We’re unable to calculate your cycle length. This may be because you haven’t marked the first day of your period in the app yet. You can do this under “bleeding.” We also can’t calculate your cycle length if it is longer than 60 days.',
@@ -679,4 +679,5 @@ return [
     'wrapped_pbac_high' => 'Your bloodloss score was >150',
     'wrapped_pain_extreme' => 'You experienced :pain_days days with pain of which :extreme_days days extreme pain',
     'wrapped_impact' => 'You could do less on :days days',
+    'wrapped_tracked' => 'You tracked :days days with Ruby!',
 ];
