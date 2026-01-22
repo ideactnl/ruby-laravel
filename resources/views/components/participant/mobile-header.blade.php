@@ -13,9 +13,12 @@
                 getHeaderText() {
                     if (!this.wrappedData || !this.wrappedData.can_calculate) return '';
                     let text = @js(__('participant.wrapped_header'));
+                    let wrapped_tracked = @js(__('participant.wrapped_tracked'));
+                    const tracked = wrapped_tracked.replace(':days', `<span class='text-primary font-bold'>${this.wrappedData.total_tracked_days}</span>`);
                     return text
-                        .replace(':start', `<span class='text-primary font-extrabold'>${this.formatDate(this.wrappedData.start_date)}</span>`)
-                        .replace(':end', `<span class='text-primary font-extrabold'>${this.formatDate(this.wrappedData.end_date)}</span>`);
+                        .replace(':start', `<span class='text-primary font-bold'>${this.formatDate(this.wrappedData.start_date)}</span>`)
+                        .replace(':end', `<span class='text-primary font-bold'>${this.formatDate(this.wrappedData.end_date)}</span>`)
+                        .replace(':tracked_text', tracked);
                 }
              }"
              @wrapped-data-loaded.window="wrappedData = $event.detail">
@@ -28,7 +31,7 @@
             <div x-show="wrappedData && wrappedData.can_calculate"
                  x-transition.opacity
                  class="flex-1 min-w-0">
-                <p class="text-[16px] leading-tight text-gray-900 font-bold" x-html="getHeaderText()"></p>
+                <p class="md:text-[16px] text-[13px] leading-tight text-gray-900 font-bold" x-html="getHeaderText()"></p>
             </div>
         </div>
     </div>

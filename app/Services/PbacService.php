@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Participant;
 use App\Models\Pbac;
 use Exception;
+use Illuminate\Support\Facades\Schema;
 
 class PbacService
 {
@@ -137,18 +138,26 @@ class PbacService
         $painDays = $records->where('pain_slider_value', '>', 2)->pluck('reported_date')->unique()->count();
         $extremePainDays = $records->where('pain_slider_value', '>', 5)->pluck('reported_date')->unique()->count();
 
-        $impactDays = $records->filter(function ($r) {
-            return $r->is_impact_missed_work ||
-                $r->is_impact_missed_school ||
-                $r->is_impact_could_not_sport ||
-                $r->is_impact_missed_special_activities ||
-                $r->is_impact_missed_leisure_activities ||
-                $r->is_impact_had_to_sit_more ||
-                $r->is_impact_could_not_move ||
-                $r->is_impact_had_to_stay_longer_in_bed ||
-                $r->is_impact_could_not_do_unpaid_work ||
-                $r->is_impact_other;
-        })->pluck('reported_date')->unique()->count();
+        $impactDays = $records->filter(fn ($r) => $r->is_impact_missed_work ||
+            $r->is_impact_missed_school ||
+            $r->is_impact_could_not_sport ||
+            $r->is_impact_missed_special_activities ||
+            $r->is_impact_missed_leisure_activities ||
+            $r->is_impact_had_to_sit_more ||
+            $r->is_impact_could_not_move ||
+            $r->is_impact_had_to_stay_longer_in_bed ||
+            $r->is_impact_could_not_do_unpaid_work ||
+            $r->is_impact_other)->pluck('reported_date')->unique()->count();
+
+        $columns = Schema::getColumnListing((new Pbac)->getTable());
+        $columnsToIgnore = ['id', 'participant_id', 'reported_date', 'created_at', 'updated_at'];
+        $dataColumns = array_diff($columns, $columnsToIgnore);
+        $totalTrackedDays = Pbac::where('participant_id', $participantId)
+            ->where(function ($q) use ($dataColumns) {
+                foreach ($dataColumns as $col) {
+                    $q->orWhereNotNull($col);
+                }
+            })->selectRaw('DATE(reported_date) as day')->distinct()->count();
 
         return [
             'can_calculate' => true,
@@ -162,6 +171,7 @@ class PbacService
             'pain_days' => $painDays,
             'extreme_pain_days' => $extremePainDays,
             'impact_days' => $impactDays,
+            'total_tracked_days' => $totalTrackedDays,
         ];
     }
 }

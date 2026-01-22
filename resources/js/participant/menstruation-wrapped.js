@@ -40,9 +40,13 @@ export const menstruationWrapped = (config) => {
         },
         getHeaderText() {
             if (!this.data || !this.data.can_calculate) return '';
+            const trackedText = this.translations.wrapped_tracked
+                .replace(':days', `<span class="text-primary font-bold">${this.data.total_tracked_days}</span>`);
+
             return this.translations.wrapped_header
-                .replace(':start', `<span class="text-primary">${this.formatDate(this.data.start_date)}</span>`)
-                .replace(':end', `<span class="text-primary">${this.formatDate(this.data.end_date)}</span>`);
+                .replace(':start', `<span class="text-primary font-bold">${this.formatDate(this.data.start_date)}</span>`)
+                .replace(':end', `<span class="text-primary font-bold">${this.formatDate(this.data.end_date)}</span>`)
+                .replace(':tracked_text', trackedText);
         },
         getCycleLengthText() {
             if (!this.data || !this.data.can_calculate) return '';
@@ -65,6 +69,11 @@ export const menstruationWrapped = (config) => {
             if (!this.data) return '';
             return this.translations.wrapped_impact
                 .replace(':days', `<span class="text-primary font-bold text-gray-900">${this.data.impact_days}</span>`);
+        },
+        getTrackedDaysText() {
+            if (!this.data) return '';
+            return this.translations.wrapped_tracked
+                .replace(':days', `<span class="text-primary font-bold text-gray-900">${this.data.tracked_days}</span>`);
         }
     }
 }

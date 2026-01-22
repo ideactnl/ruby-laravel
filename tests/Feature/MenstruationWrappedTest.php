@@ -52,7 +52,7 @@ describe('Menstruation Wrapped API', function () {
             'is_impact_could_not_do_unpaid_work' => false,
             'is_impact_other' => false,
             'bl_pad_small' => 0,
-            'bl_pad_medium' => 2, // 2 * 5 = 10 points
+            'bl_pad_medium' => 2,
             'bl_pad_large' => 0,
             'bl_tampon_small' => 0,
             'bl_tampon_medium' => 0,
@@ -65,7 +65,7 @@ describe('Menstruation Wrapped API', function () {
             'reported_date' => $previousStart->copy()->addDays(2),
             'is_bl_first_day_period' => false,
             'menstrual_blood_loss' => 1,
-            'pain_slider_value' => 6, // extreme pain
+            'pain_slider_value' => 6,
             'is_impact_missed_work' => true,
             'is_impact_missed_school' => false,
             'is_impact_could_not_sport' => false,
@@ -81,10 +81,9 @@ describe('Menstruation Wrapped API', function () {
             'bl_pad_large' => 0,
             'bl_tampon_small' => 0,
             'bl_tampon_medium' => 0,
-            'bl_tampon_large' => 1, // 1 * 20 = 20 points
+            'bl_tampon_large' => 1, 
         ]);
 
-        // Recent cycle start (ends the previous cycle summary)
         Pbac::factory()->create([
             'participant_id' => $this->participant->id,
             'reported_date' => $recentStart,
@@ -100,11 +99,21 @@ describe('Menstruation Wrapped API', function () {
                 'end_date' => $recentStart->copy()->subDay()->format('Y-m-d'),
                 'cycle_length' => 28,
                 'blood_loss_days' => 2,
-                'pbac_score' => 30, // 10 + 20
+                'pbac_score' => 30,
                 'pain_days' => 2,
                 'extreme_pain_days' => 1,
                 'impact_days' => 1,
+                'total_tracked_days' => 3,
             ]);
+
+        Pbac::factory()->create([
+            'participant_id' => $this->participant->id,
+            'reported_date' => $previousStart->copy()->subDays(10),
+            'is_diet_answered' => true,
+        ]);
+
+        $response = $this->getJson('/api/v1/participant/menstruation-wrapped');
+        $response->assertJsonPath('total_tracked_days', 4);
     });
 
     it('rejects cycle longer than 60 days', function () {
