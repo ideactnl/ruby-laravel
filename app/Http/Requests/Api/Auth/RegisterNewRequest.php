@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Api\Auth;
 
 use App\Models\Participant;
+use App\Models\ParticipantAdditionalDetail;
 use App\Models\ResearchSurveyParticipant;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Hash;
@@ -59,7 +60,23 @@ class RegisterNewRequest extends FormRequest
         $data = $this->validated();
         $data['pin'] = Hash::make($data['pin']);
 
-        return Participant::create($data);
+        $participant = Participant::create($data);
+        try {
+            // Create participant additional details
+            ParticipantAdditionalDetail::create([
+                'participant_id' => $participant->id,
+                'study_number' => $data['study_number'],
+                'dob' => $data['dob'],
+            ]);
+        } catch (\Exception $err) {
+            \Log::info('Unable to add details for: ', [
+                'participant_id' => $participant->id,
+                'study_number' => $data['study_number'],
+                'dob' => $data['dob'],
+            ]);
+        }
+
+        return $participant;
     }
 
     /**
