@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests\Api\Auth;
 
-use Illuminate\Foundation\Http\FormRequest;
 use App\Models\Participant;
 use App\Models\ResearchSurveyParticipant;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Hash;
 
 class RegisterNewRequest extends FormRequest
@@ -31,7 +31,7 @@ class RegisterNewRequest extends FormRequest
                 'required',
                 'string',
                 function ($attribute, $value, $fail) {
-                    if (!ResearchSurveyParticipant::where('study_number', $value)->exists()) {
+                    if (! ResearchSurveyParticipant::where('study_number', $value)->exists()) {
                         $fail('The study number must exist in MGA survey participants.');
                     }
                 },
@@ -40,9 +40,9 @@ class RegisterNewRequest extends FormRequest
                 'required',
                 'date',
                 function ($attribute, $value, $fail) {
-                    if (!ResearchSurveyParticipant::where('dob', $value)->exists()) {
+                    if (! ResearchSurveyParticipant::where('dob', $value)->exists()) {
                         $fail('The date of birth must exist in MGA survey participants.');
-                    } else if (!ResearchSurveyParticipant::where('dob', $value)->where('study_number', request('study_number'))->exists()) {
+                    } elseif (! ResearchSurveyParticipant::where('dob', $value)->where('study_number', request('study_number'))->exists()) {
                         $fail('The study number does not match the associated date of birth on record.');
                     }
                 },
@@ -53,8 +53,6 @@ class RegisterNewRequest extends FormRequest
 
     /**
      * Register the participant.
-     *
-     * @return \App\Models\Participant
      */
     public function registerParticipant(): Participant
     {
@@ -84,7 +82,7 @@ class RegisterNewRequest extends FormRequest
             ],
             'study_number' => [
                 'description' => 'The study number.',
-                'example' => 'AB0000',
+                'example' => 'STUDY123',
                 'required' => true,
             ],
             'dob' => [

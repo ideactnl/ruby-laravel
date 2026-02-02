@@ -6,8 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Auth\DeleteAccountRequest;
 use App\Http\Requests\Api\Auth\LoginRequest;
 use App\Http\Requests\Api\Auth\MedicalSpecialistAccessRequest;
-use App\Http\Requests\Api\Auth\RegisterRequest;
 use App\Http\Requests\Api\Auth\RegisterNewRequest;
+use App\Http\Requests\Api\Auth\RegisterRequest;
 use App\Http\Requests\Api\Auth\UpdateProfileRequest;
 use App\Http\Resources\ParticipantResource;
 use Illuminate\Http\JsonResponse;
@@ -369,7 +369,6 @@ class AuthController extends Controller
 
     /**
      * Register a new participant.
-     * @param \App\Http\Requests\Api\Auth\RegisterNewRequest $request
      *
      * @return \Illuminate\Http\JsonResponse
      */
@@ -388,7 +387,7 @@ class AuthController extends Controller
                 ],
             ], 201);
         } catch (\Exception $err) {
-           return response()->json([
+            return response()->json([
                 'success' => false,
                 'message' => $err->getMessage(),
                 'data' => null,
