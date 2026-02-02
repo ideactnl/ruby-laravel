@@ -112,6 +112,41 @@ return [
             // 'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'false'),
         ],
 
+        'mysql_second' => [
+            'driver' => 'mysql',
+            'url' => env('DB_RESEARCH_SURVEY_URL'),
+            'host' => env('DB_RESEARCH_SURVEY_HOST', '127.0.0.1'),
+            'port' => env('DB_RESEARCH_SURVEY_PORT', '3306'),
+            'database' => env('DB_RESEARCH_SURVEY_DATABASE', 'laravel_second'),
+            'username' => env('DB_RESEARCH_SURVEY_USERNAME', 'root'),
+            'password' => env('DB_RESEARCH_SURVEY_PASSWORD', ''),
+            'unix_socket' => env('DB_RESEARCH_SURVEY_SOCKET', ''),
+            'charset' => env('DB_RESEARCH_SURVEY_CHARSET', 'utf8mb4'),
+            'collation' => env('DB_RESEARCH_SURVEY_COLLATION', 'utf8mb4_unicode_ci'),
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => true,
+            'engine' => null,
+            'options' => extension_loaded('pdo_mysql') ? array_filter([
+                PDO::MYSQL_ATTR_SSL_CA => env('DB_RESEARCH_SURVEY_ATTR_SSL_CA'),
+            ]) : [],
+        ],
+
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Second Database Table Names
+    |--------------------------------------------------------------------------
+    |
+    | Here you may specify the table names for the second database.
+    | This allows for easy configuration of table names without
+    | hardcoding them in the models.
+    |
+    */
+
+    'second_tables' => [
+        'participants' => env('DB_RESEARCH_SURVEY_PARTICIPANTS_TABLE', 'mga_survey_participant'),
     ],
 
     /*

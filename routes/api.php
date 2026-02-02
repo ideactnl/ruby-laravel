@@ -8,7 +8,8 @@ use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
 
 Route::prefix('v1')->group(function () {
     Route::middleware('throttle:5,1')->group(function () {
-        Route::post('/register', [AuthController::class, 'register']);
+        // Route::post('/register', [AuthController::class, 'register']);
+        Route::post('/register', [AuthController::class, 'registerNew']);
         Route::post('/login', [AuthController::class, 'login']);
     });
 

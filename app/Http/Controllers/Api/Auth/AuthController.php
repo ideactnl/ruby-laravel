@@ -7,6 +7,7 @@ use App\Http\Requests\Api\Auth\DeleteAccountRequest;
 use App\Http\Requests\Api\Auth\LoginRequest;
 use App\Http\Requests\Api\Auth\MedicalSpecialistAccessRequest;
 use App\Http\Requests\Api\Auth\RegisterRequest;
+use App\Http\Requests\Api\Auth\RegisterNewRequest;
 use App\Http\Requests\Api\Auth\UpdateProfileRequest;
 use App\Http\Resources\ParticipantResource;
 use Illuminate\Http\JsonResponse;
@@ -364,5 +365,34 @@ class AuthController extends Controller
             'message' => 'Account deleted successfully. All data has been permanently removed.',
             'data' => null,
         ]);
+    }
+
+    /**
+     * Register a new participant.
+     * @param \App\Http\Requests\Api\Auth\RegisterNewRequest $request
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function registerNew(RegisterNewRequest $request)
+    {
+        try {
+            $participant = $request->registerParticipant();
+            $token = $participant->createToken('api')->plainTextToken;
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Registration successful',
+                'data' => [
+                    'participant' => new ParticipantResource($participant),
+                    'access_token' => $token,
+                ],
+            ], 201);
+        } catch (\Exception $err) {
+           return response()->json([
+                'success' => false,
+                'message' => $err->getMessage(),
+                'data' => null,
+            ]);
+        }
     }
 }
