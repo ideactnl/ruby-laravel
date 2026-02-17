@@ -34,7 +34,7 @@
     ];
 @endphp
 
-<nav class="md:hidden fixed bottom-0 inset-x-0 z-50 bg-white " x-data="{ moreOpen: false, navigating: false }">
+<nav class="md:hidden fixed bottom-0 inset-x-0 z-50 bg-[#FDF8FE]" x-data="{ moreOpen: false, navigating: false }">
     <!-- Loader Overlay -->
     <div x-show="navigating" class="fixed inset-0 z-[60] flex items-center justify-center "
         style="display: none;">
@@ -54,7 +54,7 @@
     <!-- BOTTOM TABS -->
     <div class="flex justify-around py-2 text-xs text-black text-[14px] ">
         @foreach ($items as $item)
-            <a href="{{ $item['href'] }}" @click="navigating = true; if('vibrate' in navigator) { try { navigator.vibrate(10); } catch(e) {} }"
+            <a href="{{ $item['href'] }}" @click="navigating = true; if('vibrate' in navigator) { try { navigator.vibrate(20); } catch(e) {} }"
                 class="flex flex-col items-center gap-1 transition
                    {{ $item['active'] ? 'text-primary font-semibold' : '' }}">
 

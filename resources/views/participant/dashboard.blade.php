@@ -4,9 +4,11 @@
 
 @section('content')
     <div x-data="filterMenu()" x-init="init()">
+        <x-participant.menstruation-wrapped />
+        <x-participant.domain-dropdown :className="'md:hidden flex justify-end'" />
+
         <div class="mb-10 flex items-center justify-between main-hed">
             <!-- Mobile: Date with Navigation -->
-
             <div class="md:hidden flex items-center justify-center gap-2 flex-1 min-w-0">
                 <div class="flex items-center justify-between w-full gap-6 mt-4">
 
@@ -22,9 +24,7 @@
                         onclick="goToCurrentMonth()"
                         title="{{ __('participant.tap_to_go_current_month') }}"
                         class="flex md:hidden items-center justify-center cursor-pointer rounded-lg px-4 py-2 hover:bg-gray-100 transition text-gray-900 text-[18px] font-normal">
-                    <span id="mobile-date">{{ now()->format('d') }}</span>
-                    <span class="mx-1">-</span>
-                    <span id="mobile-month">{{ now()->format('m') }}</span>
+                    <span id="mobile-month">{{ now()->format('F') }}</span>
                     <span class="mx-1">-</span>
                     <span id="mobile-year">{{ now()->format('Y') }}</span>
                 </div>
@@ -61,7 +61,7 @@
             </div>
             <!-- Domain Filter Dropdown -->
                 <x-participant.domain-dropdown :className="'hidden md:flex'"/>
-        </div>
+            </div>
 
         <div class="relative">
             <div id="participantCalendar" class="p-0"></div>

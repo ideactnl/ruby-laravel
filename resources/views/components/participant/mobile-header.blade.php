@@ -1,15 +1,42 @@
-<div class="md:hidden sticky top-0 z-50 bg-[#FFF7F8] px-4 py-3" x-data="filterMenu()" x-init="init()">
-    <div class="flex items-center justify-between">
-       <a href="{{ route('participant.dashboard') }}">
-        <img
-            src="{{ asset('images/logo.png') }}"
-            alt="Logo"
-            class="h-14 object-contain"
-        />
-        </a>
-        @if (request()->routeIs('participant.dashboard'))
-            <x-participant.domain-dropdown />
-        @endif
+<div class="md:hidden sticky top-0 z-50 bg-[#FDF8FE] px-4 py-3" x-data="filterMenu()" x-init="init()">
+    <div class="flex items-center justify-between gap-3">
+        <div class="flex items-center gap-3 flex-1 min-w-0" x-data="{
+                wrappedData: null,
+                dayWord(count) {
+                    const wrapped_day_singular =  @js(__('participant.wrapped_day_singular'));
+                    const wrapped_day_plural =  @js(__('participant.wrapped_day_plural'));
+                    const n = Number(count) || 0;
+                    return n === 1 ? wrapped_day_singular : wrapped_day_plural;
+                },
+                formatDate(dateStr) {
+                    if (!dateStr) return '';
+                    const date = new Date(dateStr);
+                    const day = String(date.getDate()).padStart(2, '0');
+                    const month = String(date.getMonth() + 1).padStart(2, '0');
+                    return `${day}-${month}`;
+                },
+                getHeaderText() {
+                    if (!this.wrappedData || !this.wrappedData.can_calculate) return '';
+                    let text = @js(__('participant.wrapped_header'));
+                    let wrapped_tracked = @js(__('participant.wrapped_tracked'));
+                    const tracked = wrapped_tracked.replace(':days', `<span class='text-primary font-bold'>${this.wrappedData.total_tracked_days}</span>`)
+                    .replace(':day_word', this.dayWord(this.wrappedData.total_tracked_days));
+                    return text
+                        .replace(':start', `<span class='text-primary font-bold'>${this.formatDate(this.wrappedData.start_date)}</span>`)
+                        .replace(':end', `<span class='text-primary font-bold'>${this.formatDate(this.wrappedData.end_date)}</span>`)
+                        .replace(':tracked_text', tracked);
+                }
+             }" @wrapped-data-loaded.window="wrappedData = $event.detail">
+
+            <a href="{{ route('participant.dashboard') }}" class="flex-shrink-0"
+                @click="if('vibrate' in navigator) { try { navigator.vibrate(20); } catch(e) {} }">
+                <img src="{{ asset('images/logo.png') }}" alt="Logo" class="h-12 w-auto object-contain" />
+            </a>
+
+            <div x-show="wrappedData && wrappedData.can_calculate" x-transition.opacity class="flex-1 min-w-0">
+                <p class="md:text-[16px] text-[13px] leading-tight text-gray-900 font-bold" x-html="getHeaderText()">
+                </p>
+            </div>
+        </div>
     </div>
 </div>
-

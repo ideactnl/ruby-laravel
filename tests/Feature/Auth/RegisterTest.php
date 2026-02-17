@@ -1,8 +1,31 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Models\ResearchSurveyParticipant;
 
 uses(RefreshDatabase::class);
+
+beforeEach(function () {
+    // Set up test database for second connection
+    config(['database.connections.mysql_second' => [
+        'driver' => 'sqlite',
+        'database' => ':memory:'
+    ]]);
+    
+    // Create the mga_survey_participant table for testing
+    $schema = \DB::connection('mysql_second')->getSchemaBuilder();
+    $schema->create(config('database.second_tables.participants'), function ($table) {
+        $table->id();
+        $table->string('study_number')->unique();
+        $table->date('dob');
+        $table->timestamps();
+    });
+
+    ResearchSurveyParticipant::create([
+        'study_number' => 'STUDY121',
+        'dob' => '1990-01-01',
+    ]);
+});
 
 describe('Participant Registration', function () {
     /**
@@ -15,6 +38,8 @@ describe('Participant Registration', function () {
         $payload = [
             'registration_number' => 'testuser1',
             'pin' => '123456',
+            'study_number' => 'STUDY121',
+            'dob' => '1990-01-01',
             'opt_in_for_research' => true,
         ];
 
@@ -48,6 +73,8 @@ describe('Participant Registration', function () {
         $payload = [
             'registration_number' => 'testuser2',
             'pin' => '123',
+            'study_number' => 'STUDY121',
+            'dob' => '1990-01-01',
             'opt_in_for_research' => true,
         ];
 
@@ -65,6 +92,8 @@ describe('Participant Registration', function () {
         $payload = [
             'registration_number' => 'testuser3',
             'pin' => '123456',
+            'study_number' => 'STUDY121',
+            'dob' => '1990-01-01',
             'opt_in_for_research' => 'invalid_value',
         ];
 
@@ -82,6 +111,8 @@ describe('Participant Registration', function () {
         $payload = [
             'registration_number' => 'testuser4',
             'pin' => '123456',
+            'study_number' => 'STUDY121',
+            'dob' => '1990-01-01',
             'opt_in_for_research' => false,
         ];
 

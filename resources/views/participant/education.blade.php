@@ -67,7 +67,7 @@
 
                     videos.forEach((video, index) => {
                         const videoCard = document.createElement('div');
-                        videoCard.className = 'rounded-[10px] overflow-hidden  bg-white flex flex-col';
+                        videoCard.className = 'rounded-[10px] overflow-hidden  bg-[#FDF8FE] flex flex-col';
 
                         const maxLength = 25;
                         let subtitleContent = '';
@@ -78,11 +78,18 @@
 
                             subtitleContent = `
                                     <div class="text-sm text-gray-600 edu-video-caption">
-                                        <span id="${subtitleId}">${truncated}</span>
+                                        <span>
+                                            <a href="${video.watch_url}" 
+                                                target="_blank" 
+                                                id="${subtitleId}"
+                                                class="text-sm text-primary hover:underline block">
+                                                ${truncated}
+                                            </a>
+                                        </span>
                                         ${isLong ? `
                                             <button onclick="toggleReadMore('${subtitleId}', '${video.subtitle.replace(/'/g, "\\'")}', '${truncated.replace(/'/g, "\\'")}', this)"
-                                                    class="text-primary ml-1 text-xs font-medium">
-                                                More
+                                                    class="text-primary text-xs font-medium">
+                                                {{ __('participant.more') }}
                                             </button>
                                         ` : ''}
                                     </div>
@@ -99,14 +106,17 @@
                                         loading="lazy"></iframe>
                             </div>
 
-                            <div class="p-4 flex-1 flex items-start rounded-b-[10px] rounded-tl-none rounded-tr-none border border-t-0 border-primary">${subtitleContent || '<div class="text-sm text-gray-600 edu-video-caption"></div>'}</div>
+                             <div class="p-2 md:p-4 flex-1 flex flex-col items-start rounded-b-[10px] rounded-tl-none rounded-tr-none border border-t-0 border-primary bg-[#FDF8FE]">
+                                <h3 class="text-[14px] font-semibold text-black mb-[6px]">${video.title}</h3>
+                                ${subtitleContent || '<div class="text-sm text-gray-600 edu-video-caption"></div>'}
+                            </div>
                         `;
 
                         educationGrid.appendChild(videoCard);
 
                         if (index === 1) {
                             const flipCardContainer = document.createElement('div');
-                            flipCardContainer.className = 'rounded-10 overflow-hidden  bg-white flex flex-col';
+                            flipCardContainer.className = 'rounded-10 overflow-hidden bg-[#FDF8FE] flex flex-col';
                             flipCardContainer.innerHTML = `
                                 <div class="flip-wrapper h-full flex flex-col">
                                     <div class="aspect-[9/16] w-full">
@@ -137,14 +147,16 @@
 
         function toggleReadMore(subtitleId, fullText, truncatedText, button) {
             const span = document.getElementById(subtitleId);
-            const isExpanded = button.textContent === 'Less';
+            const moreText = "{{ __('participant.more') }}";
+            const lessText = "{{ __('participant.less') }}";
+            const isExpanded = button.textContent.trim() === lessText;
 
             if (isExpanded) {
                 span.textContent = truncatedText;
-                button.textContent = 'More';
+                button.textContent = moreText;
             } else {
                 span.textContent = fullText;
-                button.textContent = 'Less';
+                button.textContent = lessText;
             }
         }
 

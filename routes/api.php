@@ -8,7 +8,8 @@ use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
 
 Route::prefix('v1')->group(function () {
     Route::middleware('throttle:5,1')->group(function () {
-        Route::post('/register', [AuthController::class, 'register']);
+        // Route::post('/register', [AuthController::class, 'register']);
+        Route::post('/register', [AuthController::class, 'registerNew']);
         Route::post('/login', [AuthController::class, 'login']);
     });
 
@@ -35,6 +36,7 @@ Route::prefix('v1')->group(function () {
 
         Route::middleware('auth:sanctum')->group(function () {
             Route::get('/dashboard', [ParticipantWebApiController::class, 'dashboard']);
+            Route::get('/menstruation-wrapped', [ParticipantWebApiController::class, 'getMenstruationWrapped'])->name('participant.menstruation-wrapped');
             Route::get('/pbac/export', [ParticipantWebApiController::class, 'exportPbacData'])->name('participant.pbac.export');
             Route::post('/pbac/chart/export/pdf', [ParticipantWebApiController::class, 'exportChartPdf'])->name('participant.pbac.chart.export.pdf');
             Route::get('/daily', [ParticipantWebApiController::class, 'dailyData'])->name('participant.daily');

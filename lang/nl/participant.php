@@ -3,7 +3,7 @@
 return [
     // Navigation - Sidebar labels
     'calendar' => 'Kalender',
-    'daily_view' => 'Dagelijks overzicht',
+    'daily_view' => 'Per dag',
     'education' => 'Over menstruatie',
     'selfmanagement' => 'Zelf doen',
     'links_external_websites' => 'Handige websites',
@@ -13,8 +13,8 @@ return [
     // Page titles (navbar)
     'visualise_symptoms_monthly_overview' => 'MAANDELIJKS OVERZICHT',
     'monthly_overview_showing_relationship' => 'Maandelijks overzicht van jouw bijgehouden symptomen',
-    'visualise_symptoms_daily_view' => 'DAGELIJKS OVERZICHT',
-    'daily_overview_showing_selected_domains' => 'Dagelijks overzicht van jouw bijgehouden symptomen over de menstruele cyclus',
+    'visualise_symptoms_daily_view' => 'PER DAG',
+    'daily_overview_showing_selected_domains' => 'Per dag van jouw bijgehouden symptomen over de menstruele cyclus',
     'educational_resources_learning_materials' => 'Video\'s over menstruatie en alles wat daarbij komt kijken',
     'tools_resources_managing_health' => 'Wat te doen bij menstruatieklachten',
     'helpful_external_websites_resources' => 'Links naar handige websites',
@@ -31,6 +31,7 @@ return [
     'next' => 'Volgende',
     'select_date' => 'Selecteer datum',
     'more' => 'Meer',
+    'less' => 'Minder',
     'category' => 'Categorie',
     'recommended' => 'Aanbevolen',
 
@@ -663,5 +664,23 @@ return [
     'session_expired' => 'Sessie verlopen',
     'please_refresh_your_session_to_continue' => 'Ververs uw sessie om door te gaan.',
 
-    'home' => 'Home'
+    'home' => 'Home',
+
+    // Menstruation Wrapped
+    'cycle_length' => '<strong>Cyclus lengte</strong><br>Dit is het aantal dagen van de eerste dag dat je ongesteld was, tot de volgende keer dat je ongesteld bent. In de app kun je de eerste dag dat je ongesteld bent aangeven bij ‘bloedverlies’.',
+    'wrapped_header' => ':tracked_text Je laatste cyclus was van :start tot :end en...',
+    'wrapped_cycle_length' => 'Duurde :days :day_word',
+    'wrapped_no_cycle_length' => 'We konden de lengte van je cyclus niet berekenen.',
+    'wrapped_no_cycle_length_info' => '<strong>We kunnen je cyclusduur niet berekenen</strong><br>Dit kan komen doordat je in de app nog niet hebt aangegeven wat de eerste dag was dat je ongesteld was. Dit kun je invullen bij ‘bloedverlies’. Ga in de Ruby app naar bijhouden -> bloedverlies en klik op ‘dit was de eerste dag van mijn menstruatie’. Ook als je cyclus langer is dan 60 dagen kunnen we deze niet berekenen.',
+    'wrapped_blood_loss_info_days_only' => '<strong>Aantal dagen met bloedverlies</strong><br>Dit is het aantal dagen dat je ongesteld was of last had van spotting. Spotting is een kleine hoeveelheid bruin of roze afscheiding.',
+    'wrapped_blood_loss_info' => '<strong>Aantal dagen met bloedverlies</strong><br>Dit is het aantal dagen dat je ongesteld was of last had van spotting. Spotting is een kleine hoeveelheid bruin of roze afscheiding.<br><br><strong>Bloedverliesscore</strong><br>De bloedverliesscore is gebaseerd op het aantal maandverbanden en/of tampons dat je hebt gebruikt. Een score van meer dan 150 kan wijzen op te veel bloedverlies. Dit kan je bijvoorbeeld bespreken met je huisarts of gynaecoloog.',
+    'wrapped_pain_info' => '<strong>Pijnscore</strong><br>Dit is het aantal dagen waarop je een pijnscore hebt ingevuld.',
+    'wrapped_impact_info' => '<strong>Dagen waarop je minder kon doen</strong><br>Dit is het aantal dagen waarop je hebt ingevuld dat je minder kon doen. Bijvoorbeeld niet naar school of werk gaan, niet met vrienden afspreken of leuke dingen afzeggen.',
+    'wrapped_blood_loss_spotting' => 'Je had :blood_days :blood_day_word bloedverlies en :spotting_days :spotting_day_word spotting',
+    'wrapped_pbac_high' => 'Je bloedverlies score was >150',
+    'wrapped_day_singular' => 'dag',
+    'wrapped_day_plural' => 'dagen',
+    'wrapped_pain_extreme' => 'Je had :pain_days :pain_day_word pijn, waarvan :extreme_days :extreme_day_word heel erge pijn',
+    'wrapped_impact' => 'Je kon op :days :day_word minder doen',
+    'wrapped_tracked' => 'Je hebt :days :day_word met Ruby bijgehouden!',
 ];
