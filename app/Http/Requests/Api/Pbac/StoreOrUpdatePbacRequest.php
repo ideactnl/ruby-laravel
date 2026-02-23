@@ -144,6 +144,8 @@ class StoreOrUpdatePbacRequest extends FormRequest
             'isUrineStoolSomethingElse' => 'nullable|boolean',
             'isUrineStoolSomethingElseText' => 'nullable|string|max:255',
             'isUrineStoolNoStool' => 'nullable|boolean',
+            'isPainDuringPeeingUrine' => 'nullable|boolean',
+            'isPainDuringPoopingUrine' => 'nullable|boolean',
 
             // ** Sleep ** //
             'isSleepAnswered' => 'nullable|boolean',
@@ -194,6 +196,8 @@ class StoreOrUpdatePbacRequest extends FormRequest
             'isSexBloodlossDuringAfter' => 'nullable|boolean',
             'isSexDiscomfortPelvicArea' => 'nullable|boolean',
             'isSexEmotionallyPhysicallySatisfied' => 'nullable|boolean',
+            'isSexSkippedDueToPeriod' => 'nullable|boolean',
+            'isSexPainDuringSex' => 'nullable|boolean',
 
             // ** Notes ** //
             'isAdditionalNotesAnswered' => 'nullable|boolean',
@@ -342,6 +346,8 @@ class StoreOrUpdatePbacRequest extends FormRequest
             'isUrineStoolSomethingElse' => ['description' => 'Stool something else', 'example' => 0, 'required' => false, 'type' => 'boolean'],
             'isUrineStoolSomethingElseText' => ['description' => 'Stool something else text', 'example' => '', 'required' => false, 'type' => 'string'],
             'isUrineStoolNoStool' => ['description' => 'No stool', 'example' => 0, 'required' => false, 'type' => 'boolean'],
+            'isPainDuringPeeingUrine' => ['description' => 'Pain during peeing (Urine Domain)', 'example' => 0, 'required' => false, 'type' => 'boolean'],
+            'isPainDuringPoopingUrine' => ['description' => 'Pain during pooping (Urine Domain)', 'example' => 0, 'required' => false, 'type' => 'boolean'],
 
             // ** Sleep ** //
             'isSleepAnswered' => ['description' => 'Sleep section answered', 'example' => 1, 'required' => false, 'type' => 'boolean'],
@@ -386,6 +392,8 @@ class StoreOrUpdatePbacRequest extends FormRequest
             'isSexBloodlossDuringAfter' => ['description' => 'Bloodloss during/after sex', 'example' => 0, 'required' => false, 'type' => 'boolean'],
             'isSexDiscomfortPelvicArea' => ['description' => 'Discomfort/pelvic area', 'example' => 0, 'required' => false, 'type' => 'boolean'],
             'isSexEmotionallyPhysicallySatisfied' => ['description' => 'Felt emotionally/physically satisfied', 'example' => 0, 'required' => false, 'type' => 'boolean'],
+            'isSexSkippedDueToPeriod' => ['description' => 'Did not have sex because of period', 'example' => 0, 'required' => false, 'type' => 'boolean'],
+            'isSexPainDuringSex' => ['description' => 'Had pain during sex', 'example' => 0, 'required' => false, 'type' => 'boolean'],
 
             // ** Notes ** //
             'isAdditionalNotesAnswered' => ['description' => 'Additional notes answered', 'example' => 1, 'required' => false, 'type' => 'boolean'],
