@@ -229,7 +229,7 @@ class Pbac extends Model
     private const URINE_STOOL_FIELDS = [
         'is_urine_stool_answered', 'is_urine_stool_blood_in_urine', 'is_urine_stool_blood_in_stool', 'is_urine_stool_hard',
         'is_urine_stool_normal', 'is_urine_stool_soft', 'is_urine_stool_diarrhea', 'is_urine_stool_something_else',
-        'is_urine_stool_something_else_text', 'is_urine_stool_no_stool',
+        'is_urine_stool_something_else_text', 'is_urine_stool_no_stool', 'is_pain_during_peeing_urine', 'is_pain_during_pooping_urine',
     ];
 
     private const SLEEP_FIELDS = [
@@ -251,7 +251,7 @@ class Pbac extends Model
 
     private const SEX_FIELDS = [
         'is_sex_answered', 'is_sex_today', 'is_sex_avoided', 'is_sex_bloodloss_during_after',
-        'is_sex_discomfort_pelvic_area', 'is_sex_emotionally_physically_satisfied',
+        'is_sex_discomfort_pelvic_area', 'is_sex_emotionally_physically_satisfied', 'is_sex_skipped_due_to_period', 'is_sex_pain_during_sex',
     ];
 
     private const ADDITIONAL_NOTES_FIELDS = [
@@ -321,7 +321,7 @@ class Pbac extends Model
         // Urine & Stool
         'is_urine_stool_answered' => 'boolean', 'is_urine_stool_blood_in_urine' => 'boolean', 'is_urine_stool_blood_in_stool' => 'boolean',
         'is_urine_stool_hard' => 'boolean', 'is_urine_stool_normal' => 'boolean', 'is_urine_stool_soft' => 'boolean', 'is_urine_stool_diarrhea' => 'boolean',
-        'is_urine_stool_something_else' => 'boolean', 'is_urine_stool_no_stool' => 'boolean',
+        'is_urine_stool_something_else' => 'boolean', 'is_urine_stool_no_stool' => 'boolean', 'is_pain_during_peeing_urine' => 'boolean', 'is_pain_during_pooping_urine' => 'boolean',
 
         // Sleep
         'is_sleep_answered' => 'boolean', 'is_sleep_work_school_day' => 'boolean', 'is_sleep_free_day' => 'boolean',
@@ -338,7 +338,8 @@ class Pbac extends Model
 
         // Sex
         'is_sex_answered' => 'boolean', 'is_sex_today' => 'boolean', 'is_sex_avoided' => 'boolean', 'is_sex_bloodloss_during_after' => 'boolean',
-        'is_sex_discomfort_pelvic_area' => 'boolean', 'is_sex_emotionally_physically_satisfied' => 'boolean',
+        'is_sex_discomfort_pelvic_area' => 'boolean', 'is_sex_emotionally_physically_satisfied' => 'boolean', 'is_sex_skipped_due_to_period' => 'boolean',
+        'is_sex_pain_during_sex' => 'boolean',
 
         // Additional Notes
         'is_additional_notes_answered' => 'boolean',
@@ -811,6 +812,7 @@ class Pbac extends Model
             'urine' => [
                 'blood' => (bool) ($this->is_urine_stool_blood_in_urine ?? false),
                 'painDuringPeeing' => (bool) ($this->is_pain_during_peeing ?? false),
+                'painDuringPeeingUrine' => (bool) ($this->is_pain_during_peeing_urine ?? false),
             ],
             'stool' => [
                 'blood' => (bool) ($this->is_urine_stool_blood_in_stool ?? false),
@@ -822,6 +824,7 @@ class Pbac extends Model
                 'somethingElseText' => $this->is_urine_stool_something_else_text,
                 'noStool' => (bool) ($this->is_urine_stool_no_stool ?? false),
                 'normal' => (bool) ($this->is_urine_stool_normal ?? false),
+                'painDuringPoopingStool' => (bool) ($this->is_pain_during_pooping_urine ?? false),
             ],
         ];
     }
@@ -991,6 +994,8 @@ class Pbac extends Model
             'today' => (bool) ($this->is_sex_today ?? false),
             'avoided' => (bool) ($this->is_sex_avoided ?? false),
             'issues' => $issues,
+            'painDuringSex' => (bool) ($this->is_sex_pain_during_sex ?? false),
+            'skippedSexDueToPeriod' => (bool) ($this->isSexSkippedDueToPeriod ?? false),
             'satisfied' => (bool) ($this->is_sex_emotionally_physically_satisfied ?? false),
         ];
     }
