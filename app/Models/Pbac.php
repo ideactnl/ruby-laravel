@@ -1215,7 +1215,7 @@ class Pbac extends Model
             'avoided' => (bool) ($this->is_sex_avoided ?? false),
             'issues' => $issues,
             'isSexPain' => (bool) ($this->is_sex_pain ?? false),
-            'skippedSexDueToPeriod' => (bool) ($this->isSexSkippedDueToPeriod ?? false),
+            'skippedSexDueToPeriod' => (bool) ($this->is_sex_skipped_due_to_period ?? false),
             'satisfied' => (bool) ($this->is_sex_emotionally_physically_satisfied ?? false),
         ];
     }
