@@ -137,6 +137,8 @@ class PbacResource extends JsonResource
             'isUrineStoolSomethingElse' => $this->is_urine_stool_something_else,
             'isUrineStoolSomethingElseText' => $this->is_urine_stool_something_else_text,
             'isUrineStoolNoStool' => $this->is_urine_stool_no_stool,
+            'isPeePain' => $this->is_pee_pain,
+            'isPoopPain' => $this->is_poop_pain,
 
             // *** Sleep *** //
             'isSleepAnswered' => $this->is_sleep_answered,
@@ -181,6 +183,8 @@ class PbacResource extends JsonResource
             'isSexBloodlossDuringAfter' => $this->is_sex_bloodloss_during_after,
             'isSexDiscomfortPelvicArea' => $this->is_sex_discomfort_pelvic_area,
             'isSexEmotionallyPhysicallySatisfied' => $this->is_sex_emotionally_physically_satisfied,
+            'isSexSkippedDueToPeriod' => $this->is_sex_skipped_due_to_period,
+            'isSexPain' => $this->is_sex_pain,
 
             // *** Notes *** //
             'isAdditionalNotesAnswered' => $this->is_additional_notes_answered,
