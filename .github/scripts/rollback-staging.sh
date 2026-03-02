@@ -11,7 +11,7 @@ source "$SCRIPT_DIR/shared-functions.sh"
 
 # Configuration
 PROJECT_PATH="${PROJECT_PATH:-/usr/home/ideacts/public_html/ruby-staging}"
-BACKUP_DIR="${BACKUP_DIR:-/usr/home/ideacts/public_html/ruby_staging_backups}"
+BACKUP_DIR="${BACKUP_DIR:-/usr/home/ideacts/backups/site/staging}"
 ENVIRONMENT="staging"
 MAINTENANCE_SECRET="${MAINTENANCE_SECRET:-}"
 
