@@ -38,7 +38,7 @@ jobs:
           script: |
             # Set environment variables
             export PROJECT_PATH="${{ secrets.PATH }}/${{ github.event.inputs.environment == 'staging' && 'ruby-staging' || 'ruby' }}"
-            export BACKUP_DIR="${{ secrets.PATH }}/${{ github.event.inputs.environment == 'staging' && 'ruby_staging_backups' || 'ruby_backups' }}"
+            export BACKUP_DIR="${{ secrets.BACKUP_PATH }}/site/${{ github.event.inputs.environment == 'staging' && 'staging' || 'production' }}"
             export MAINTENANCE_SECRET="${{ secrets.MAINTENANCE_SECRET }}"
             
             # Update code to get latest scripts
@@ -74,7 +74,7 @@ jobs:
           script: |
             # Set environment variables
             export PROJECT_PATH="${{ secrets.PATH }}/${{ github.event.inputs.environment == 'staging' && 'ruby-staging' || 'ruby' }}"
-            export BACKUP_DIR="${{ secrets.PATH }}/${{ github.event.inputs.environment == 'staging' && 'ruby_staging_backups' || 'ruby_backups' }}"
+            export BACKUP_DIR="${{ secrets.BACKUP_PATH }}/site/${{ github.event.inputs.environment == 'staging' && 'staging' || 'production' }}"
             export BACKUP_NAME="${{ github.event.inputs.backup_name }}"
             export MAINTENANCE_SECRET="${{ secrets.MAINTENANCE_SECRET }}"
             export FORCE_ROLLBACK="${{ github.event.inputs.force_production == 'true' && 'true' || 'false' }}"

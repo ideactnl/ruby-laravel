@@ -65,9 +65,9 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.PORT }}
           script: |
-            # Set environment variables
+            # App environment variables
             export PROJECT_PATH="${{ secrets.PATH }}/ruby-staging"
-            export BACKUP_DIR="${{ secrets.PATH }}/ruby_staging_backups"
+            export BACKUP_DIR="${{ secrets.BACKUP_PATH }}/site/staging"
             export APP_ENV="${{ vars.APP_ENV || 'staging' }}"
             export APP_DEBUG="${{ vars.APP_DEBUG || 'true' }}"
             export APP_URL="${{ vars.APP_URL || 'http://ruby-staging.ideact-server.nl' }}"
@@ -75,13 +75,13 @@ jobs:
             export QUEUE_CONNECTION="${{ vars.QUEUE_CONNECTION || 'database' }}"
             export LOG_LEVEL="${{ vars.LOG_LEVEL || 'debug' }}"
             export MAINTENANCE_SECRET="${{ secrets.MAINTENANCE_SECRET }}"
-            
+
             # Change to project directory and update code (including scripts)
             cd "$PROJECT_PATH"
             git fetch origin staging
             git reset --hard origin/staging
             git clean -fd
-            
+
             # Now run the deployment script
             chmod +x .github/scripts/deploy-staging.sh
             ./.github/scripts/deploy-staging.sh
@@ -105,9 +105,9 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.PORT }}
           script: |
-            # Set environment variables
+            # App environment variables
             export PROJECT_PATH="${{ secrets.PATH }}/ruby"
-            export BACKUP_DIR="${{ secrets.PATH }}/ruby_backups"
+            export BACKUP_DIR="${{ secrets.BACKUP_PATH }}/site/production"
             export APP_ENV="${{ vars.APP_ENV || 'production' }}"
             export APP_DEBUG="${{ vars.APP_DEBUG || 'false' }}"
             export APP_URL="${{ vars.APP_URL || 'http://ruby.ideact-server.nl' }}"
@@ -115,13 +115,28 @@ jobs:
             export QUEUE_CONNECTION="${{ vars.QUEUE_CONNECTION || 'database' }}"
             export LOG_LEVEL="${{ vars.LOG_LEVEL || 'error' }}"
             export MAINTENANCE_SECRET="${{ secrets.MAINTENANCE_SECRET }}"
-            
+
+            # Database credentials (used by backup-production.sh)
+            # DB_DATABASE already exported above via vars.DB_DATABASE
+            export DB_HOST="${{ vars.DB_HOST || '127.0.0.1' }}"
+            export DB_PORT="${{ vars.DB_PORT || '3306' }}"
+            export DB_USERNAME="${{ secrets.DB_USERNAME }}"
+            export DB_PASSWORD="${{ secrets.DB_PASSWORD }}"
+
+            # DB backup destination on this server
+            # Copy 1: local $BACKUP_PATH/database/production/ (on Hetzner server)
+            # Copy 2: Plesk1 remote server
+            export LOCAL_BACKUP_DIR="${{ secrets.BACKUP_PATH }}/database/production"
+            export BACKUP_PLESK_HOST="${{ vars.BACKUP_PLESK_HOST }}"
+            export BACKUP_PLESK_USER="${{ vars.BACKUP_PLESK_USER }}"
+            export BACKUP_PLESK_PATH="${{ vars.BACKUP_PLESK_PATH }}"
+
             # Change to project directory and update code (including scripts)
             cd "$PROJECT_PATH"
             git fetch origin main
             git reset --hard origin/main
             git clean -fd
-            
+
             # Now run the deployment script
             chmod +x .github/scripts/deploy-production.sh
             ./.github/scripts/deploy-production.sh
