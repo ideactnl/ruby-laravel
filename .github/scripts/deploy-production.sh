@@ -11,7 +11,7 @@ source "$SCRIPT_DIR/shared-functions.sh"
 
 # Configuration
 PROJECT_PATH="${PROJECT_PATH:-/usr/home/ideacts/public_html/ruby}"
-BACKUP_DIR="${BACKUP_DIR:-/usr/home/ideacts/public_html/ruby_backups}"
+BACKUP_DIR="${BACKUP_DIR:-/usr/home/ideacts/backups/site/production}"
 BACKUP_PATH="$BACKUP_DIR/ruby-backup-$(date +%Y%m%d_%H%M%S)"
 LOCK_FILE="/tmp/production_deployment_lock"
 BACKUP_PATH_FILE="/tmp/production_backup_path"
@@ -81,7 +81,15 @@ main() {
     # Create storage link
     create_storage_link
     
-    # Run Laravel optimizations
+    # Run database backup BEFORE migrations
+    # If backup fails (exit 1), set -e stops immediately and the ERR trap rolls back.
+    # php artisan migrate --force will never run if backup fails.
+    log_step "💾 Running pre-migration database backup..."
+    chmod +x "$SCRIPT_DIR/backup-production.sh"
+    "$SCRIPT_DIR/backup-production.sh"
+    log_success "Database backup completed"
+
+    # Run Laravel optimizations (includes migrate --force)
     run_laravel_optimizations
     
     # Disable maintenance mode

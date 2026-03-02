@@ -129,29 +129,15 @@ set_permissions() {
 
 # Smart dependency management for Composer
 manage_composer_dependencies() {
-    log_step "Checking Composer dependencies..."
-    
-    if [ ! -d "vendor" ] || [ ! -f "vendor/autoload.php" ]; then
-        log_step "Installing Composer dependencies..."
-        composer install --no-dev --optimize-autoloader --no-interaction
-    else
-        log_step "Composer dependencies exist, updating..."
-        composer update --no-dev --optimize-autoloader --no-interaction
-    fi
+    log_step "Installing Composer dependencies..."
+    composer install --no-dev --optimize-autoloader --no-interaction
     log_success "Composer dependencies ready"
 }
 
 # Smart dependency management for NPM
 manage_npm_dependencies() {
-    log_step "Checking NPM dependencies..."
-    
-    if [ ! -d "node_modules" ] || [ ! -f "package-lock.json" ]; then
-        log_step "Installing NPM dependencies..."
-        npm ci
-    else
-        log_step "Node modules exist, updating..."
-        npm update
-    fi
+    log_step "Installing NPM dependencies..."
+    npm ci
     log_success "NPM dependencies ready"
 }
 
