@@ -11,7 +11,7 @@ source "$SCRIPT_DIR/shared-functions.sh"
 
 # Configuration
 PROJECT_PATH="${PROJECT_PATH:-/usr/home/ideacts/public_html/ruby}"
-BACKUP_DIR="${BACKUP_DIR:-/usr/home/ideacts/public_html/ruby_backups}"
+BACKUP_DIR="${BACKUP_DIR:-/usr/home/ideacts/backups/site/production}"
 ENVIRONMENT="production"
 MAINTENANCE_SECRET="${MAINTENANCE_SECRET:-}"
 
