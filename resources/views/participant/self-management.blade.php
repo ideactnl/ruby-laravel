@@ -14,16 +14,16 @@
                     <option value="">{{ __('participant.recommended') }}</option>
                 </select>
 
-                <button id="filter-toggle" class="border border-gray-300 rounded-md px-3 py-1 text-sm text-white bg-primary hover:bg-primary/90 transition-colors hidden">
+                <button id="filter-toggle" class="inline-flex items-center border border-gray-300 rounded-md px-3 py-1 text-sm text-white bg-primary hover:bg-primary/90 transition-colors hidden">
                     <i class="fas fa-filter mr-2"></i>{{ __('participant.filters') }}
                 </button>
             </div>
         </div>
 
         <!-- Collapsible Filter Section -->
-        <div id="filter-section" class="hidden mb-6 p-3 bg-gray-50 rounded-lg border border-gray-200">
+        <div id="filter-section" class="hidden mb-6 p-6 bg-[#FDF8FE] border border-primary rounded-md">
             <div class="flex justify-between items-center mb-3">
-                <h3 class="text-base font-semibold text-gray-800">{{ __('participant.filter_by') }}</h3>
+                <h3 class="text-2xl font-semibold text-gray-800">{{ __('participant.filter_by') }}</h3>
                 <button id="close-filters" class="text-gray-500 hover:text-gray-700">
                     <i class="fas fa-times"></i>
                 </button>
@@ -32,10 +32,10 @@
                 <!-- Filters will be populated here -->
             </div>
             <div class="mt-3 flex gap-2">
-                <button id="apply-filters" class="px-3 py-1.5 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors text-sm">
+                <button id="apply-filters" class="px-3 py-3 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors text-sm">
                     {{ __('participant.apply_filters') }}
                 </button>
-                <button id="reset-filters" class="px-3 py-1.5 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition-colors text-sm">
+                <button id="reset-filters" class="px-3 py-1.5 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors text-sm">
                     {{ __('participant.reset_filters') }}
                 </button>
             </div>
@@ -111,7 +111,7 @@
 
         function createFilterInput(category) {
             const filterDiv = document.createElement('div');
-            filterDiv.className = 'bg-white p-2 rounded-md border border-gray-200';
+            filterDiv.className = 'bg-[#FDF8FE] shadow-sm border border-primary p-2 rounded-md';
             
             // Capitalize first letter of category name
             const displayName = category.name.charAt(0).toUpperCase() + category.name.slice(1);
@@ -132,7 +132,7 @@
                                    min="${category.metadata?.min || 0}"
                                    max="${category.metadata?.max || 10}"
                                    value="${category.metadata?.min || 0}"
-                                   class="flex-1 h-1">
+                                   class="flex-1 h-1 accent-primary">
                             <span id="filter-${category.slug}-value" class="text-xs text-gray-600 w-4">${category.metadata?.min || 0}</span>
                         </div>
                     `;
@@ -173,7 +173,7 @@
                             </label>
                             <select id="filter-${category.slug}" 
                                     name="${category.slug}"
-                                    class="w-full px-2 py-1 text-xs border border-gray-300 rounded-md">
+                                    class="w-full px-2 py-1 text-xs bg-[#FDF8FE]  border border-primary rounded-md">
                                 <option value="">{{ __('participant.select') }}</option>
                                 ${category.metadata.allowed_values.map(value => 
                                     `<option value="${value}">${value}</option>`
