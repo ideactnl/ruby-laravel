@@ -6,11 +6,11 @@ use App\Helpers\CommonHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Participant;
 use App\Models\Pbac;
+use App\Services\CmsApiCallService;
 use App\Services\ExportTrackingService;
 use App\Services\PbacExportService;
 use App\Services\PbacService;
 use App\Services\VideoService;
-use App\Services\CmsApiCallService;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Http\Request;
@@ -18,10 +18,10 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Validation\ValidationException;
 use Laravel\Sanctum\PersonalAccessToken;
-use Illuminate\Support\Facades\Http;
 
 /**
  * @group Participant Dashboard
@@ -509,18 +509,13 @@ class ParticipantWebApiController extends Controller
      *
      * @response 200 {"videos":[{"id":13,"title":"Pijn verminderen door ontspanning","location":"self-management","order":1,"video_url":"https://youtube.com/shorts/oxTaiuHAq-U","video_type":"youtube","video_id":"oxTaiuHAq-U","thumbnail_url":"https://img.youtube.com/vi/oxTaiuHAq-U/hqdefault.jpg","embed_url":"https://www.youtube.com/embed/oxTaiuHAq-U","watch_url":"https://www.youtube.com/watch?v=oxTaiuHAq-U"}]}
      */
-    public function getSelfManagementVideos(CmsApiCallService $cmsApiCallService, Request $request)
+    public function getSelfManagementVideos(VideoService $videoService)
     {
-        $response = $cmsApiCallService->call('selfmanagement', $request);
+        $videos = $videoService->getVideosForLocation('self-management');
 
-        if(array_key_exists('error', $response)) {
-            return response()->json([
-                'error' => $response['error'],
-                'message' => $response['message'],
-            ], 500);
-        }
-
-        return response()->json($response['data']);
+        return response()->json([
+            'videos' => $videos,
+        ]);
     }
 
     /**
@@ -536,7 +531,7 @@ class ParticipantWebApiController extends Controller
      * @response 401 {"error":"Unauthenticated"}
      * @response 422 {"error":"Invalid query parameters.","errors":{"date":["The date field is required."]}}
      */
-    public function getDailyViewVideos(Request $request, CmsApiCallService $cmsApiCallService)
+    public function getDailyViewVideos(Request $request, VideoService $videoService)
     {
         $participant = auth('participant-web')->user();
         if (! $participant) {
@@ -566,7 +561,7 @@ class ParticipantWebApiController extends Controller
             ->first();
 
         if (! $record) {
-            return response()->json(['content' => []]);
+            return response()->json(['videos' => []]);
         }
 
         $participantData = [
@@ -587,25 +582,11 @@ class ParticipantWebApiController extends Controller
             'sleep_hours' => $record->sleep['calculatedHours'] ?? null,
         ];
 
-        // Build filters from participant data
-        $filters = $cmsApiCallService->buildFiltersFromParticipantData($participantData);
-        
-        // Create a mock request with filters
-        $filterRequest = new \Illuminate\Http\Request();
-        $filterRequest->merge($filters);
-        $filterRequest->merge(['lang' => app()->getLocale()]);
+        $videos = $videoService->getVideosForDailyView($participantData);
 
-        // Get content from CMS API
-        $response = $cmsApiCallService->call('daily-overview', $filterRequest);
-
-        if(array_key_exists('error', $response)) {
-            return response()->json([
-                'error' => $response['error'],
-                'message' => $response['message'],
-            ], 500);
-        }
-
-        return response()->json($response['data']);
+        return response()->json([
+            'videos' => $videos,
+        ]);
     }
 
     /**
@@ -874,7 +855,7 @@ class ParticipantWebApiController extends Controller
      * Fetches educational content from the CMS API based on specified filters.
      * Supports multiple content types including video, audio, text, and flipcard.
      * Content is filtered by language and optionally by content type.
-     * 
+     *
      * @response 200 {
      *   "content": [
      *     {
@@ -943,7 +924,6 @@ class ParticipantWebApiController extends Controller
      *     }
      *   ]
      * }
-     * 
      * @response 500 {
      *   "error": true,
      *   "message": "CMS API URL or API key is not configured"
@@ -958,7 +938,7 @@ class ParticipantWebApiController extends Controller
 
         $response = $cmsApiCallService->call($request);
 
-        if(array_key_exists('error', $response)) {
+        if (array_key_exists('error', $response)) {
             return response()->json([
                 'error' => $response['error'],
                 'message' => $response['message'],
@@ -988,7 +968,7 @@ class ParticipantWebApiController extends Controller
      *     },
      *     {
      *       "slug": "mood",
-     *       "name": "Stemming", 
+     *       "name": "Stemming",
      *       "description": "Emotionele stemming tracking",
      *       "value_type": "numeric",
      *       "metadata": {
@@ -1000,7 +980,6 @@ class ParticipantWebApiController extends Controller
      *   "total": 2,
      *   "language": "nl"
      * }
-     * 
      * @response 500 {
      *   "error": true,
      *   "message": "Failed to fetch categories"
@@ -1009,13 +988,13 @@ class ParticipantWebApiController extends Controller
     public function fetchCategories(Request $request)
     {
         $systemLang = session('locale') ?? app()->getLocale();
-        $cmsApiUrl = env('CMS_API_URL');
-        $cmsApiKey = env('CMS_API_KEY');
+        $cmsApiUrl = config('cms.api_url');
+        $cmsApiKey = config('cms.api_key');
 
-        if (!$cmsApiUrl || !$cmsApiKey) {
+        if (! $cmsApiUrl || ! $cmsApiKey) {
             return response()->json([
                 'error' => true,
-                'message' => 'CMS API URL or API key is not configured'
+                'message' => 'CMS API URL or API key is not configured',
             ], 500);
         }
 
@@ -1030,13 +1009,13 @@ class ParticipantWebApiController extends Controller
             } else {
                 return response()->json([
                     'error' => true,
-                    'message' => 'Failed to fetch categories from CMS API'
+                    'message' => 'Failed to fetch categories from CMS API',
                 ], $response->status());
             }
         } catch (\Exception $e) {
             return response()->json([
                 'error' => true,
-                'message' => 'Failed to fetch categories: ' . $e->getMessage()
+                'message' => 'Failed to fetch categories: '.$e->getMessage(),
             ], 500);
         }
     }
