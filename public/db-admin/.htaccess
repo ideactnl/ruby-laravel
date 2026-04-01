@@ -1,0 +1,18 @@
+# Prevent direct access to sensitive files (.htaccess, .htpasswd, etc.)
+<FilesMatch "^\.ht">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Block direct access to the Adminer Core engine
+<FilesMatch "\.core$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Security headers for DB tool
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "DENY"
+    Header set X-XSS-Protection "1; mode=block"
+</IfModule>
