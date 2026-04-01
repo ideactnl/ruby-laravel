@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\Api\MedicalSpecialist\MedicalSpecialistController;
 use App\Http\Controllers\Api\Participant\ParticipantWebApiController;
 use App\Http\Controllers\HomeController;
@@ -103,4 +104,5 @@ Route::middleware(['auth', 'role:researcher|superadmin'])->group(function () {
     Route::get('pbac/exports/recent', [PbacExportController::class, 'recent'])->name('admin.pbac.exports.recent');
     Route::get('pbac/exports/{jobId}', [PbacExportController::class, 'status'])->name('admin.pbac.exports.status');
     Route::get('pbac/exports/{jobId}/download', [PbacExportController::class, 'download'])->middleware('signed')->name('admin.pbac.exports.download');
+    Route::get('analytics', [AnalyticsController::class, 'index'])->name('admin.analytics');
 });
