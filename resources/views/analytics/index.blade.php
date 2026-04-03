@@ -30,6 +30,11 @@
                             <i class="fa-solid fa-magnifying-glass"></i>
                         </span>
                     </div>
+                    <button @click="exportCsv()"
+                        class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-white text-sm font-semibold shadow-sm hover:opacity-90 transition-all whitespace-nowrap">
+                        <i class="fa-solid fa-file-csv"></i>
+                        Export CSV
+                    </button>
                 </div>
             </div>
 
@@ -287,6 +292,14 @@
                     clearSearch() {
                         this.q = '';
                         this.fetchData(1);
+                    },
+                    exportCsv() {
+                        const params = new URLSearchParams({
+                            q: this.q,
+                            sort: this.sort,
+                            dir: this.dir
+                        });
+                        window.location.href = `/analytics/export?${params.toString()}`;
                     }
                 }
             }
