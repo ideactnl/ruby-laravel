@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Participant;
 use App\Models\Pbac;
 use App\Services\ExportTrackingService;
+use App\Services\ParticipantActivityLogService;
+use App\Services\ParticipantSessionService;
 use App\Services\PbacExportService;
 use App\Services\PbacService;
 use App\Services\VideoService;
@@ -61,6 +63,9 @@ class ParticipantWebApiController extends Controller
 
         Auth::guard('participant-web')->login($participant);
         $request->session()->regenerate();
+
+        // Start session tracking
+        app(ParticipantSessionService::class)->startSession($participant);
 
         return response()->json([
             'success' => true,
@@ -463,25 +468,94 @@ class ParticipantWebApiController extends Controller
     /**
      * Show dashboard web page
      */
-    public function dashboardPage()
+    public function dashboardPage(ParticipantActivityLogService $logger)
     {
+        /** @var \App\Models\Participant|null $participant */
+        $participant = Auth::guard('participant-web')->user();
+
+        if ($participant) {
+            $logger->logDashboardVisit($participant);
+            app(ParticipantSessionService::class)->heartbeat($participant, 'dashboard', true);
+        }
+
         return view('participant.dashboard');
     }
 
-    /**
-     * Show PBAC export web page
-     */
     public function exportPage()
     {
+        /** @var \App\Models\Participant|null $participant */
+        $participant = Auth::guard('participant-web')->user();
+        if ($participant) {
+            app(ParticipantSessionService::class)->heartbeat($participant, 'export', true);
+        }
+
         return view('participant.export-my-data');
     }
 
-    /**
-     * Show daily view web page
-     */
     public function dailyViewPage()
     {
+        /** @var \App\Models\Participant|null $participant */
+        $participant = Auth::guard('participant-web')->user();
+        if ($participant) {
+            app(ParticipantSessionService::class)->heartbeat($participant, 'daily-view', true);
+        }
+
         return view('participant.daily-view');
+    }
+
+    public function education()
+    {
+        /** @var \App\Models\Participant|null $participant */
+        $participant = Auth::guard('participant-web')->user();
+        if ($participant) {
+            app(ParticipantSessionService::class)->heartbeat($participant, 'education', true);
+        }
+
+        return view('participant.education');
+    }
+
+    public function selfManagement()
+    {
+        /** @var \App\Models\Participant|null $participant */
+        $participant = Auth::guard('participant-web')->user();
+        if ($participant) {
+            app(ParticipantSessionService::class)->heartbeat($participant, 'self-management', true);
+        }
+
+        return view('participant.self-management');
+    }
+
+    public function externalLinks()
+    {
+        /** @var \App\Models\Participant|null $participant */
+        $participant = Auth::guard('participant-web')->user();
+        if ($participant) {
+            app(ParticipantSessionService::class)->heartbeat($participant, 'external-links', true);
+        }
+
+        return view('participant.external-links');
+    }
+
+    public function generalInformation()
+    {
+        /** @var \App\Models\Participant|null $participant */
+        $participant = Auth::guard('participant-web')->user();
+        if ($participant) {
+            app(ParticipantSessionService::class)->heartbeat($participant, 'general-information', true);
+        }
+
+        return view('participant.general-information');
+    }
+
+    public function settings()
+    {
+        /** @var \App\Models\Participant|null $participant */
+        $participant = Auth::guard('participant-web')->user();
+        if ($participant) {
+            app(ParticipantSessionService::class)->heartbeat($participant, 'settings', true);
+        }
+
+        return view('participant.setting');
     }
 
     /**
@@ -588,38 +662,6 @@ class ParticipantWebApiController extends Controller
     }
 
     /**
-     * Show education page
-     */
-    public function education()
-    {
-        return view('participant.education');
-    }
-
-    /**
-     * Show self-management page
-     */
-    public function selfManagement()
-    {
-        return view('participant.self-management');
-    }
-
-    /**
-     * Show general information page
-     */
-    public function generalInformation()
-    {
-        return view('participant.general-information');
-    }
-
-    /**
-     * Show links to external websites page
-     */
-    public function externalLinks()
-    {
-        return view('participant.external-links');
-    }
-
-    /**
      * Dashboard Login (Bearer Token)
      *
      * Generates a temporary signed URL for auto-login to the participant web dashboard.
@@ -710,6 +752,16 @@ class ParticipantWebApiController extends Controller
             ], 401);
         }
 
+        /** @var \App\Models\Participant|null $user */
+        $user = Auth::guard('participant-web')->user();
+
+        if ($user) {
+            app(ParticipantSessionService::class)->heartbeat(
+                $user,
+                $request->input('section')
+            );
+        }
+
         $newExpiry = now()->addMinutes((int) config('auth.dashboard_url_expiry', 5));
 
         session()->put('api_login_expires_at', $newExpiry);
@@ -774,11 +826,6 @@ class ParticipantWebApiController extends Controller
         }
 
         return view('participant.web_login');
-    }
-
-    public function settings()
-    {
-        return view('participant.setting');
     }
 
     /**
