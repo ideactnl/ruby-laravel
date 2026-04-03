@@ -105,4 +105,5 @@ Route::middleware(['auth', 'role:researcher|superadmin'])->group(function () {
     Route::get('pbac/exports/{jobId}', [PbacExportController::class, 'status'])->name('admin.pbac.exports.status');
     Route::get('pbac/exports/{jobId}/download', [PbacExportController::class, 'download'])->middleware('signed')->name('admin.pbac.exports.download');
     Route::get('analytics', [AnalyticsController::class, 'index'])->name('admin.analytics');
+    Route::get('analytics/export', [AnalyticsController::class, 'export'])->name('admin.analytics.export');
 });

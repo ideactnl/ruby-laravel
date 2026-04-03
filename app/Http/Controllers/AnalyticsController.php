@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Participant;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class AnalyticsController extends Controller
 {
@@ -18,7 +19,7 @@ class AnalyticsController extends Controller
             }])
             ->withSum('sessions as total_duration_seconds', 'duration_seconds')
             ->withAvg('sessions as avg_duration_seconds', 'duration_seconds')
-            ->with(['sessions']); // Load sessions for manual aggregation of JSON parts
+            ->with(['sessions']);
 
         if ($q = $request->input('q')) {
             $query->where('registration_number', 'like', "%{$q}%");
@@ -38,26 +39,22 @@ class AnalyticsController extends Controller
 
             return response()->json([
                 /** @phpstan-ignore-next-line */
-                'data' => $collection->map(function (\App\Models\Participant $p) {
-                    // Aggregate sections and interactions manually across all sessions
+                'data' => $collection->map(function (Participant $p) {
                     $sectionBreakdown = [];
                     $formattedVisits = [];
 
                     foreach ($p->sessions as $session) {
-                        // Section breakdown (Time on Page)
                         foreach ($session->section_breakdown ?? [] as $section => $seconds) {
                             $label = $this->formatLabel($section);
                             $sectionBreakdown[$label] = ($sectionBreakdown[$label] ?? 0) + $seconds;
                         }
 
-                        // Aggregate Page Visits from interactions_breakdown
                         foreach ($session->interactions_breakdown ?? [] as $section => $count) {
                             $label = $this->formatLabel($section);
                             $formattedVisits[$label] = ($formattedVisits[$label] ?? 0) + $count;
                         }
                     }
 
-                    // Format section names and durations for UI
                     $formattedSections = [];
                     foreach ($sectionBreakdown as $label => $seconds) {
                         if ($seconds > 0) {
@@ -97,6 +94,88 @@ class AnalyticsController extends Controller
         }
 
         return view('analytics.index', compact('participants'));
+    }
+
+    /**
+     * Export participant analytics as a CSV download.
+     */
+    public function export(Request $request): StreamedResponse
+    {
+        $query = Participant::select('id', 'registration_number')
+            ->withCount(['activities as dashboard_visits_count' => function ($query) {
+                $query->where('log_name', 'participant-visits');
+            }])
+            ->withSum('sessions as total_duration_seconds', 'duration_seconds')
+            ->withAvg('sessions as avg_duration_seconds', 'duration_seconds')
+            ->with(['sessions']);
+
+        if ($q = $request->input('q')) {
+            $query->where('registration_number', 'like', "%{$q}%");
+        }
+
+        $sort = in_array($request->input('sort'), ['registration_number', 'dashboard_visits_count', 'total_duration_seconds', 'avg_duration_seconds']) ? $request->input('sort') : 'dashboard_visits_count';
+        $dir = $request->input('dir') === 'asc' ? 'asc' : 'desc';
+        $query->orderBy($sort, $dir);
+
+        $filename = 'participant_analytics_'.now()->format('Y-m-d_His').'.csv';
+
+        return new StreamedResponse(function () use ($query) {
+            $handle = fopen('php://output', 'w');
+
+            fwrite($handle, chr(0xEF).chr(0xBB).chr(0xBF));
+
+            fputcsv($handle, [
+                'Registration ID',
+                'Dashboard Visits',
+                'Total Interactions',
+                'Avg Session Duration',
+                'Total Time',
+                'Section Breakdown (Time)',
+                'Section Breakdown (Visits)',
+            ]);
+
+            foreach ($query->lazy(500) as $p) {
+                $sectionBreakdown = [];
+                $formattedVisits = [];
+
+                foreach ($p->sessions as $session) {
+                    foreach ($session->section_breakdown ?? [] as $section => $seconds) {
+                        $label = str_replace('|', '-', $this->formatLabel($section));
+                        $sectionBreakdown[$label] = ($sectionBreakdown[$label] ?? 0) + $seconds;
+                    }
+                    foreach ($session->interactions_breakdown ?? [] as $section => $count) {
+                        $label = str_replace('|', '-', $this->formatLabel($section));
+                        $formattedVisits[$label] = ($formattedVisits[$label] ?? 0) + $count;
+                    }
+                }
+
+                $timeBreakdown = collect($sectionBreakdown)
+                    ->filter(fn ($s) => $s > 0)
+                    ->sortDesc()
+                    ->map(fn ($s, $name) => $name.': '.$this->formatDuration((int) $s))
+                    ->implode(' | ');
+
+                $visitBreakdown = collect($formattedVisits)
+                    ->sortDesc()
+                    ->map(fn ($count, $name) => $name.': '.$count)
+                    ->implode(' | ');
+
+                fputcsv($handle, [
+                    $p->registration_number ?? 'N/A',
+                    $p->dashboard_visits_count ?? 0,
+                    array_sum($formattedVisits),
+                    $this->formatDuration((int) $p->avg_duration_seconds),
+                    $this->formatDuration((int) $p->total_duration_seconds),
+                    $timeBreakdown ?: 'N/A',
+                    $visitBreakdown ?: 'N/A',
+                ]);
+            }
+
+            fclose($handle);
+        }, 200, [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => "attachment; filename=\"{$filename}\"",
+        ]);
     }
 
     /**
