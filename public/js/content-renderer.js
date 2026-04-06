@@ -27,12 +27,26 @@ window.ContentRenderer = {
         return card;
     },
 
+    convertYouTubeUrl(url) {
+        const shortsMatch = url.match(/shorts\/([^?]+)/);
+        if (shortsMatch) {
+            return `https://www.youtube.com/embed/${shortsMatch[1]}`;
+        }
+
+        const watchMatch = url.match(/v=([^&]+)/);
+        if (watchMatch) {
+            return `https://www.youtube.com/embed/${watchMatch[1]}`;
+        }
+
+        return url;
+    },
+
     // Video content creation
     createVideoCardContent(video) {
         return `
             <div class="aspect-[9/16] edu-video-media">
                 <iframe class="w-full h-full"
-                        src="${video?.video_url}"
+                        src="${this.convertYouTubeUrl(video?.video_url)}"
                         frameborder="0"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         allowfullscreen
