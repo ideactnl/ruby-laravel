@@ -157,7 +157,7 @@
                             }
                         });
 
-                        window.ContentRenderer.equalizeCardHeights();
+                        // window.ContentRenderer.equalizeCardHeights();
                         window.ContentRenderer.initFlipCards();
                     }
                 }

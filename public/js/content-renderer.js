@@ -32,14 +32,14 @@ window.ContentRenderer = {
         return `
             <div class="aspect-[9/16] edu-video-media">
                 <iframe class="w-full h-full"
-                        src="${video.embed_url}"
+                        src="${video?.video_url}"
                         frameborder="0"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         allowfullscreen
                         loading="lazy"></iframe>
             </div>
             <div class="p-2 md:p-4 flex-1 flex flex-col items-start rounded-b-[10px] rounded-tl-none rounded-tr-none border border-t-0 border-primary bg-[#FDF8FE]">
-                <h3 class="text-[14px] font-semibold text-black mb-[6px]">${video.title}</h3>
+                <h3 class="text-[14px] font-semibold text-black mb-[6px]">${video?.title}</h3>
                 <div class="text-sm text-gray-600 edu-video-caption"></div>
             </div>
         `;

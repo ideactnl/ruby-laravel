@@ -20,7 +20,7 @@ class CmsApiCallService
     {
         $systemLang = session('locale') ?? app()->getLocale();
         $page = $request->input('page', 'education');
-        $apiUrl = "$this->cmsApiUrl/api/v1/content?lang=$systemLang&page=$page";
+        $apiUrl = "$this->cmsApiUrl/api/v1/content?lang=$systemLang&location=$page";
 
         // Get all request data except page and convert to CMS API format
         $allFilters = $request->all();
@@ -46,6 +46,8 @@ class CmsApiCallService
             return ['error' => true, 'message' => 'CMS API URL or API key is not configured'];
         }
 
+        \Log::info('CMS API URL: '.$apiUrl);
+
         try {
             $response = Http::withoutVerifying()->withHeaders([
                 'accept' => 'application/json',
@@ -55,6 +57,8 @@ class CmsApiCallService
             if (! $response->successful()) {
                 return ['error' => true, 'message' => 'API request failed: '.$response->status()];
             }
+
+            \Log::info('CMS API Response: '.json_encode($response->json()));
 
             return ['data' => $response->json()];
         } catch (\Exception $e) {

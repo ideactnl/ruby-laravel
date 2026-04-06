@@ -243,7 +243,7 @@
                     },
                     body: JSON.stringify({
                         ...window.ContentRenderer.getFilterValues(),
-                        page: 'self-management'
+                        page: 'self'
                     })
                 });
                 const data = await response.json();
@@ -277,7 +277,7 @@
                             }
                         });
 
-                        window.ContentRenderer.equalizeCardHeights();
+                        // window.ContentRenderer.equalizeCardHeights();
                         window.ContentRenderer.initFlipCards();
                     }
                 }
