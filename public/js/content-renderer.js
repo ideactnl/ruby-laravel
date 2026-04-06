@@ -240,7 +240,7 @@ window.ContentRenderer = {
         // Reset all filter inputs to default values
         const filtersContainer = document.getElementById('filters-container');
         if (filtersContainer) {
-            const inputs = filtersContainer.querySelectorAll('input');
+            const inputs = filtersContainer.querySelectorAll('input,select');
             inputs.forEach(input => {
                 if (input.type === 'checkbox') {
                     input.checked = false;
