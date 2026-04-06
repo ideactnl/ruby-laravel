@@ -66,6 +66,7 @@
                                 'active' => request()->is('pbac/export'),
                             ],
                             ['label' => 'Logs', 'href' => url('/logs'), 'active' => request()->is('logs')],
+                            ['label' => 'Analytics', 'href' => url('/analytics'), 'active' => request()->is('analytics')],
                             ['label' => 'Users', 'href' => url('/users'), 'active' => request()->is('users*')],
                         ];
                     } elseif ($user && $user->hasRole('researcher')) {
@@ -98,19 +99,20 @@
                         <a href="{{ $item['href'] }}"
                             class="group relative flex h-14 items-center gap-3 pl-5 pr-6 text-sm font-medium transition
                               {{ $isActive
-                                  ? 'active-nav bg-white text-neutral-900 rounded-l-[26px] rounded-r-[0px] shadow'
+                                  ? 'active-nav bg-[#FDF8FE] text-neutral-900 rounded-l-[26px] rounded-r-[0px] shadow'
                                   : 'text-white rounded-xl' }}">
 
                             <!-- Icon (Font Awesome) -->
                             <span
                                 class="inline-flex h-9 w-9 shrink-0 items-center justify-center shadow
-                            {{ $isActive ? 'rounded-lg bg-white text-black' : 'rounded-full bg-transparent text-white' }}">
+                            {{ $isActive ? 'rounded-lg bg-[#FDF8FE] text-black' : 'rounded-full bg-transparent text-white' }}">
                                 @php
                                     $iconMap = [
                                         'Dashboard' => 'fa-gauge-high',
                                         'Export' => 'fa-file-export',
                                         'Logs' => 'fa-clock-rotate-left',
                                         'Users' => 'fa-users',
+                                        'Analytics' => 'fa-chart-simple',
                                     ];
                                     $iconCls = $iconMap[$item['label']] ?? 'fa-circle';
                                 @endphp
