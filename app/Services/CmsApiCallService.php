@@ -46,7 +46,7 @@ class CmsApiCallService
             return ['error' => true, 'message' => 'CMS API URL or API key is not configured'];
         }
 
-        \Log::info('CMS API URL: '.$apiUrl);
+        // \Log::info('CMS API URL: '.$apiUrl);
 
         try {
             $response = Http::withoutVerifying()->withHeaders([
@@ -58,7 +58,7 @@ class CmsApiCallService
                 return ['error' => true, 'message' => 'API request failed: '.$response->status()];
             }
 
-            \Log::info('CMS API Response: '.json_encode($response->json()));
+            // \Log::info('CMS API Response: '.json_encode($response->json()));
 
             return ['data' => $response->json()];
         } catch (\Exception $e) {
