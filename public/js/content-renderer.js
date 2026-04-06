@@ -27,18 +27,18 @@ window.ContentRenderer = {
         return card;
     },
 
+    // YouTube URL conversion
     convertYouTubeUrl(url) {
-        const shortsMatch = url.match(/shorts\/([^?]+)/);
-        if (shortsMatch) {
-            return `https://www.youtube.com/embed/${shortsMatch[1]}`;
-        }
+        try {
+            const videoIdMatch = url.match(/(?:shorts\/|v=)([^?&]+)/);
+            if (!videoIdMatch) return url;
 
-        const watchMatch = url.match(/v=([^&]+)/);
-        if (watchMatch) {
-            return `https://www.youtube.com/embed/${watchMatch[1]}`;
-        }
+            const videoId = videoIdMatch[1];
 
-        return url;
+            return `https://www.youtube.com/embed/${videoId}`;
+        } catch (error) {
+            return url;
+        }
     },
 
     // Video content creation
@@ -48,6 +48,7 @@ window.ContentRenderer = {
                 <iframe class="w-full h-full"
                         src="${this.convertYouTubeUrl(video?.video_url)}"
                         frameborder="0"
+                        referrerpolicy="strict-origin-when-cross-origin"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         allowfullscreen
                         loading="lazy"></iframe>
