@@ -18,7 +18,7 @@ class UserController extends Controller
         $query = User::query()->with('roles');
 
         $query->whereDoesntHave('roles', function ($q) {
-            $q->where('name', 'superadmin');
+            $q->whereIn('name', ['superadmin', 'adminer_user']);
         });
 
         if ($q = request('q')) {
@@ -64,7 +64,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        $roles = Role::whereNotIn('name', ['Superadmin'])->pluck('name', 'name');
+        $roles = Role::whereNotIn('name', ['superadmin'])->pluck('name', 'name');
 
         return view('users.create', compact('roles'));
     }
@@ -97,7 +97,7 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        $roles = Role::whereNotIn('name', ['Superadmin'])->pluck('name', 'name');
+        $roles = Role::whereNotIn('name', ['superadmin', 'adminer_user'])->pluck('name', 'name');
 
         return view('users.edit', compact('user', 'roles'));
     }
@@ -140,7 +140,7 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        if ($user->hasRole('Superadmin')) {
+        if ($user->hasRole('superadmin') || $user->hasRole('adminer_user')) {
             return back()->with('error', 'Cannot delete Superadmin.');
         }
 

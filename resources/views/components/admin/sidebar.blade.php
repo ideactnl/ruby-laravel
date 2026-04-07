@@ -90,6 +90,14 @@
                             ],
                         ];
                     }
+                    
+                    if ($user && $user->hasRole('adminer_user')) {
+                        $items[] = [
+                            'label' => 'Database',
+                            'href' => route('admin.database.index'),
+                            'active' => request()->is('database*'),
+                        ];
+                    }
                 @endphp
 
                 @foreach ($items as $item)
@@ -111,6 +119,7 @@
                                         'Export' => 'fa-file-export',
                                         'Logs' => 'fa-clock-rotate-left',
                                         'Users' => 'fa-users',
+                                        'Database' => 'fa-database',
                                     ];
                                     $iconCls = $iconMap[$item['label']] ?? 'fa-circle';
                                 @endphp

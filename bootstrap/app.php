@@ -13,6 +13,10 @@ return Application::configure(basePath: dirname(__DIR__))
         apiPrefix: 'api',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->validateCsrfTokens(except: [
+            'database',
+            'database/*',
+        ]);
         $middleware->append(\App\Http\Middleware\SecurityHeaders::class);
         $middleware->web(append: [
             \App\Http\Middleware\SetLocale::class,
@@ -24,6 +28,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'auth.participant' => \App\Http\Middleware\RedirectIfParticipantUnauthenticated::class,
             'auth.medical-specialist' => \App\Http\Middleware\MedicalSpecialistAuth::class,
             'api.login.expiry' => \App\Http\Middleware\EnforceApiLoginExpiry::class,
+            'adminer.sudo' => \App\Http\Middleware\AdminerSudoMode::class,
+            'adminer.gate' => \App\Http\Middleware\AdminerGatekeeper::class,
         ]);
 
     })
