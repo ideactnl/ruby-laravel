@@ -4,6 +4,11 @@
 window.ContentRenderer = {
     // Main content card creation function
     createContentCard(item) {
+        // Skip if item is null or video type but no video_url
+        if(!item || (item?.type === 'video' && !item?.video_url)) {
+            return '';
+        }
+
         const card = document.createElement('div');
         card.className = `rounded-[10px] overflow-hidden bg-[#FDF8FE] flex flex-col content-card-${item.type || ''}`;
 

@@ -19,8 +19,8 @@ class CmsApiCallService
     public function call($request)
     {
         $systemLang = session('locale') ?? app()->getLocale();
-        $page = $request->input('page', 'education');
-        $apiUrl = "$this->cmsApiUrl/api/v1/content?lang=$systemLang&location=$page";
+        $location = $request->input('location', 'education');
+        $apiUrl = "$this->cmsApiUrl/api/v1/content?lang=$systemLang&location=$location";
 
         // Get all request data except page and convert to CMS API format
         $allFilters = $request->all();
@@ -46,7 +46,7 @@ class CmsApiCallService
             return ['error' => true, 'message' => 'CMS API URL or API key is not configured'];
         }
 
-        // \Log::info('CMS API URL: '.$apiUrl);
+        \Log::info('CMS API URL: '.$apiUrl);
 
         try {
             $response = Http::withoutVerifying()->withHeaders([
