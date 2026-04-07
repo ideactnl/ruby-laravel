@@ -1,9 +1,9 @@
 <?php
 
 use App\Http\Controllers\Api\Auth\AuthController;
+use App\Http\Controllers\Api\Participant\ParticipantWebApiController;
 use App\Http\Controllers\Api\Pbac\PbacController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\Participant\ParticipantWebApiController;
 use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
 
 Route::prefix('v1')->group(function () {
@@ -18,7 +18,7 @@ Route::prefix('v1')->group(function () {
         Route::post('/logout', [AuthController::class, 'logout']);
         Route::delete('/account', [AuthController::class, 'deleteAccount']);
         Route::post('/medical-specialist/access', [AuthController::class, 'enableMedicalSpecialistAccess']);
-        
+
         Route::middleware('throttle:60,1')->group(function () {
             Route::get('/pbac/filter', [PbacController::class, 'filter']);
             Route::get('/pbac/check', [PbacController::class, 'check']);
@@ -26,7 +26,7 @@ Route::prefix('v1')->group(function () {
         });
     });
 
-    Route::prefix('participant')->middleware([EnsureFrontendRequestsAreStateful::class, ])->group(function () {
+    Route::prefix('participant')->middleware([EnsureFrontendRequestsAreStateful::class])->group(function () {
         Route::post('/refresh-session', [ParticipantWebApiController::class, 'refreshSession'])->name('participant.refresh.session');
         Route::post('/login', [ParticipantWebApiController::class, 'login']);
         Route::post('/logout', [ParticipantWebApiController::class, 'logout']);
@@ -49,4 +49,3 @@ Route::prefix('v1')->group(function () {
         });
     });
 });
-

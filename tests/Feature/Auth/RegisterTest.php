@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Models\ResearchSurveyParticipant;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
@@ -9,9 +9,9 @@ beforeEach(function () {
     // Set up test database for second connection
     config(['database.connections.mysql_second' => [
         'driver' => 'sqlite',
-        'database' => ':memory:'
+        'database' => ':memory:',
     ]]);
-    
+
     // Create the mga_survey_participant table for testing
     $schema = \DB::connection('mysql_second')->getSchemaBuilder();
     $schema->create(config('database.second_tables.participants'), function ($table) {

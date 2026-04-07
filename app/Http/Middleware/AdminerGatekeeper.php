@@ -42,13 +42,10 @@ class AdminerGatekeeper
             '::1',
         ];
 
-        $envIps = explode(',', env('ADMINER_ALLOWED_IPS', ''));
+        $envIps = explode(',', (string) config('database.adminer_allowed_ips', ''));
         $allowed = array_filter(array_merge($defaultAllowed, array_map('trim', $envIps)));
 
         foreach ($allowed as $range) {
-            if (empty($range)) {
-                continue;
-            }
             if ($this->ipInNetwork($ip, $range)) {
                 return true;
             }
@@ -74,7 +71,7 @@ class AdminerGatekeeper
 
         $ip_long = ip2long($ip);
         $net_long = ip2long($net);
-        $mask_bin = ~((1 << (32 - $mask)) - 1);
+        $mask_bin = ~((1 << (32 - (int) $mask)) - 1);
 
         if ($ip_long === false || $net_long === false) {
             return false;

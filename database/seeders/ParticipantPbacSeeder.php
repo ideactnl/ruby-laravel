@@ -26,9 +26,9 @@ class ParticipantPbacSeeder extends Seeder
     public function run(): void
     {
         Pbac::truncate();
-        
+
         $participants = $this->createParticipants();
-        
+
         foreach ($participants as $participant) {
             $this->generateComprehensiveData($participant->id);
         }
@@ -40,7 +40,7 @@ class ParticipantPbacSeeder extends Seeder
     private function createParticipants(): array
     {
         $participants = [];
-        
+
         $participants[] = Participant::firstOrCreate(
             ['registration_number' => 'participant1'],
             [
@@ -50,7 +50,7 @@ class ParticipantPbacSeeder extends Seeder
                 'opt_in_for_research' => true,
             ]
         );
-        
+
         $participants[] = Participant::firstOrCreate(
             ['registration_number' => 'participant2'],
             [
@@ -60,7 +60,7 @@ class ParticipantPbacSeeder extends Seeder
                 'opt_in_for_research' => false,
             ]
         );
-        
+
         return $participants;
     }
 
@@ -86,14 +86,14 @@ class ParticipantPbacSeeder extends Seeder
         for ($i = 0; $i < $recordCount; $i++) {
             $dayOffset = ($i * $dayInterval) + rand(1, min(3, $dayInterval));
             $recordDate = $baseDate->copy()->addDays(min($dayOffset, $daysInMonth - 1));
-            
+
             $patternIndex = $i % count($this->patterns);
             $pattern = $this->patterns[$patternIndex];
-            
+
             if (rand(1, 100) <= 30) {
                 $pattern = $this->patterns[array_rand($this->patterns)];
             }
-            
+
             $this->createPbacRecord($participantId, $recordDate, $pattern);
         }
     }
@@ -107,8 +107,8 @@ class ParticipantPbacSeeder extends Seeder
         $existingRecord = Pbac::where('participant_id', $participantId)
             ->where('reported_date', $date->format('Y-m-d'))
             ->first();
-            
-        if (!$existingRecord) {
+
+        if (! $existingRecord) {
             Pbac::factory()->{$pattern}()->create([
                 'participant_id' => $participantId,
                 'reported_date' => $date->format('Y-m-d'),

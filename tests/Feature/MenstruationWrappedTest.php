@@ -4,7 +4,6 @@ use App\Models\Participant;
 use App\Models\Pbac;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Laravel\Sanctum\Sanctum;
 
 uses(RefreshDatabase::class);
 
@@ -81,7 +80,7 @@ describe('Menstruation Wrapped API', function () {
             'bl_pad_large' => 0,
             'bl_tampon_small' => 0,
             'bl_tampon_medium' => 0,
-            'bl_tampon_large' => 1, 
+            'bl_tampon_large' => 1,
         ]);
 
         Pbac::factory()->create([
@@ -140,17 +139,17 @@ describe('Menstruation Wrapped API', function () {
                 'reason' => 'cycle_too_long',
             ]);
     });
-    
+
     it('authenticates successfully via Sanctum bearer token', function () {
         $this->flushSession();
         Auth::guard('participant-web')->logout();
-        
+
         $participant = Participant::factory()->create();
         $token = $participant->createToken('test-token')->plainTextToken;
-        
-        $response = $this->withHeader('Authorization', 'Bearer ' . $token)
+
+        $response = $this->withHeader('Authorization', 'Bearer '.$token)
             ->getJson('/api/v1/participant/menstruation-wrapped');
-        
+
         $response->assertStatus(200)
             ->assertJson([
                 'can_calculate' => false,

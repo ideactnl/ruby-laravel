@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\Pbac;
 use App\Models\Participant;
+use App\Models\Pbac;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
 
@@ -166,7 +166,7 @@ describe('PBAC API', function () {
      * It should reject PBAC creation if the participant is not authenticated.
      */
     it('returns 401 if not authenticated for store', function () {
-        $payload = [ 'reportedDate' => '2025-07-01' ];
+        $payload = ['reportedDate' => '2025-07-01'];
         $response = $this->postJson('/api/v1/pbac', $payload);
         $response->assertUnauthorized();
     });

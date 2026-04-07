@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\VideoContent;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class VideoContentSeeder extends Seeder
@@ -20,7 +19,7 @@ class VideoContentSeeder extends Seeder
                 'subtitle' => 'Klik voor verhalen van anderen over de menstruele cyclus, van menstruatieverhalen.',
                 'location' => 'education',
                 'order' => 1,
-                'condition' => null, 
+                'condition' => null,
                 'video_url' => 'https://youtube.com/shorts/YHxWLpAfY_M?feature=share',
             ],
             [
@@ -111,7 +110,7 @@ class VideoContentSeeder extends Seeder
                 'condition' => 'stool_urine.issues = true',
                 'video_url' => 'https://youtube.com/shorts/t_RRnQe5tWE?feature=share',
             ],
-            
+
             // Self-Management Page Videos
             [
                 'title' => 'Pijn verminderen door ontspanning',
@@ -149,7 +148,7 @@ class VideoContentSeeder extends Seeder
 
         foreach ($videos as $videoData) {
             $videoId = VideoContent::extractYoutubeId($videoData['video_url']);
-            
+
             VideoContent::create([
                 'title' => $videoData['title'],
                 'subtitle' => $videoData['subtitle'],

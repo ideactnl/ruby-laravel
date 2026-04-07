@@ -17,5 +17,5 @@ parameters:
 
     reportUnmatchedIgnoredErrors: false
 
-#    excludePaths:
-#        - ./*/*/FileToBeExcluded.php
+    excludePaths:
+        - app/Support/Adminer/*

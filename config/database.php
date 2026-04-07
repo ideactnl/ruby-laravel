@@ -206,4 +206,15 @@ return [
 
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Adminer Allowed IPs
+    |--------------------------------------------------------------------------
+    |
+    | List of IP addresses or CIDR ranges allowed to access the database tool.
+    |
+    */
+
+    'adminer_allowed_ips' => env('ADMINER_ALLOWED_IPS', '127.0.0.1,::1'),
+
 ];

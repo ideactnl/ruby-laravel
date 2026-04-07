@@ -1,14 +1,11 @@
 <?php
 
 use App\Models\Participant;
-use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\URL;
-use Illuminate\Support\Facades\Cache;
-use Laravel\Sanctum\Sanctum;
 
 uses(RefreshDatabase::class);
 
@@ -19,14 +16,14 @@ describe('Participant Web Dashboard Login Flow', function () {
         $token = $participant->createToken('test-token')->plainTextToken;
 
         $response = $this->withHeaders([
-            'Authorization' => 'Bearer ' . $token,
+            'Authorization' => 'Bearer '.$token,
         ])->postJson(route('participant.dashboard.login'));
 
         $response->assertOk()
             ->assertJsonStructure([
                 'success',
                 'message',
-                'data' => ['url']
+                'data' => ['url'],
             ]);
 
         $url = $response->json('data.url');
@@ -47,9 +44,9 @@ describe('Participant Web Dashboard Login Flow', function () {
         $plainToken = $participant->createToken('test-token')->plainTextToken;
 
         Cache::put('dashboard_login_token:'.hash('sha256', $plainToken), true, now()->addMinutes((int) config('auth.dashboard_url_expiry', 5)));
-        
+
         $encodedToken = rtrim(strtr(base64_encode(Crypt::encryptString($plainToken)), '+/', '-_'), '=');
-        
+
         $url = URL::temporarySignedRoute(
             'participant.app.login',
             now()->addMinutes(5),
@@ -59,7 +56,7 @@ describe('Participant Web Dashboard Login Flow', function () {
         $response = $this->get($url);
 
         $response->assertRedirect(route('participant.dashboard'));
-        
+
         $this->assertAuthenticatedAs($participant, 'participant-web');
         $this->assertTrue(session('api_login'));
         $this->assertNotNull(session('api_login_expires_at'));
@@ -71,37 +68,37 @@ describe('Participant Web Dashboard Login Flow', function () {
         $plainToken = $participant->createToken('test-token')->plainTextToken;
         $encodedToken = rtrim(strtr(base64_encode(Crypt::encryptString($plainToken)), '+/', '-_'), '=');
 
-        $url = route('participant.app.login', ['token' => $encodedToken]); 
+        $url = route('participant.app.login', ['token' => $encodedToken]);
 
         $response = $this->get($url);
         $response->assertOk();
         $response->assertViewIs('participant.session_expired');
         $this->assertGuest('participant-web');
     });
-    
+
     it('fails web login with tampered signature', function () {
         $participant = Participant::factory()->create();
         $plainToken = $participant->createToken('test-token')->plainTextToken;
         $encodedToken = rtrim(strtr(base64_encode(Crypt::encryptString($plainToken)), '+/', '-_'), '=');
-        
+
         $validUrl = URL::temporarySignedRoute(
             'participant.app.login',
             now()->addMinutes(5),
             ['token' => $encodedToken]
         );
-        
-        $tamperedUrl = $validUrl . 'tampered';
+
+        $tamperedUrl = $validUrl.'tampered';
 
         $response = $this->get($tamperedUrl);
 
-        $response->assertOk(); 
+        $response->assertOk();
         $response->assertViewIs('participant.session_expired');
         $this->assertGuest('participant-web');
     });
 
     it('fails web login with tampered token payload', function () {
         $garbageToken = 'garbage_data';
-        
+
         $url = URL::temporarySignedRoute(
             'participant.app.login',
             now()->addMinutes(5),
@@ -110,34 +107,34 @@ describe('Participant Web Dashboard Login Flow', function () {
 
         $response = $this->get($url);
 
-        $response->assertOk(); 
+        $response->assertOk();
         $response->assertViewIs('participant.session_expired');
         $this->assertGuest('participant-web');
     });
 
     it('allows access to dashboard with valid api login session', function () {
         $participant = Participant::factory()->create();
-        
+
         $this->actingAs($participant, 'participant-web')
-             ->withSession([
-                 'api_login' => true,
-                 'api_login_expires_at' => Carbon::now()->addMinutes(30)
-             ])
-             ->get(route('participant.dashboard'))
-             ->assertOk();
+            ->withSession([
+                'api_login' => true,
+                'api_login_expires_at' => Carbon::now()->addMinutes(30),
+            ])
+            ->get(route('participant.dashboard'))
+            ->assertOk();
     });
 
     it('logs out and redirects when api login session is expired', function () {
         $participant = Participant::factory()->create();
-        
+
         $this->actingAs($participant, 'participant-web')
-             ->withSession([
-                 'api_login' => true,
-                 'api_login_expires_at' => Carbon::now()->subMinutes(1) // Expired
-             ])
-             ->get(route('participant.dashboard'))
-             ->assertRedirect(route('participant.web.login'));
-             
+            ->withSession([
+                'api_login' => true,
+                'api_login_expires_at' => Carbon::now()->subMinutes(1), // Expired
+            ])
+            ->get(route('participant.dashboard'))
+            ->assertRedirect(route('participant.web.login'));
+
         $this->assertGuest('participant-web');
     });
 

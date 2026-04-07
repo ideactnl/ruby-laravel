@@ -1,0 +1,9 @@
+{
+    "preset": "laravel",
+    "exclude": [
+        "app/Support/Adminer"
+    ],
+    "notPath": [
+        "app/Support/Adminer/core.php"
+    ]
+}
