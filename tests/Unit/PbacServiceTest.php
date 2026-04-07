@@ -1,8 +1,8 @@
 <?php
 
-use App\Services\PbacService;
 use App\Models\Participant;
 use App\Models\Pbac;
+use App\Services\PbacService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(Tests\TestCase::class, RefreshDatabase::class);

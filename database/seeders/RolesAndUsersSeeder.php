@@ -16,26 +16,33 @@ class RolesAndUsersSeeder extends Seeder
         $superadmin = Role::firstOrCreate(['name' => 'superadmin']);
         $admin = Role::firstOrCreate(['name' => 'admin']);
         $researcher = Role::firstOrCreate(['name' => 'researcher']);
+        $adminerRole = Role::firstOrCreate(['name' => 'adminer_user']);
 
-        $user1 = User::create([
-            'name' => 'Super Admin',
-            'email' => 'superadmin@yopmail.com',
-            'password' => bcrypt('password'),
-        ]);
+        $user1 = User::updateOrCreate(
+            ['email' => 'superadmin@yopmail.com'],
+            [
+                'name' => 'Super Admin',
+                'password' => bcrypt('password'),
+            ]
+        );
         $user1->assignRole($superadmin);
 
-        $user2 = User::create([
-            'name' => 'Admin User',
-            'email' => 'admin@yopmail.com',
-            'password' => bcrypt('password'),
-        ]);
+        $user2 = User::updateOrCreate(
+            ['email' => 'admin@yopmail.com'],
+            [
+                'name' => 'Admin User',
+                'password' => bcrypt('password'),
+            ]
+        );
         $user2->assignRole($admin);
 
-        $user3 = User::create([
-            'name' => 'Researcher User',
-            'email' => 'researcher@yopmail.com',
-            'password' => bcrypt('password'),
-        ]);
+        $user3 = User::updateOrCreate(
+            ['email' => 'researcher@yopmail.com'],
+            [
+                'name' => 'Researcher User',
+                'password' => bcrypt('password'),
+            ]
+        );
         $user3->assignRole($researcher);
     }
 }

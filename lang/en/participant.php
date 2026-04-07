@@ -275,7 +275,7 @@ return [
 
     // Energy Level Labels
     'card_general_health_energy_1' => 'Low',
-    'card_general_health_energy_2' => 'Low', 
+    'card_general_health_energy_2' => 'Low',
     'card_general_health_energy_3' => 'Medium',
     'card_general_health_energy_4' => 'Good',
     'card_general_health_energy_5' => 'Maximum',

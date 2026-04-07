@@ -2,9 +2,9 @@
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\Participant;
 use App\Models\Pbac;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class PbacFactory extends Factory
 {
@@ -61,7 +61,7 @@ class PbacFactory extends Factory
     {
         $pattern = $this->faker->randomElement(array_keys($this->patterns));
         $patternData = $this->patterns[$pattern];
-        
+
         $data = [
             'participant_id' => function () {
                 return Participant::factory()->create()->id;
@@ -90,21 +90,21 @@ class PbacFactory extends Factory
             $data[$flag] = true;
         }
 
-        if (!empty($patternData['medications'])) {
+        if (! empty($patternData['medications'])) {
             $data['is_impact_used_medication'] = true;
             foreach ($patternData['medications'] as $medication) {
                 $data[$medication] = true;
             }
         }
 
-        if (!isset($data['no_blood_loss'])) {
+        if (! isset($data['no_blood_loss'])) {
             if ($this->faker->boolean(80)) {
                 $data['is_bl_pads'] = true;
                 $data['bl_pad_small'] = $this->faker->numberBetween(0, 3);
                 $data['bl_pad_medium'] = $this->faker->numberBetween(0, 4);
                 $data['bl_pad_large'] = $this->faker->numberBetween(0, 2);
             }
-            
+
             if ($this->faker->boolean(60)) {
                 $data['is_bl_tampon'] = true;
                 $data['bl_tampon_small'] = $this->faker->numberBetween(0, 2);
@@ -113,12 +113,12 @@ class PbacFactory extends Factory
             }
         }
 
-        if (!isset($data['no_pain'])) {
+        if (! isset($data['no_pain'])) {
             $painLocations = [
                 'is_pain_image1_umbilical', 'is_pain_image1_bladder', 'is_pain_image1_left_groin',
-                'is_pain_image2_back', 'is_pain_image2_left_buttock'
+                'is_pain_image2_back', 'is_pain_image2_left_buttock',
             ];
-            
+
             $numLocations = $this->faker->numberBetween(0, 3);
             if ($numLocations > 0) {
                 $selectedLocations = $this->faker->randomElements($painLocations, $numLocations);
@@ -132,7 +132,7 @@ class PbacFactory extends Factory
             $data['is_exercise_answered'] = true;
             $exerciseTypes = ['is_exercise_less_thirty', 'is_exercise_thirty_to_sixty', 'is_exercise_greater_sixty'];
             $data[$this->faker->randomElement($exerciseTypes)] = true;
-            
+
             $impactTypes = ['is_exercise_low_impact', 'is_exercise_high_impact'];
             $data[$this->faker->randomElement($impactTypes)] = true;
         }
@@ -144,7 +144,7 @@ class PbacFactory extends Factory
             foreach ($selectedHealthy as $food) {
                 $data[$food] = true;
             }
-            
+
             if ($this->faker->boolean(40)) {
                 $unhealthyFoods = ['is_diet_soda', 'is_diet_alcohol'];
                 $data[$this->faker->randomElement($unhealthyFoods)] = true;
@@ -189,6 +189,7 @@ class PbacFactory extends Factory
     {
         return $this->state(function (array $attributes) {
             $patternData = $this->patterns['severe'];
+
             return [
                 'menstrual_blood_loss' => $this->faker->randomElement($patternData['menstrual_blood_loss']),
                 'pain_slider_value' => $this->faker->randomElement($patternData['pain_slider_value']),
@@ -205,6 +206,7 @@ class PbacFactory extends Factory
     {
         return $this->state(function (array $attributes) {
             $patternData = $this->patterns['moderate'];
+
             return [
                 'menstrual_blood_loss' => $this->faker->randomElement($patternData['menstrual_blood_loss']),
                 'pain_slider_value' => $this->faker->randomElement($patternData['pain_slider_value']),
@@ -219,6 +221,7 @@ class PbacFactory extends Factory
     {
         return $this->state(function (array $attributes) {
             $patternData = $this->patterns['light'];
+
             return [
                 'menstrual_blood_loss' => $this->faker->randomElement($patternData['menstrual_blood_loss']),
                 'pain_slider_value' => $this->faker->randomElement($patternData['pain_slider_value']),

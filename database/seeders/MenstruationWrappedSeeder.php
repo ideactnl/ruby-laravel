@@ -123,7 +123,8 @@ class MenstruationWrappedSeeder extends Seeder
     }
 
     // Helpers
-    private function addPeriodStart($pid, $date) {
+    private function addPeriodStart($pid, $date)
+    {
         Pbac::updateOrCreate(
             ['participant_id' => $pid, 'reported_date' => $date->format('Y-m-d')],
             [
@@ -243,7 +244,8 @@ class MenstruationWrappedSeeder extends Seeder
         );
     }
 
-    private function addPain($pid, $date, $score) {
+    private function addPain($pid, $date, $score)
+    {
         Pbac::updateOrCreate(
             ['participant_id' => $pid, 'reported_date' => $date->format('Y-m-d')],
             [
@@ -266,7 +268,8 @@ class MenstruationWrappedSeeder extends Seeder
         );
     }
 
-    private function addCustomPbac($pid, $date, $data) {
+    private function addCustomPbac($pid, $date, $data)
+    {
         Pbac::updateOrCreate(
             ['participant_id' => $pid, 'reported_date' => $date->format('Y-m-d')],
             $data

@@ -19,11 +19,11 @@ return new class extends Migration
             $table->integer('order')->default(0);
             $table->text('condition')->nullable()->comment('Condition to show video on daily view. NULL means NA (not shown on daily view)');
             $table->string('video_url');
-            $table->string('video_type')->default('youtube'); 
+            $table->string('video_type')->default('youtube');
             $table->string('video_id')->nullable()->comment('YouTube video ID extracted from URL');
             $table->boolean('is_active')->default(true);
             $table->timestamps();
-            
+
             $table->index(['location', 'order']);
             $table->index('is_active');
         });

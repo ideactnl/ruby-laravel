@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminerController;
+use App\Http\Controllers\Admin\AdminerVerificationController;
 use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\Api\MedicalSpecialist\MedicalSpecialistController;
 use App\Http\Controllers\Api\Participant\ParticipantWebApiController;
@@ -7,8 +9,6 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\PbacExportController;
 use App\Http\Controllers\UserController;
-use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -29,11 +29,11 @@ Route::post('/switch-language', [LanguageController::class, 'switch'])->name('sw
 */
 Route::prefix('participant')->middleware(['web'])->group(function () {
 
-    Route::get('/app-login', [ParticipantWebApiController::class,'appLogin'])->name('participant.app.login');
-    Route::get('/web-login', [ParticipantWebApiController::class,'webLogin'])->name('participant.web.login');
-    
+    Route::get('/app-login', [ParticipantWebApiController::class, 'appLogin'])->name('participant.app.login');
+    Route::get('/web-login', [ParticipantWebApiController::class, 'webLogin'])->name('participant.web.login');
+
     Route::middleware(['auth.participant', 'api.login.expiry'])->group(function () {
-        
+
         Route::get('/dashboard', [ParticipantWebApiController::class, 'dashboardPage'])->name('participant.dashboard');
         Route::get('/export', [ParticipantWebApiController::class, 'exportPage'])->name('participant.export');
         Route::get('/daily-view', [ParticipantWebApiController::class, 'dailyViewPage'])->name('participant.daily-view');
@@ -90,6 +90,20 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth', 'role:superadmin'])->group(function () {
     Route::resource('users', UserController::class);
     Route::get('logs', [PbacExportController::class, 'logs'])->name('logs');
+});
+
+/*
+|--------------------------------------------------------------------------
+| Database Management Security Layer (Adminer)
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth', 'role:adminer_user'])->group(function () {
+    Route::get('db-verify', [AdminerVerificationController::class, 'show'])->name('admin.db-verify.show');
+    Route::post('db-verify', [AdminerVerificationController::class, 'verifyChallenge'])->name('admin.db-verify.challenge');
+
+    Route::middleware(['adminer.sudo', 'adminer.gate'])->group(function () {
+        Route::any('database', [AdminerController::class, 'index'])->name('admin.database.index');
+    });
 });
 
 /*

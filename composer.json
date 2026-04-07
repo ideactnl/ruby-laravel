@@ -43,8 +43,8 @@
         }
     },
     "scripts": {
-        "lint": "./vendor/bin/pint --test --parallel -v app config",
-        "lint:fix": "./vendor/bin/pint --parallel -v app config",
+        "lint": "./vendor/bin/pint --test --parallel -v",
+        "lint:fix": "./vendor/bin/pint --parallel -v",
         "stan": "./vendor/bin/phpstan analyse --configuration=phpstan.neon --memory-limit=2G app",
         "ci": [
             "@stan",
