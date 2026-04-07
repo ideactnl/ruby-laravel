@@ -7,16 +7,58 @@
     <section>
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
             <div class="flex gap-2">
-                <select class="border border-gray-300 rounded-md  px-3 py-1 text-sm text-white bg-primary">
-                    <option>{{ __('participant.category') }}</option>
+                <select id="category-filter" class="border border-gray-300 rounded-md px-3 py-1 text-sm text-white bg-primary">
+                    <option value="">{{ __('participant.category') }}</option>
                 </select>
-                <select class="border border-gray-300 rounded-md  px-3 py-3 text-sm text-white bg-primary">
-                    <option>{{ __('participant.recommended') }}</option>
+                <select id="recommended-filter" class="border border-gray-300 rounded-md px-3 py-3 text-sm text-white bg-primary">
+                    <option value="">{{ __('participant.recommended') }}</option>
                 </select>
+
+                <button id="filter-toggle" class="inline-flex items-center border border-gray-300 rounded-md px-3 py-1 text-sm text-white bg-primary hover:bg-primary/90 transition-colors hidden">
+                    <i class="fas fa-filter mr-2"></i>{{ __('participant.filters') }}
+                </button>
             </div>
         </div>
 
-        <div id="education-loading" class="py-8 text-gray-500 text-center">{{ __('participant.loading') }}</div>
+        <!-- Collapsible Filter Section -->
+        <div id="filter-section" class="hidden mb-6 p-6 bg-[#FDF8FE] border border-primary rounded-md">
+            <div class="flex justify-between items-center mb-3">
+                <h3 class="text-2xl  font-semibold text-gray-800">{{ __('participant.filter_by') }}</h3>
+                <button id="close-filters" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="filters-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                <!-- Filters will be populated here -->
+            </div>
+            <div class="mt-3 flex gap-2">
+                <button id="apply-filters" class="px-3 py-3 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors text-sm">
+                    {{ __('participant.apply_filters') }}
+                </button>
+                <button id="reset-filters" class="px-3 py-1.5 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors text-sm">
+                    {{ __('participant.reset_filters') }}
+                </button>
+            </div>
+        </div>
+
+        <!-- Loading Overlay -->
+        <div id="loading-overlay" class="fixed inset-0 bg-[#00000085] bg-opacity-50 flex items-center justify-center z-50 hidden">
+            <div class="rounded-lg p-6 flex flex-col items-center">
+                <div class="relative mb-4">
+                    <div class="w-12 h-12 border-4 border-gray-200 border-t-primary rounded-full animate-spin"></div>
+                    <div class="absolute top-0 left-0 w-12 h-12 border-4 border-transparent border-t-primary rounded-full animate-spin" style="animation-delay: 0.15s;"></div>
+                </div>
+                <p class="text-gray-700 text-sm">{{ __('participant.loading') }}</p>
+            </div>
+        </div>
+
+        <div id="education-no-content" class="py-8 text-gray-500 text-center" style="display: none;">
+            <div class="text-center">
+                <i class="fas fa-inbox text-4xl mb-4 text-gray-400"></i>
+                <p class="text-lg font-medium">{{ __('participant.no_content_available') }}</p>
+                <p class="text-sm mt-2">{{ __('participant.try_different_filters_or_check_back_later') }}</p>
+            </div>
+        </div>
 
         <div id="education-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4"
             style="display: none;">
@@ -26,158 +68,225 @@
 @endsection
 
 @push('scripts')
+    <script src="{{ asset('js/content-renderer.js') }}"></script>
     <script>
         window.addEventListener('DOMContentLoaded', async () => {
+            await triggerApiCall();
+            await loadCategories();
+            window.ContentRenderer.setupFilterToggle();
+        });
+
+        async function loadCategories() {
             try {
-                const response = await fetch('/api/v1/participant/videos/education');
+                const response = await fetch("{{ route('participant.categories.filter.api') }}");
                 const data = await response.json();
-                const videos = data.videos || [];
+                
+                const filtersContainer = document.getElementById('filters-container');
+                const filterToggle = document.getElementById('filter-toggle');
+                
+                if (filtersContainer && data.categories) {
+                    filtersContainer.innerHTML = '';
+                    
+                    // Create filter inputs based on category types
+                    data.categories.forEach(category => {
+                        // Skip location filter as it's redundant with page context
+                        if (category.slug === 'location') {
+                            return;
+                        }
+                        const filterDiv = createFilterInput(category);
+                        filtersContainer.appendChild(filterDiv);
+                    });
+                    
+                    // Show filter button only if there are filters to display
+                    if (filtersContainer.children.length > 0) {
+                        if (filterToggle) {
+                            filterToggle.classList.remove('hidden');
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading categories:', error);
+            }
+        }
 
-                const flipCard = `
-                        <div class="group [perspective:1000px] select-none touch-manipulation h-full w-full" data-flip-card>
-                            <div class="relative h-full w-full transition-transform duration-700 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)]">
-                                <!-- Front -->
-                                <div class="absolute inset-0 bg-[#FC9490] text-white text-center rounded-lg shadow-md [backface-visibility:hidden] flex flex-col justify-center items-center cursor-pointer select-none">
-                                    <div class="p-4 text-sm font-medium">
-                                        <div class="text-[23px] font-bold mb-2">MYTH</div>
-                                        <h4 class="text-[16px]">{{ __('participant.cant_exercise_during_period') }}</h4>
-                                    </div>
-                                    <div class="absolute top-3 right-3">
-                                        <i class="fas fa-sync-alt text-white opacity-70"></i>
-                                    </div>
-                                </div>
-                                <!-- Back -->
-                                <div class="absolute inset-0 rounded-lg bg-primary text-white text-center p-4 [transform:rotateY(180deg)] [backface-visibility:hidden] flex flex-col justify-center items-center cursor-pointer select-none">
-                                    <div class="text-sm font-medium">
-                                        {{ __('participant.exercise_helps_period_symptoms') }}
-                                    </div>
-                                    <div class="absolute top-3 right-3">
-                                        <i class="fas fa-sync-alt text-white opacity-70"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    `;
+        async function triggerApiCall() {
+            const loadingOverlay = document.getElementById('loading-overlay');
+            
+            try {
+                // Show overlay loader
+                if (loadingOverlay) {
+                    loadingOverlay.classList.remove('hidden');
+                }
+                
+                const response = await fetch("{{ route('participant.videos.fetch.api') }}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify(window.ContentRenderer.getFilterValues())
+                });
+                const data = await response.json();
 
+                const content = data?.content || [];
                 const educationGrid = document.getElementById('education-grid');
-                const loadingElement = document.getElementById('education-loading');
+                const noContentElement = document.getElementById('education-no-content');
 
                 if (educationGrid) {
                     educationGrid.innerHTML = '';
 
-                    videos.forEach((video, index) => {
-                        const videoCard = document.createElement('div');
-                        videoCard.className = 'rounded-[10px] overflow-hidden  bg-[#FDF8FE] flex flex-col';
-
-                        const maxLength = 25;
-                        let subtitleContent = '';
-                        if (video.subtitle) {
-                            const isLong = video.subtitle.length > maxLength;
-                            const truncated = isLong ? video.subtitle.substring(0, maxLength) + '...' : video.subtitle;
-                            const subtitleId = `subtitle-${video.id}`;
-
-                            subtitleContent = `
-                                    <div class="text-sm text-gray-600 edu-video-caption">
-                                        <span>
-                                            <a href="${video.watch_url}" 
-                                                target="_blank" 
-                                                id="${subtitleId}"
-                                                class="text-sm text-primary hover:underline block">
-                                                ${truncated}
-                                            </a>
-                                        </span>
-                                        ${isLong ? `
-                                            <button onclick="toggleReadMore('${subtitleId}', '${video.subtitle.replace(/'/g, "\\'")}', '${truncated.replace(/'/g, "\\'")}', this)"
-                                                    class="text-primary text-xs font-medium">
-                                                {{ __('participant.more') }}
-                                            </button>
-                                        ` : ''}
-                                    </div>
-                                `;
+                    if (content.length === 0) {
+                        if (noContentElement) {
+                            noContentElement.style.display = 'block';
+                        }
+                        if (educationGrid) {
+                            educationGrid.style.display = 'none';
+                        }
+                    } else {
+                        if (noContentElement) {
+                            noContentElement.style.display = 'none';
+                        }
+                        if (educationGrid) {
+                            educationGrid.style.display = 'grid';
                         }
 
-                        videoCard.innerHTML = `
-                            <div class="aspect-[9/16] edu-video-media">
-                                <iframe class="w-full h-full"
-                                        src="${video.embed_url}"
-                                        frameborder="0"
-                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                        allowfullscreen
-                                        loading="lazy"></iframe>
-                            </div>
+                        content.forEach(item => {
+                            const contentCard = window.ContentRenderer.createContentCard(item);
+                            if (contentCard) {
+                                educationGrid.appendChild(contentCard);
+                            }
+                        });
 
-                             <div class="p-2 md:p-4 flex-1 flex flex-col items-start rounded-b-[10px] rounded-tl-none rounded-tr-none border border-t-0 border-primary bg-[#FDF8FE]">
-                                <h3 class="text-[14px] font-semibold text-black mb-[6px]">${video.title}</h3>
-                                ${subtitleContent || '<div class="text-sm text-gray-600 edu-video-caption"></div>'}
-                            </div>
-                        `;
-
-                        educationGrid.appendChild(videoCard);
-
-                        if (index === 1) {
-                            const flipCardContainer = document.createElement('div');
-                            flipCardContainer.className = 'rounded-10 overflow-hidden bg-[#FDF8FE] flex flex-col';
-                            flipCardContainer.innerHTML = `
-                                <div class="flip-wrapper h-full flex flex-col">
-                                    <div class="aspect-[9/16] w-full">
-                                        ${flipCard}
-                                    </div>
-                                    <div class="p-4 flex-1 flex items-center item  rounded-b-[10px] rounded-tl-none rounded-tr-none border border-t-0 border-primary">
-                                    </div>
-                                </div>
-                            `;
-
-                            educationGrid.appendChild(flipCardContainer);
-                        }
-                    });
-
-                    loadingElement.style.display = 'none';
-                    educationGrid.style.display = 'grid';
-
-                    initFlipCards();
+                        // window.ContentRenderer.equalizeCardHeights();
+                        window.ContentRenderer.initFlipCards();
+                    }
                 }
             } catch (error) {
-                console.error('Error fetching videos:', error);
-                const loadingElement = document.getElementById('education-loading');
-                if (loadingElement) {
-                    loadingElement.textContent = 'Error loading content';
+                console.error('Error fetching content:', error);
+            } finally {
+                // Hide overlay loader
+                if (loadingOverlay) {
+                    loadingOverlay.classList.add('hidden');
                 }
             }
-        });
+        }
 
-        function toggleReadMore(subtitleId, fullText, truncatedText, button) {
-            const span = document.getElementById(subtitleId);
-            const moreText = "{{ __('participant.more') }}";
-            const lessText = "{{ __('participant.less') }}";
-            const isExpanded = button.textContent.trim() === lessText;
-
-            if (isExpanded) {
-                span.textContent = truncatedText;
-                button.textContent = moreText;
-            } else {
-                span.textContent = fullText;
-                button.textContent = lessText;
+        function createFilterInput(category) {
+            const filterDiv = document.createElement('div');
+            filterDiv.className = 'bg-[#FDF8FE] shadow-sm border border-primary p-2 rounded-md';
+            
+            // Capitalize first letter of category name
+            const displayName = category.name.charAt(0).toUpperCase() + category.name.slice(1);
+            
+            let inputHtml = '';
+            
+            switch (category.value_type) {
+                case 'numeric':
+                    inputHtml = `
+                        <label class="block text-xs font-medium text-gray-700 mb-1">
+                            ${displayName}
+                            ${category.metadata?.unit ? `<span class="text-xs text-gray-400">(${category.metadata.unit})</span>` : ''}
+                        </label>
+                        <div class="flex items-center gap-1">
+                            <input type="range" 
+                                   id="filter-${category.slug}" 
+                                   name="${category.slug}"
+                                   min="${category.metadata?.min || 0}"
+                                   max="${category.metadata?.max || 10}"
+                                   value="${category.metadata?.min || 0}"
+                                   class="flex-1 h-1 accent-primary">
+                            <span id="filter-${category.slug}-value" class="text-xs text-gray-600 w-4">${category.metadata?.min || 0}</span>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'boolean':
+                    inputHtml = `
+                        <label class="block text-xs font-medium text-gray-700 mb-1 cursor-pointer hover:text-gray-800 transition-colors">
+                            ${displayName}
+                        </label>
+                        <div class="flex items-center gap-2">
+                            <label class="flex items-center cursor-pointer hover:bg-gray-50 p-0.5 rounded">
+                                <input type="radio" 
+                                       id="filter-${category.slug}-yes" 
+                                       name="${category.slug}"
+                                       value="true"
+                                       class="mr-1 text-xs">
+                                <span class="text-xs text-gray-700">{{ __('participant.yes') }}</span>
+                            </label>
+                            <label class="flex items-center cursor-pointer hover:bg-gray-50 p-0.5 rounded">
+                                <input type="radio" 
+                                       id="filter-${category.slug}-no" 
+                                       name="${category.slug}"
+                                       value="false"
+                                       class="mr-1 text-xs">
+                                <span class="text-xs text-gray-700">{{ __('participant.no') }}</span>
+                            </label>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'text':
+                    if (category.metadata?.allowed_values) {
+                        // Dropdown for text type with allowed values
+                        inputHtml = `
+                            <label class="block text-xs font-medium text-gray-700 mb-1">
+                                ${displayName}
+                            </label>
+                            <select id="filter-${category.slug}" 
+                                    name="${category.slug}"
+                                    class="w-full px-2 py-1 text-xs bg-[#FDF8FE]  border border-primary rounded-md">
+                                <option value="">{{ __('participant.select') }}</option>
+                                ${category.metadata.allowed_values.map(value => 
+                                    `<option value="${value}">${value}</option>`
+                                ).join('')}
+                            </select>
+                        `;
+                    } else {
+                        // Regular text input
+                        inputHtml = `
+                            <label class="block text-xs font-medium text-gray-700 mb-1">
+                                ${displayName}
+                            </label>
+                            <input type="text" 
+                                   id="filter-${category.slug}" 
+                                   name="${category.slug}"
+                                   placeholder="{{ __('participant.enter_value') }}"
+                                   class="w-full px-2 py-1 text-xs border border-gray-300 rounded-md">
+                        `;
+                    }
+                    break;
+                    
+                default:
+                    inputHtml = `
+                        <label class="block text-xs font-medium text-gray-700 mb-1">
+                            ${displayName}
+                        </label>
+                        <input type="text" 
+                               id="filter-${category.slug}" 
+                               name="${category.slug}"
+                               placeholder="{{ __('participant.enter_value') }}"
+                               class="w-full px-2 py-1 text-xs border border-gray-300 rounded-md">
+                    `;
+                    break;
             }
+            
+            filterDiv.innerHTML = inputHtml;
+            
+            // Add event listeners for range inputs
+            if (category.value_type === 'numeric') {
+                const rangeInput = filterDiv.querySelector(`#filter-${category.slug}`);
+                const valueDisplay = filterDiv.querySelector(`#filter-${category.slug}-value`);
+                
+                if (rangeInput && valueDisplay) {
+                    rangeInput.addEventListener('input', (e) => {
+                        valueDisplay.textContent = e.target.value;
+                    });
+                }
+            }
+            
+            return filterDiv;
         }
-
-        function matchCardHeights() {
-            const cards = document.querySelectorAll('#education-grid > div');
-            let maxHeight = 0;
-
-            // Find tallest card
-            cards.forEach(card => {
-                const height = card.offsetHeight;
-                if (height > maxHeight) maxHeight = height;
-            });
-
-            // Apply max height to all cards
-            cards.forEach(card => {
-                card.style.height = maxHeight + 'px';
-            });
-        }
-
-        // Removed grid-wide equalization so More/Less only affects the clicked caption
-
 
         function triggerHapticFeedback(type = 'light') {
             if ('vibrate' in navigator) {
@@ -270,6 +379,6 @@
                 }
             });
         }
-        matchCardHeights();
+        window.ContentRenderer.matchCardHeights();
     </script>
 @endpush

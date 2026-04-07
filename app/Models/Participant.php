@@ -86,6 +86,22 @@ class Participant extends Authenticatable
     }
 
     /**
+     * Get all activities for the participant.
+     */
+    public function activities(): \Illuminate\Database\Eloquent\Relations\MorphMany
+    {
+        return $this->morphMany(\Spatie\Activitylog\Models\Activity::class, 'subject');
+    }
+
+    /**
+     * Get all sessions for the participant.
+     */
+    public function sessions(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(ParticipantSession::class);
+    }
+
+    /**
      * Check if the medical specialist temporary PIN has expired.
      */
     public function isMedicalSpecialistPinExpired(): bool

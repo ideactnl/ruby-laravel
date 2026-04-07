@@ -6,7 +6,10 @@ use App\Helpers\CommonHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Participant;
 use App\Models\Pbac;
+use App\Services\CmsApiCallService;
 use App\Services\ExportTrackingService;
+use App\Services\ParticipantActivityLogService;
+use App\Services\ParticipantSessionService;
 use App\Services\PbacExportService;
 use App\Services\PbacService;
 use App\Services\VideoService;
@@ -17,6 +20,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Validation\ValidationException;
 use Laravel\Sanctum\PersonalAccessToken;
@@ -61,6 +65,9 @@ class ParticipantWebApiController extends Controller
 
         Auth::guard('participant-web')->login($participant);
         $request->session()->regenerate();
+
+        // Start session tracking
+        app(ParticipantSessionService::class)->startSession($participant);
 
         return response()->json([
             'success' => true,
@@ -463,25 +470,94 @@ class ParticipantWebApiController extends Controller
     /**
      * Show dashboard web page
      */
-    public function dashboardPage()
+    public function dashboardPage(ParticipantActivityLogService $logger)
     {
+        /** @var \App\Models\Participant|null $participant */
+        $participant = Auth::guard('participant-web')->user();
+
+        if ($participant) {
+            $logger->logDashboardVisit($participant);
+            app(ParticipantSessionService::class)->heartbeat($participant, 'dashboard', true);
+        }
+
         return view('participant.dashboard');
     }
 
-    /**
-     * Show PBAC export web page
-     */
     public function exportPage()
     {
+        /** @var \App\Models\Participant|null $participant */
+        $participant = Auth::guard('participant-web')->user();
+        if ($participant) {
+            app(ParticipantSessionService::class)->heartbeat($participant, 'export', true);
+        }
+
         return view('participant.export-my-data');
     }
 
-    /**
-     * Show daily view web page
-     */
     public function dailyViewPage()
     {
+        /** @var \App\Models\Participant|null $participant */
+        $participant = Auth::guard('participant-web')->user();
+        if ($participant) {
+            app(ParticipantSessionService::class)->heartbeat($participant, 'daily-view', true);
+        }
+
         return view('participant.daily-view');
+    }
+
+    public function education()
+    {
+        /** @var \App\Models\Participant|null $participant */
+        $participant = Auth::guard('participant-web')->user();
+        if ($participant) {
+            app(ParticipantSessionService::class)->heartbeat($participant, 'education', true);
+        }
+
+        return view('participant.education');
+    }
+
+    public function selfManagement()
+    {
+        /** @var \App\Models\Participant|null $participant */
+        $participant = Auth::guard('participant-web')->user();
+        if ($participant) {
+            app(ParticipantSessionService::class)->heartbeat($participant, 'self-management', true);
+        }
+
+        return view('participant.self-management');
+    }
+
+    public function externalLinks()
+    {
+        /** @var \App\Models\Participant|null $participant */
+        $participant = Auth::guard('participant-web')->user();
+        if ($participant) {
+            app(ParticipantSessionService::class)->heartbeat($participant, 'external-links', true);
+        }
+
+        return view('participant.external-links');
+    }
+
+    public function generalInformation()
+    {
+        /** @var \App\Models\Participant|null $participant */
+        $participant = Auth::guard('participant-web')->user();
+        if ($participant) {
+            app(ParticipantSessionService::class)->heartbeat($participant, 'general-information', true);
+        }
+
+        return view('participant.general-information');
+    }
+
+    public function settings()
+    {
+        /** @var \App\Models\Participant|null $participant */
+        $participant = Auth::guard('participant-web')->user();
+        if ($participant) {
+            app(ParticipantSessionService::class)->heartbeat($participant, 'settings', true);
+        }
+
+        return view('participant.setting');
     }
 
     /**
@@ -588,38 +664,6 @@ class ParticipantWebApiController extends Controller
     }
 
     /**
-     * Show education page
-     */
-    public function education()
-    {
-        return view('participant.education');
-    }
-
-    /**
-     * Show self-management page
-     */
-    public function selfManagement()
-    {
-        return view('participant.self-management');
-    }
-
-    /**
-     * Show general information page
-     */
-    public function generalInformation()
-    {
-        return view('participant.general-information');
-    }
-
-    /**
-     * Show links to external websites page
-     */
-    public function externalLinks()
-    {
-        return view('participant.external-links');
-    }
-
-    /**
      * Dashboard Login (Bearer Token)
      *
      * Generates a temporary signed URL for auto-login to the participant web dashboard.
@@ -710,6 +754,16 @@ class ParticipantWebApiController extends Controller
             ], 401);
         }
 
+        /** @var \App\Models\Participant|null $user */
+        $user = Auth::guard('participant-web')->user();
+
+        if ($user) {
+            app(ParticipantSessionService::class)->heartbeat(
+                $user,
+                $request->input('section')
+            );
+        }
+
         $newExpiry = now()->addMinutes((int) config('auth.dashboard_url_expiry', 5));
 
         session()->put('api_login_expires_at', $newExpiry);
@@ -776,11 +830,6 @@ class ParticipantWebApiController extends Controller
         return view('participant.web_login');
     }
 
-    public function settings()
-    {
-        return view('participant.setting');
-    }
-
     /**
      * Get Menstruation Wrapped data
      *
@@ -845,5 +894,176 @@ class ParticipantWebApiController extends Controller
         $data = $pbacService->getMenstruationWrappedData($participant->id);
 
         return response()->json($data);
+    }
+
+    /**
+     * Get content for education page
+     *
+     * Fetches educational content from the CMS API based on specified filters.
+     * Supports multiple content types including video, audio, text, and flipcard.
+     * Content is filtered by language and optionally by content type.
+     *
+     * @response 200 {
+     *   "content": [
+     *     {
+     *       "id": 42,
+     *       "title": "Ademhalingsoefening bij Ernstige Pijn",
+     *       "body": "<p>Gebruik deze oefening...</p>",
+     *       "type": "video",
+     *       "video_url": "https://cdn.ruby-cms.nl/videos/breathing-nl.mp4",
+     *       "language": "nl",
+     *       "filters_matched": {
+     *           "pain": {
+     *               "min": 7,
+     *               "max": 10,
+     *               "user_value": 8
+     *           },
+     *           "mood": {
+     *               "min": 0,
+     *               "max": 5,
+     *               "user_value": 3
+     *           }
+     *       }
+     *     },
+     *     {
+     *       "id": 2,
+     *       "type": "audio",
+     *       "title": "Meditation for Period Pain",
+     *       "body": "Guided meditation audio...",
+     *       "audio_url": "https://example.com/audio.mp3",
+     *       "language": "nl",
+     *       "filters_matched": {
+     *           "pain": {
+     *               "min": 5,
+     *               "max": 10,
+     *               "user_value": 7
+     *           }
+     *       }
+     *     },
+     *     {
+     *       "id": 3,
+     *       "type": "text",
+     *       "title": "Nutrition Tips During Menstruation",
+     *       "body": "<p>Important nutritional information...</p>",
+     *       "language": "nl",
+     *       "filters_matched": {
+     *           "pain": {
+     *               "min": 0,
+     *               "max": 5,
+     *               "user_value": 2
+     *           }
+     *       }
+     *     },
+     *     {
+     *       "id": 4,
+     *       "type": "flipcard",
+     *       "title": "Myth vs Fact",
+     *       "front_text": "You can't exercise during your period",
+     *       "back_text": "Exercise can actually help reduce period symptoms",
+     *       "language": "nl",
+     *       "filters_matched": {
+     *           "pain": {
+     *               "min": 3,
+     *               "max": 7,
+     *               "user_value": 5
+     *           }
+     *       }
+     *     }
+     *   ]
+     * }
+     * @response 500 {
+     *   "error": true,
+     *   "message": "CMS API URL or API key is not configured"
+     * }
+     */
+    public function fetchVideos(CmsApiCallService $cmsApiCallService, Request $request)
+    // public function getEducationVideos(VideoService $videoService, Request $request)
+    {
+        // $videoService = new VideoService();
+        // $videos = $videoService->getVideosForLocation('education');
+        // return response()->json(['content' => $videos]);
+
+        $response = $cmsApiCallService->call($request);
+
+        if (array_key_exists('error', $response)) {
+            return response()->json([
+                'error' => $response['error'],
+                'message' => $response['message'],
+            ], 500);
+        }
+
+        return response()->json($response['data']);
+    }
+
+    /**
+     * Get categories from CMS API
+     *
+     * Fetches available categories for content filtering from the CMS API.
+     * Categories are localized based on the current session locale.
+     *
+     * @response 200 {
+     *   "categories": [
+     *     {
+     *       "slug": "pain",
+     *       "name": "Pijn",
+     *       "description": "Lichamelijke pijn tracking",
+     *       "value_type": "numeric",
+     *       "metadata": {
+     *         "min": 0,
+     *         "max": 10
+     *       }
+     *     },
+     *     {
+     *       "slug": "mood",
+     *       "name": "Stemming",
+     *       "description": "Emotionele stemming tracking",
+     *       "value_type": "numeric",
+     *       "metadata": {
+     *         "min": 0,
+     *         "max": 10
+     *       }
+     *     }
+     *   ],
+     *   "total": 2,
+     *   "language": "nl"
+     * }
+     * @response 500 {
+     *   "error": true,
+     *   "message": "Failed to fetch categories"
+     * }
+     */
+    public function fetchCategories(Request $request)
+    {
+        $systemLang = session('locale') ?? app()->getLocale();
+        $cmsApiUrl = config('cms.api_url');
+        $cmsApiKey = config('cms.api_key');
+
+        if (! $cmsApiUrl || ! $cmsApiKey) {
+            return response()->json([
+                'error' => true,
+                'message' => 'CMS API URL or API key is not configured',
+            ], 500);
+        }
+
+        try {
+            $response = Http::withoutVerifying()->withHeaders([
+                'accept' => 'application/json',
+                'x-api-key' => $cmsApiKey,
+            ])->get("$cmsApiUrl/api/v1/categories?lang=$systemLang");
+
+            if ($response->successful()) {
+                return response()->json($response->json());
+            } else {
+                return response()->json([
+                    'error' => true,
+                    'message' => 'Failed to fetch categories from CMS API',
+                ], $response->status());
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => true,
+                'message' => 'Failed to fetch categories: '.$e->getMessage(),
+            ], 500);
+        }
     }
 }
