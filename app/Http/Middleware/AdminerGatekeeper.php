@@ -66,20 +66,37 @@ class AdminerGatekeeper
         }
 
         [$net, $mask] = explode('/', $range, 2);
+        $mask = (int) $mask;
 
-        if (strpos($ip, ':') !== false) {
-            return $ip === '::1' && ($range === '::1' || $range === '::1/128');
-        }
+        $ip_packed = @inet_pton($ip);
+        $net_packed = @inet_pton($net);
 
-        $ip_long = ip2long($ip);
-        $net_long = ip2long($net);
-        $mask_bin = ~((1 << (32 - (int) $mask)) - 1);
-
-        if ($ip_long === false || $net_long === false) {
+        if ($ip_packed === false || $net_packed === false || strlen($ip_packed) !== strlen($net_packed)) {
             return false;
         }
 
-        return ($ip_long & $mask_bin) === ($net_long & $mask_bin);
+        $bits = strlen($ip_packed) * 8;
+        if ($mask < 0 || $mask > $bits) {
+            return false;
+        }
+
+        for ($i = 0; $i < strlen($ip_packed); $i++) {
+            $mask_byte = 0;
+            if ($mask > 0) {
+                $m = min($mask, 8);
+                $mask_byte = (0xFF << (8 - $m)) & 0xFF;
+                $mask -= $m;
+            }
+
+            if ((ord($ip_packed[$i]) & $mask_byte) !== (ord($net_packed[$i]) & $mask_byte)) {
+                return false;
+            }
+            if ($mask === 0) {
+                break;
+            }
+        }
+
+        return true;
     }
 
     /**
