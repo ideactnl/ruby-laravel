@@ -194,7 +194,7 @@ window.ContentRenderer = {
         flipCards.forEach(card => {
             card.addEventListener('click', function(e) {
                 if (e.target.closest('[data-flip-card]')) {
-                    this.classList.toggle('rotate-y-180');
+                    // this.classList.toggle('rotate-y-180');
                 }
             });
         });
