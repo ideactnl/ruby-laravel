@@ -7,7 +7,7 @@
     <section>
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
             <div class="flex gap-2">
-                <select id="category-filter" class="border border-gray-300 rounded-md px-3 py-1 text-sm text-white bg-primary">
+                <select id="category-filter" class="border border-gray-300 rounded-md px-3 py-3 text-sm text-white bg-primary">
                     <option value="">{{ __('participant.category') }}</option>
                     <option selected value="education">{{ __('participant.education') }}</option>
                     <option value="self">{{ __('participant.selfmanagement') }}</option>
