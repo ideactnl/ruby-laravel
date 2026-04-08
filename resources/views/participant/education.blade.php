@@ -9,35 +9,9 @@
             <div class="flex gap-2">
                 <select id="category-filter" class="border border-gray-300 rounded-md px-3 py-1 text-sm text-white bg-primary">
                     <option value="">{{ __('participant.category') }}</option>
+                    <option selected value="education">{{ __('participant.education') }}</option>
+                    <option value="self">{{ __('participant.selfmanagement') }}</option>
                 </select>
-                <select id="recommended-filter" class="border border-gray-300 rounded-md px-3 py-3 text-sm text-white bg-primary">
-                    <option value="">{{ __('participant.recommended') }}</option>
-                </select>
-
-                <button id="filter-toggle" class="inline-flex items-center border border-gray-300 rounded-md px-3 py-1 text-sm text-white bg-primary hover:bg-primary/90 transition-colors hidden">
-                    <i class="fas fa-filter mr-2"></i>{{ __('participant.filters') }}
-                </button>
-            </div>
-        </div>
-
-        <!-- Collapsible Filter Section -->
-        <div id="filter-section" class="hidden mb-6 p-6 bg-[#FDF8FE] border border-primary rounded-md">
-            <div class="flex justify-between items-center mb-3">
-                <h3 class="text-2xl  font-semibold text-gray-800">{{ __('participant.filter_by') }}</h3>
-                <button id="close-filters" class="text-gray-500 hover:text-gray-700">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div id="filters-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
-                <!-- Filters will be populated here -->
-            </div>
-            <div class="mt-3 flex gap-2">
-                <button id="apply-filters" class="px-3 py-3 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors text-sm">
-                    {{ __('participant.apply_filters') }}
-                </button>
-                <button id="reset-filters" class="px-3 py-1.5 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors text-sm">
-                    {{ __('participant.reset_filters') }}
-                </button>
             </div>
         </div>
 
@@ -73,9 +47,10 @@
 @push('scripts')
     <script src="{{ asset('js/content-renderer.js') }}"></script>
     <script>
+        const categorySelect = document.getElementById('category-filter');
         window.addEventListener('DOMContentLoaded', async () => {
             await triggerApiCall();
-            await loadCategories();
+            // await loadCategories();
             window.ContentRenderer.setupFilterToggle();
         });
 
@@ -112,7 +87,7 @@
             }
         }
 
-        async function triggerApiCall() {
+        async function triggerApiCall(category = 'education') {
             const loadingOverlay = document.getElementById('loading-overlay');
             
             try {
@@ -127,7 +102,10 @@
                         'Content-Type': 'application/json',
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     },
-                    body: JSON.stringify(window.ContentRenderer.getFilterValues())
+                    body: JSON.stringify({
+                        ...window.ContentRenderer.getFilterValues(),
+                        location: category
+                    })
                 });
                 const data = await response.json();
 
@@ -383,5 +361,9 @@
             });
         }
         window.ContentRenderer.matchCardHeights();
+
+        categorySelect.addEventListener('change', () => {
+            triggerApiCall(categorySelect.value);
+        });
     </script>
 @endpush
