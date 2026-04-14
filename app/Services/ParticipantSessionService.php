@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Models\Participant;
 use App\Models\ParticipantSession;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 
 class ParticipantSessionService
@@ -62,7 +61,6 @@ class ParticipantSessionService
                     $visits[$section] = ($visits[$section] ?? 0) + 1;
                     $session->interactions_breakdown = $visits;
                 }
-                Log::info("Successfully saved session heartbeat for Participant: {$participant->id} (Section: {$section}, Visit: ".($isVisit ? 'Y' : 'N').", Diff: {$diff}s)");
             }
 
             $session->last_seen_at = $now;

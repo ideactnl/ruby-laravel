@@ -24,10 +24,10 @@ class AdminerGatekeeper
             abort(403, 'Adminer server-level password not configured. Please run: php artisan adminer:password {username} {password}');
         }
 
-        if (! $this->verifyBasicAuth($request)) {
-            return response('Unauthorized.', 401, [
-                'WWW-Authenticate' => 'Basic realm="Adminer Server Access"',
-            ]);
+        if (! session('adminer_server_auth_passed') || now()->greaterThan(session('adminer_server_auth_passed'))) {
+            Log::warning('Adminer Server-Level Auth Missing for IP: '.$request->ip().'. Redirecting to form.');
+
+            return redirect()->route('admin.server-auth.show');
         }
 
         return $next($request);
@@ -97,36 +97,5 @@ class AdminerGatekeeper
         }
 
         return true;
-    }
-
-    /**
-     * Verify Basic Auth against the server htpasswd file.
-     */
-    private function verifyBasicAuth(Request $request): bool
-    {
-        $user = $request->getUser();
-        $pass = $request->getPassword();
-
-        if (! $user || ! $pass) {
-            return false;
-        }
-
-        $htpasswdFile = storage_path('app/adminer/.htpasswd-server');
-
-        $lines = file($htpasswdFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-
-        foreach ($lines as $line) {
-            if (strpos($line, ':') === false) {
-                continue;
-            }
-
-            [$storedUser, $storedHash] = explode(':', $line, 2);
-
-            if ($user === $storedUser && password_verify($pass, $storedHash)) {
-                return true;
-            }
-        }
-
-        return false;
     }
 }

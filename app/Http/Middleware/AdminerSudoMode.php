@@ -18,7 +18,7 @@ class AdminerSudoMode
         $verifiedUntil = session('adminer_verified_until');
 
         if (! $verifiedUntil || now()->greaterThan($verifiedUntil)) {
-            session()->forget(['adminer_verified_until', 'adminer_challenge_passed']);
+            session()->forget(['adminer_verified_until', 'adminer_challenge_passed', 'adminer_server_auth_passed']);
 
             return redirect()->route('admin.db-verify.show')
                 ->with('warning', 'Please verify your identity to access the database.');

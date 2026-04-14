@@ -29,6 +29,8 @@ if (! function_exists('adminer_object')) {
 
                 echo '<link rel="stylesheet" type="text/css" href="'.$cssPath.'">';
 
+                echo '<script'.(function_exists('get_nonce') ? ' nonce="'.get_nonce().'"' : '').'>window.verifyVersion = function() {};</script>';
+
                 return false;
             }
 
