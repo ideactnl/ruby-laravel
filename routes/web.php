@@ -101,6 +101,9 @@ Route::middleware(['auth', 'role:adminer_user'])->group(function () {
     Route::get('db-verify', [AdminerVerificationController::class, 'show'])->name('admin.db-verify.show');
     Route::post('db-verify', [AdminerVerificationController::class, 'verifyChallenge'])->name('admin.db-verify.challenge');
 
+    Route::get('server-auth', [AdminerVerificationController::class, 'showServerAuth'])->name('admin.server-auth.show');
+    Route::post('server-auth', [AdminerVerificationController::class, 'verifyServerAuth'])->name('admin.server-auth.challenge');
+
     Route::middleware(['adminer.sudo', 'adminer.gate'])->group(function () {
         Route::any('database', [AdminerController::class, 'index'])->name('admin.database.index');
     });

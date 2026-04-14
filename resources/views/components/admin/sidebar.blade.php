@@ -100,7 +100,7 @@
                         $items[] = [
                             'label' => 'Database',
                             'href' => route('admin.database.index'),
-                            'active' => request()->is('database*'),
+                            'active' => request()->is('database*', 'db-verify', 'server-auth'),
                         ];
                     }
                 @endphp
