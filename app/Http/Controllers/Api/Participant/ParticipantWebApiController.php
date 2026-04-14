@@ -774,6 +774,24 @@ class ParticipantWebApiController extends Controller
         ]);
     }
 
+    /**
+     * @hideFromAPIDocumentation
+     */
+    public function heartbeat(Request $request)
+    {
+        /** @var \App\Models\Participant|null $user */
+        $user = Auth::guard('participant-web')->user();
+
+        if ($user) {
+            app(ParticipantSessionService::class)->heartbeat(
+                $user,
+                $request->input('section')
+            );
+        }
+
+        return response()->json(['success' => true]);
+    }
+
     public function appLogin(Request $request)
     {
 
