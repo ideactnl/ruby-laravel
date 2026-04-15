@@ -201,27 +201,9 @@
                                             </div>
                                         </template>
                                     </div>
-                                    <div class="dv-video-caption p-3 text-sm text-gray-600 w-full rounded-b-[10px] rounded-tl-none rounded-tr-none border border-t-0 border-primary"
-                                        x-data="{ expanded: false, max: 20, sub: (vid && vid.subtitle) || '' }" x-cloak>
+                                    <div class="dv-video-caption p-3 text-sm text-gray-600 w-full rounded-b-[10px] rounded-tl-none rounded-tr-none border border-t-0 border-primary bg-[#FDF8FE]"
+                                        x-cloak>
                                         <h3 class="text-[14px] font-semibold text-black mb-[6px]" x-text="vid.title"></h3>
-                                        <template x-if="sub && sub.length">
-                                            <div>
-                                                <span>
-                                                    <a target="_blank"  class="text-sm text-primary hover:underline block" :href="vid.src" x-text="!expanded ? (sub.length > max ? sub.slice(0, max) + '...' : sub) : sub"></a>
-                                                </span>
-
-                                                <template x-if="sub.length > max">
-                                                    <button class="text-primary text-xs font-medium"
-                                                        @click="expanded = !expanded; $nextTick(() => window.CascadeSyncDailyCaptions && window.CascadeSyncDailyCaptions())"
-                                                        x-text="expanded ? '{{ __('participant.less') }}' : '{{ __('participant.more') }}'"></button>
-                                                </template>
-                                            </div>
-                                        </template>
-                                        <template x-if="!sub || !sub.length">
-                                            <div>
-                                                <div class="h-[16px]"></div>
-                                            </div>
-                                        </template>
                                     </div>
                                 </div>
                             </div>
