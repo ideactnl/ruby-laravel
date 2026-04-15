@@ -29,35 +29,106 @@
     <script>
         window.addEventListener('DOMContentLoaded', async () => {
             try {
-                const response = await fetch('/api/v1/participant/videos/education');
-                const data = await response.json();
-                const videos = data.videos || [];
+                const [educationResponse, selfManagementResponse] = await Promise.all([
+                    fetch('/api/v1/participant/videos/education'),
+                    fetch('/api/v1/participant/videos/self-management')
+                ]);
+                const educationData = await educationResponse.json();
+                const selfManagementData = await selfManagementResponse.json();
+                const videos = [...(educationData.videos || []), ...(selfManagementData.videos || [])];
 
-                const flipCard = `
-                        <div class="group [perspective:1000px] select-none touch-manipulation h-full w-full" data-flip-card>
+                // Flipcard definitions - placed in order: one video, one card
+                const flipCards = [
+                    {
+                        id: 'alarmsignalen',
+                        frontTitle: "{{ __('participant.flipcard_alarmsignalen_title') }}",
+                        backContent: `{{ __('participant.flipcard_alarmsignalen_content') }}`
+                    },
+                    {
+                        id: 'menstruatiepijn_1',
+                        frontTitle: "{{ __('participant.flipcard_menstruatiepijn_title') }}",
+                        backContent: `{{ __('participant.flipcard_menstruatiepijn_content') }}`
+                    },
+                    {
+                        id: 'bloedverlies_1',
+                        frontTitle: "{{ __('participant.flipcard_bloedverlies_title') }}",
+                        backContent: `{{ __('participant.flipcard_bloedverlies_content') }}`
+                    },
+                    {
+                        id: 'bloedverlies_2',
+                        frontTitle: "{{ __('participant.flipcard_bloedverlies2_title') }}",
+                        backContent: `{{ __('participant.flipcard_bloedverlies2_content') }}`
+                    },
+                    {
+                        id: 'menstruatiepijn_2',
+                        frontTitle: "{{ __('participant.flipcard_menstruatiepijn2_title') }}",
+                        backContent: `{{ __('participant.flipcard_menstruatiepijn2_content') }}`
+                    },
+                    {
+                        id: 'tampon',
+                        frontTitle: "{{ __('participant.flipcard_tampon_title') }}",
+                        backContent: `{{ __('participant.flipcard_tampon_content') }}`
+                    },
+                    {
+                        id: 'maandverband',
+                        frontTitle: "{{ __('participant.flipcard_maandverband_title') }}",
+                        backContent: `{{ __('participant.flipcard_maandverband_content') }}`
+                    },
+                    {
+                        id: 'menstruatieondergoed',
+                        frontTitle: "{{ __('participant.flipcard_menstruatieondergoed_title') }}",
+                        backContent: `{{ __('participant.flipcard_menstruatieondergoed_content') }}`
+                    },
+                    {
+                        id: 'menstruatiecup',
+                        frontTitle: "{{ __('participant.flipcard_menstruatiecup_title') }}",
+                        backContent: `{{ __('participant.flipcard_menstruatiecup_content') }}`
+                    }
+                ];
+
+                // Track which flipcard index to insert next
+                let flipCardIndex = 0;
+
+                function createFlipCardHTML(flipCard) {
+                    return `
+                        <div class="group [perspective:1000px] select-none touch-manipulation h-full w-full" data-flip-card data-flip-id="${flipCard.id}">
                             <div class="relative h-full w-full transition-transform duration-700 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)]">
                                 <!-- Front -->
-                                <div class="absolute inset-0 bg-[#FC9490] text-white text-center rounded-lg shadow-md [backface-visibility:hidden] flex flex-col justify-center items-center cursor-pointer select-none">
-                                    <div class="p-4 text-sm font-medium">
-                                        <div class="text-[23px] font-bold mb-2">MYTH</div>
-                                        <h4 class="text-[16px]">{{ __('participant.cant_exercise_during_period') }}</h4>
+                                <div class="absolute inset-0 bg-[#FC9490] text-white text-center rounded-t-lg [backface-visibility:hidden] flex flex-col justify-center items-center cursor-pointer select-none p-3 md:p-4 overflow-hidden">
+                                    <div class="text-sm font-medium w-full">
+                                        <div class="text-[14px] md:text-[18px] font-bold mb-1 md:mb-2 leading-tight px-1 break-words hyphens-auto" lang="nl">${flipCard.frontTitle}</div>
                                     </div>
-                                    <div class="absolute top-3 right-3">
-                                        <i class="fas fa-sync-alt text-white opacity-70"></i>
+                                    <div class="absolute top-2 right-2 md:top-3 md:right-3">
+                                        <i class="fas fa-sync-alt text-white opacity-70 text-xs md:text-sm"></i>
                                     </div>
                                 </div>
                                 <!-- Back -->
-                                <div class="absolute inset-0 rounded-lg bg-primary text-white text-center p-4 [transform:rotateY(180deg)] [backface-visibility:hidden] flex flex-col justify-center items-center cursor-pointer select-none">
-                                    <div class="text-sm font-medium">
-                                        {{ __('participant.exercise_helps_period_symptoms') }}
+                                <div class="absolute inset-0 rounded-t-lg bg-primary text-white text-center p-3 md:p-4 [transform:rotateY(180deg)] [backface-visibility:hidden] flex flex-col justify-center items-center cursor-pointer select-none overflow-y-auto shadow-none">
+                                    <div class="text-xs md:text-sm font-medium whitespace-pre-line leading-snug">
+                                        ${flipCard.backContent}
                                     </div>
-                                    <div class="absolute top-3 right-3">
-                                        <i class="fas fa-sync-alt text-white opacity-70"></i>
+                                    <div class="absolute top-2 right-2 md:top-3 md:right-3">
+                                        <i class="fas fa-sync-alt text-white opacity-70 text-xs md:text-sm"></i>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     `;
+                }
+
+                function createFlipCardContainer(flipCardHTML) {
+                    const container = document.createElement('div');
+                    container.className = 'rounded-[10px] overflow-hidden bg-[#FDF8FE] flex flex-col';
+                    container.innerHTML = `
+                        <div class="aspect-[9/16] w-full">
+                            ${flipCardHTML}
+                        </div>
+                        <div class="p-2 md:p-4 flex-1 flex flex-col items-start rounded-b-[10px] rounded-tl-none rounded-tr-none border border-t-0 border-primary bg-[#FDF8FE]">
+                            <h3 class="text-[14px] font-semibold text-black mb-[6px] opacity-0 select-none">.</h3>
+                        </div>
+                    `;
+                    return container;
+                }
 
                 const educationGrid = document.getElementById('education-grid');
                 const loadingElement = document.getElementById('education-loading');
@@ -66,68 +137,33 @@
                     educationGrid.innerHTML = '';
 
                     videos.forEach((video, index) => {
+                        // Add video card
                         const videoCard = document.createElement('div');
                         videoCard.className = 'rounded-[10px] overflow-hidden  bg-[#FDF8FE] flex flex-col';
 
-                        const maxLength = 25;
-                        let subtitleContent = '';
-                        if (video.subtitle) {
-                            const isLong = video.subtitle.length > maxLength;
-                            const truncated = isLong ? video.subtitle.substring(0, maxLength) + '...' : video.subtitle;
-                            const subtitleId = `subtitle-${video.id}`;
-
-                            subtitleContent = `
-                                    <div class="text-sm text-gray-600 edu-video-caption">
-                                        <span>
-                                            <a href="${video.watch_url}" 
-                                                target="_blank" 
-                                                id="${subtitleId}"
-                                                class="text-sm text-primary hover:underline block">
-                                                ${truncated}
-                                            </a>
-                                        </span>
-                                        ${isLong ? `
-                                            <button onclick="toggleReadMore('${subtitleId}', '${video.subtitle.replace(/'/g, "\\'")}', '${truncated.replace(/'/g, "\\'")}', this)"
-                                                    class="text-primary text-xs font-medium">
-                                                {{ __('participant.more') }}
-                                            </button>
-                                        ` : ''}
-                                    </div>
-                                `;
-                        }
-
                         videoCard.innerHTML = `
-                            <div class="aspect-[9/16] edu-video-media">
-                                <iframe class="w-full h-full"
-                                        src="${video.embed_url}"
-                                        frameborder="0"
-                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                        allowfullscreen
-                                        loading="lazy"></iframe>
-                            </div>
+                                <div class="aspect-[9/16] edu-video-media">
+                                    <iframe class="w-full h-full"
+                                            src="${video.embed_url}"
+                                            frameborder="0"
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                            allowfullscreen
+                                            loading="lazy"></iframe>
+                                </div>
 
-                             <div class="p-2 md:p-4 flex-1 flex flex-col items-start rounded-b-[10px] rounded-tl-none rounded-tr-none border border-t-0 border-primary bg-[#FDF8FE]">
-                                <h3 class="text-[14px] font-semibold text-black mb-[6px]">${video.title}</h3>
-                                ${subtitleContent || '<div class="text-sm text-gray-600 edu-video-caption"></div>'}
-                            </div>
-                        `;
-
-                        educationGrid.appendChild(videoCard);
-
-                        if (index === 1) {
-                            const flipCardContainer = document.createElement('div');
-                            flipCardContainer.className = 'rounded-10 overflow-hidden bg-[#FDF8FE] flex flex-col';
-                            flipCardContainer.innerHTML = `
-                                <div class="flip-wrapper h-full flex flex-col">
-                                    <div class="aspect-[9/16] w-full">
-                                        ${flipCard}
-                                    </div>
-                                    <div class="p-4 flex-1 flex items-center item  rounded-b-[10px] rounded-tl-none rounded-tr-none border border-t-0 border-primary">
-                                    </div>
+                                 <div class="p-2 md:p-4 flex-1 flex flex-col items-start rounded-b-[10px] rounded-tl-none rounded-tr-none border border-t-0 border-primary bg-[#FDF8FE]">
+                                    <h3 class="text-[14px] font-semibold text-black mb-[6px]">${video.title}</h3>
                                 </div>
                             `;
 
+                        educationGrid.appendChild(videoCard);
+
+                        // Insert one flipcard after each video until all cards are used
+                        if (flipCardIndex < flipCards.length) {
+                            const flipCard = flipCards[flipCardIndex];
+                            const flipCardContainer = createFlipCardContainer(createFlipCardHTML(flipCard));
                             educationGrid.appendChild(flipCardContainer);
+                            flipCardIndex++;
                         }
                     });
 
@@ -144,21 +180,6 @@
                 }
             }
         });
-
-        function toggleReadMore(subtitleId, fullText, truncatedText, button) {
-            const span = document.getElementById(subtitleId);
-            const moreText = "{{ __('participant.more') }}";
-            const lessText = "{{ __('participant.less') }}";
-            const isExpanded = button.textContent.trim() === lessText;
-
-            if (isExpanded) {
-                span.textContent = truncatedText;
-                button.textContent = moreText;
-            } else {
-                span.textContent = fullText;
-                button.textContent = lessText;
-            }
-        }
 
         function matchCardHeights() {
             const cards = document.querySelectorAll('#education-grid > div');

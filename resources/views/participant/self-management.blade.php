@@ -43,50 +43,23 @@
                         const videoCard = document.createElement('div');
                         videoCard.className = 'rounded-[10px] overflow-hidden bg-[#FDF8FE] flex flex-col';
 
-                        const maxLength = 25;
-                        let subtitleContent = '';
-                        if (video.subtitle) {
-                            const isLong = video.subtitle.length > maxLength;
-                            const truncated = isLong ? video.subtitle.substring(0, maxLength) + '...' : video.subtitle;
-                            const subtitleId = `subtitle-${video.id}`;
-
-                            subtitleContent = `
-                                <div class="text-sm text-gray-600 sm-video-caption">
-                                    <span>
-                                        <a href="${video.watch_url}" 
-                                            target="_blank" 
-                                            id="${subtitleId}"
-                                            class="text-sm text-primary hover:underline block">
-                                            ${truncated}
-                                        </a>
-                                    </span>
-                                    ${isLong ? `
-                                        <button onclick="toggleReadMore('${subtitleId}', '${video.subtitle.replace(/'/g, "\\'")}', '${truncated.replace(/'/g, "\\'")}', this)"
-                                                class="text-primary text-xs font-medium">
-                                            {{ __('participant.more') }}
-                                        </button>
-                                    ` : ''}
-                                </div>
-                            `;
-                        }
 
                         videoCard.innerHTML = `
-                        <div class="aspect-[9/16]">
-                            <iframe class="w-full h-full"
-                                    src="${video.embed_url}"
-                                    frameborder="0"
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                    allowfullscreen
-                                    loading="lazy"></iframe>
-                        </div>
+                            <div class="aspect-[9/16]">
+                                <iframe class="w-full h-full"
+                                        src="${video.embed_url}"
+                                        frameborder="0"
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                        allowfullscreen
+                                        loading="lazy"></iframe>
+                            </div>
 
 
-                         <div class="p-4 flex-1 flex flex-col items-start rounded-tl-none rounded-tr-none rounded-b-[10px] rounded-tl-none rounded-tr-none border border-t-0 border-primary bg-[#FDF8FE]">
-                            <h3 class="text-[14px] font-semibold text-black mb-[6px]">${video.title}</h3>
-                            ${subtitleContent || '<div class="text-sm text-gray-600 sm-video-caption"></div>'}
-                        </div>
-                        
-                        `;
+                             <div class="p-4 flex-1 flex flex-col items-start rounded-tl-none rounded-tr-none rounded-b-[10px] rounded-tl-none rounded-tr-none border border-t-0 border-primary bg-[#FDF8FE]">
+                                <h3 class="text-[14px] font-semibold text-black mb-[6px]">${video.title}</h3>
+                            </div>
+
+                            `;
 
                         selfManagementGrid.appendChild(videoCard);
                     });
@@ -103,19 +76,5 @@
             }
         });
 
-        function toggleReadMore(subtitleId, fullText, truncatedText, button) {
-            const span = document.getElementById(subtitleId);
-            const moreText = "{{ __('participant.more') }}";
-            const lessText = "{{ __('participant.less') }}";
-            const isExpanded = button.textContent.trim() === lessText;
-
-            if (isExpanded) {
-                span.textContent = truncatedText;
-                button.textContent = moreText;
-            } else {
-                span.textContent = fullText;
-                button.textContent = lessText;
-            }
-        }
     </script>
 @endpush
