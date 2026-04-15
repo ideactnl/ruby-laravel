@@ -40,6 +40,11 @@
                 // Flipcard definitions - placed in order: one video, one card
                 const flipCards = [
                     {
+                        id: 'myth_exercise',
+                        frontTitle: "MYTH<br><span class='text-[16px] font-normal'>{{ __('participant.cant_exercise_during_period') }}</span>",
+                        backContent: `{{ __('participant.exercise_helps_period_symptoms') }}`
+                    },
+                    {
                         id: 'alarmsignalen',
                         frontTitle: "{{ __('participant.flipcard_alarmsignalen_title') }}",
                         backContent: `{{ __('participant.flipcard_alarmsignalen_content') }}`
@@ -91,42 +96,42 @@
 
                 function createFlipCardHTML(flipCard) {
                     return `
-                        <div class="group [perspective:1000px] select-none touch-manipulation h-full w-full" data-flip-card data-flip-id="${flipCard.id}">
-                            <div class="relative h-full w-full transition-transform duration-700 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)]">
-                                <!-- Front -->
-                                <div class="absolute inset-0 bg-[#FC9490] text-white text-center rounded-t-lg [backface-visibility:hidden] flex flex-col justify-center items-center cursor-pointer select-none p-3 md:p-4 overflow-hidden">
-                                    <div class="text-sm font-medium w-full">
-                                        <div class="text-[14px] md:text-[18px] font-bold mb-1 md:mb-2 leading-tight px-1 break-words hyphens-auto" lang="nl">${flipCard.frontTitle}</div>
+                            <div class="group [perspective:1000px] select-none touch-manipulation h-full w-full" data-flip-card data-flip-id="${flipCard.id}">
+                                <div class="relative h-full w-full transition-transform duration-700 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)]">
+                                    <!-- Front -->
+                                    <div class="absolute inset-0 bg-[#FC9490] text-white text-center rounded-t-lg [backface-visibility:hidden] flex flex-col justify-center items-center cursor-pointer select-none p-3 md:p-4 overflow-hidden">
+                                        <div class="text-sm font-medium w-full">
+                                            <div class="text-[14px] md:text-[18px] font-bold mb-1 md:mb-2 leading-tight px-1 break-words hyphens-auto" lang="nl">${flipCard.frontTitle}</div>
+                                        </div>
+                                        <div class="absolute top-2 right-2 md:top-3 md:right-3">
+                                            <i class="fas fa-sync-alt text-white opacity-70 text-xs md:text-sm"></i>
+                                        </div>
                                     </div>
-                                    <div class="absolute top-2 right-2 md:top-3 md:right-3">
-                                        <i class="fas fa-sync-alt text-white opacity-70 text-xs md:text-sm"></i>
-                                    </div>
-                                </div>
-                                <!-- Back -->
-                                <div class="absolute inset-0 rounded-t-lg bg-primary text-white text-center p-3 md:p-4 [transform:rotateY(180deg)] [backface-visibility:hidden] flex flex-col justify-center items-center cursor-pointer select-none overflow-y-auto shadow-none">
-                                    <div class="text-xs md:text-sm font-medium whitespace-pre-line leading-snug">
-                                        ${flipCard.backContent}
-                                    </div>
-                                    <div class="absolute top-2 right-2 md:top-3 md:right-3">
-                                        <i class="fas fa-sync-alt text-white opacity-70 text-xs md:text-sm"></i>
+                                    <!-- Back -->
+                                    <div class="absolute inset-0 rounded-t-lg bg-primary text-white text-center p-3 md:p-4 [transform:rotateY(180deg)] [backface-visibility:hidden] flex flex-col justify-center items-center cursor-pointer select-none overflow-y-auto shadow-none">
+                                        <div class="text-xs md:text-sm font-medium whitespace-pre-line leading-snug">
+                                            ${flipCard.backContent}
+                                        </div>
+                                        <div class="absolute top-2 right-2 md:top-3 md:right-3">
+                                            <i class="fas fa-sync-alt text-white opacity-70 text-xs md:text-sm"></i>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    `;
+                        `;
                 }
 
                 function createFlipCardContainer(flipCardHTML) {
                     const container = document.createElement('div');
                     container.className = 'rounded-[10px] overflow-hidden bg-[#FDF8FE] flex flex-col';
                     container.innerHTML = `
-                        <div class="aspect-[9/16] w-full">
-                            ${flipCardHTML}
-                        </div>
-                        <div class="p-2 md:p-4 flex-1 flex flex-col items-start rounded-b-[10px] rounded-tl-none rounded-tr-none border border-t-0 border-primary bg-[#FDF8FE]">
-                            <h3 class="text-[14px] font-semibold text-black mb-[6px] opacity-0 select-none">.</h3>
-                        </div>
-                    `;
+                            <div class="aspect-[9/16] w-full">
+                                ${flipCardHTML}
+                            </div>
+                            <div class="p-2 md:p-4 flex-1 flex flex-col items-start rounded-b-[10px] rounded-tl-none rounded-tr-none border border-t-0 border-primary bg-[#FDF8FE]">
+                                <h3 class="text-[14px] font-semibold text-black mb-[6px] opacity-0 select-none">.</h3>
+                            </div>
+                        `;
                     return container;
                 }
 
@@ -142,19 +147,19 @@
                         videoCard.className = 'rounded-[10px] overflow-hidden  bg-[#FDF8FE] flex flex-col';
 
                         videoCard.innerHTML = `
-                                <div class="aspect-[9/16] edu-video-media">
-                                    <iframe class="w-full h-full"
-                                            src="${video.embed_url}"
-                                            frameborder="0"
-                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                            allowfullscreen
-                                            loading="lazy"></iframe>
-                                </div>
+                                    <div class="aspect-[9/16] edu-video-media">
+                                        <iframe class="w-full h-full"
+                                                src="${video.embed_url}"
+                                                frameborder="0"
+                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                allowfullscreen
+                                                loading="lazy"></iframe>
+                                    </div>
 
-                                 <div class="p-2 md:p-4 flex-1 flex flex-col items-start rounded-b-[10px] rounded-tl-none rounded-tr-none border border-t-0 border-primary bg-[#FDF8FE]">
-                                    <h3 class="text-[14px] font-semibold text-black mb-[6px]">${video.title}</h3>
-                                </div>
-                            `;
+                                     <div class="p-2 md:p-4 flex-1 flex flex-col items-start rounded-b-[10px] rounded-tl-none rounded-tr-none border border-t-0 border-primary bg-[#FDF8FE]">
+                                        <h3 class="text-[14px] font-semibold text-black mb-[6px]">${video.title}</h3>
+                                    </div>
+                                `;
 
                         educationGrid.appendChild(videoCard);
 
