@@ -105,6 +105,26 @@ return [
     'cant_exercise_during_period' => 'You can\'t exercise when you\'re on your period',
     'exercise_helps_period_symptoms' => 'Exercising can actually help with period symptoms! It can reduce cramps, and your body releases feel-good chemicals that can improve your mood.',
 
+    // Flipcards - Education Page
+    'flipcard_alarmsignalen_title' => 'Warning signs',
+    'flipcard_alarmsignalen_content' => "Sometimes it can be helpful to seek help. For example if you have:\n\nSymptoms that cause you to stay home.\nHeavy bleeding.\nA lot of pain.\nA very short (less than 21 days) or very long cycle (longer than 45 days).",
+    'flipcard_menstruatiepijn_title' => 'Menstrual pain',
+    'flipcard_menstruatiepijn_content' => 'Pain just before or during your period is common. When you have your period, your uterus contracts. This can cause cramps and pain. The pain is often in your lower abdomen, but you may also feel it in your lower back or legs.',
+    'flipcard_bloedverlies_title' => 'Bleeding during your period',
+    'flipcard_bloedverlies_content' => 'When you have your period, blood and a little mucus leave the uterus through the vagina. This usually lasts 3–7 days. On average, you use 3–6 pads or tampons per day.',
+    'flipcard_bloedverlies2_title' => 'Heavy or prolonged bleeding?',
+    'flipcard_bloedverlies2_content' => 'Signs of heavy menstrual bleeding include: having your period for longer than 7 days, frequently leaking through your clothes, needing to change your pad or tampon every two hours or more, blood clots the size of a euro coin, feeling dizzy, or having to stay home because of the bleeding.',
+    'flipcard_menstruatiepijn2_title' => 'What to do about menstrual pain?',
+    'flipcard_menstruatiepijn2_content' => "The following can help with menstrual pain:\n\nRelaxation exercises and rest.\nA hot water bottle or bath.\nDistraction.\nPain relief: take it on time.",
+    'flipcard_tampon_title' => 'What is a tampon?',
+    'flipcard_tampon_content' => 'A roll of compressed cotton with a string attached. You insert it into the vagina using a finger or applicator. Change the tampon after about 4 hours, or when it is full.',
+    'flipcard_maandverband_title' => 'What is a pad?',
+    'flipcard_maandverband_content' => 'A pad that you stick into your underwear. There are different types of pads. The packaging usually indicates whether it is meant for light or heavy bleeding. Stick the pad with the adhesive side into your underwear. Change it when it feels wet or looks full.',
+    'flipcard_menstruatieondergoed_title' => 'What is period underwear?',
+    'flipcard_menstruatieondergoed_content' => 'Underwear with a built-in absorbent layer to catch the blood. You can wear it for a whole day, or until it is full. Afterwards you can wash it and use it again.',
+    'flipcard_menstruatiecup_title' => 'What is a menstrual cup?',
+    'flipcard_menstruatiecup_content' => 'A reusable cup that you insert into the vagina to collect blood. You can leave it in for up to 12 hours. Then you take it out, empty the blood into the toilet, rinse it, and insert it again.',
+
     // Export page
     'range' => 'Range',
     'this_month' => 'This Month',
@@ -266,7 +286,7 @@ return [
 
     // Energy Level Labels
     'card_general_health_energy_1' => 'Low',
-    'card_general_health_energy_2' => 'Low', 
+    'card_general_health_energy_2' => 'Low',
     'card_general_health_energy_3' => 'Medium',
     'card_general_health_energy_4' => 'Good',
     'card_general_health_energy_5' => 'Maximum',

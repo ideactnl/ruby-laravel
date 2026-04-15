@@ -105,6 +105,26 @@ return [
     'cant_exercise_during_period' => 'FABEL Je kunt niet sporten tijdens je menstruatie.',
     'exercise_helps_period_symptoms' => 'Sporten kan juist helpen bij je menstruatieklachten! Beweging helpt om je bloed rond te pompen en ontspant de spieren. Ook je baarmoeder is een spier! Dit kan pijn en krampen verminderen. Ook kan je je beter voelen nadat je gesport hebt.',
 
+    // Flipcards - Education Page
+    'flipcard_alarmsignalen_title' => 'Alarmsignalen',
+    'flipcard_alarmsignalen_content' => "Bij sommige klachten kan het soms handig zijn om hulp te zoeken. Bijvoorbeeld bij:\n\nKlachten waardoor je thuis (moet) blijven.\nVeel bloeden.\nVeel pijn.\nHele korte (korter dan 21 dagen) of hele lange cyclus (langer dan 45 dagen).",
+    'flipcard_menstruatiepijn_title' => 'Menstruatiepijn',
+    'flipcard_menstruatiepijn_content' => 'Pijn vlak voor of tijdens de menstruatie komt vaak voor. Als je ongesteld bent knijpt je baarmoeder samen. Dat kan krampen en pijn geven. De pijn zit vaak in je onderbuik, maar kan je ook in je onderrug of benen voelen.',
+    'flipcard_bloedverlies_title' => 'Bloedverlies als je ongesteld bent',
+    'flipcard_bloedverlies_content' => 'Als je ongesteld bent komt er bloed en een beetje slijm uit de baarmoeder via de vagina naar buiten. Dat duurt meestal 3-7 dagen. Je gebruikt gemiddeld 3-6 maandverbanden of tampons per dag.',
+    'flipcard_bloedverlies2_title' => 'Lang of veel bloedverlies?',
+    'flipcard_bloedverlies2_content' => 'Klachten die passen bij hevig menstrueel bloedverlies: Langer dan 7 dagen ongesteld zijn. Vaak doorlekken. Elke twee uur (of vaker) je maandverband of tampon moeten verwisselen. Bloedklonters zo groot als een euromunt. Duizelig zijn. Door het bloedverlies thuis (moeten) blijven.',
+    'flipcard_menstruatiepijn2_title' => 'Wat te doen bij menstruatiepijn?',
+    'flipcard_menstruatiepijn2_content' => "Bij menstruatiepijn kan helpen:\n\nOntspanningsoefeningen en rust.\nWarmte: een warme kruik of bad.\nAfleiding.\nPijnstilling: neem deze op tijd in.",
+    'flipcard_tampon_title' => 'Wat is een tampon?',
+    'flipcard_tampon_content' => 'Een rolletje samengedrukte watten, met een touwtje eraan. Die schuif je met een vinger of inbrenghuls in de vagina. Verwissel de tampon na ongeveer 4 uur, of wanneer die vol is.',
+    'flipcard_maandverband_title' => 'Wat is een maandverband?',
+    'flipcard_maandverband_content' => 'Een verband dat je in je ondergoed plakt. Je hebt verschillende soorten maandverband, op de verpakking staat vaak of het is bedoelt voor weinig of veel bloedverlies. Plak het verband met de plakkant in je ondergoed. Verwissel het maandverband als het nat aanvoelt of er vol uitziet.',
+    'flipcard_menstruatieondergoed_title' => 'Wat is menstruatieondergoed?',
+    'flipcard_menstruatieondergoed_content' => 'Ondergoed met een ingebouwde laag om het bloed op te vangen. Deze kan je een hele dag aanhouden, of tot die vol is. Daarna kan je hem wassen, en weer gebruiken.',
+    'flipcard_menstruatiecup_title' => 'Wat is een menstruatiecup?',
+    'flipcard_menstruatiecup_content' => 'Een kuipje die kan hergebruiken dat je in je vagina inbrengt om bloed op te vangen. Je kan hem 12 uur laten zitten. Dan haal je hem eruit, leeg je het bloed in de wc, spoel je hem af en kan je de cup weer inbrengen.',
+
     // Export page
     'range' => 'Bereik',
     'this_month' => 'Deze Maand',
@@ -266,7 +286,7 @@ return [
 
     // Energy Level Labels
     'card_general_health_energy_1' => 'Laag',
-    'card_general_health_energy_2' => 'Laag', 
+    'card_general_health_energy_2' => 'Laag',
     'card_general_health_energy_3' => 'Medium',
     'card_general_health_energy_4' => 'Goed',
     'card_general_health_energy_5' => 'Maximaal',
