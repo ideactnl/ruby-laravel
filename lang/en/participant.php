@@ -107,15 +107,15 @@ return [
 
     // Flipcards - Education Page
     'flipcard_alarmsignalen_title' => 'Warning signs',
-    'flipcard_alarmsignalen_content' => "Sometimes it can be helpful to seek help. For example if you have:\n\nSymptoms that cause you to stay home.\nHeavy bleeding.\nA lot of pain.\nA very short (less than 21 days) or very long cycle (longer than 45 days).",
+    'flipcard_alarmsignalen_content' => "Sometimes it can be helpful to seek help. For example if you have:\n\n• Symptoms that cause you to stay home.\n• Heavy bleeding.\n• A lot of pain.\n• A very short (less than 21 days) or very long cycle (longer than 45 days).",
     'flipcard_menstruatiepijn_title' => 'Menstrual pain',
     'flipcard_menstruatiepijn_content' => 'Pain just before or during your period is common. When you have your period, your uterus contracts. This can cause cramps and pain. The pain is often in your lower abdomen, but you may also feel it in your lower back or legs.',
     'flipcard_bloedverlies_title' => 'Bleeding during your period',
     'flipcard_bloedverlies_content' => 'When you have your period, blood and a little mucus leave the uterus through the vagina. This usually lasts 3–7 days. On average, you use 3–6 pads or tampons per day.',
     'flipcard_bloedverlies2_title' => 'Heavy or prolonged bleeding?',
-    'flipcard_bloedverlies2_content' => 'Signs of heavy menstrual bleeding include: having your period for longer than 7 days, frequently leaking through your clothes, needing to change your pad or tampon every two hours or more, blood clots the size of a euro coin, feeling dizzy, or having to stay home because of the bleeding.',
+    'flipcard_bloedverlies2_content' => "Signs of heavy menstrual bleeding include:\n\n• Having your period for longer than 7 days.\n• Frequently leaking through your clothes.\n• Needing to change your pad or tampon every two hours or more.\n• Blood clots the size of a euro coin.\n• Feeling dizzy.\n• Having to stay home because of the bleeding.",
     'flipcard_menstruatiepijn2_title' => 'What to do about menstrual pain?',
-    'flipcard_menstruatiepijn2_content' => "The following can help with menstrual pain:\n\nRelaxation exercises and rest.\nA hot water bottle or bath.\nDistraction.\nPain relief: take it on time.",
+    'flipcard_menstruatiepijn2_content' => "The following can help with menstrual pain:\n\n• Relaxation exercises and rest.\n• A hot water bottle or bath.\n• Distraction.\n• Pain relief: take it on time.",
     'flipcard_tampon_title' => 'What is a tampon?',
     'flipcard_tampon_content' => 'A roll of compressed cotton with a string attached. You insert it into the vagina using a finger or applicator. Change the tampon after about 4 hours, or when it is full.',
     'flipcard_maandverband_title' => 'What is a pad?',
