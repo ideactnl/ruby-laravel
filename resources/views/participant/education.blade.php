@@ -25,8 +25,45 @@
     </section>
 @endsection
 
+
 @push('scripts')
     <script>
+        function formatBackContent(text) {
+            const lines = text.split('\n');
+            let html = '<div class="back-content-container">';
+            let inList = false;
+
+            lines.forEach(line => {
+                const trimmed = line.trim();
+                if (trimmed.startsWith('•')) {
+                    if (!inList) {
+                        html += '<ul class="flip-card-list">';
+                        inList = true;
+                    }
+                    html += `<li>${trimmed.substring(1).trim()}</li>`;
+                } else if (trimmed === '') {
+                    if (inList) {
+                        html += '</ul>';
+                        inList = false;
+                    }
+                    html += '<div class="h-1"></div>';
+                } else {
+                    if (inList) {
+                        html += '</ul>';
+                        inList = false;
+                    }
+                    html += `<div>${trimmed}</div>`;
+                }
+            });
+
+            if (inList) {
+                html += '</ul>';
+            }
+
+            html += '</div>';
+            return html;
+        }
+
         window.addEventListener('DOMContentLoaded', async () => {
             try {
                 const [educationResponse, selfManagementResponse] = await Promise.all([
@@ -39,11 +76,6 @@
 
                 // Flipcard definitions - placed in order: one video, one card
                 const flipCards = [
-                    {
-                        id: 'myth_exercise',
-                        frontTitle: "MYTH<br><span class='text-[16px] font-normal'>{{ __('participant.cant_exercise_during_period') }}</span>",
-                        backContent: `{{ __('participant.exercise_helps_period_symptoms') }}`
-                    },
                     {
                         id: 'alarmsignalen',
                         frontTitle: "{{ __('participant.flipcard_alarmsignalen_title') }}",
@@ -88,6 +120,11 @@
                         id: 'menstruatiecup',
                         frontTitle: "{{ __('participant.flipcard_menstruatiecup_title') }}",
                         backContent: `{{ __('participant.flipcard_menstruatiecup_content') }}`
+                    },
+                    {
+                        id: 'myth_exercise',
+                        frontTitle: "{{ __('participant.myth') }}<br><span class='text-[16px] font-normal'>{{ __('participant.cant_exercise_during_period') }}</span>",
+                        backContent: `{{ __('participant.exercise_helps_period_symptoms') }}`
                     }
                 ];
 
@@ -108,9 +145,9 @@
                                         </div>
                                     </div>
                                     <!-- Back -->
-                                    <div class="absolute inset-0 rounded-t-lg bg-primary text-white text-center p-3 md:p-4 [transform:rotateY(180deg)] [backface-visibility:hidden] flex flex-col justify-center items-center cursor-pointer select-none overflow-y-auto shadow-none">
-                                        <div class="text-xs md:text-sm font-medium whitespace-pre-line leading-snug">
-                                            ${flipCard.backContent}
+                                    <div class="absolute inset-0 rounded-t-lg bg-primary text-white text-left p-3 md:p-4 [transform:rotateY(180deg)] [backface-visibility:hidden] flex flex-col items-start cursor-pointer select-none overflow-y-auto shadow-none">
+                                        <div class="font-medium leading-snug w-full my-auto">
+                                            ${formatBackContent(flipCard.backContent)}
                                         </div>
                                         <div class="absolute top-2 right-2 md:top-3 md:right-3">
                                             <i class="fas fa-sync-alt text-white opacity-70 text-xs md:text-sm"></i>
