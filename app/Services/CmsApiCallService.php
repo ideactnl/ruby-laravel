@@ -16,29 +16,44 @@ class CmsApiCallService
         $this->cmsApiKey = config('cms.api_key');
     }
 
-    public function call($request)
+    public function call($requestOrFilters, ?string $location = null)
     {
         $systemLang = session('locale') ?? app()->getLocale();
-        $location = $request->input('location', 'education');
-        $apiUrl = "$this->cmsApiUrl/api/v1/content?lang=$systemLang&location=$location";
 
-        // Get all request data except page and convert to CMS API format
-        $allFilters = $request->all();
+        $filters = [];
+        if ($requestOrFilters instanceof \Illuminate\Http\Request) {
+            $filters = $requestOrFilters->all();
+            if (! $location) {
+                $location = $requestOrFilters->input('location');
+            }
+        } elseif (is_array($requestOrFilters)) {
+            $filters = $requestOrFilters;
+        }
 
-        // Remove page from filters as it's already in URL
-        unset($allFilters['page']);
+        if (! $location && isset($filters['location'])) {
+            $location = $filters['location'];
+        }
+        unset($filters['location']);
 
-        // Add non-null filters to URL with proper formatting
-        foreach ($allFilters as $key => $value) {
+        $apiUrl = "$this->cmsApiUrl/api/v1/content?lang=$systemLang";
+        if ($location) {
+            $apiUrl .= '&location='.urlencode($location);
+        }
+
+        unset($filters['page']);
+
+        foreach ($filters as $key => $value) {
             if ($value !== null && $value !== '' && $value !== false) {
-                // Convert boolean values to string
-                if (is_bool($value)) {
-                    // @phpstan-ignore-next-line
-                    $value = $value ? true : false;
-                } elseif (is_numeric($value)) {
-                    $value = $value;
+                if (is_array($value)) {
+                    foreach ($value as $v) {
+                        $apiUrl .= "&$key=".urlencode((string) $v);
+                    }
+                } else {
+                    if (is_bool($value)) {
+                        $value = 'true';
+                    }
+                    $apiUrl .= "&$key=".urlencode((string) $value);
                 }
-                $apiUrl .= "&$key=".urlencode($value);
             }
         }
 
@@ -76,65 +91,102 @@ class CmsApiCallService
 
         $pillars = $participantData['pillars'];
 
-        // Pain level (0-10)
+        $this->mapPainLevel($pillars, $filters);
+        $this->mapEnergyLevel($pillars, $filters);
+        $this->mapSleepHours($participantData, $filters);
+        $this->mapSportenTime($pillars, $filters);
+        $this->mapBloodLoss($pillars, $filters);
+        $this->mapStoolType($pillars, $filters);
+        $this->mapMood($pillars, $filters);
+        $this->mapGeneralHealth($pillars, $filters);
+
+        return $filters;
+    }
+
+    private function mapPainLevel(array $pillars, array &$filters): void
+    {
         if (isset($pillars['pain']['value'])) {
             $filters['pain-level'] = $pillars['pain']['value'];
         }
+    }
 
-        // Energy level (-10 to 10)
+    private function mapEnergyLevel(array $pillars, array &$filters): void
+    {
         if (isset($pillars['general_health']['energyLevel'])) {
             $filters['energy-level'] = $pillars['general_health']['energyLevel'];
         }
+    }
 
-        // Sleep hours
+    private function mapSleepHours(array $participantData, array &$filters): void
+    {
         if (isset($participantData['sleep_hours'])) {
             $filters['sleep-hours'] = $participantData['sleep_hours'];
         }
+    }
 
-        // Sport minutes
+    private function mapSportenTime(array $pillars, array &$filters): void
+    {
         if (isset($pillars['exercise']['minutes'])) {
-            $filters['sport-minutes'] = $pillars['exercise']['minutes'];
+            $filters['sporten-time'] = $pillars['exercise']['minutes'];
+        }
+    }
+
+    private function mapBloodLoss(array $pillars, array &$filters): void
+    {
+        $bloodLossAmount = $pillars['blood_loss']['amount'] ?? 0;
+        if ($bloodLossAmount > 0) {
+            $filters['menstruation-bloodloss'] = true;
         }
 
-        // Boolean filters
-        $booleanFilters = [
-            'menstruation-bloodloss' => $pillars['blood_loss']['amount'] ?? null,
-            'blood-in-urine' => $pillars['stool_urine']['bloodInUrine'] ?? null,
-            'blood-in-stool' => $pillars['stool_urine']['bloodInStool'] ?? null,
-            'pain-during-urination' => $pillars['stool_urine']['painDuringUrination'] ?? null,
-            'pain-during-defecation' => $pillars['stool_urine']['painDuringDefecation'] ?? null,
-        ];
-
-        foreach ($booleanFilters as $key => $value) {
-            if ($value !== null && $value !== false) {
-                $filters[$key] = true;
-            }
+        if (! empty($pillars['stool_urine']['bloodInUrine'])) {
+            $filters['blood-in-urine'] = true;
         }
+    }
 
-        // Stool type
+    private function mapStoolType(array $pillars, array &$filters): void
+    {
         if (isset($pillars['stool_urine']['stoolType'])) {
-            $filters['stool-type'] = $pillars['stool_urine']['stoolType'];
-        }
-
-        // Mood domain variables
-        $moodFilters = [
-            'anxious-stressed' => $pillars['mood']['anxiousStressed'] ?? null,
-            'ashamed' => $pillars['mood']['ashamed'] ?? null,
-            'angry-irritable' => $pillars['mood']['angryIrritable'] ?? null,
-            'sensitive' => $pillars['mood']['sensitive'] ?? null,
-            'mood-swings' => $pillars['mood']['moodSwings'] ?? null,
-            'worthless-guilty' => $pillars['mood']['worthlessGuilty'] ?? null,
-            'overwhelmed' => $pillars['mood']['overwhelmed'] ?? null,
-            'hopeless' => $pillars['mood']['hopeless'] ?? null,
-            'depressed-sad-down' => $pillars['mood']['depressedSadDown'] ?? null,
-        ];
-
-        foreach ($moodFilters as $key => $value) {
-            if ($value === true) {
-                $filters[$key] = true;
+            $stoolType = strtolower($pillars['stool_urine']['stoolType']);
+            if ($stoolType === 'watery') {
+                $stoolType = 'diarrhea';
+            }
+            if (in_array($stoolType, ['hard', 'soft', 'diarrhea', 'no stool'])) {
+                $filters['stool'] = $stoolType;
             }
         }
+    }
 
-        return $filters;
+    private function mapMood(array $pillars, array &$filters): void
+    {
+        if (isset($pillars['mood']['negatives']) && is_array($pillars['mood']['negatives'])) {
+            $mappedMoods = [];
+            foreach ($pillars['mood']['negatives'] as $neg) {
+                $mapped = match ($neg) {
+                    'anxious_stressed' => 'anxious/stressed',
+                    'ashamed' => 'ashamed',
+                    'angry_irritable' => 'angry/irratable',
+                    'sensitive' => 'sensitive',
+                    'mood_swings' => 'mood swings',
+                    'worthless_guilty' => 'worthless/guilty',
+                    'overwhelmed' => 'overwhelmed',
+                    'hopeless' => 'hopeless',
+                    'depressed_sad_down' => 'depressed/sad/down',
+                    default => null
+                };
+                if ($mapped) {
+                    $mappedMoods[] = $mapped;
+                }
+            }
+            if (! empty($mappedMoods)) {
+                $filters['mood'] = $mappedMoods;
+            }
+        }
+    }
+
+    private function mapGeneralHealth(array $pillars, array &$filters): void
+    {
+        if (isset($pillars['general_health']['symptoms']) && is_array($pillars['general_health']['symptoms']) && count($pillars['general_health']['symptoms']) > 0) {
+            $filters['boolean-domain-general-health'] = true;
+        }
     }
 }

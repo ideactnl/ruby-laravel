@@ -34,6 +34,7 @@ return [
     'less' => 'Minder',
     'category' => 'Categorie',
     'recommended' => 'Aanbevolen',
+    'all' => 'Alles',
 
     // Days of the week
     'monday' => 'maandag',

@@ -605,7 +605,7 @@ class ParticipantWebApiController extends Controller
      * @response 401 {"error":"Unauthenticated"}
      * @response 422 {"error":"Invalid query parameters.","errors":{"date":["The date field is required."]}}
      */
-    public function getDailyViewVideos(Request $request, VideoService $videoService)
+    public function getDailyViewVideos(Request $request, CmsApiCallService $cmsService)
     {
         $participant = auth('participant-web')->user();
         if (! $participant) {
@@ -656,7 +656,38 @@ class ParticipantWebApiController extends Controller
             'sleep_hours' => $record->sleep['calculatedHours'] ?? null,
         ];
 
-        $videos = $videoService->getVideosForDailyView($participantData);
+        $filters = $cmsService->buildFiltersFromParticipantData($participantData);
+        $filters['type'] = 'video';
+
+        $response = $cmsService->call($filters);
+
+        $videos = [];
+        if (! isset($response['error']) && isset($response['data']['content'])) {
+            foreach ($response['data']['content'] as $item) {
+                $videoUrl = $item['video_url'] ?? '';
+                $videoId = $item['video_id'] ?? null;
+
+                if (! $videoId && $videoUrl) {
+                    if (preg_match('%(?:youtube(?:-nocookie)?\.com/(?:[^/]+/.+/|(?:v|e(?:mbed)?)/|.*[?&]v=)|youtu\.be/|youtube\.com/shorts/)([^"&?/ ]{11})%i', $videoUrl, $match)) {
+                        $videoId = $match[1];
+                    }
+                }
+
+                $videos[] = [
+                    'id' => $item['id'],
+                    'title' => $item['title'],
+                    'subtitle' => $item['subtitle'] ?? null,
+                    'location' => $item['location'] ?? 'daily-view',
+                    'order' => $item['order'] ?? 0,
+                    'video_url' => $videoUrl,
+                    'video_type' => $item['video_type'] ?? 'youtube',
+                    'video_id' => $videoId,
+                    'thumbnail_url' => $item['video_thumbnail'] ?? null,
+                    'embed_url' => $item['embed_url'] ?? $videoUrl,
+                    'watch_url' => $item['watch_url'] ?? $videoUrl,
+                ];
+            }
+        }
 
         return response()->json([
             'videos' => $videos,
@@ -733,9 +764,6 @@ class ParticipantWebApiController extends Controller
         ]);
     }
 
-    /**
-     * @hideFromAPIDocumentation
-     */
     public function refreshSession(Request $request)
     {
         if (! session('api_login')) {
@@ -765,7 +793,6 @@ class ParticipantWebApiController extends Controller
         }
 
         $newExpiry = now()->addMinutes((int) config('auth.dashboard_url_expiry', 5));
-
         session()->put('api_login_expires_at', $newExpiry);
 
         return response()->json([
@@ -977,12 +1004,41 @@ class ParticipantWebApiController extends Controller
      * }
      */
     public function fetchVideos(CmsApiCallService $cmsApiCallService, Request $request)
-    // public function getEducationVideos(VideoService $videoService, Request $request)
     {
-        // $videoService = new VideoService();
-        // $videos = $videoService->getVideosForLocation('education');
-        // return response()->json(['content' => $videos]);
+        $location = $request->input('location');
 
+        if (empty($location) || $location === 'all') {
+            // Fetch for both locations and merge
+            $reqEdu = $request->duplicate();
+            $reqEdu->merge(['location' => 'education']);
+            $resEdu = $cmsApiCallService->call($reqEdu);
+
+            $reqSelf = $request->duplicate();
+            $reqSelf->merge(['location' => 'selfmanagement']);
+            $resSelf = $cmsApiCallService->call($reqSelf);
+
+            if (isset($resEdu['error']) && isset($resSelf['error'])) {
+                return response()->json([
+                    'error' => true,
+                    'message' => 'Failed to fetch content from both locations.',
+                ], 500);
+            }
+
+            $contentEdu = $resEdu['data']['content'] ?? [];
+            $contentSelf = $resSelf['data']['content'] ?? [];
+
+            $mergedContent = array_merge($contentEdu, $contentSelf);
+            $uniqueContent = collect($mergedContent)->unique('id')->values()->toArray();
+
+            return response()->json([
+                'content' => $uniqueContent,
+                'meta' => [
+                    'total' => count($uniqueContent),
+                ],
+            ]);
+        }
+
+        // Fetch for specific location
         $response = $cmsApiCallService->call($request);
 
         if (array_key_exists('error', $response)) {

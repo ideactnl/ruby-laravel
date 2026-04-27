@@ -34,6 +34,7 @@ return [
     'less' => 'Less',
     'category' => 'Category',
     'recommended' => 'Recommended',
+    'all' => 'All',
 
     // Days of the week
     'monday' => 'Monday',

@@ -9,9 +9,9 @@
             <div class="flex gap-2">
                 <select id="category-filter"
                     class="border border-gray-300 rounded-md px-3 py-3 text-sm text-white bg-primary">
-                    <option value="">{{ __('participant.category') }}</option>
+                    <option value="all">{{ __('participant.all') ?? 'All' }}</option>
                     <option value="education">{{ __('participant.education') }}</option>
-                    <option selected value="self">{{ __('participant.selfmanagement') }}</option>
+                    <option value="selfmanagement" selected>{{ __('participant.selfmanagement') }}</option>
                 </select>
             </div>
         </div>
@@ -49,163 +49,12 @@
     <script src="{{ asset('js/content-renderer.js') }}"></script>
     <script>
         const categorySelect = document.getElementById('category-filter');
+
         window.addEventListener('DOMContentLoaded', async () => {
-            await triggerApiCall();
-            // await loadCategories();
-            window.ContentRenderer.setupFilterToggle();
+            await triggerApiCall(categorySelect ? categorySelect.value : 'selfmanagement');
         });
 
-        async function loadCategories() {
-            try {
-                const response = await fetch("{{ route('participant.categories.filter.api') }}");
-                const data = await response.json();
-
-                const filtersContainer = document.getElementById('filters-container');
-                const filterToggle = document.getElementById('filter-toggle');
-
-                if (filtersContainer && data.categories) {
-                    filtersContainer.innerHTML = '';
-
-                    // Create filter inputs based on category types
-                    data.categories.forEach(category => {
-                        // Skip location filter as it's redundant with page context
-                        if (category.slug === 'location') {
-                            return;
-                        }
-                        const filterDiv = createFilterInput(category);
-                        filtersContainer.appendChild(filterDiv);
-                    });
-
-                    // Show filter button only if there are filters to display
-                    if (filtersContainer.children.length > 0) {
-                        if (filterToggle) {
-                            filterToggle.classList.remove('hidden');
-                        }
-                    }
-                }
-            } catch (error) {
-                console.error('Error loading categories:', error);
-            }
-        }
-
-        function createFilterInput(category) {
-            const filterDiv = document.createElement('div');
-            filterDiv.className = 'bg-[#FDF8FE] shadow-sm border border-primary p-2 rounded-md';
-
-            // Capitalize first letter of category name
-            const displayName = category.name.charAt(0).toUpperCase() + category.name.slice(1);
-
-            let inputHtml = '';
-
-            switch (category.value_type) {
-                case 'numeric':
-                    inputHtml = `
-                        <label class="block text-xs font-medium text-gray-700 mb-1">
-                            ${displayName}
-                            ${category.metadata?.unit ? `<span class="text-xs text-gray-400">(${category.metadata.unit})</span>` : ''}
-                        </label>
-                        <div class="flex items-center gap-1">
-                            <input type="range" 
-                                   id="filter-${category.slug}" 
-                                   name="${category.slug}"
-                                   min="${category.metadata?.min || 0}"
-                                   max="${category.metadata?.max || 10}"
-                                   value="${category.metadata?.min || 0}"
-                                   class="flex-1 h-1 accent-primary">
-                            <span id="filter-${category.slug}-value" class="text-xs text-gray-600 w-4">${category.metadata?.min || 0}</span>
-                        </div>
-                    `;
-                    break;
-
-                case 'boolean':
-                    inputHtml = `
-                        <label class="block text-xs font-medium text-gray-700 mb-1 cursor-pointer hover:text-gray-800 transition-colors">
-                            ${displayName}
-                        </label>
-                        <div class="flex items-center gap-2">
-                            <label class="flex items-center cursor-pointer hover:bg-gray-50 p-0.5 rounded">
-                                <input type="radio" 
-                                       id="filter-${category.slug}-yes" 
-                                       name="${category.slug}"
-                                       value="true"
-                                       class="mr-1 text-xs">
-                                <span class="text-xs text-gray-700">{{ __('participant.yes') }}</span>
-                            </label>
-                            <label class="flex items-center cursor-pointer hover:bg-gray-50 p-0.5 rounded">
-                                <input type="radio" 
-                                       id="filter-${category.slug}-no" 
-                                       name="${category.slug}"
-                                       value="false"
-                                       class="mr-1 text-xs">
-                                <span class="text-xs text-gray-700">{{ __('participant.no') }}</span>
-                            </label>
-                        </div>
-                    `;
-                    break;
-
-                case 'text':
-                    if (category.metadata?.allowed_values) {
-                        // Dropdown for text type with allowed values
-                        inputHtml = `
-                            <label class="block text-xs font-medium text-gray-700 mb-1">
-                                ${displayName}
-                            </label>
-                            <select id="filter-${category.slug}" 
-                                    name="${category.slug}"
-                                    class="w-full px-2 py-1 text-xs bg-[#FDF8FE]  border border-primary rounded-md">
-                                <option value="">{{ __('participant.select') }}</option>
-                                ${category.metadata.allowed_values.map(value => 
-                                    `<option value="${value}">${value}</option>`
-                                ).join('')}
-                            </select>
-                        `;
-                    } else {
-                        // Regular text input
-                        inputHtml = `
-                            <label class="block text-xs font-medium text-gray-700 mb-1">
-                                ${displayName}
-                            </label>
-                            <input type="text" 
-                                   id="filter-${category.slug}" 
-                                   name="${category.slug}"
-                                   placeholder="{{ __('participant.enter_value') }}"
-                                   class="w-full px-2 py-1 text-xs border border-gray-300 rounded-md">
-                        `;
-                    }
-                    break;
-
-                default:
-                    inputHtml = `
-                        <label class="block text-xs font-medium text-gray-700 mb-1">
-                            ${displayName}
-                        </label>
-                        <input type="text" 
-                               id="filter-${category.slug}" 
-                               name="${category.slug}"
-                               placeholder="{{ __('participant.enter_value') }}"
-                               class="w-full px-2 py-1 text-xs border border-gray-300 rounded-md">
-                    `;
-                    break;
-            }
-
-            filterDiv.innerHTML = inputHtml;
-
-            // Add event listeners for range inputs
-            if (category.value_type === 'numeric') {
-                const rangeInput = filterDiv.querySelector(`#filter-${category.slug}`);
-                const valueDisplay = filterDiv.querySelector(`#filter-${category.slug}-value`);
-
-                if (rangeInput && valueDisplay) {
-                    rangeInput.addEventListener('input', (e) => {
-                        valueDisplay.textContent = e.target.value;
-                    });
-                }
-            }
-
-            return filterDiv;
-        }
-
-        async function triggerApiCall(category = 'self') {
+        async function triggerApiCall(category = 'selfmanagement') {
             const loadingOverlay = document.getElementById('loading-overlay');
 
             try {
@@ -221,7 +70,6 @@
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     },
                     body: JSON.stringify({
-                        ...window.ContentRenderer.getFilterValues(),
                         location: category
                     })
                 });
@@ -249,7 +97,8 @@
                             educationGrid.style.display = 'grid';
                         }
 
-                        content.forEach(item => {
+                        const arrangedContent = window.ContentRenderer.interleaveContent(content);
+                        arrangedContent.forEach(item => {
                             const contentCard = window.ContentRenderer.createContentCard(item);
                             if (contentCard) {
                                 educationGrid.appendChild(contentCard);
@@ -270,8 +119,10 @@
             }
         }
 
-        categorySelect.addEventListener('change', () => {
-            triggerApiCall(categorySelect.value);
-        });
+        if (categorySelect) {
+            categorySelect.addEventListener('change', () => {
+                triggerApiCall(categorySelect.value);
+            });
+        }
     </script>
 @endpush

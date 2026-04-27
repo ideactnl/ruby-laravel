@@ -32,6 +32,26 @@ window.ContentRenderer = {
         return card;
     },
 
+    // Interleave content: Video, Flipcard, Video, Flipcard...
+    interleaveContent(content) {
+        if (!content || !Array.isArray(content)) return [];
+        
+        const videos = content.filter(item => item.type === 'video');
+        const flipcards = content.filter(item => item.type === 'flipcard');
+        const others = content.filter(item => item.type !== 'video' && item.type !== 'flipcard');
+        
+        const interleaved = [];
+        const maxLength = Math.max(videos.length, flipcards.length);
+        
+        for (let i = 0; i < maxLength; i++) {
+            if (videos[i]) interleaved.push(videos[i]);
+            if (flipcards[i]) interleaved.push(flipcards[i]);
+        }
+        
+        // Append any remaining items (audio, text, etc) at the end
+        return interleaved.concat(others);
+    },
+
     // YouTube URL conversion
     convertYouTubeUrl(url) {
         try {
@@ -40,7 +60,7 @@ window.ContentRenderer = {
 
             const videoId = videoIdMatch[1];
 
-            return `https://www.youtube.com/embed/${videoId}`;
+            return `https://www.youtube-nocookie.com/embed/${videoId}`;
         } catch (error) {
             return url;
         }
@@ -48,15 +68,61 @@ window.ContentRenderer = {
 
     // Video content creation
     createVideoCardContent(video) {
-        return `
-            <div class="aspect-[9/16] edu-video-media">
+        let videoEmbedHtml;
+        const videoIdMatch = video?.video_url?.match(/(?:shorts\/|v=)([^?&]+)/);
+        
+        if (videoIdMatch && videoIdMatch[1]) {
+            const videoId = videoIdMatch[1];
+            const thumbnailUrl = `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
+            const embedUrl = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1`;
+            
+            // Render thumbnail with the YouTube Shorts facade overlay
+            videoEmbedHtml = `
+                <div class="w-full h-full relative group cursor-pointer bg-black" 
+                     onclick="this.innerHTML='<iframe class=\\'w-full h-full\\' src=\\'${embedUrl}\\' frameborder=\\'0\\' allow=\\'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\\' allowfullscreen></iframe>'">
+                    
+                    <!-- Thumbnail Background -->
+                    <img src="${thumbnailUrl}" alt="${video?.title || 'Video'}" class="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-300">
+                    
+                    <!-- Top Overlay: Avatar, Title, Channel -->
+                    <div class="absolute top-0 left-0 right-0 p-3 md:p-4 bg-gradient-to-b from-black/80 via-black/40 to-transparent flex items-center gap-2 md:gap-3 select-none">
+                        <div class="w-10 h-10 md:w-12 md:h-12 bg-[#F15A24] text-white rounded-full flex items-center justify-center text-xl font-bold shadow-md flex-shrink-0">
+                            M
+                        </div>
+                        <div class="flex flex-col justify-center min-w-0 flex-1">
+                            <div class="text-white font-bold text-[14px] md:text-[16px] leading-tight truncate drop-shadow-md">${video?.title || 'Video'}</div>
+                            <div class="text-white/90 text-[11px] md:text-[12px] leading-tight mt-0.5 drop-shadow-md">MGA Studie</div>
+                        </div>
+                    </div>
+
+                    <!-- Center Overlay: Large YouTube Shorts Logo -->
+                    <div class="absolute inset-0 flex items-center justify-center pointer-events-none select-none">
+                        <div class="w-14 h-14 md:w-16 md:h-16 flex items-center justify-center drop-shadow-[0_4px_12px_rgba(0,0,0,0.5)] transform group-hover:scale-110 transition-transform duration-300">
+                            <svg class="w-full h-full" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <!-- Red Shorts 'S' -->
+                                <path d="m18.931 9.99-1.441-.601 1.717-.913a4.48 4.48 0 0 0 1.874-6.078 4.506 4.506 0 0 0-6.09-1.874L4.792 5.929a4.504 4.504 0 0 0-2.402 4.193 4.521 4.521 0 0 0 2.666 3.904c.036.012 1.442.6 1.442.6l-1.706.901a4.51 4.51 0 0 0-2.369 3.967A4.528 4.528 0 0 0 6.93 24c.725 0 1.437-.174 2.08-.508l10.21-5.406a4.494 4.494 0 0 0 2.39-4.192 4.525 4.525 0 0 0-2.678-3.904Z" fill="#FF0000"/>
+                                <!-- White Inner Play Triangle -->
+                                <path d="M9.597 15.19V8.824l6.007 3.184Z" fill="#FFFFFF"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            `;
+        } else {
+            // Fallback to standard iframe for non-YouTube or unrecognized URLs
+            videoEmbedHtml = `
                 <iframe class="w-full h-full"
                         src="${this.convertYouTubeUrl(video?.video_url)}"
                         frameborder="0"
-                        referrerpolicy="strict-origin-when-cross-origin"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         allowfullscreen
                         loading="lazy"></iframe>
+            `;
+        }
+
+        return `
+            <div class="aspect-[9/16] edu-video-media overflow-hidden rounded-t-[10px]">
+                ${videoEmbedHtml}
             </div>
             <div class="p-2 md:p-4 flex-1 flex flex-col items-start rounded-b-[10px] rounded-tl-none rounded-tr-none border border-t-0 border-primary bg-[#FDF8FE]">
                 <h3 class="text-[14px] font-semibold text-black mb-[6px]">${video?.title}</h3>
@@ -102,37 +168,97 @@ window.ContentRenderer = {
         `;
     },
 
+    // Format back text for flipcards to handle bullets and spacing
+    formatBackContent(text) {
+        if (!text) return '';
+        
+        // Ensure any ul tags coming from API or markdown get bullet point styling
+        let processedText = text;
+        
+        if (/<[a-z][\s\S]*>/i.test(processedText)) {
+            // It's already HTML from the CMS API. Inject bullet styling manually.
+            processedText = processedText.replace(/<ul\b[^>]*>/gi, '<ul class="flip-card-list">');
+            processedText = processedText.replace(/<p\b[^>]*>/gi, '<div>');
+            processedText = processedText.replace(/<\/p>/gi, '</div>');
+            return `<div class="back-content-container">${processedText}</div>`;
+        }
+        
+        const lines = processedText.split('\n');
+        let html = '<div class="back-content-container">';
+        let inList = false;
+
+        lines.forEach(line => {
+            const trimmed = line.trim();
+            if (trimmed.startsWith('•') || trimmed.startsWith('- ')) {
+                if (!inList) {
+                    html += '<ul class="flip-card-list">';
+                    inList = true;
+                }
+                const content = trimmed.substring(1).trim();
+                html += `<li>${content}</li>`;
+            } else if (trimmed === '') {
+                if (inList) {
+                    html += '</ul>';
+                    inList = false;
+                }
+                html += '<div class="h-1"></div>';
+            } else {
+                if (inList) {
+                    html += '</ul>';
+                    inList = false;
+                }
+                html += `<div>${trimmed}</div>`;
+            }
+        });
+
+        if (inList) {
+            html += '</ul>';
+        }
+
+        html += '</div>';
+        return html;
+    },
+
     // Flipcard content creation
     createFlipCardContent(flipcard) {
+        const rawBackText = flipcard.back_text || '';
+        const formattedBackText = this.formatBackContent(rawBackText);
+        
+        const hasList = formattedBackText.includes('<ul') || formattedBackText.includes('<li');
+        
+        const backBgColor = hasList ? 'bg-[#8c0d38]' : 'bg-primary';
+        
         return `
             <div class="flip-wrapper h-full flex flex-col">
                 <div class="aspect-[9/16] w-full">
                     <div class="group [perspective:1000px] select-none touch-manipulation h-full w-full" data-flip-card>
                         <div class="relative h-full w-full transition-transform duration-700 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)]">
                             <!-- Front -->
-                            <div class="absolute inset-0 bg-[#FC9490] text-white text-center rounded-lg shadow-md [backface-visibility:hidden] flex flex-col justify-center items-center cursor-pointer select-none p-4">
-                                <div class="text-sm font-medium">
-                                    <div class="text-[23px] font-bold mb-2">MYTH</div>
-                                    <h4 class="text-[16px]">${flipcard.front_text}</h4>
+                            <div class="absolute inset-0 bg-[#FC9490] text-white text-center rounded-t-[10px] [backface-visibility:hidden] flex flex-col justify-center items-center cursor-pointer select-none p-3 md:p-4 overflow-hidden">
+                                <div class="text-sm font-medium w-full">
+                                    <div class="text-[14px] md:text-[18px] font-bold mb-1 md:mb-2 leading-tight px-1 break-words hyphens-auto" lang="nl">${flipcard.front_text || flipcard.title}</div>
                                 </div>
-                                <div class="absolute top-3 right-3">
-                                    <i class="fas fa-sync-alt text-white opacity-70"></i>
+                                <div class="absolute top-2 right-2 md:top-3 md:right-3">
+                                    <i class="fas fa-sync-alt text-white opacity-70 text-xs md:text-sm"></i>
                                 </div>
                             </div>
                             <!-- Back -->
-                            <div class="absolute inset-0 rounded-lg bg-primary text-white text-center p-4 [transform:rotateY(180deg)] [backface-visibility:hidden] flex flex-col justify-center items-center cursor-pointer select-none">
-                                <div class="text-sm font-medium">
-                                    <div class="text-[23px] font-bold mb-2">FACT</div>
-                                    ${flipcard.back_text}
+                            <div class="absolute inset-0 rounded-t-[10px] ${backBgColor} text-white text-left p-3 md:p-4 md:px-6 [transform:rotateY(180deg)] [backface-visibility:hidden] flex flex-col items-start cursor-pointer select-none overflow-y-auto shadow-none">
+                                <div class="font-medium leading-snug w-full my-auto text-[14px]">
+                                    ${formattedBackText}
                                 </div>
-                                <div class="absolute top-3 right-3">
-                                    <i class="fas fa-sync-alt text-white opacity-70"></i>
+                                <div class="absolute top-2 right-2 md:top-3 md:right-3">
+                                    <i class="fas fa-sync-alt text-white opacity-70 text-xs md:text-sm"></i>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            `;
+                <div class="p-2 md:p-4 flex-1 flex flex-col items-start rounded-b-[10px] rounded-tl-none rounded-tr-none border border-t-0 border-primary bg-[#FDF8FE]">
+                    <h3 class="text-[14px] font-semibold text-black mb-[6px] opacity-0 select-none">.</h3>
+                </div>
+            </div>
+        `;
     },
 
     // Default content for unknown types
