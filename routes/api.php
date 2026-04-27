@@ -33,6 +33,8 @@ Route::prefix('v1')->group(function () {
         Route::post('/dashboard-login', [ParticipantWebApiController::class, 'dashboardLogin'])->name('participant.dashboard.login');
         Route::get('/videos/education', [ParticipantWebApiController::class, 'getEducationVideos'])->name('participant.videos.education');
         Route::get('/videos/self-management', [ParticipantWebApiController::class, 'getSelfManagementVideos'])->name('participant.videos.self-management');
+        Route::post('/videos/fetch', [ParticipantWebApiController::class, 'fetchVideos'])->name('participant.videos.fetch.api');
+        Route::get('/cms/categories/filter', [ParticipantWebApiController::class, 'fetchCategories'])->name('participant.categories.filter.api');
 
         Route::middleware('auth:sanctum')->group(function () {
             Route::get('/dashboard', [ParticipantWebApiController::class, 'dashboard']);

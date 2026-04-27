@@ -7,16 +7,36 @@
     <section>
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
             <div class="flex gap-2">
-                <select class="border border-gray-300 rounded-md  px-3 py-1 text-sm text-white bg-primary">
-                    <option>{{ __('participant.category') }}</option>
-                </select>
-                <select class="border border-gray-300 rounded-md  px-3 py-3 text-sm text-white bg-primary">
-                    <option>{{ __('participant.recommended') }}</option>
+                <select id="category-filter"
+                    class="border border-gray-300 rounded-md px-3 py-3 text-sm text-white bg-primary">
+                    <option value="all" selected>{{ __('participant.all') ?? 'All' }}</option>
+                    <option value="education">{{ __('participant.education') }}</option>
+                    <option value="selfmanagement">{{ __('participant.selfmanagement') }}</option>
                 </select>
             </div>
         </div>
 
-        <div id="education-loading" class="py-8 text-gray-500 text-center">{{ __('participant.loading') }}</div>
+        <!-- Loading Overlay -->
+        <div id="loading-overlay" class="fixed inset-0 z-[60] flex items-center justify-center hidden">
+            <div class="flex flex-col items-center bg-[#f2cfcc] p-3 rounded-full">
+                <svg class="animate-spin h-10 w-10 text-primary " xmlns="http://www.w3.org/2000/svg" fill="none"
+                    viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                    </circle>
+                    <path class="opacity-75" fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                    </path>
+                </svg>
+            </div>
+        </div>
+
+        <div id="education-no-content" class="py-8 text-gray-500 text-center" style="display: none;">
+            <div class="text-center">
+                <i class="fas fa-inbox text-4xl mb-4 text-gray-400"></i>
+                <p class="text-lg font-medium">{{ __('participant.no_content_available') }}</p>
+                <p class="text-sm mt-2">{{ __('participant.try_different_filters_or_check_back_later') }}</p>
+            </div>
+        </div>
 
         <div id="education-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4"
             style="display: none;">
@@ -25,222 +45,79 @@
     </section>
 @endsection
 
-
 @push('scripts')
+    <script src="{{ asset('js/content-renderer.js') }}"></script>
     <script>
-        function formatBackContent(text) {
-            const lines = text.split('\n');
-            let html = '<div class="back-content-container">';
-            let inList = false;
-
-            lines.forEach(line => {
-                const trimmed = line.trim();
-                if (trimmed.startsWith('•')) {
-                    if (!inList) {
-                        html += '<ul class="flip-card-list">';
-                        inList = true;
-                    }
-                    html += `<li>${trimmed.substring(1).trim()}</li>`;
-                } else if (trimmed === '') {
-                    if (inList) {
-                        html += '</ul>';
-                        inList = false;
-                    }
-                    html += '<div class="h-1"></div>';
-                } else {
-                    if (inList) {
-                        html += '</ul>';
-                        inList = false;
-                    }
-                    html += `<div>${trimmed}</div>`;
-                }
-            });
-
-            if (inList) {
-                html += '</ul>';
-            }
-
-            html += '</div>';
-            return html;
-        }
-
+        const categorySelect = document.getElementById('category-filter');
+        
         window.addEventListener('DOMContentLoaded', async () => {
+            await triggerApiCall(categorySelect ? categorySelect.value : 'all');
+        });
+
+        async function triggerApiCall(category = 'all') {
+            const loadingOverlay = document.getElementById('loading-overlay');
+
             try {
-                const [educationResponse, selfManagementResponse] = await Promise.all([
-                    fetch('/api/v1/participant/videos/education'),
-                    fetch('/api/v1/participant/videos/self-management')
-                ]);
-                const educationData = await educationResponse.json();
-                const selfManagementData = await selfManagementResponse.json();
-                const videos = [...(educationData.videos || []), ...(selfManagementData.videos || [])];
-
-                // Flipcard definitions - placed in order: one video, one card
-                const flipCards = [
-                    {
-                        id: 'alarmsignalen',
-                        frontTitle: "{{ __('participant.flipcard_alarmsignalen_title') }}",
-                        backContent: `{{ __('participant.flipcard_alarmsignalen_content') }}`
-                    },
-                    {
-                        id: 'menstruatiepijn_1',
-                        frontTitle: "{{ __('participant.flipcard_menstruatiepijn_title') }}",
-                        backContent: `{{ __('participant.flipcard_menstruatiepijn_content') }}`
-                    },
-                    {
-                        id: 'bloedverlies_1',
-                        frontTitle: "{{ __('participant.flipcard_bloedverlies_title') }}",
-                        backContent: `{{ __('participant.flipcard_bloedverlies_content') }}`
-                    },
-                    {
-                        id: 'bloedverlies_2',
-                        frontTitle: "{{ __('participant.flipcard_bloedverlies2_title') }}",
-                        backContent: `{{ __('participant.flipcard_bloedverlies2_content') }}`
-                    },
-                    {
-                        id: 'menstruatiepijn_2',
-                        frontTitle: "{{ __('participant.flipcard_menstruatiepijn2_title') }}",
-                        backContent: `{{ __('participant.flipcard_menstruatiepijn2_content') }}`
-                    },
-                    {
-                        id: 'tampon',
-                        frontTitle: "{{ __('participant.flipcard_tampon_title') }}",
-                        backContent: `{{ __('participant.flipcard_tampon_content') }}`
-                    },
-                    {
-                        id: 'maandverband',
-                        frontTitle: "{{ __('participant.flipcard_maandverband_title') }}",
-                        backContent: `{{ __('participant.flipcard_maandverband_content') }}`
-                    },
-                    {
-                        id: 'menstruatieondergoed',
-                        frontTitle: "{{ __('participant.flipcard_menstruatieondergoed_title') }}",
-                        backContent: `{{ __('participant.flipcard_menstruatieondergoed_content') }}`
-                    },
-                    {
-                        id: 'menstruatiecup',
-                        frontTitle: "{{ __('participant.flipcard_menstruatiecup_title') }}",
-                        backContent: `{{ __('participant.flipcard_menstruatiecup_content') }}`
-                    },
-                    {
-                        id: 'myth_exercise',
-                        frontTitle: "{{ __('participant.myth') }}<br><span class='text-[16px] font-normal'>{{ __('participant.cant_exercise_during_period') }}</span>",
-                        backContent: `{{ __('participant.exercise_helps_period_symptoms') }}`
-                    }
-                ];
-
-                // Track which flipcard index to insert next
-                let flipCardIndex = 0;
-
-                function createFlipCardHTML(flipCard) {
-                    return `
-                            <div class="group [perspective:1000px] select-none touch-manipulation h-full w-full" data-flip-card data-flip-id="${flipCard.id}">
-                                <div class="relative h-full w-full transition-transform duration-700 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)]">
-                                    <!-- Front -->
-                                    <div class="absolute inset-0 bg-[#FC9490] text-white text-center rounded-t-lg [backface-visibility:hidden] flex flex-col justify-center items-center cursor-pointer select-none p-3 md:p-4 overflow-hidden">
-                                        <div class="text-sm font-medium w-full">
-                                            <div class="text-[14px] md:text-[18px] font-bold mb-1 md:mb-2 leading-tight px-1 break-words hyphens-auto" lang="nl">${flipCard.frontTitle}</div>
-                                        </div>
-                                        <div class="absolute top-2 right-2 md:top-3 md:right-3">
-                                            <i class="fas fa-sync-alt text-white opacity-70 text-xs md:text-sm"></i>
-                                        </div>
-                                    </div>
-                                    <!-- Back -->
-                                    <div class="absolute inset-0 rounded-t-lg bg-primary text-white text-left p-3 md:p-4 [transform:rotateY(180deg)] [backface-visibility:hidden] flex flex-col items-start cursor-pointer select-none overflow-y-auto shadow-none">
-                                        <div class="font-medium leading-snug w-full my-auto">
-                                            ${formatBackContent(flipCard.backContent)}
-                                        </div>
-                                        <div class="absolute top-2 right-2 md:top-3 md:right-3">
-                                            <i class="fas fa-sync-alt text-white opacity-70 text-xs md:text-sm"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        `;
+                // Show overlay loader
+                if (loadingOverlay) {
+                    loadingOverlay.classList.remove('hidden');
                 }
 
-                function createFlipCardContainer(flipCardHTML) {
-                    const container = document.createElement('div');
-                    container.className = 'rounded-[10px] overflow-hidden bg-[#FDF8FE] flex flex-col';
-                    container.innerHTML = `
-                            <div class="aspect-[9/16] w-full">
-                                ${flipCardHTML}
-                            </div>
-                            <div class="p-2 md:p-4 flex-1 flex flex-col items-start rounded-b-[10px] rounded-tl-none rounded-tr-none border border-t-0 border-primary bg-[#FDF8FE]">
-                                <h3 class="text-[14px] font-semibold text-black mb-[6px] opacity-0 select-none">.</h3>
-                            </div>
-                        `;
-                    return container;
-                }
+                const response = await fetch("{{ route('participant.videos.fetch.api') }}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({
+                        location: category
+                    })
+                });
+                const data = await response.json();
 
+                const content = data?.content || [];
                 const educationGrid = document.getElementById('education-grid');
-                const loadingElement = document.getElementById('education-loading');
+                const noContentElement = document.getElementById('education-no-content');
 
                 if (educationGrid) {
                     educationGrid.innerHTML = '';
 
-                    videos.forEach((video, index) => {
-                        // Add video card
-                        const videoCard = document.createElement('div');
-                        videoCard.className = 'rounded-[10px] overflow-hidden  bg-[#FDF8FE] flex flex-col';
-
-                        videoCard.innerHTML = `
-                                    <div class="aspect-[9/16] edu-video-media">
-                                        <iframe class="w-full h-full"
-                                                src="${video.embed_url}"
-                                                frameborder="0"
-                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                                allowfullscreen
-                                                loading="lazy"></iframe>
-                                    </div>
-
-                                     <div class="p-2 md:p-4 flex-1 flex flex-col items-start rounded-b-[10px] rounded-tl-none rounded-tr-none border border-t-0 border-primary bg-[#FDF8FE]">
-                                        <h3 class="text-[14px] font-semibold text-black mb-[6px]">${video.title}</h3>
-                                    </div>
-                                `;
-
-                        educationGrid.appendChild(videoCard);
-
-                        // Insert one flipcard after each video until all cards are used
-                        if (flipCardIndex < flipCards.length) {
-                            const flipCard = flipCards[flipCardIndex];
-                            const flipCardContainer = createFlipCardContainer(createFlipCardHTML(flipCard));
-                            educationGrid.appendChild(flipCardContainer);
-                            flipCardIndex++;
+                    if (content.length === 0) {
+                        if (noContentElement) {
+                            noContentElement.style.display = 'block';
                         }
-                    });
+                        if (educationGrid) {
+                            educationGrid.style.display = 'none';
+                        }
+                    } else {
+                        if (noContentElement) {
+                            noContentElement.style.display = 'none';
+                        }
+                        if (educationGrid) {
+                            educationGrid.style.display = 'grid';
+                        }
 
-                    loadingElement.style.display = 'none';
-                    educationGrid.style.display = 'grid';
+                        const arrangedContent = window.ContentRenderer.interleaveContent(content);
+                        arrangedContent.forEach(item => {
+                            const contentCard = window.ContentRenderer.createContentCard(item);
+                            if (contentCard) {
+                                educationGrid.appendChild(contentCard);
+                            }
+                        });
 
-                    initFlipCards();
+                        // window.ContentRenderer.equalizeCardHeights();
+                        window.ContentRenderer.initFlipCards();
+                    }
                 }
             } catch (error) {
-                console.error('Error fetching videos:', error);
-                const loadingElement = document.getElementById('education-loading');
-                if (loadingElement) {
-                    loadingElement.textContent = 'Error loading content';
+                console.error('Error fetching content:', error);
+            } finally {
+                // Hide overlay loader
+                if (loadingOverlay) {
+                    loadingOverlay.classList.add('hidden');
                 }
             }
-        });
-
-        function matchCardHeights() {
-            const cards = document.querySelectorAll('#education-grid > div');
-            let maxHeight = 0;
-
-            // Find tallest card
-            cards.forEach(card => {
-                const height = card.offsetHeight;
-                if (height > maxHeight) maxHeight = height;
-            });
-
-            // Apply max height to all cards
-            cards.forEach(card => {
-                card.style.height = maxHeight + 'px';
-            });
         }
-
-        // Removed grid-wide equalization so More/Less only affects the clicked caption
-
 
         function triggerHapticFeedback(type = 'light') {
             if ('vibrate' in navigator) {
@@ -252,7 +129,7 @@
                         flip: [30, 20, 10]
                     };
                     navigator.vibrate(patterns[type] || patterns.light);
-                } catch (e) { }
+                } catch (e) {}
             }
         }
 
@@ -301,7 +178,9 @@
                         touchStartX = touch.clientX;
                         touchStartY = touch.clientY;
                         hasMoved = false;
-                    }, { passive: true });
+                    }, {
+                        passive: true
+                    });
 
                     card.addEventListener('touchmove', (e) => {
                         if (!e.touches[0]) return;
@@ -313,13 +192,17 @@
                         if (deltaX > 10 || deltaY > 5) {
                             hasMoved = true;
                         }
-                    }, { passive: true });
+                    }, {
+                        passive: true
+                    });
 
                     card.addEventListener('touchend', (e) => {
                         setTimeout(() => {
                             hasMoved = false;
                         }, 100);
-                    }, { passive: true });
+                    }, {
+                        passive: true
+                    });
 
                     card.addEventListener('click', handleMobileFlip);
                 } else {
@@ -333,6 +216,12 @@
                 }
             });
         }
-        matchCardHeights();
+        window.ContentRenderer.matchCardHeights();
+
+        if (categorySelect) {
+            categorySelect.addEventListener('change', () => {
+                triggerApiCall(categorySelect.value);
+            });
+        }
     </script>
 @endpush

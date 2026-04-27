@@ -34,6 +34,7 @@ return [
     'less' => 'Minder',
     'category' => 'Categorie',
     'recommended' => 'Aanbevolen',
+    'all' => 'Alles',
 
     // Days of the week
     'monday' => 'maandag',
@@ -95,6 +96,15 @@ return [
     'prev' => 'Vorige',
     'select' => 'Selecteer',
     'loading' => 'Laden...',
+    'no_content_available' => 'Geen inhoud beschikbaar',
+    'try_different_filters_or_check_back_later' => 'Probeer andere filters of kom later terug',
+    'filters' => 'Filters',
+    'filter_by' => 'Filter op',
+    'apply_filters' => 'Filters Toepassen',
+    'reset_filters' => 'Filters Resetten',
+    'yes' => 'Ja',
+    'no' => 'Nee',
+    'enter_value' => 'Voer waarde in',
     'no_symptom_data_recorded' => 'Geen symptoomgegevens geregistreerd voor deze datum.',
     'video' => 'Video',
 

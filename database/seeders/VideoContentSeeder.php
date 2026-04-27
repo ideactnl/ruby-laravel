@@ -6,6 +6,9 @@ use App\Models\VideoContent;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
+/**
+ * @deprecated CMS API handles video requirements natively.
+ */
 class VideoContentSeeder extends Seeder
 {
     /**

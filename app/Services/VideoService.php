@@ -5,6 +5,9 @@ namespace App\Services;
 use App\Models\VideoContent;
 use Illuminate\Support\Collection;
 
+/**
+ * @deprecated Use CmsApiCallService instead.
+ */
 class VideoService
 {
     /**
