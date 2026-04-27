@@ -317,12 +317,76 @@ window.ContentRenderer = {
     // Initialize flip card interactions
     initFlipCards() {
         const flipCards = document.querySelectorAll('[data-flip-card]');
+        const isMobile = window.innerWidth <= 768;
+
         flipCards.forEach(card => {
-            card.addEventListener('click', function(e) {
-                if (e.target.closest('[data-flip-card]')) {
-                    // this.classList.toggle('rotate-y-180');
+            const cardInner = card.querySelector('div[class*="transition-transform"]');
+            if (!cardInner) return;
+
+            let isFlipped = false;
+            let touchStartX = 0;
+            let touchStartY = 0;
+            let hasMoved = false;
+
+            const handleMobileFlip = (e) => {
+                if (hasMoved) return;
+
+                e.preventDefault();
+                e.stopPropagation();
+
+                isFlipped = !isFlipped;
+                this.triggerHapticFeedback('flip');
+
+                if (isFlipped) {
+                    cardInner.style.transform = 'rotateY(180deg)';
+                    card.classList.add('flipped');
+                } else {
+                    cardInner.style.transform = 'rotateY(0deg)';
+                    card.classList.remove('flipped');
                 }
-            });
+            };
+
+            const handleDesktopHover = () => {
+                cardInner.style.transform = 'rotateY(180deg)';
+                card.classList.add('flipped');
+            };
+
+            const handleDesktopLeave = () => {
+                cardInner.style.transform = 'rotateY(0deg)';
+                card.classList.remove('flipped');
+            };
+
+            if (isMobile) {
+                card.addEventListener('touchstart', (e) => {
+                    const touch = e.touches[0];
+                    touchStartX = touch.clientX;
+                    touchStartY = touch.clientY;
+                    hasMoved = false;
+                }, { passive: true });
+
+                card.addEventListener('touchmove', (e) => {
+                    if (!e.touches[0]) return;
+
+                    const touch = e.touches[0];
+                    const deltaX = Math.abs(touch.clientX - touchStartX);
+                    const deltaY = Math.abs(touch.clientY - touchStartY);
+
+                    if (deltaX > 10 || deltaY > 5) {
+                        hasMoved = true;
+                    }
+                }, { passive: true });
+
+                card.addEventListener('touchend', (e) => {
+                    setTimeout(() => {
+                        hasMoved = false;
+                    }, 100);
+                }, { passive: true });
+
+                card.addEventListener('click', handleMobileFlip);
+            } else {
+                card.addEventListener('mouseenter', handleDesktopHover);
+                card.addEventListener('mouseleave', handleDesktopLeave);
+            }
         });
     },
 
