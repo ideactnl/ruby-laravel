@@ -531,3 +531,45 @@ body {
 }
 
 
+
+/* Flip Card Styles */
+.flip-card-list {
+    list-style-type: none;
+    padding-left: 0;
+    margin-top: 0.25rem;
+    width: 100%;
+}
+
+.back-content-container {
+    width: 100%;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    font-size: 0.85rem;
+    line-height: 1.4;
+}
+
+@media (min-width: 768px) {
+    .back-content-container {
+        font-size: 0.875rem;
+    }
+}
+
+.back-content-container div {
+    margin-bottom: 0.5rem;
+}
+
+.flip-card-list li {
+    position: relative;
+    padding-left: 1.25rem;
+    margin-bottom: 0.4rem;
+}
+
+.flip-card-list li::before {
+    content: '•';
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: #fff;
+    font-size: 1.1rem;
+    line-height: 1;
+}

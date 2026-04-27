@@ -7,7 +7,8 @@
     <section>
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
             <div class="flex gap-2">
-                <select id="category-filter" class="border border-gray-300 rounded-md px-3 py-3 text-sm text-white bg-primary">
+                <select id="category-filter"
+                    class="border border-gray-300 rounded-md px-3 py-3 text-sm text-white bg-primary">
                     <option value="">{{ __('participant.category') }}</option>
                     <option value="education">{{ __('participant.education') }}</option>
                     <option selected value="self">{{ __('participant.selfmanagement') }}</option>
@@ -15,7 +16,7 @@
             </div>
         </div>
 
-         <!-- Loader Overlay -->
+        <!-- Loader Overlay -->
         <div id="loading-overlay" class="fixed inset-0 z-[60] flex items-center justify-center hidden">
             <div class="flex flex-col items-center bg-[#f2cfcc] p-3 rounded-full">
                 <svg class="animate-spin h-10 w-10 text-primary " xmlns="http://www.w3.org/2000/svg" fill="none"
@@ -25,7 +26,7 @@
                     <path class="opacity-75" fill="currentColor"
                         d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
                     </path>
-                </svg> 
+                </svg>
             </div>
         </div>
 
@@ -58,13 +59,13 @@
             try {
                 const response = await fetch("{{ route('participant.categories.filter.api') }}");
                 const data = await response.json();
-                
+
                 const filtersContainer = document.getElementById('filters-container');
                 const filterToggle = document.getElementById('filter-toggle');
-                
+
                 if (filtersContainer && data.categories) {
                     filtersContainer.innerHTML = '';
-                    
+
                     // Create filter inputs based on category types
                     data.categories.forEach(category => {
                         // Skip location filter as it's redundant with page context
@@ -74,7 +75,7 @@
                         const filterDiv = createFilterInput(category);
                         filtersContainer.appendChild(filterDiv);
                     });
-                    
+
                     // Show filter button only if there are filters to display
                     if (filtersContainer.children.length > 0) {
                         if (filterToggle) {
@@ -90,12 +91,12 @@
         function createFilterInput(category) {
             const filterDiv = document.createElement('div');
             filterDiv.className = 'bg-[#FDF8FE] shadow-sm border border-primary p-2 rounded-md';
-            
+
             // Capitalize first letter of category name
             const displayName = category.name.charAt(0).toUpperCase() + category.name.slice(1);
-            
+
             let inputHtml = '';
-            
+
             switch (category.value_type) {
                 case 'numeric':
                     inputHtml = `
@@ -115,7 +116,7 @@
                         </div>
                     `;
                     break;
-                    
+
                 case 'boolean':
                     inputHtml = `
                         <label class="block text-xs font-medium text-gray-700 mb-1 cursor-pointer hover:text-gray-800 transition-colors">
@@ -141,7 +142,7 @@
                         </div>
                     `;
                     break;
-                    
+
                 case 'text':
                     if (category.metadata?.allowed_values) {
                         // Dropdown for text type with allowed values
@@ -172,7 +173,7 @@
                         `;
                     }
                     break;
-                    
+
                 default:
                     inputHtml = `
                         <label class="block text-xs font-medium text-gray-700 mb-1">
@@ -186,33 +187,33 @@
                     `;
                     break;
             }
-            
+
             filterDiv.innerHTML = inputHtml;
-            
+
             // Add event listeners for range inputs
             if (category.value_type === 'numeric') {
                 const rangeInput = filterDiv.querySelector(`#filter-${category.slug}`);
                 const valueDisplay = filterDiv.querySelector(`#filter-${category.slug}-value`);
-                
+
                 if (rangeInput && valueDisplay) {
                     rangeInput.addEventListener('input', (e) => {
                         valueDisplay.textContent = e.target.value;
                     });
                 }
             }
-            
+
             return filterDiv;
         }
 
         async function triggerApiCall(category = 'self') {
             const loadingOverlay = document.getElementById('loading-overlay');
-            
+
             try {
                 // Show overlay loader
                 if (loadingOverlay) {
                     loadingOverlay.classList.remove('hidden');
                 }
-                
+
                 const response = await fetch("{{ route('participant.videos.fetch.api') }}", {
                     method: 'POST',
                     headers: {
