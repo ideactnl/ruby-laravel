@@ -75,6 +75,9 @@ jobs:
             export QUEUE_CONNECTION="${{ vars.QUEUE_CONNECTION || 'database' }}"
             export LOG_LEVEL="${{ vars.LOG_LEVEL || 'debug' }}"
             export MAINTENANCE_SECRET="${{ secrets.MAINTENANCE_SECRET }}"
+            export ADMINER_ALLOWED_IPS="${{ secrets.ADMINER_ALLOWED_IPS }}"
+            export CMS_API_URL="${{ secrets.CMS_API_URL }}"
+            export CMS_API_KEY="${{ secrets.CMS_API_KEY }}"
 
             # Change to project directory and update code (including scripts)
             cd "$PROJECT_PATH"
@@ -115,6 +118,9 @@ jobs:
             export QUEUE_CONNECTION="${{ vars.QUEUE_CONNECTION || 'database' }}"
             export LOG_LEVEL="${{ vars.LOG_LEVEL || 'error' }}"
             export MAINTENANCE_SECRET="${{ secrets.MAINTENANCE_SECRET }}"
+            export ADMINER_ALLOWED_IPS="${{ secrets.ADMINER_ALLOWED_IPS }}"
+            export CMS_API_URL="${{ secrets.CMS_API_URL }}"
+            export CMS_API_KEY="${{ secrets.CMS_API_KEY }}"
 
             # Database credentials (used by backup-production.sh)
             # DB_DATABASE already exported above via vars.DB_DATABASE
