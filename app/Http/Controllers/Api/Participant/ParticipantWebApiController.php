@@ -6,6 +6,7 @@ use App\Helpers\CommonHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Participant;
 use App\Models\Pbac;
+use App\Services\CmsApiCallService;
 use App\Services\ExportTrackingService;
 use App\Services\ParticipantActivityLogService;
 use App\Services\ParticipantSessionService;
@@ -19,6 +20,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Validation\ValidationException;
 use Laravel\Sanctum\PersonalAccessToken;
@@ -603,7 +605,7 @@ class ParticipantWebApiController extends Controller
      * @response 401 {"error":"Unauthenticated"}
      * @response 422 {"error":"Invalid query parameters.","errors":{"date":["The date field is required."]}}
      */
-    public function getDailyViewVideos(Request $request, VideoService $videoService)
+    public function getDailyViewVideos(Request $request, CmsApiCallService $cmsService)
     {
         $participant = auth('participant-web')->user();
         if (! $participant) {
@@ -654,7 +656,38 @@ class ParticipantWebApiController extends Controller
             'sleep_hours' => $record->sleep['calculatedHours'] ?? null,
         ];
 
-        $videos = $videoService->getVideosForDailyView($participantData);
+        $filters = $cmsService->buildFiltersFromParticipantData($participantData);
+        $filters['type'] = 'video';
+
+        $response = $cmsService->call($filters);
+
+        $videos = [];
+        if (! isset($response['error']) && isset($response['data']['content'])) {
+            foreach ($response['data']['content'] as $item) {
+                $videoUrl = $item['video_url'] ?? '';
+                $videoId = $item['video_id'] ?? null;
+
+                if (! $videoId && $videoUrl) {
+                    if (preg_match('%(?:youtube(?:-nocookie)?\.com/(?:[^/]+/.+/|(?:v|e(?:mbed)?)/|.*[?&]v=)|youtu\.be/|youtube\.com/shorts/)([^"&?/ ]{11})%i', $videoUrl, $match)) {
+                        $videoId = $match[1];
+                    }
+                }
+
+                $videos[] = [
+                    'id' => $item['id'],
+                    'title' => $item['title'],
+                    'subtitle' => $item['subtitle'] ?? null,
+                    'location' => $item['location'] ?? 'daily-view',
+                    'order' => $item['order'] ?? 0,
+                    'video_url' => $videoUrl,
+                    'video_type' => $item['video_type'] ?? 'youtube',
+                    'video_id' => $videoId,
+                    'thumbnail_url' => $item['video_thumbnail'] ?? null,
+                    'embed_url' => $item['embed_url'] ?? $videoUrl,
+                    'watch_url' => $item['watch_url'] ?? $videoUrl,
+                ];
+            }
+        }
 
         return response()->json([
             'videos' => $videos,
@@ -731,9 +764,6 @@ class ParticipantWebApiController extends Controller
         ]);
     }
 
-    /**
-     * @hideFromAPIDocumentation
-     */
     public function refreshSession(Request $request)
     {
         if (! session('api_login')) {
@@ -763,7 +793,6 @@ class ParticipantWebApiController extends Controller
         }
 
         $newExpiry = now()->addMinutes((int) config('auth.dashboard_url_expiry', 5));
-
         session()->put('api_login_expires_at', $newExpiry);
 
         return response()->json([
@@ -892,5 +921,205 @@ class ParticipantWebApiController extends Controller
         $data = $pbacService->getMenstruationWrappedData($participant->id);
 
         return response()->json($data);
+    }
+
+    /**
+     * Get content for education page
+     *
+     * Fetches educational content from the CMS API based on specified filters.
+     * Supports multiple content types including video, audio, text, and flipcard.
+     * Content is filtered by language and optionally by content type.
+     *
+     * @response 200 {
+     *   "content": [
+     *     {
+     *       "id": 42,
+     *       "title": "Ademhalingsoefening bij Ernstige Pijn",
+     *       "body": "<p>Gebruik deze oefening...</p>",
+     *       "type": "video",
+     *       "video_url": "https://cdn.ruby-cms.nl/videos/breathing-nl.mp4",
+     *       "language": "nl",
+     *       "filters_matched": {
+     *           "pain": {
+     *               "min": 7,
+     *               "max": 10,
+     *               "user_value": 8
+     *           },
+     *           "mood": {
+     *               "min": 0,
+     *               "max": 5,
+     *               "user_value": 3
+     *           }
+     *       }
+     *     },
+     *     {
+     *       "id": 2,
+     *       "type": "audio",
+     *       "title": "Meditation for Period Pain",
+     *       "body": "Guided meditation audio...",
+     *       "audio_url": "https://example.com/audio.mp3",
+     *       "language": "nl",
+     *       "filters_matched": {
+     *           "pain": {
+     *               "min": 5,
+     *               "max": 10,
+     *               "user_value": 7
+     *           }
+     *       }
+     *     },
+     *     {
+     *       "id": 3,
+     *       "type": "text",
+     *       "title": "Nutrition Tips During Menstruation",
+     *       "body": "<p>Important nutritional information...</p>",
+     *       "language": "nl",
+     *       "filters_matched": {
+     *           "pain": {
+     *               "min": 0,
+     *               "max": 5,
+     *               "user_value": 2
+     *           }
+     *       }
+     *     },
+     *     {
+     *       "id": 4,
+     *       "type": "flipcard",
+     *       "title": "Myth vs Fact",
+     *       "front_text": "You can't exercise during your period",
+     *       "back_text": "Exercise can actually help reduce period symptoms",
+     *       "language": "nl",
+     *       "filters_matched": {
+     *           "pain": {
+     *               "min": 3,
+     *               "max": 7,
+     *               "user_value": 5
+     *           }
+     *       }
+     *     }
+     *   ]
+     * }
+     * @response 500 {
+     *   "error": true,
+     *   "message": "CMS API URL or API key is not configured"
+     * }
+     */
+    public function fetchVideos(CmsApiCallService $cmsApiCallService, Request $request)
+    {
+        $location = $request->input('location');
+
+        if (empty($location) || $location === 'all') {
+            // Fetch for both locations and merge
+            $reqEdu = $request->duplicate();
+            $reqEdu->merge(['location' => 'education']);
+            $resEdu = $cmsApiCallService->call($reqEdu);
+
+            $reqSelf = $request->duplicate();
+            $reqSelf->merge(['location' => 'selfmanagement']);
+            $resSelf = $cmsApiCallService->call($reqSelf);
+
+            if (isset($resEdu['error']) && isset($resSelf['error'])) {
+                return response()->json([
+                    'error' => true,
+                    'message' => 'Failed to fetch content from both locations.',
+                ], 500);
+            }
+
+            $contentEdu = $resEdu['data']['content'] ?? [];
+            $contentSelf = $resSelf['data']['content'] ?? [];
+
+            $mergedContent = array_merge($contentEdu, $contentSelf);
+            $uniqueContent = collect($mergedContent)->unique('id')->values()->toArray();
+
+            return response()->json([
+                'content' => $uniqueContent,
+                'meta' => [
+                    'total' => count($uniqueContent),
+                ],
+            ]);
+        }
+
+        // Fetch for specific location
+        $response = $cmsApiCallService->call($request);
+
+        if (array_key_exists('error', $response)) {
+            return response()->json([
+                'error' => $response['error'],
+                'message' => $response['message'],
+            ], 500);
+        }
+
+        return response()->json($response['data']);
+    }
+
+    /**
+     * Get categories from CMS API
+     *
+     * Fetches available categories for content filtering from the CMS API.
+     * Categories are localized based on the current session locale.
+     *
+     * @response 200 {
+     *   "categories": [
+     *     {
+     *       "slug": "pain",
+     *       "name": "Pijn",
+     *       "description": "Lichamelijke pijn tracking",
+     *       "value_type": "numeric",
+     *       "metadata": {
+     *         "min": 0,
+     *         "max": 10
+     *       }
+     *     },
+     *     {
+     *       "slug": "mood",
+     *       "name": "Stemming",
+     *       "description": "Emotionele stemming tracking",
+     *       "value_type": "numeric",
+     *       "metadata": {
+     *         "min": 0,
+     *         "max": 10
+     *       }
+     *     }
+     *   ],
+     *   "total": 2,
+     *   "language": "nl"
+     * }
+     * @response 500 {
+     *   "error": true,
+     *   "message": "Failed to fetch categories"
+     * }
+     */
+    public function fetchCategories(Request $request)
+    {
+        $systemLang = session('locale') ?? app()->getLocale();
+        $cmsApiUrl = config('cms.api_url');
+        $cmsApiKey = config('cms.api_key');
+
+        if (! $cmsApiUrl || ! $cmsApiKey) {
+            return response()->json([
+                'error' => true,
+                'message' => 'CMS API URL or API key is not configured',
+            ], 500);
+        }
+
+        try {
+            $response = Http::withoutVerifying()->withHeaders([
+                'accept' => 'application/json',
+                'x-api-key' => $cmsApiKey,
+            ])->get("$cmsApiUrl/api/v1/categories?lang=$systemLang");
+
+            if ($response->successful()) {
+                return response()->json($response->json());
+            } else {
+                return response()->json([
+                    'error' => true,
+                    'message' => 'Failed to fetch categories from CMS API',
+                ], $response->status());
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => true,
+                'message' => 'Failed to fetch categories: '.$e->getMessage(),
+            ], 500);
+        }
     }
 }
