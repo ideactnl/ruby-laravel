@@ -24,6 +24,9 @@ DB_DATABASE="${DB_DATABASE:-ruby_production}"
 QUEUE_CONNECTION="${QUEUE_CONNECTION:-database}"
 LOG_LEVEL="${LOG_LEVEL:-error}"
 MAINTENANCE_SECRET="${MAINTENANCE_SECRET:-}"
+ADMINER_ALLOWED_IPS="${ADMINER_ALLOWED_IPS:-172.16.0.0/12}"
+CMS_API_URL="${CMS_API_URL:-http://localhost}"
+CMS_API_KEY="${CMS_API_KEY:-your_cms_api_key_here}"
 
 # Main deployment function
 main() {
@@ -74,6 +77,9 @@ main() {
     update_env_var "DB_DATABASE" "$DB_DATABASE"
     update_env_var "QUEUE_CONNECTION" "$QUEUE_CONNECTION"
     update_env_var "LOG_LEVEL" "$LOG_LEVEL"
+    update_env_var "ADMINER_ALLOWED_IPS" "$ADMINER_ALLOWED_IPS"
+    update_env_var "CMS_API_URL" "$CMS_API_URL"
+    update_env_var "CMS_API_KEY" "$CMS_API_KEY"
     
     # Ensure Laravel app key exists
     ensure_app_key
